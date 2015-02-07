@@ -43,19 +43,19 @@ public class CapsuleGenerator extends AbstractProcessor
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations,
-                           RoundEnvironment roundEnv)
+                           RoundEnvironment env)
     {
         // TODO: Why just ignore `annotations`? (See jpa-annotation-processor)
         
-        Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
+        Set<? extends Element> annotated = env.getElementsAnnotatedWith(Capsule.class);
 
         processingEnv.getMessager().printMessage(Kind.NOTE, "process()");
         
         // TODO: Give warnings when the user annotates some element which cannot be a capsule.
         for (Element elem : annotated) {
-            if (checkCapsule(elem, roundEnv) == true); {
+            if (checkCapsule(elem, env) == true); {
                 // TODO: Is this cast a problem?
-                processCapsule((TypeElement) elem, roundEnv);
+                processCapsule((TypeElement) elem, env);
             }
         }
 		return false;
@@ -66,11 +66,11 @@ public class CapsuleGenerator extends AbstractProcessor
      * Processes the given capsule-annotated class in the given processing
      * environment.
      * @param elem
-     * @param roundEnv
+     * @param env
      */
-    private void processCapsule(TypeElement elem, RoundEnvironment roundEnv)
+    private void processCapsule(TypeElement elem, RoundEnvironment env)
     {
-        makeCapsuleFile(elem, roundEnv);
+        makeCapsuleFile(elem, env);
     }
 
 
@@ -79,7 +79,7 @@ public class CapsuleGenerator extends AbstractProcessor
      * @return `true` if and only if `elem` is can be processed as a valid
      * capsule.
      */
-    private static boolean checkCapsule(Element elem, RoundEnvironment roundEnv) {
+    private static boolean checkCapsule(Element elem, RoundEnvironment env) {
         // TODO: Also double-check that the element is actually annotated with
         // `@Capsule`.
         // TODO: give warnings/errors when the user annotates some element which cannot be a capsule.
@@ -88,7 +88,7 @@ public class CapsuleGenerator extends AbstractProcessor
     }
     
 
-    private void makeCapsuleFile(TypeElement elem, RoundEnvironment roundEnv)
+    private void makeCapsuleFile(TypeElement elem, RoundEnvironment env)
     {
         Elements utils = processingEnv.getElementUtils();
 
@@ -98,7 +98,7 @@ public class CapsuleGenerator extends AbstractProcessor
                      + "\n"
                      + "{1}";
 
-        src = MessageFormat.format(src, pkg, buildCapsule(elem, roundEnv));
+        src = MessageFormat.format(src, pkg, buildCapsule(elem, env));
 
         JavaFileObject file = null;
         try {
@@ -113,11 +113,11 @@ public class CapsuleGenerator extends AbstractProcessor
     /**
      * @param origElem A handle to the original class from which a capsule is being
      * built.
-     * @param roundEnv The environment in which the capsule is being built.
+     * @param env The environment in which the capsule is being built.
      * @return The source code for the capsule class which has been build to wrap the
      * original class.
      */
-    private String buildCapsule(TypeElement orig, RoundEnvironment roundEnv)
+    private String buildCapsule(TypeElement orig, RoundEnvironment env)
     {
         Elements utils = processingEnv.getElementUtils();
         Name pkg = utils.getPackageOf(orig).getQualifiedName();
@@ -127,9 +127,9 @@ public class CapsuleGenerator extends AbstractProcessor
 
         // Note that `MessageFormat.format()` cannot be used here because of the curly-braces.
         return buildCapsuleComment(qualifiedOrig)
-             + buildCapsuleDecl(orig, roundEnv) + "\n"
+             + buildCapsuleDecl(orig, env) + "\n"
              + "{\n"
-             + buildCapsuleBody(orig, roundEnv)
+             + buildCapsuleBody(orig, env)
              + "}\n"
              + "\n";
     }
@@ -144,13 +144,15 @@ public class CapsuleGenerator extends AbstractProcessor
         return MessageFormat.format(comment, qualifiedOriginal);
     }
     
-    private String buildCapsuleDecl(TypeElement origElem, RoundEnvironment roundEnv)
+
+    private String buildCapsuleDecl(TypeElement origElem, RoundEnvironment env)
     {
         Name origName = origElem.getSimpleName();
         return MessageFormat.format("public class {0}Capsule extends {1}", origName, origName);
     }
 
-    private String buildCapsuleBody(TypeElement orig, RoundEnvironment roundEnv)
+
+    private String buildCapsuleBody(TypeElement orig, RoundEnvironment env)
     {
         String rv = "";
 
@@ -159,41 +161,41 @@ public class CapsuleGenerator extends AbstractProcessor
             // which need to be wrapped.
             if (child.getKind() == ElementKind.CONSTRUCTOR) {
                 // TODO
-                rv += "// TODO: build constructor\n\n";
+                rv += "    // TODO: build constructor\n\n";
             } else if (needsProceedureWrapper(child)) {
-                rv += buildProcedure((ExecutableElement) child, roundEnv);
+                rv += buildProcedure((ExecutableElement) child, env);
             }
         }
         
         return rv;
     }
     
-    private String buildProcedure(ExecutableElement method, RoundEnvironment roundEnv)
+
+    private String buildProcedure(ExecutableElement method, RoundEnvironment env)
     {
         // Note that `MessageFormat.format()` cannot be used here because of the curly-braces.
-        return buildProcedureDecl(method, roundEnv) + "\n"
-             + "{\n"
-             + buildProcedureBody(method, roundEnv)
-             + "}\n"
+        return buildProcedureDecl(method, env) + "\n"
+             + "    {\n"
+             + buildProcedureBody(method, env)
+             + "    }\n"
              + "\n";
     }
     
     
-    private String buildProcedureDecl(ExecutableElement method, RoundEnvironment roundEnv)
+    private String buildProcedureDecl(ExecutableElement method, RoundEnvironment env)
     {
-        return MessageFormat.format("public {0} {1}Proc({2})",
+        return MessageFormat.format("    public {0} {1}Proc({2})",
                                     method.getReturnType(),
                                     method.getSimpleName(),
-                                    buildProcedureParameters(method, roundEnv));
+                                    buildProcedureParameters(method, env));
     }
     
     
-    private String buildProcedureParameters(ExecutableElement method, RoundEnvironment roundEnv)
+    private String buildProcedureParameters(ExecutableElement method, RoundEnvironment env)
     {
-        List<? extends VariableElement> params = method.getParameters();
-        List<String> paramStrings = new ArrayList<String>(params.size());
-        for (VariableElement param : params) {
-            paramStrings.add(param.toString());
+        List<String> paramStrings = new ArrayList<String>();
+        for (VariableElement param : method.getParameters()) {
+            paramStrings.add(buildParamDecl(param, env));
         }
         return String.join(", ", paramStrings);
     }
@@ -202,17 +204,37 @@ public class CapsuleGenerator extends AbstractProcessor
     /**
      * 
      * @param method The method which the proceedure being build is wrapping.
-     * @param roundEnv
+     * @param env
      * @return
      */
-    private String buildProcedureBody(ExecutableElement method, RoundEnvironment roundEnv)
+    private String buildProcedureBody(ExecutableElement method, RoundEnvironment env)
     {
-        return "// TODO: buildProcedureBody()\n";
-
-        //throw new UnsupportedOperationException();
+    	String fmt = "        ";
+    	if (method.getReturnType().toString() != "void") {
+    		fmt += "return ";
+    	}
+    	fmt += "{0}({1});\n";
+        return MessageFormat.format(fmt, method.getSimpleName(), buildArgsList(method, env));
     }
     
     
+    private String buildParamDecl(VariableElement var, RoundEnvironment env)
+    {
+        return var.asType().toString() + " " + var.toString();
+    }
+    
+    
+    private String buildArgsList(ExecutableElement method, RoundEnvironment env)
+    {
+        List<String> paramStrings = new ArrayList<String>();
+    	for (VariableElement var : method.getParameters()) {
+    		paramStrings.add(var.toString());
+    	}
+    	return String.join(", ", paramStrings);
+    	
+    }
+
+   
     
     /* Helper Methods ********************************************************/
     
@@ -234,6 +256,7 @@ public class CapsuleGenerator extends AbstractProcessor
         return false;
     }
 
+    
     private TypeElement getTypeElement(String className) {
         return processingEnv.getElementUtils().getTypeElement(className);
     }
