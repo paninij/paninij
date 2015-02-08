@@ -57,7 +57,7 @@ public class CapsuleGenerator extends AbstractProcessor
                 processCapsule((TypeElement) elem, env);
             }
         }
-		return false;
+        return false;
     }
 
 
@@ -101,7 +101,7 @@ public class CapsuleGenerator extends AbstractProcessor
                      + "{2}";
 
         src = MessageFormat.format(src, pkg, buildCapsuleImports(cls, env),
-        						   buildCapsule(cls, env));
+                                   buildCapsule(cls, env));
 
         JavaFileObject file = null;
         try {
@@ -115,14 +115,14 @@ public class CapsuleGenerator extends AbstractProcessor
     
     private String buildCapsuleImports(TypeElement cls, RoundEnvironment env)
     {
-    	// TODO: Visit the entirety of the definition of `cls`, looking for dependencies that
-    	// need to be imported. Alternatively, just copy-and-paste all of the imports in the
-    	// original `.java` file.
-    	String imports = "import java.util.concurrent.Callable;\n"
-    				   + "import java.util.concurrent.Future;\n"
-    				   + "import java.util.concurrent.FutureTask;\n"
-    				   + "import java.util.concurrent.ConcurrentLinkedQueue;\n";
-    	return imports;
+        // TODO: Visit the entirety of the definition of `cls`, looking for dependencies that
+        // need to be imported. Alternatively, just copy-and-paste all of the imports in the
+        // original `.java` file.
+        String imports = "import java.util.concurrent.Callable;\n"
+                       + "import java.util.concurrent.Future;\n"
+                       + "import java.util.concurrent.FutureTask;\n"
+                       + "import java.util.concurrent.ConcurrentLinkedQueue;\n";
+        return imports;
     }
     
     /**
@@ -134,7 +134,7 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String buildCapsule(TypeElement orig, RoundEnvironment env)
     {
-    	note("buildCapsule()");
+        note("buildCapsule()");
 
         Elements utils = processingEnv.getElementUtils();
         Name pkg = utils.getPackageOf(orig).getQualifiedName();
@@ -168,13 +168,13 @@ public class CapsuleGenerator extends AbstractProcessor
 
     private String buildCapsuleBody(TypeElement cls, RoundEnvironment env)
     {
-    	ArrayList<String> decls = new ArrayList<String>();
-    	decls.add(buildCapsuleFields(cls, env));
+        ArrayList<String> decls = new ArrayList<String>();
+        decls.add(buildCapsuleFields(cls, env));
         
         for (Element child : cls.getEnclosedElements())
         {
             // For now, ignore everything except for constructors and methods which need to be
-        	// wrapped with procedures.
+            // wrapped with procedures.
             if (child.getKind() == ElementKind.CONSTRUCTOR) {
                 // TODO: build constructors!
                 decls.add("    // TODO: build constructor\n");
@@ -192,7 +192,7 @@ public class CapsuleGenerator extends AbstractProcessor
      * @return A string of all of the fields which the capsule needs to declare.
      */
     private String buildCapsuleFields(TypeElement cls, RoundEnvironment env) {
-    	return "    ConcurrentLinkedQueue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();\n";
+        return "    ConcurrentLinkedQueue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();\n";
     }
     
 
@@ -210,8 +210,8 @@ public class CapsuleGenerator extends AbstractProcessor
     private String buildProcedureDecl(ExecutableElement method, RoundEnvironment env)
     {
         return MessageFormat.format("    public Future<{0}> {1}Proc({2})",
-        							getBoxedReturnType(method),
-        							method.getSimpleName(),
+                                    getBoxedReturnType(method),
+                                    method.getSimpleName(),
                                     buildProcedureParameters(method, env));
     }
     
@@ -233,31 +233,31 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String buildProcedureBody(ExecutableElement method, RoundEnvironment env)
     {
-    	String retType = getBoxedReturnType(method);
-    	String body;
+        String retType = getBoxedReturnType(method);
+        String body;
         body = "        FutureTask<"+ retType + "> f = new FutureTask(\n"
              + "            new Callable<" + retType + ">() {\n"
-             + "			    public " + retType + " call() {\n"
+             + "                public " + retType + " call() {\n"
              + "                    " + buildCallBody(method, env)
              + "                }\n"
              + "            }\n"
              + "        );\n"
              + "        \n"
              + "        queue.add(f);\n"
-        	 + "        return f;\n";
+             + "        return f;\n";
         return body;
     }
 
    
     private String buildCallBody(ExecutableElement method, RoundEnvironment env)
     {
-    	String fmt;
-    	if (CapsuleGenerator.hasVoidReturnType(method)) {
-    		fmt = "{0}({1}); return null;\n";
-    	} else {
-    		fmt = "return {0}({1});\n";
-    	}
-    	return MessageFormat.format(fmt, method.getSimpleName(), buildArgsList(method, env));
+        String fmt;
+        if (CapsuleGenerator.hasVoidReturnType(method)) {
+            fmt = "{0}({1}); return null;\n";
+        } else {
+            fmt = "return {0}({1});\n";
+        }
+        return MessageFormat.format(fmt, method.getSimpleName(), buildArgsList(method, env));
     }
     
     
@@ -270,11 +270,10 @@ public class CapsuleGenerator extends AbstractProcessor
     private String buildArgsList(ExecutableElement method, RoundEnvironment env)
     {
         List<String> paramStrings = new ArrayList<String>();
-    	for (VariableElement var : method.getParameters()) {
-    		paramStrings.add(var.toString());
-    	}
-    	return String.join(", ", paramStrings);
-    	
+        for (VariableElement var : method.getParameters()) {
+            paramStrings.add(var.toString());
+        }
+        return String.join(", ", paramStrings);
     }
 
    
@@ -300,11 +299,11 @@ public class CapsuleGenerator extends AbstractProcessor
     }
     
     private static boolean hasVoidReturnType(ExecutableElement exec) {
-    	return exec.getReturnType().getKind() == TypeKind.VOID;
+        return exec.getReturnType().getKind() == TypeKind.VOID;
     }
     
     private static boolean hasPrimitiveReturnType(ExecutableElement exec) {
-    	return exec.getReturnType().getKind().isPrimitive();
+        return exec.getReturnType().getKind().isPrimitive();
     }
     
     /**
@@ -333,41 +332,41 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String getBoxedReturnType(ExecutableElement exec)
     {
-    	switch (exec.getReturnType().getKind()) {
-    	case BOOLEAN:
-    		return "Boolean";
-    	case BYTE:
-    		return "Byte";
-    	case SHORT:
-    		return "Short";
-    	case INT:
-    		return "Integer";
-    	case LONG:
-    		return "Long";
-    	case CHAR:
-    		return "Character";
-    	case FLOAT:
-    		return "Float";
-    	case DOUBLE:
-    		return "Double";
-    	case VOID:
-    		return "Void";
-    	case ARRAY:
-    	case DECLARED:  // A class or interface type.
-    		return exec.getReturnType().toString();
-    	case NONE:
-    	case NULL:
-    	case ERROR:
-    	case TYPEVAR:
-    	case WILDCARD:
-    	case PACKAGE:
-    	case EXECUTABLE:
-    	case OTHER:
-    	case UNION:         // TODO: What are union and intersection types?
-    	case INTERSECTION:
-    	default:
-    		throw new IllegalArgumentException();
-    	}
+        switch (exec.getReturnType().getKind()) {
+        case BOOLEAN:
+            return "Boolean";
+        case BYTE:
+            return "Byte";
+        case SHORT:
+            return "Short";
+        case INT:
+            return "Integer";
+        case LONG:
+            return "Long";
+        case CHAR:
+            return "Character";
+        case FLOAT:
+            return "Float";
+        case DOUBLE:
+            return "Double";
+        case VOID:
+            return "Void";
+        case ARRAY:
+        case DECLARED:  // A class or interface type.
+            return exec.getReturnType().toString();
+        case NONE:
+        case NULL:
+        case ERROR:
+        case TYPEVAR:
+        case WILDCARD:
+        case PACKAGE:
+        case EXECUTABLE:
+        case OTHER:
+        case UNION:         // TODO: What are union and intersection types?
+        case INTERSECTION:
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     private TypeElement getTypeElement(String className) {
