@@ -156,11 +156,11 @@ public class CapsuleGenerator extends AbstractProcessor
     }
     
 
-    private String buildCapsuleDecl(TypeElement origElem, RoundEnvironment env)
+    private String buildCapsuleDecl(TypeElement templateClass, RoundEnvironment env)
     {
-        Name origName = origElem.getSimpleName();
-        String fmt = "public class {0}Capsule extends {1} implements Runnable";
-        return MessageFormat.format(fmt, origName, origName);
+        Name templateName = templateClass.getSimpleName();
+        String fmt = "public class {0}Capsule implements Runnable";
+        return MessageFormat.format(fmt, templateName);
     }
 
 
@@ -194,10 +194,13 @@ public class CapsuleGenerator extends AbstractProcessor
      * @param cls The class from which this capsule is being built.
      * @return A string of all of the fields which the capsule needs to declare.
      */
-    private String buildCapsuleFields(TypeElement cls, RoundEnvironment env)
+    private String buildCapsuleFields(TypeElement templateClass, RoundEnvironment env)
     {
-        return lines(1, "LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();",
-                        "Thread thread;");
+    	String src;
+        src = lines(1, "LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();",
+        	           "{0} encapsulated = new {0}();",
+                       "Thread thread;");
+        return MessageFormat.format(src, templateClass.getSimpleName());
     }
     
     
@@ -239,7 +242,7 @@ public class CapsuleGenerator extends AbstractProcessor
     
     private String buildProcedureDecl(ExecutableElement method, RoundEnvironment env)
     {
-        return MessageFormat.format("    public Future<{0}> {1}Proc({2})",
+        return MessageFormat.format("    public Future<{0}> {1}({2})",
                                     getBoxedReturnType(method),
                                     method.getSimpleName(),
                                     buildProcedureParameters(method, env));
@@ -287,9 +290,9 @@ public class CapsuleGenerator extends AbstractProcessor
     {
         String fmt;
         if (CapsuleGenerator.hasVoidReturnType(method)) {
-            fmt = "{0}({1}); return null;";
+            fmt = "encapsulated.{0}({1}); return null;";
         } else {
-            fmt = "return {0}({1});";
+            fmt = "return encapsulated.{0}({1});";
         }
         return MessageFormat.format(fmt, method.getSimpleName(), buildArgsList(method, env));
     }
@@ -324,7 +327,10 @@ public class CapsuleGenerator extends AbstractProcessor
         if (elem.getKind() == ElementKind.METHOD) {
             ExecutableElement method = (ExecutableElement) elem;
             Set<Modifier> modifiers = method.getModifiers();
-            if (modifiers.contains(Modifier.PUBLIC)) {
+            // TODO: decide on appropriate semantics.
+            if (modifiers.contains(Modifier.STATIC)) {
+            	return false;
+            } else if (modifiers.contains(Modifier.PUBLIC)) {
                 return true;
             }
         }
