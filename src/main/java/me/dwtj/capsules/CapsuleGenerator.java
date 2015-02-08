@@ -153,7 +153,7 @@ public class CapsuleGenerator extends AbstractProcessor
     private String buildCapsuleComment(String qualifiedOriginal)
     {
         String comment = "/**\n"
-                       + " * This capsule was auto-generated from `{0}.`\n"
+                       + " * This capsule was auto-generated from `{0}`.\n"
                        + " */\n";
         return MessageFormat.format(comment, qualifiedOriginal);
     }
@@ -209,19 +209,10 @@ public class CapsuleGenerator extends AbstractProcessor
     
     private String buildProcedureDecl(ExecutableElement method, RoundEnvironment env)
     {
-        return MessageFormat.format("    public {0} {1}Proc({2})",
-        							buildProcedureReturnType(method, env),
+        return MessageFormat.format("    public Future<{0}> {1}Proc({2})",
+        							getBoxedReturnType(method),
         							method.getSimpleName(),
                                     buildProcedureParameters(method, env));
-    }
-    
-    private String buildProcedureReturnType(ExecutableElement method, RoundEnvironment env)
-    {
-    	if (hasVoidReturnType(method)) {
-    		return "void";
-    	} else {
-    		return MessageFormat.format("Future<{0}>", getBoxedReturnType(method));
-    	}
     }
     
     
@@ -242,55 +233,31 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String buildProcedureBody(ExecutableElement method, RoundEnvironment env)
     {
-    	if (hasVoidReturnType(method)) {
-    		return buildVoidProcedureBody(method, env);
-    	}
-    	
     	String retType = getBoxedReturnType(method);
     	String body;
         body = "        FutureTask<"+ retType + "> f = new FutureTask(\n"
              + "            new Callable<" + retType + ">() {\n"
              + "			    public " + retType + " call() {\n"
-             + "                    return " + buildWrappedMethodCall(method, env) + "\n"
+             + "                    " + buildCallBody(method, env)
              + "                }\n"
              + "            }\n"
              + "        );\n"
              + "        \n"
              + "        queue.add(f);\n"
-        	 + "        \n"
         	 + "        return f;\n";
         return body;
     }
 
-    /**
-     * This builds a procedure body in which the return value of the
-     * method being wrapped is void.
-     * 
-     * @param method This is the method being wrapped by the procedure being build.
-     * @param env
-     * @return The source code for a procedure which appropriately wraps the given method.
-     */
-    private String buildVoidProcedureBody(ExecutableElement method, RoundEnvironment env)
+   
+    private String buildCallBody(ExecutableElement method, RoundEnvironment env)
     {
-    	assert(hasVoidReturnType(method));
-    	String body;
-        body = "        FutureTask<Void> f = new FutureTask(\n"
-             + "            new Callable<Void>() {\n"
-             + "			    public Void call() {\n"
-             + "                    " + buildWrappedMethodCall(method, env) + "\n"
-             + "                    return null;\n"
-             + "                }\n"
-             + "            }\n"
-             + "        );\n"
-             + "        \n"
-             + "        queue.add(f);\n";
-        return body;
-    }
-    
-    
-    private String buildWrappedMethodCall(ExecutableElement method, RoundEnvironment env)
-    {
-    	return MessageFormat.format("{0}({1});", method.getSimpleName(), buildArgsList(method, env));
+    	String fmt;
+    	if (CapsuleGenerator.hasVoidReturnType(method)) {
+    		fmt = "{0}({1}); return null;\n";
+    	} else {
+    		fmt = "return {0}({1});\n";
+    	}
+    	return MessageFormat.format(fmt, method.getSimpleName(), buildArgsList(method, env));
     }
     
     
