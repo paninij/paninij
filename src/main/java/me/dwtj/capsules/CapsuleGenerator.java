@@ -133,8 +133,6 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String buildCapsule(TypeElement orig, RoundEnvironment env)
     {
-        note("buildCapsule()");
-
         Elements utils = processingEnv.getElementUtils();
         Name pkg = utils.getPackageOf(orig).getQualifiedName();
         String qualifiedOrig = pkg + "." + orig.getSimpleName();
@@ -205,7 +203,7 @@ public class CapsuleGenerator extends AbstractProcessor
     
     private String buildStartMethod(TypeElement cls, RoundEnvironment env)
     {
-        return lines(1, "public void start()\n",
+        return lines(1, "public void start()",
                         "{",
                         "    thread = new Thread(this);",
                         "    thread.start();",
@@ -433,6 +431,6 @@ public class CapsuleGenerator extends AbstractProcessor
             tabbed[i] = tabs + lines[i];
         }
         
-        return String.join("\n", tabbed);
+        return String.join("\n", tabbed) + "\n";
     }
 }
