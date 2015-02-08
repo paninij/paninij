@@ -93,12 +93,12 @@ public class CapsuleGenerator extends AbstractProcessor
 
         Name pkg = utils.getPackageOf(cls).getQualifiedName();
         
-        String src = "package {0};\n"
-                     + "\n"
-                     + "{1}"
-                     + "\n"
-                     + "\n"
-                     + "{2}";
+        String src = lines(0, "package {0};",
+                              "",
+                              "{1}",
+                              "",
+                              "",
+                              "{2}");
 
         src = MessageFormat.format(src, pkg, buildCapsuleImports(cls, env),
                                    buildCapsule(cls, env));
@@ -118,11 +118,10 @@ public class CapsuleGenerator extends AbstractProcessor
         // TODO: Visit the entirety of the definition of `cls`, looking for dependencies that
         // need to be imported. Alternatively, just copy-and-paste all of the imports in the
         // original `.java` file.
-        String imports = "import java.util.concurrent.Callable;\n"
-                       + "import java.util.concurrent.Future;\n"
-                       + "import java.util.concurrent.FutureTask;\n"
-                       + "import java.util.concurrent.LinkedBlockingQueue;\n";
-        return imports;
+        return lines(0, "import java.util.concurrent.Callable;",
+                        "import java.util.concurrent.Future;",
+                        "import java.util.concurrent.FutureTask;",
+                        "import java.util.concurrent.LinkedBlockingQueue;");
     }
     
     /**
@@ -141,20 +140,20 @@ public class CapsuleGenerator extends AbstractProcessor
         String qualifiedOrig = pkg + "." + orig.getSimpleName();
 
         // Note that `MessageFormat.format()` cannot be used here because of the curly-braces.
-        return buildCapsuleComment(qualifiedOrig)
-             + buildCapsuleDecl(orig, env) + "\n"
-             + "{\n"
-             + buildCapsuleBody(orig, env)
-             + "}\n"
-             + "\n";
+        return lines(0, buildCapsuleComment(qualifiedOrig),
+                        buildCapsuleDecl(orig, env),
+                        "{",
+                        buildCapsuleBody(orig, env),
+                        "}",
+                        "");
     }
     
     
     private String buildCapsuleComment(String qualifiedOriginal)
     {
-        String comment = "/**\n"
-                       + " * This capsule was auto-generated from `{0}`.\n"
-                       + " */\n";
+        String comment = lines(0, "/**",
+                                  " * This capsule was auto-generated from `{0}`.",
+                                  " */");
         return MessageFormat.format(comment, qualifiedOriginal);
     }
     
@@ -171,8 +170,11 @@ public class CapsuleGenerator extends AbstractProcessor
     {
         ArrayList<String> decls = new ArrayList<String>();
         decls.add(buildCapsuleFields(cls, env));
+        decls.add("");
         decls.add(buildStartMethod(cls, env));
+        decls.add("");
         decls.add(buildRunMethod(cls, env));
+        decls.add("");
         
         for (Element child : cls.getEnclosedElements())
         {
@@ -196,33 +198,33 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String buildCapsuleFields(TypeElement cls, RoundEnvironment env)
     {
-        return "    LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();\n"
-             + "    Thread thread;\n";
+        return lines(1, "LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();",
+                        "Thread thread;");
     }
     
     
     private String buildStartMethod(TypeElement cls, RoundEnvironment env)
     {
-    	return "    public void start()\n"
-    		 + "    {\n"
-    		 + "        thread = new Thread(this);\n"
-    		 + "        thread.start();\n"
-    		 + "    }\n";
+        return lines(1, "public void start()\n",
+                        "{",
+                        "    thread = new Thread(this);",
+                        "    thread.start();",
+                        "}");
     }
     
     
     private String buildRunMethod(TypeElement cls, RoundEnvironment env)
     {
-    	return "    public void run()\n"
-    		 + "    {\n"
-    		 + "        while(true) {\n"
-    		 + "            try {\n"
-    		 + "                queue.take().run();\n"
-    		 + "            } catch (InterruptedException ex) {\n"
-    		 + "                // TODO?\n"
-    		 + "            }\n"
-    		 + "        }\n"
-    		 + "    }\n";
+        return lines(1, "public void run()",
+                        "{",
+                        "    while(true) {",
+                        "        try {",
+                        "            queue.take().run();",
+                        "        } catch (InterruptedException ex) {",
+                        "            // TODO?",
+                        "        }",
+                        "    }",
+                        "}");
     }
     
 
@@ -265,20 +267,20 @@ public class CapsuleGenerator extends AbstractProcessor
     {
         String retType = getBoxedReturnType(method);
         String body;
-        body = "        FutureTask<"+ retType + "> f = new FutureTask(\n"
-             + "            new Callable<" + retType + ">() {\n"
-             + "                public " + retType + " call() {\n"
-             + "                    " + buildCallBody(method, env)
-             + "                }\n"
-             + "            }\n"
-             + "        );\n"
-             + "        \n"
-             + "        try {"
-             + "            queue.put(f);\n"
-             + "        } catch (InterruptedException ex) {\n"
-             + "            // TODO?\n"
-             + "        }\n"
-             + "        return f;\n";
+        body = lines(2, "FutureTask<"+ retType + "> f = new FutureTask(",
+                        "    new Callable<" + retType + ">() {",
+                        "        public " + retType + " call() {",
+                        "            " + buildCallBody(method, env),
+                        "        }",
+                        "    }",
+                        ");",
+                        "",
+                        "try {",
+                        "    queue.put(f);",
+                        "} catch (InterruptedException ex) {",
+                        "    // TODO?",
+                        "}",
+                        "return f;");
         return body;
     }
 
@@ -287,9 +289,9 @@ public class CapsuleGenerator extends AbstractProcessor
     {
         String fmt;
         if (CapsuleGenerator.hasVoidReturnType(method)) {
-            fmt = "{0}({1}); return null;\n";
+            fmt = "{0}({1}); return null;";
         } else {
-            fmt = "return {0}({1});\n";
+            fmt = "return {0}({1});";
         }
         return MessageFormat.format(fmt, method.getSimpleName(), buildArgsList(method, env));
     }
@@ -417,5 +419,20 @@ public class CapsuleGenerator extends AbstractProcessor
     
     private void error(String msg) {
         processingEnv.getMessager().printMessage(Kind.ERROR, msg);
+    }
+    
+    private String lines(int depth, String... lines)
+    {
+        String tabs = "";
+        for (int i = 0; i < depth; i++) {
+            tabs += "    ";
+        }
+
+        String[] tabbed = new String[lines.length];
+        for (int i = 0; i < lines.length; i++) {
+            tabbed[i] = tabs + lines[i];
+        }
+        
+        return String.join("\n", tabbed);
     }
 }
