@@ -19,6 +19,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
@@ -49,8 +50,6 @@ public class CapsuleGenerator extends AbstractProcessor
         
         Set<? extends Element> annotated = env.getElementsAnnotatedWith(Capsule.class);
 
-        processingEnv.getMessager().printMessage(Kind.NOTE, "process()");
-        
         // TODO: Give warnings when the user annotates some element which cannot be a capsule.
         for (Element elem : annotated) {
             if (checkCapsule(elem, env) == true); {
@@ -82,32 +81,48 @@ public class CapsuleGenerator extends AbstractProcessor
     private static boolean checkCapsule(Element elem, RoundEnvironment env) {
         // TODO: Also double-check that the element is actually annotated with
         // `@Capsule`.
-        // TODO: give warnings/errors when the user annotates some element which cannot be a capsule.
+        // TODO: give warnings/errors when the user annotates an element which cannot be a capsule.
         // TODO: check that the class does not have any inner classes.
         return elem.getKind() == ElementKind.CLASS;
     }
     
 
-    private void makeCapsuleFile(TypeElement elem, RoundEnvironment env)
+    private void makeCapsuleFile(TypeElement cls, RoundEnvironment env)
     {
         Elements utils = processingEnv.getElementUtils();
 
-        Name pkg = utils.getPackageOf(elem).getQualifiedName();
+        Name pkg = utils.getPackageOf(cls).getQualifiedName();
         
         String src = "package {0};\n"
                      + "\n"
-                     + "{1}";
+                     + "{1}"
+                     + "\n"
+                     + "\n"
+                     + "{2}";
 
-        src = MessageFormat.format(src, pkg, buildCapsule(elem, env));
+        src = MessageFormat.format(src, pkg, buildCapsuleImports(cls, env),
+        						   buildCapsule(cls, env));
 
         JavaFileObject file = null;
         try {
-            String capsuleClass = pkg + "." + elem.getSimpleName() + "Capsule";
+            String capsuleClass = pkg + "." + cls.getSimpleName() + "Capsule";
             file = processingEnv.getFiler().createSourceFile(capsuleClass);
             file.openWriter().append(src).close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private String buildCapsuleImports(TypeElement cls, RoundEnvironment env)
+    {
+    	// TODO: Visit the entirety of the definition of `cls`, looking for dependencies that
+    	// need to be imported. Alternatively, just copy-and-paste all of the imports in the
+    	// original `.java` file.
+    	String imports = "import java.util.concurrent.Callable;\n"
+    				   + "import java.util.concurrent.Future;\n"
+    				   + "import java.util.concurrent.FutureTask;\n"
+    				   + "import java.util.concurrent.ConcurrentLinkedQueue;\n";
+    	return imports;
     }
     
     /**
@@ -119,11 +134,11 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String buildCapsule(TypeElement orig, RoundEnvironment env)
     {
+    	note("buildCapsule()");
+
         Elements utils = processingEnv.getElementUtils();
         Name pkg = utils.getPackageOf(orig).getQualifiedName();
         String qualifiedOrig = pkg + "." + orig.getSimpleName();
-
-        processingEnv.getMessager().printMessage(Kind.NOTE, "processCapsule()");
 
         // Note that `MessageFormat.format()` cannot be used here because of the curly-braces.
         return buildCapsuleComment(qualifiedOrig)
@@ -134,12 +149,11 @@ public class CapsuleGenerator extends AbstractProcessor
              + "\n";
     }
     
-
+    
     private String buildCapsuleComment(String qualifiedOriginal)
     {
         String comment = "/**\n"
-                       + " * This class was auto-generated using the `@Capsule` annotation processor from\n"
-                       + " * `{0}`\n"
+                       + " * This capsule was auto-generated from `{0}.`\n"
                        + " */\n";
         return MessageFormat.format(comment, qualifiedOriginal);
     }
@@ -152,22 +166,33 @@ public class CapsuleGenerator extends AbstractProcessor
     }
 
 
-    private String buildCapsuleBody(TypeElement orig, RoundEnvironment env)
+    private String buildCapsuleBody(TypeElement cls, RoundEnvironment env)
     {
-        String rv = "";
-
-        for (Element child : orig.getEnclosedElements()) {
-            // For now, ignore everything except for constructors and methods
-            // which need to be wrapped.
+    	ArrayList<String> decls = new ArrayList<String>();
+    	decls.add(buildCapsuleFields(cls, env));
+        
+        for (Element child : cls.getEnclosedElements())
+        {
+            // For now, ignore everything except for constructors and methods which need to be
+        	// wrapped with procedures.
             if (child.getKind() == ElementKind.CONSTRUCTOR) {
-                // TODO
-                rv += "    // TODO: build constructor\n\n";
+                // TODO: build constructors!
+                decls.add("    // TODO: build constructor\n");
             } else if (needsProceedureWrapper(child)) {
-                rv += buildProcedure((ExecutableElement) child, env);
+                decls.add(buildProcedure((ExecutableElement) child, env));
             }
         }
         
-        return rv;
+        return String.join("\n", decls);
+    }
+    
+    
+    /**
+     * @param cls The class from which this capsule is being built.
+     * @return A string of all of the fields which the capsule needs to declare.
+     */
+    private String buildCapsuleFields(TypeElement cls, RoundEnvironment env) {
+    	return "    ConcurrentLinkedQueue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();\n";
     }
     
 
@@ -185,9 +210,18 @@ public class CapsuleGenerator extends AbstractProcessor
     private String buildProcedureDecl(ExecutableElement method, RoundEnvironment env)
     {
         return MessageFormat.format("    public {0} {1}Proc({2})",
-                                    method.getReturnType(),
-                                    method.getSimpleName(),
+        							buildProcedureReturnType(method, env),
+        							method.getSimpleName(),
                                     buildProcedureParameters(method, env));
+    }
+    
+    private String buildProcedureReturnType(ExecutableElement method, RoundEnvironment env)
+    {
+    	if (hasVoidReturnType(method)) {
+    		return "void";
+    	} else {
+    		return MessageFormat.format("Future<{0}>", getBoxedReturnType(method));
+    	}
     }
     
     
@@ -202,19 +236,61 @@ public class CapsuleGenerator extends AbstractProcessor
     
     
     /**
-     * 
-     * @param method The method which the proceedure being build is wrapping.
+     * @param method This is the method being wrapped by the procedure being build.
      * @param env
-     * @return
+     * @return The source code for a procedure which appropriately wraps the given method.
      */
     private String buildProcedureBody(ExecutableElement method, RoundEnvironment env)
     {
-    	String fmt = "        ";
-    	if (method.getReturnType().toString() != "void") {
-    		fmt += "return ";
+    	if (hasVoidReturnType(method)) {
+    		return buildVoidProcedureBody(method, env);
     	}
-    	fmt += "{0}({1});\n";
-        return MessageFormat.format(fmt, method.getSimpleName(), buildArgsList(method, env));
+    	
+    	String retType = getBoxedReturnType(method);
+    	String body;
+        body = "        FutureTask<"+ retType + "> f = new FutureTask(\n"
+             + "            new Callable<" + retType + ">() {\n"
+             + "			    public " + retType + " call() {\n"
+             + "                    return " + buildWrappedMethodCall(method, env) + "\n"
+             + "                }\n"
+             + "            }\n"
+             + "        );\n"
+             + "        \n"
+             + "        queue.add(f);\n"
+        	 + "        \n"
+        	 + "        return f;\n";
+        return body;
+    }
+
+    /**
+     * This builds a procedure body in which the return value of the
+     * method being wrapped is void.
+     * 
+     * @param method This is the method being wrapped by the procedure being build.
+     * @param env
+     * @return The source code for a procedure which appropriately wraps the given method.
+     */
+    private String buildVoidProcedureBody(ExecutableElement method, RoundEnvironment env)
+    {
+    	assert(hasVoidReturnType(method));
+    	String body;
+        body = "        FutureTask<Void> f = new FutureTask(\n"
+             + "            new Callable<Void>() {\n"
+             + "			    public Void call() {\n"
+             + "                    " + buildWrappedMethodCall(method, env) + "\n"
+             + "                    return null;\n"
+             + "                }\n"
+             + "            }\n"
+             + "        );\n"
+             + "        \n"
+             + "        queue.add(f);\n";
+        return body;
+    }
+    
+    
+    private String buildWrappedMethodCall(ExecutableElement method, RoundEnvironment env)
+    {
+    	return MessageFormat.format("{0}({1});", method.getSimpleName(), buildArgsList(method, env));
     }
     
     
@@ -255,9 +331,91 @@ public class CapsuleGenerator extends AbstractProcessor
 
         return false;
     }
-
     
+    private static boolean hasVoidReturnType(ExecutableElement exec) {
+    	return exec.getReturnType().getKind() == TypeKind.VOID;
+    }
+    
+    private static boolean hasPrimitiveReturnType(ExecutableElement exec) {
+    	return exec.getReturnType().getKind().isPrimitive();
+    }
+    
+    /**
+     * Gives a string representation of the executable element's return type. If the return type is
+     * a primitive (e.g. int, double, etc.), then the returned type will be that primitive's boxed
+     * type (e.g. Integer, Double, etc.).
+     * 
+     * In the case that the executable element return has no return type (i.e. `void`), then "Void"
+     * is returned.
+     * 
+     * An `IllegalArgumentException` when the `TypeKind` of the return value of the given `exec` is
+     * any of the following:
+     * 
+     *  - NONE
+     *  - NULL
+     *  - ERROR
+     *  - WILDCARD
+     *  - PACKAGE
+     *  - EXECUTABLE
+     *  - OTHER
+     *  - UNION
+     *  - INTERSECTION
+     * 
+     * @param exec
+     * @return A string of the executable's return type.
+     */
+    private String getBoxedReturnType(ExecutableElement exec)
+    {
+    	switch (exec.getReturnType().getKind()) {
+    	case BOOLEAN:
+    		return "Boolean";
+    	case BYTE:
+    		return "Byte";
+    	case SHORT:
+    		return "Short";
+    	case INT:
+    		return "Integer";
+    	case LONG:
+    		return "Long";
+    	case CHAR:
+    		return "Character";
+    	case FLOAT:
+    		return "Float";
+    	case DOUBLE:
+    		return "Double";
+    	case VOID:
+    		return "Void";
+    	case ARRAY:
+    	case DECLARED:  // A class or interface type.
+    		return exec.getReturnType().toString();
+    	case NONE:
+    	case NULL:
+    	case ERROR:
+    	case TYPEVAR:
+    	case WILDCARD:
+    	case PACKAGE:
+    	case EXECUTABLE:
+    	case OTHER:
+    	case UNION:         // TODO: What are union and intersection types?
+    	case INTERSECTION:
+    	default:
+    		throw new IllegalArgumentException();
+    	}
+    }
+
     private TypeElement getTypeElement(String className) {
         return processingEnv.getElementUtils().getTypeElement(className);
+    }
+    
+    private void note(String msg) {
+        processingEnv.getMessager().printMessage(Kind.NOTE, msg);
+    }
+    
+    private void warning(String msg) {
+        processingEnv.getMessager().printMessage(Kind.WARNING, msg);
+    }
+    
+    private void error(String msg) {
+        processingEnv.getMessager().printMessage(Kind.ERROR, msg);
     }
 }
