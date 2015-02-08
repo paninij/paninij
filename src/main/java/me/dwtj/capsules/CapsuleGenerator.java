@@ -121,7 +121,7 @@ public class CapsuleGenerator extends AbstractProcessor
         String imports = "import java.util.concurrent.Callable;\n"
                        + "import java.util.concurrent.Future;\n"
                        + "import java.util.concurrent.FutureTask;\n"
-                       + "import java.util.concurrent.ConcurrentLinkedQueue;\n";
+                       + "import java.util.concurrent.LinkedBlockingQueue;\n";
         return imports;
     }
     
@@ -162,7 +162,8 @@ public class CapsuleGenerator extends AbstractProcessor
     private String buildCapsuleDecl(TypeElement origElem, RoundEnvironment env)
     {
         Name origName = origElem.getSimpleName();
-        return MessageFormat.format("public class {0}Capsule extends {1}", origName, origName);
+        String fmt = "public class {0}Capsule extends {1} implements Runnable";
+        return MessageFormat.format(fmt, origName, origName);
     }
 
 
@@ -170,6 +171,8 @@ public class CapsuleGenerator extends AbstractProcessor
     {
         ArrayList<String> decls = new ArrayList<String>();
         decls.add(buildCapsuleFields(cls, env));
+        decls.add(buildStartMethod(cls, env));
+        decls.add(buildRunMethod(cls, env));
         
         for (Element child : cls.getEnclosedElements())
         {
@@ -191,8 +194,35 @@ public class CapsuleGenerator extends AbstractProcessor
      * @param cls The class from which this capsule is being built.
      * @return A string of all of the fields which the capsule needs to declare.
      */
-    private String buildCapsuleFields(TypeElement cls, RoundEnvironment env) {
-        return "    ConcurrentLinkedQueue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();\n";
+    private String buildCapsuleFields(TypeElement cls, RoundEnvironment env)
+    {
+        return "    LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();\n"
+             + "    Thread thread;\n";
+    }
+    
+    
+    private String buildStartMethod(TypeElement cls, RoundEnvironment env)
+    {
+    	return "    public void start()\n"
+    		 + "    {\n"
+    		 + "        thread = new Thread(this);\n"
+    		 + "        thread.start();\n"
+    		 + "    }\n";
+    }
+    
+    
+    private String buildRunMethod(TypeElement cls, RoundEnvironment env)
+    {
+    	return "    public void run()\n"
+    		 + "    {\n"
+    		 + "        while(true) {\n"
+    		 + "            try {\n"
+    		 + "                queue.take().run();\n"
+    		 + "            } catch (InterruptedException ex) {\n"
+    		 + "                // TODO?\n"
+    		 + "            }\n"
+    		 + "        }\n"
+    		 + "    }\n";
     }
     
 
@@ -243,7 +273,11 @@ public class CapsuleGenerator extends AbstractProcessor
              + "            }\n"
              + "        );\n"
              + "        \n"
-             + "        queue.add(f);\n"
+             + "        try {"
+             + "            queue.put(f);\n"
+             + "        } catch (InterruptedException ex) {\n"
+             + "            // TODO?\n"
+             + "        }\n"
              + "        return f;\n";
         return body;
     }
