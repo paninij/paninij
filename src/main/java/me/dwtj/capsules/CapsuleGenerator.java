@@ -181,7 +181,7 @@ public class CapsuleGenerator extends AbstractProcessor
             if (child.getKind() == ElementKind.CONSTRUCTOR) {
                 // TODO: build constructors!
             	//decls.add("//shiiet");
-                decls.add(buildConstructor((ExecutableElement) child, env, cls));
+                decls.add(buildConstructor((ExecutableElement) child, env, cls.getSimpleName().toString()));
             } else if (needsProceedureWrapper(child)) {
                 decls.add(buildProcedure((ExecutableElement) child, env));
             }
@@ -196,17 +196,19 @@ public class CapsuleGenerator extends AbstractProcessor
      * @param env
      * @return
      */
-    private String buildConstructor(ExecutableElement method, RoundEnvironment env, TypeElement classHandle)
+    private String buildConstructor(ExecutableElement method, RoundEnvironment env, String classHandle)
     {
     	String output = "";
     	this.note("Hello from constructor");
     	//For the generated source file to compile there must be copies of all constructors in the original source file
     	//For each of the original source file's constructors, a Class.make({params}) static method must be added to the class.
+    	/*
     	output += buildConstructorDecl(method, env, classHandle) + "\n"
     			+ "    {\n"
     			+ buildConstructorBody(method, env, classHandle) + "\n"
     			+ "    }\n"
     			+ "\n";
+		*/
     	output += buildConstructorFactoryDecl(method, env, classHandle) + "\n"
     			+ "    {\n"
     			+ buildConstructorFactoryBody(method, env, classHandle) + "\n"
@@ -220,7 +222,7 @@ public class CapsuleGenerator extends AbstractProcessor
      * @param env
      * @return
      */
-    private String buildConstructorBody(ExecutableElement method, RoundEnvironment env, TypeElement classHandle)
+    private String buildConstructorBody(ExecutableElement method, RoundEnvironment env, String classHandle)
     {
     	return MessageFormat.format("        super({0});", buildArgsList(method, env));
     }
@@ -232,9 +234,9 @@ public class CapsuleGenerator extends AbstractProcessor
      * @param classHandle A handle capable of knowing the overall details of the source class
      * @return
      */
-    private String buildConstructorDecl(ExecutableElement method, RoundEnvironment env, TypeElement classHandle)
+    private String buildConstructorDecl(ExecutableElement method, RoundEnvironment env, String classHandle)
     {
-    	return MessageFormat.format("    private {0}Capsule({1})", classHandle.getSimpleName(), buildProcedureParameters(method, env));
+    	return MessageFormat.format("    private {0}Capsule({1})", classHandle, buildProcedureParameters(method, env));
     }
     
     /**
@@ -243,10 +245,12 @@ public class CapsuleGenerator extends AbstractProcessor
      * @param env
      * @return
      */
-    private String buildConstructorFactoryBody(ExecutableElement method, RoundEnvironment env, TypeElement classHandle) 
+    private String buildConstructorFactoryBody(ExecutableElement method, RoundEnvironment env, String classHandle) 
     {
-    	
-		return MessageFormat.format("        return new {0}Capsule({1});", classHandle.getSimpleName(), buildArgsList(method, env) );
+    	String fmt = lines(2, "{0}Capsule temp = new {0}Capsule({1});", 
+							  "temp.start();",
+							  "return temp;");
+		return MessageFormat.format(fmt, classHandle, buildArgsList(method, env) );
 	}
 
     /**
@@ -256,9 +260,9 @@ public class CapsuleGenerator extends AbstractProcessor
      * @param classHandle A handle capable of knowing the overall details of the source class
      * @return
      */
-	private String buildConstructorFactoryDecl(ExecutableElement method, RoundEnvironment env, TypeElement classHandle) 
+	private String buildConstructorFactoryDecl(ExecutableElement method, RoundEnvironment env, String classHandle) 
 	{
-		return MessageFormat.format("    public static {0}Capsule make({1})", classHandle.getSimpleName(), buildProcedureParameters(method, env));
+		return MessageFormat.format("    public static {0}Capsule make({1})", classHandle, buildProcedureParameters(method, env));
 	}
 
 
@@ -278,7 +282,7 @@ public class CapsuleGenerator extends AbstractProcessor
     
     private String buildStartMethod(TypeElement cls, RoundEnvironment env)
     {
-        return lines(1, "public void start()",
+        return lines(1, "private void start()",
                         "{",
                         "    thread = new Thread(this);",
                         "    thread.start();",
