@@ -180,7 +180,8 @@ public class CapsuleGenerator extends AbstractProcessor
             // wrapped with procedures.
             if (child.getKind() == ElementKind.CONSTRUCTOR) {
                 // TODO: build constructors!
-                decls.add("    // TODO: build constructor\n");
+            	//decls.add("//shiiet");
+                decls.add(buildConstructor((ExecutableElement) child, env, cls));
             } else if (needsProceedureWrapper(child)) {
                 decls.add(buildProcedure((ExecutableElement) child, env));
             }
@@ -189,8 +190,79 @@ public class CapsuleGenerator extends AbstractProcessor
         return String.join("\n", decls);
     }
     
+    /**
+     * 
+     * @param cls The class from which this capsule is being built.
+     * @param env
+     * @return
+     */
+    private String buildConstructor(ExecutableElement method, RoundEnvironment env, TypeElement classHandle)
+    {
+    	String output = "";
+    	this.note("Hello from constructor");
+    	//For the generated source file to compile there must be copies of all constructors in the original source file
+    	//For each of the original source file's constructors, a Class.make({params}) static method must be added to the class.
+    	output += buildConstructorDecl(method, env, classHandle) + "\n"
+    			+ "    {\n"
+    			+ buildConstructorBody(method, env, classHandle) + "\n"
+    			+ "    }\n"
+    			+ "\n";
+    	output += buildConstructorFactoryDecl(method, env, classHandle) + "\n"
+    			+ "    {\n"
+    			+ buildConstructorFactoryBody(method, env, classHandle) + "\n"
+    			+ "    }\n"
+    			+ "\n";	
+    	return output;
+    }
+    /**
+     * Used to port the source capsule class's constructors to generated class
+     * @param method
+     * @param env
+     * @return
+     */
+    private String buildConstructorBody(ExecutableElement method, RoundEnvironment env, TypeElement classHandle)
+    {
+    	return MessageFormat.format("        super({0});", buildArgsList(method, env));
+    }
     
     /**
+     * Used to port the source Capsule class's constructor declarations to generated class
+     * @param method
+     * @param env
+     * @param classHandle A handle capable of knowing the overall details of the source class
+     * @return
+     */
+    private String buildConstructorDecl(ExecutableElement method, RoundEnvironment env, TypeElement classHandle)
+    {
+    	return MessageFormat.format("    private {0}Capsule({1})", classHandle.getSimpleName(), buildProcedureParameters(method, env));
+    }
+    
+    /**
+     * Used to generate Capsule.make() static methods to create capsule objects in place of public constructors
+     * @param method
+     * @param env
+     * @return
+     */
+    private String buildConstructorFactoryBody(ExecutableElement method, RoundEnvironment env, TypeElement classHandle) 
+    {
+    	
+		return MessageFormat.format("        return new {0}Capsule({1});", classHandle.getSimpleName(), buildArgsList(method, env) );
+	}
+
+    /**
+     * Used to generate declarations for Capsule.make() static methods to create capsule objects in place of public constructors
+     * @param method
+     * @param env
+     * @param classHandle A handle capable of knowing the overall details of the source class
+     * @return
+     */
+	private String buildConstructorFactoryDecl(ExecutableElement method, RoundEnvironment env, TypeElement classHandle) 
+	{
+		return MessageFormat.format("    public static {0}Capsule make({1})", classHandle.getSimpleName(), buildProcedureParameters(method, env));
+	}
+
+
+	/**
      * @param cls The class from which this capsule is being built.
      * @return A string of all of the fields which the capsule needs to declare.
      */
