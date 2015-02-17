@@ -1,4 +1,4 @@
-package me.dwtj.capsules;
+package org.paninij.apt;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -24,12 +24,14 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
+import org.paninij.lang.Capsule;
+
 
 /**
  * Used as a service during compilation to makes an automatically generated
  * file for each class annotated with `@Capsule`.
  */
-@SupportedAnnotationTypes("me.dwtj.capsules.Capsule")
+@SupportedAnnotationTypes("org.paninij.lang.Capsule")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class CapsuleGenerator extends AbstractProcessor
 {
@@ -38,7 +40,7 @@ public class CapsuleGenerator extends AbstractProcessor
     public void init(ProcessingEnvironment processingEnv)
     {
         super.init(processingEnv);
-        capsuleTypeElement = getTypeElement("me.dwtj.capsules.Capsule");
+        capsuleTypeElement = getTypeElement("org.paninij.lang.Capsule");
     }
     
     
@@ -52,7 +54,7 @@ public class CapsuleGenerator extends AbstractProcessor
 
         // TODO: Give warnings when the user annotates some element which cannot be a capsule.
         for (Element elem : annotated) {
-            if (checkCapsule(elem, env) == true); {
+            if (checkCapsule(elem, env) == true) {
                 // TODO: Is this cast a problem?
                 processCapsule((TypeElement) elem, env);
             }
