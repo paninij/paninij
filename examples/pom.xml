@@ -23,7 +23,7 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
-          <generatedSourceDirectory>${project.build.directory}/generated-src</generatedSourceDirectory>
+          <generatedSourcesDirectory>${project.build.directory}/generated-src</generatedSourcesDirectory>
         </configuration>
       </plugin>
     </plugins>
