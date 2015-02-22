@@ -3,10 +3,10 @@ package org.paninij.examples;
 import java.lang.InterruptedException;
 import java.util.concurrent.ExecutionException;
 
-import org.paninij.lang.Capsule;
+import org.paninij.lang.Panini;
 
 
-@Capsule
+@Panini
 public class HelloWorld
 {
     public void helloWorld() {
@@ -30,15 +30,6 @@ public class HelloWorld
 
     public static void main(String[] argv)
     {
-        HelloWorldCapsule cap = HelloWorldCapsule.make();
-
-        cap.helloWorld();
-        try {
-            cap.hello("capsules").get();
-        } catch (InterruptedException ex) {
-        } catch (ExecutionException ex) {
-        }
-        cap.helloWorldRepeat(5);
-        System.out.println("End of main.");
+        // TODO
     }
 }
