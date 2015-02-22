@@ -138,7 +138,7 @@ public class CapsuleGenerator extends AbstractProcessor
         String src = Source.lines(0, "/**",
                                      " * This capsule was auto-generated from `#0`",
                                      " */",
-                                     "public class #1Capsule implements Runnable",
+                                     "public class #1Capsule extends #1",
                                      "{",
                                      "#2",
                                      "}");
@@ -183,6 +183,7 @@ public class CapsuleGenerator extends AbstractProcessor
      */
     private String buildCapsuleFactory(ExecutableElement cons, RoundEnvironment env)
     {
+        /*
     	String src = Source.lines(1, "public static #0Capsule make(#1)",
                                      "{",
                                      "    #0Capsule c = new #0Capsule(#2);",
@@ -192,6 +193,8 @@ public class CapsuleGenerator extends AbstractProcessor
         return Source.format(src, cons.getEnclosingElement().getSimpleName(),
                                         buildProcedureParameters(cons, env),
                                         buildArgsList(cons, env));
+        */
+        return "";
     }
 
 
@@ -212,49 +215,44 @@ public class CapsuleGenerator extends AbstractProcessor
     
     private String buildStartMethod(TypeElement template, RoundEnvironment env)
     {
+        /*
         return Source.lines(1, "private void start()",
                                "{",
                                "    thread = new Thread(this);",
                                "    thread.start();",
                                "}");
+        */
+        return "";
     }
     
     
     private String buildRunMethod(TypeElement template, RoundEnvironment env)
     {
+        /*
         return Source.lines(1, "public void run()",
                                "{",
                                "    while(true) {",
-                               "        try {",
-                               "            queue.take().run();",
-                               "        } catch (InterruptedException ex) {",
-                               "            // TODO?",
-                               "        }",
+                               "        // TODO",
                                "    }",
                                "}");
+        */
+        return "";
     }
     
 
     private String buildProcedure(ExecutableElement method, RoundEnvironment env)
     {
-        String src = Source.lines(1, "public Future<#0> #1(#2)",
+        /*
+        String src = Source.lines(1, "public #0 #1(#2)",
                                      "{",
-                                     "    FutureTask<#0> f = new FutureTask(",
-                                     "        new Callable<#0>() {",
-                                     "            public #0 call() {",
-                                     "                #3",
-                                     "            }",
-                                     "        }",
-                                     "    );",
-                                     "",
-                                     "    try { queue.put(f); }",
-                                     "    catch (InterruptedException ex) { /* Ignore */ }",
-                                     "    return f;",
+                                     "    #3",
                                      "}");
         return Source.format(src, getBoxedReturnType(method),
                                         method.getSimpleName(),
                                         buildProcedureParameters(method, env),
                                         buildCallBody(method, env));
+        */
+        return "";
     }
     
     
@@ -278,7 +276,7 @@ public class CapsuleGenerator extends AbstractProcessor
     {
         String fmt;
         if (CapsuleGenerator.hasVoidReturnType(method)) {
-            fmt = "encapsulated.#0(#1); return null;";
+            fmt = "encapsulated.#0(#1);";
         } else {
             fmt = "return encapsulated.#0(#1);";
         }
@@ -386,7 +384,7 @@ public class CapsuleGenerator extends AbstractProcessor
         case DOUBLE:
             return "Double";
         case VOID:
-            return "Void";
+            return "void";
         case ARRAY:
         case DECLARED:  // A class or interface type.
             return exec.getReturnType().toString();

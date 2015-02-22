@@ -116,8 +116,6 @@ public class SignatureGenerator extends AbstractProcessor
         // need to be imported. Alternatively, just copy-and-paste all of the imports in the
         // original `.java` file.
         return Source.lines(0, "import java.util.concurrent.Callable;",
-                               "import java.util.concurrent.Future;",
-                               "import java.util.concurrent.FutureTask;",
                                "import java.util.concurrent.LinkedBlockingQueue;");
     }
     
@@ -135,10 +133,6 @@ public class SignatureGenerator extends AbstractProcessor
                                      " */",
                                      "public interface #1Signature",
                                      "{",
-                                     "",
-                                     "    void start();",
-                                     "    void run();",
-                                     "",
                                      "#2",
                                      "}");
         return Source.format(src, pkg + "." + template.getSimpleName(),
@@ -184,7 +178,7 @@ public class SignatureGenerator extends AbstractProcessor
 
     private String buildProcedure(ExecutableElement method, RoundEnvironment env)
     {
-        return Source.format("    public Future<#0> #1(#2);",
+        return Source.format("    public #0 #1(#2);",
                              getBoxedReturnType(method),
                              method.getSimpleName(),
                              buildProcedureParameters(method, env));
@@ -306,7 +300,7 @@ public class SignatureGenerator extends AbstractProcessor
         case DOUBLE:
             return "Double";
         case VOID:
-            return "Void";
+            return "void";
         case ARRAY:
         case DECLARED:  // A class or interface type.
             return exec.getReturnType().toString();
