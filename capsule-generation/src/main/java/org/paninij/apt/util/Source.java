@@ -1,4 +1,4 @@
-package org.paninij.util;
+package org.paninij.apt.util;
 
 import java.lang.StringBuilder;
 

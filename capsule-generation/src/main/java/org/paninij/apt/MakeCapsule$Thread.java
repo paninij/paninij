@@ -15,7 +15,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Elements;
 
-import org.paninij.util.Source;
+import org.paninij.apt.util.Source;
 
 
 class MakeCapsule$Thread extends MakeCapsule
