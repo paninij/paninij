@@ -1,4 +1,4 @@
-package org.paninij.lang;
+package org.paninij.runtime;
 
 public interface Capsule$Thread extends Capsule
 {
