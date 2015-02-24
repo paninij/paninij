@@ -1,9 +1,9 @@
 package org.paninij.examples;
 
-import org.paninij.lang.Capsule;
+import org.paninij.lang.Panini;
 
 
-@Capsule
+@Panini
 public class MethodShapes
 {
     private void zeroArgs() {
