@@ -1,4 +1,9 @@
-public class HelloWorld$Capsule$Sequential implements HelloWorld$Capsule, Panini$Capsule$Sequential
+package org.paninij.examples.helloworld;
+
+import org.paninij.runtime.Capsule$Sequential;
+
+
+public class HelloWorld$Capsule$Sequential implements HelloWorld$Capsule, Capsule$Sequential
 {
 
 }
