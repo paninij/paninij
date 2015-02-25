@@ -1,8 +1,8 @@
 package org.paninij.examples.helloworld;
 
-import org.paninij.lang.Signature;
+import org.paninij.lang.Panini;
 
-@Signature
+@Panini
 interface Stream {
     public void write(String s);
 }

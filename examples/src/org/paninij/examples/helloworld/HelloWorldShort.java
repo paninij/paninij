@@ -1,9 +1,9 @@
 package org.paninij.examples.helloworld;
 
-import org.paninij.lang.Capsule;
+import org.paninij.lang.Panini;
 
 
-@Capsule
+@Panini
 public class HelloWorldShort
 {
     void run() {
