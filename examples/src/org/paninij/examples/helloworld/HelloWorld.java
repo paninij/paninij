@@ -1,13 +1,13 @@
 package org.paninij.examples.helloworld;
 
-import org.paninij.lang.Capsule;
+import org.paninij.lang.Panini;
 
-@Capsule
+@Panini
 class HelloWorld
 {
     // Capsules: Call to the constructors (if necessary)
-    ConsoleCapsule c;
-    GreeterCapsule g;
+    Console c;
+    Greeter g;
 
     // State Variables:
     // <none>
@@ -27,7 +27,7 @@ class HelloWorld
      * Wire this up with other shared resources. (This does not include code to instantiate
      * capsules which are part of the design.)
      */
-    public void wire(ConsoleCapsule c, GreeterCapsule g) {
+    public void wire(Console c, Greeter g) {
         g.design(c);
     }
 

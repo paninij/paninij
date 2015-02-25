@@ -1,18 +1,18 @@
 package org.paninij.examples.helloworld;
 
-import org.paninij.lang.Capsule;
+import org.paninij.lang.Panini;
 
-@Capsule
+@Panini
 class Greeter
 {
     String message;
-    StreamSignature s;
+    Stream s;
 
     public void init() {
         message = "Hello World!";
     }
 
-    public void design(StreamSignature s) {
+    public void design(Stream s) {
         this.s = s;
     }
 
