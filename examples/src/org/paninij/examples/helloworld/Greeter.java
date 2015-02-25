@@ -12,11 +12,7 @@ class Greeter
         message = "Hello World!";
     }
 
-    public void design(Stream s) {
-        this.s = s;
-    }
-
-    public void wire() { ; }
+    public void design(Stream s) { ; }
 
     public void greet() {
         s.write("Panini: " + message);
