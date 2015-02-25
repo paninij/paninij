@@ -12,25 +12,21 @@ class HelloWorld
     // State Variables:
     // <none>
 
-    /*
-     * Move any state which is passed into this capsule; this capsules subsequently owns args.
-     * There can be many `init()` functions, but at the end of any `init()` function, all state
-     * variables must have been initialized. A zero-arg `init()` function must be defined for every
-     * capsule which has one or more state variables.
-     */
-    public void init() { /* no state inputs */ }
+    // Move any state which is passed into this capsule; this capsules subsequently owns args.
+    // There can be many `init()` functions, but at the end of any `init()` function, all state
+    // variables must have been initialized. A zero-arg `init()` function must be defined for every
+    // capsule which has one or more state variables. If there is nothing to be initialized or
+    // passed in, then an empty init function should be inferred (i.e. automatically generated).
+    public void init() {
+        ;  // no state variables to initialize
+    }
 
-    // Nothing to do, since there are no capsules which need to be passed to this capsule.
-    public void design() { /* no capsule inputs */ }
-
-    /**
-     * Wire this up with other shared resources. (This does not include code to instantiate
-     * capsules which are part of the design.)
-     */
-    public void wire(Console c, Greeter g) {
+    // No capsule inputs, so no arguments to this.
+    public void design() {
         g.design(c);
     }
 
+    // This is an active capsule.
     public void run()
     {
         g.greet();
