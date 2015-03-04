@@ -1,9 +1,16 @@
 package org.paninij.apt;
 
+import java.util.ArrayList;
+
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
 
 import org.paninij.apt.util.Source;
+
 
 public class MakeSignature {
     TypeElement template;
@@ -45,9 +52,15 @@ public class MakeSignature {
     }
     
     String buildSignatureBody() {
-        // TODO
-        return "";
+        ArrayList<String> decls = new ArrayList<String>();
+        for (Element child : template.getEnclosedElements()) {
+            if (child.getKind() == ElementKind.METHOD) {
+                decls.add(buildMethodSignature((ExecutableElement) child));
+            }
+        }
+        return String.join("\n", decls);
     }
+    
     String buildSignatureImports() {
         // TODO
         return "";
@@ -65,8 +78,17 @@ public class MakeSignature {
         return "public interface " + buildSignatureName();
     }
     
-    String buildMethod(ExecutableElement method) {
-        
-        return "";
+    String buildMethodSignature(ExecutableElement method) {
+        String parameters = buildMethodParameters(method);
+        // TODO include "throws"
+        return Source.format("public #0 #1(#2);", method.getReturnType(), method.getSimpleName(), parameters);
+    }
+    
+    String buildMethodParameters(ExecutableElement method) {
+        String parameters = "";
+        for (VariableElement param : method.getParameters()) {
+            parameters += param.asType() + " " + param.getSimpleName() + ", ";
+        }
+        return parameters.replaceAll(", $", "");
     }
 }
