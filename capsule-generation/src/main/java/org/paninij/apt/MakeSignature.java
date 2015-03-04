@@ -16,9 +16,13 @@ public class MakeSignature {
         return sig;
     }
     
+    void makeSourceFile() {
+        context.createJavaFile(buildQualifiedSignatureName(), buildSignature());
+    }
+    
     String buildSignature() {
         String pkg = buildPackage();
-        String src = Source.lines(0, "package #0",
+        String src = Source.lines(0, "package #0;",
                                      "",
                                      "#1",
                                      "",
@@ -36,8 +40,6 @@ public class MakeSignature {
                                   buildSignatureBody());
     }
     
-    
-    
     String buildPackage() {
         return context.getPackageOf(template);
     }
@@ -53,6 +55,10 @@ public class MakeSignature {
     
     String buildSignatureName() {
         return template.getSimpleName() + "$Signature";
+    }
+    
+    String buildQualifiedSignatureName() {
+        return template.getQualifiedName() + "$Signature";
     }
     
     String buildSignatureDecl() {

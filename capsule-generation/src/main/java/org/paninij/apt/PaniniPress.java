@@ -21,29 +21,38 @@ import javax.tools.JavaFileObject;
 
 import org.paninij.apt.util.Source;
 import org.paninij.lang.Panini;
+import org.paninij.lang.Signature;
 
 
 /**
  * Used as a service during compilation to make automatically-generated `.java` files from classes
  * annotated with one of the annotations in `org.paninij.lang`.
  */
-@SupportedAnnotationTypes("org.paninij.lang.Panini")
+@SupportedAnnotationTypes({ "org.paninij.lang.Capsule", "org.paninij.lang.Signature" })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniPress extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
-    {
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         this.roundEnv = roundEnv;
 
-        Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Panini.class);
+        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
+            if (SignatureChecker.check(this, elem)) {
+                TypeElement signature = (TypeElement) elem;
+                MakeSignature.make(this, signature).makeSourceFile();
+            } else {
+                // TODO better error message
+                error("Signature failed check.");
+            }
+        }
+        
+        Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
         for (Element elem : annotated)
         {
-            if (CapsuleChecker.check(this, elem) == true)
-            {
+            if (CapsuleChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
 
                 //MakeCapsule.make(this, template).makeSourceFile();
