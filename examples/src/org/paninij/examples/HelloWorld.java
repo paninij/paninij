@@ -3,10 +3,10 @@ package org.paninij.examples;
 import java.lang.InterruptedException;
 import java.util.concurrent.ExecutionException;
 
-import org.paninij.lang.Panini;
+import org.paninij.lang.Capsule;
 
 
-@Panini
+@Capsule
 public class HelloWorld
 {
     public void helloWorld() {
