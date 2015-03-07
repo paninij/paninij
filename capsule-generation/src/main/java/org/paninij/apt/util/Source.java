@@ -95,4 +95,9 @@ public class Source
 
         return result.toString();
     }
+    
+    public static String dropPackageName(String qualifiedClassName)
+    {
+        return qualifiedClassName.substring(qualifiedClassName.lastIndexOf('.') + 1);
+    }
 }
