@@ -1,8 +1,8 @@
 package org.paninij.examples.helloworld;
 
-import org.paninij.lang.Panini;
+import org.paninij.lang.Capsule;
 
-@Panini
+@Capsule
 class Greeter
 {
     String message;

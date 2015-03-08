@@ -1,9 +1,9 @@
 package org.paninij.examples.duckshapes;
 
-import org.paninij.lang.Panini;
+import org.paninij.lang.Capsule;
 
 
-@Panini
+@Capsule
 public class Normal
 {
     public Object foo(Object o, Object i) {

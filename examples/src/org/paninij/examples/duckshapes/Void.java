@@ -1,8 +1,9 @@
 package org.paninij.examples.duckshapes;
 
-import org.paninij.lang.Panini;
+import org.paninij.lang.Capsule;
 
-@Panini
+
+@Capsule
 public class Void {
     public void foo(Object o) {
         // Do nothing.

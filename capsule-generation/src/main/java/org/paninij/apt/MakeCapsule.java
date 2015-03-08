@@ -11,7 +11,7 @@ abstract class MakeCapsule
     TypeElement template;
 
     /**
-     * Factory method. This must be overriden in concrete subclasses.
+     * Factory method. This must be overridden in concrete subclasses.
      *
      * @param context The PaniniPress object in which in which the capsule is being built.
      * @param template A handle to the original class from which a capsule is being built.
