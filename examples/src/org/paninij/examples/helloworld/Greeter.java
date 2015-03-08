@@ -5,6 +5,7 @@ import org.paninij.lang.Capsule;
 @Capsule
 class Greeter
 {
+    /*
     String message;
     Stream s;
 
@@ -19,4 +20,5 @@ class Greeter
         long time = System.currentTimeMillis();
         s.write("Time is now: " + time);
     }
+    */
 }

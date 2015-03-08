@@ -5,6 +5,7 @@ import org.paninij.lang.Capsule;
 @Capsule
 class HelloWorld
 {
+    /*
     // Capsules: Call to the constructors (if necessary)
     Console c;
     Greeter g;
@@ -31,4 +32,5 @@ class HelloWorld
     {
         g.greet();
     }
+    */
 }

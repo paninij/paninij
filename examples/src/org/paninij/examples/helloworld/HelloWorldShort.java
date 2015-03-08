@@ -6,6 +6,7 @@ import org.paninij.lang.Capsule;
 @Capsule
 public class HelloWorldShort
 {
+    /*
     void run() {
         System.out.println("@PaniniJ: Hello World!");
     }
@@ -13,4 +14,5 @@ public class HelloWorldShort
     String getMessage() {
         return "vinegar";
     }
+    */
 }
