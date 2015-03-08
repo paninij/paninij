@@ -46,13 +46,15 @@ public class PaniniPress extends AbstractProcessor
                 error("Signature failed check.");
             }
         }
-        
+
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
         for (Element elem : annotated)
         {
             if (CapsuleChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
+
+                MakeCapsuleInterface.make(this, template).makeSourceFile();
 
                 //MakeCapsule.make(this, template).makeSourceFile();
                 MakeCapsule$Thread.make(this, template).makeSourceFile();
@@ -94,7 +96,7 @@ public class PaniniPress extends AbstractProcessor
             e.printStackTrace();
         }
     }
-    
+
     String getPackageOf(TypeElement cls) {
         Elements utils = processingEnv.getElementUtils();
         Name pkg = utils.getPackageOf(cls).getQualifiedName();
@@ -104,11 +106,11 @@ public class PaniniPress extends AbstractProcessor
     void note(String msg) {
         processingEnv.getMessager().printMessage(Kind.NOTE, msg);
     }
-    
+
     void warning(String msg) {
         processingEnv.getMessager().printMessage(Kind.WARNING, msg);
     }
-    
+
     void error(String msg) {
         processingEnv.getMessager().printMessage(Kind.ERROR, msg);
     }
