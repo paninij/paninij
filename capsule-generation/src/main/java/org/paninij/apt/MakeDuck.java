@@ -120,12 +120,6 @@ public abstract class MakeDuck
     {
         // Some methods do not need to have a facade made for them
         // e.g. native methods, final methods
-
-        /*
-         * if (Source.buildModifierString(method).matches("(native|final)")) {
-         * return false; }
-         */
-
         String modifiers = Source.buildModifierString(method);
         if (modifiers.contains("native"))
         {
@@ -159,7 +153,7 @@ public abstract class MakeDuck
         String args = "";
         for(int i = 0; i < currentDuck.parameters.size(); i++)
         {
-            args += "        panini$arg" + i + " = null;";
+            args += "        panini$arg" + i + " = null;\n";
         }
             
         return args;

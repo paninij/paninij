@@ -20,7 +20,6 @@ public class MakeDucks
     
     public static MakeDucks make(PaniniPress context, TypeElement template)
     {
-        // TODO Auto-generated method stub
         MakeDucks m = new MakeDucks();
         m.context = context;
         m.template = template;

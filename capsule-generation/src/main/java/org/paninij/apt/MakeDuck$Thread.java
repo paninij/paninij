@@ -27,7 +27,6 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     String buildNormalDuck(DuckShape currentDuck)
     {
-        // TODO: Implement Body
         currentDuck.returnType.asElement().getEnclosedElements();
         String src = Source.lines(0, 
                 "package org.paninij.runtime.ducks;",
@@ -38,7 +37,6 @@ public class MakeDuck$Thread extends MakeDuck
                 "import #1;",
                 "",
                 "public class #2 extends #4 implements ProcInvocation, ResolvableFuture<#4> {",
-                //"public class #2 implements ProcInvocation {",
                 "    public final int panini$procID;",
                 "    private #4 panini$result = null;",
                 "    boolean panini$isResolved = false;",
@@ -46,11 +44,6 @@ public class MakeDuck$Thread extends MakeDuck
                 "#5",
                 "",
                 "#3",
-                "",
-                /*
-                "    public #2() {",
-                "        panini$procID = 0;",
-                "    }",*/
                 "",
                 "    @Override",
                 "    public int panini$procID() {",
