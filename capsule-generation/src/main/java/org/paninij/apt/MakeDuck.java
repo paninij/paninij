@@ -1,14 +1,11 @@
 package org.paninij.apt;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.ModelInfo;
