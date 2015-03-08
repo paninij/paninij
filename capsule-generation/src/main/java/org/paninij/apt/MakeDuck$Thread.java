@@ -145,7 +145,7 @@ public class MakeDuck$Thread extends MakeDuck
         
         for(int i = 0; i < currentDuck.parameters.size(); i++)
         {
-            constructorDecl += ", " + Source.dropPackageName(currentDuck.parameters.get(i)) + " arg" + i;
+            constructorDecl += ", " + Source.dropPackageName(currentDuck.parameters.get(i).asType().toString()) + " arg" + i;
         }
         
         constructorDecl += ") {\n";

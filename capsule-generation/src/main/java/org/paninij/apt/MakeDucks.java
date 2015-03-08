@@ -34,7 +34,6 @@ public class MakeDucks
     {
         Set<DuckShape> duckShapes = getAllDuckShapes();
         duckShapes.removeAll(context.foundDuckShapes);
-        
         List<MakeDuck> profiles = new ArrayList<MakeDuck>(4);
         profiles.add(MakeDuck$Thread.make(context));
         //profiles.add(MakeDuck$Monitor.make(context));

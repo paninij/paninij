@@ -46,8 +46,7 @@ public abstract class MakeDuck
     String buildParameterImports(DuckShape currentDuck)
     {
         String importsStr = "";
-        Set<String> uniqueParams = new HashSet<String>(currentDuck.parameters);
-        for (String param : uniqueParams)
+        for (String param : currentDuck.getUniqueParameterTypes())
         {
             importsStr += "import " + param + ";\n";
         }
@@ -60,7 +59,7 @@ public abstract class MakeDuck
         for (int i = 0; i < currentDuck.parameters.size(); i++)
         {
             fieldsStr += "    public "
-                    + Source.dropPackageName(currentDuck.parameters.get(i)) + " panini$arg" + i
+                    + Source.dropPackageName(currentDuck.parameters.get(i).asType().toString()) + " panini$arg" + i
                     + ";\n";
         }
         return fieldsStr;

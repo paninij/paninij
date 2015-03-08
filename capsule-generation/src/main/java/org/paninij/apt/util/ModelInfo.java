@@ -85,4 +85,5 @@ public class ModelInfo {
     {
         return returnType.asElement().getModifiers().contains(Modifier.FINAL);
     }
+    
 }
