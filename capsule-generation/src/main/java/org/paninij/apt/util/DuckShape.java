@@ -168,6 +168,10 @@ public class DuckShape
         {
             return Category.VOID;
         }
+        else if (ModelInfo.isFinalType(duckShape.returnType))
+        {
+            return Category.FINAL;
+        }
         else
         {
             return Category.NORMAL;

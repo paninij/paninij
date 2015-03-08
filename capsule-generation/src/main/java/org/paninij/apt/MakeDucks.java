@@ -27,19 +27,20 @@ public class MakeDucks
         return m;
     }
 
+    /**
+     * Make a duck source file for each novel duck shape found on the `template` class and for each
+     * threading profile.
+     */
     public void makeDucks()
     {
-        // Make ducks for each type of threading profile
         Set<DuckShape> duckShapes = getAllDuckShapes();
+        duckShapes.removeAll(context.foundDuckShapes);
         
-        //TODO: Check for duplicate Duck Shapes in the global set
-        
-        //Make Ducks for each threading profile
         List<MakeDuck> profiles = new ArrayList<MakeDuck>(4);
         profiles.add(MakeDuck$Thread.make(context));
-//        profiles.add(MakeDuck$Monitor.make(context));
-//        profiles.add(MakeDuck$Serial.make(context));
-//        profiles.add(MakeDuck$Task.make(context));
+        //profiles.add(MakeDuck$Monitor.make(context));
+        //profiles.add(MakeDuck$Serial.make(context));
+        //profiles.add(MakeDuck$Task.make(context));
         
         for(DuckShape currentDuck : duckShapes)
         { 
@@ -49,6 +50,7 @@ public class MakeDucks
             }
         }
         
+        context.foundDuckShapes.addAll(duckShapes);
     }
     /**
      * Gets duck shapes of all methods of the template class.

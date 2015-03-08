@@ -1,5 +1,6 @@
 package org.paninij.apt;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +33,10 @@ public abstract class MakeDuck
             return buildNormalDuck(currentDuck);
         case VOID:
             return buildVoidDuck(currentDuck);
+        case FINAL:
+            // TODO
+            context.note("Ignoring a final duck shape: " + currentDuck);
+            throw new UnsupportedOperationException("Ducks category FINAL not supported.");
         default:
             throw new UnsupportedOperationException("Duck category not supported.");
         }
@@ -124,19 +129,28 @@ public abstract class MakeDuck
          * return false; }
          */
 
-        if (Source.buildModifierString(method).contains("native"))
+        String modifiers = Source.buildModifierString(method);
+        if (modifiers.contains("native"))
         {
             return false;
         }
-        if (Source.buildModifierString(method).contains("final"))
+        if (modifiers.contains("final"))
         {
             return false;
         }
-        if (Source.buildModifierString(method).contains("protected"))
+        if (modifiers.contains("protected"))
         {
             return false;
         }
-        if (Source.buildModifierString(method).contains("private"))
+        if (modifiers.contains("private"))
+        {
+            return false;
+        }
+        if (modifiers.contains("private"))
+        {
+            return false;
+        }
+        if (modifiers.contains("static"))
         {
             return false;
         }

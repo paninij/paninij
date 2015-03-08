@@ -16,7 +16,12 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     public void makeSourceFile(DuckShape currentDuck)
     {
-        context.createJavaFile(this.buildQualifiedClassName(currentDuck), buildDuck(currentDuck));
+        try {
+            context.createJavaFile(this.buildQualifiedClassName(currentDuck),
+                                   buildDuck(currentDuck));
+        } catch (UnsupportedOperationException ex) {
+            context.warning(ex.toString());
+        }
     }
 
     @Override

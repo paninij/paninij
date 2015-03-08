@@ -1,6 +1,7 @@
 package org.paninij.apt;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ import org.paninij.lang.Panini;
 public class PaniniPress extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
-    List<DuckShape> duckShapes;
+    Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)

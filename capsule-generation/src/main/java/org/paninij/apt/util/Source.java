@@ -132,15 +132,12 @@ public class Source
 
     public static String buildModifierString(ExecutableElement exec)
     {
-        //TODO: refactor to use join
-        String modifiers = "";
-
-        for (Modifier mod : exec.getModifiers())
+        List<String> modifiers = new ArrayList<String>();
+        for (Modifier m : exec.getModifiers())
         {
-            modifiers += mod.toString() + " ";
+            modifiers.add(m.toString());
         }
-
-        return modifiers.substring(0, modifiers.length()-1);
+        return String.join(" ", modifiers);
     }
 
     public static String buildParameterList(ExecutableElement exec)
