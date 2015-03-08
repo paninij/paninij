@@ -92,7 +92,7 @@ public class MakeSignature
     {
         String parameters = buildMethodParameters(method);
         // TODO include "throws"
-        return Source.format("public #0 #1(#2);", method.getReturnType(), method.getSimpleName(), parameters);
+        return Source.format("    public #0 #1(#2);", method.getReturnType(), method.getSimpleName(), parameters);
     }
 
     String buildMethodParameters(ExecutableElement method)

@@ -1,9 +1,9 @@
-package org.paninij.examples;
+package org.paninij.examples.signatures;
 
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class Greeter implements GreeterSignature
+public class FooCapsule implements FooSignature
 {
     private String greeting;
 
