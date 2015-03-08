@@ -2,18 +2,14 @@ package org.paninij.apt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.text.MessageFormat;
 import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.util.Elements;
 
 import org.paninij.apt.util.Source;
 
@@ -124,6 +120,7 @@ class MakeCapsule$Thread extends MakeCapsule
     
     String buildProcedureParameters(ExecutableElement method)
     {
+        //TODO: Use version in Source
         List<String> paramStrings = new ArrayList<String>();
         for (VariableElement param : method.getParameters()) {
             paramStrings.add(buildParamDecl(param));
@@ -134,6 +131,7 @@ class MakeCapsule$Thread extends MakeCapsule
 
     String buildArgsList(ExecutableElement method)
     {
+        //TODO: Use version in Source
         List<String> paramStrings = new ArrayList<String>();
         for (VariableElement var : method.getParameters()) {
             paramStrings.add(var.toString());

@@ -1,6 +1,7 @@
 package org.paninij.apt;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -12,9 +13,11 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
+import org.paninij.apt.util.DuckShape;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 
@@ -28,6 +31,7 @@ import org.paninij.lang.Signature;
 public class PaniniPress extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
+    Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -55,6 +59,9 @@ public class PaniniPress extends AbstractProcessor
                 //MakeCapsule$Task.make(this, template).makeSourceFile();
                 //MakeCapsule$Monitor.make(this, template).makeSourceFile();
                 //MakeCapsule$Serial.make(this, template).makeSourceFile();
+                
+                MakeDucks.make(this, template).makeDucks();
+                
             } else {
                 error("Capsule failed check.");
             }
@@ -104,5 +111,11 @@ public class PaniniPress extends AbstractProcessor
     
     void error(String msg) {
         processingEnv.getMessager().printMessage(Kind.ERROR, msg);
+    }
+
+    public Types getTypeUtils()
+    {
+        return processingEnv.getTypeUtils();
+        
     }
 }

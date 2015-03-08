@@ -1,7 +1,13 @@
 package org.paninij.apt.util;
 
+import java.util.Set;
+
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 public class ModelInfo {
 
@@ -69,12 +75,48 @@ public class ModelInfo {
         
     }
     
-    public static boolean hasVoidReturnType(ExecutableElement exec) {
+    public static boolean hasVoidReturnType(ExecutableElement exec)
+    {
         return exec.getReturnType().getKind() == TypeKind.VOID;
     }
 
-    public static boolean hasPrimitiveReturnType(ExecutableElement exec) {
+    public static boolean hasPrimitiveReturnType(ExecutableElement exec)
+    {
         return exec.getReturnType().getKind().isPrimitive();
     }
 
+    public static boolean isFinalType(DeclaredType returnType)
+    {
+        return returnType.asElement().getModifiers().contains(Modifier.FINAL);
+    }
+    
+    public static boolean isPrimitive(Element parameter)
+    {
+        return parameter.asType().getKind().isPrimitive();
+    }
+    
+    public static boolean isArray(Element parameter)
+    {
+        return parameter.asType().getKind() == TypeKind.ARRAY;
+    }
+
+    /*
+    public static void recurseTypes(Element el, Set<String> classes)
+    {
+        switch(el.asType().getKind())
+        {
+        case ARRAY:
+        
+        default:
+            break;
+            
+        }
+    }
+    
+    public static void recurseTypes(TypeMirror el, Set<String> classes)
+    {
+        
+    }
+    
+    */ 
 }
