@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Types;
 
 import org.paninij.apt.PaniniPress;
@@ -127,7 +128,15 @@ public class DuckShape
         {
             for(VariableElement param : parameters)
             {
-                ret += "$" + Source.dropPackageName(param.asType().toString());
+                if(param.asType().getKind() == TypeKind.ARRAY)
+                {
+                    ret += "$" + Source.dropPackageName(param.asType().toString()).replace("[]", "Arr");
+                }
+                else
+                {
+                    ret += "$" + Source.dropPackageName(param.asType().toString());
+                }
+                
             }
         }
         
@@ -183,8 +192,19 @@ public class DuckShape
         PRIMITIVE,
         PANINICUSTOM
     }
-    
-
+    /*
+    public Set<String> getRequiredClasses()
+    {
+        //Get Type parameters, Array types, parameter types, and return types
+        Set<String> classes = new HashSet<String>();
+        ModelInfo.recurseTypes(this.returnType.asElement(), classes);
+        for(VariableElement param : this.parameters)
+        {
+            ModelInfo.recurseTypes(param, classes);
+        }
+        return classes;
+    }
+    */
     public static DuckShape.Category categoryOf(DuckShape duckShape)
     {
         // TODO: Add checks for all categories

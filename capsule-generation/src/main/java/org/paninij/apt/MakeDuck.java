@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.ModelInfo;
@@ -46,9 +47,12 @@ public abstract class MakeDuck
     String buildParameterImports(DuckShape currentDuck)
     {
         String importsStr = "";
-        for (String param : currentDuck.getUniqueParameterTypes())
+        for (VariableElement param : currentDuck.parameters)
         {
-            importsStr += "import " + param + ";\n";
+            if(!ModelInfo.isPrimitive(param))
+            {
+                importsStr += "import " + param.asType().toString() + ";\n";
+            }
         }
         return importsStr;
     }
@@ -152,7 +156,10 @@ public abstract class MakeDuck
         String args = "";
         for(int i = 0; i < currentDuck.parameters.size(); i++)
         {
-            args += "        panini$arg" + i + " = null;\n";
+            if(!ModelInfo.isPrimitive(currentDuck.parameters.get(i)))
+            {
+                args += "        panini$arg" + i + " = null;\n";
+            }
         }
             
         return args;

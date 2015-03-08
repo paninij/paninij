@@ -9,4 +9,9 @@ public class Normal
     public Object foo(Object o, Object i) {
         return new Object();
     }
+    
+    public Object primitiveArg(int i)
+    {
+        return new Object();
+    }
 }
