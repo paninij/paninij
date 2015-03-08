@@ -23,7 +23,7 @@ public class MakeDuck$Thread extends MakeDuck
     String buildNormalDuck(DuckShape currentDuck)
     {
         // TODO: Implement Body
-        currentDuck.returnType.getEnclosedElements();
+        currentDuck.returnType.asElement().getEnclosedElements();
         String src = Source.lines(0, 
                 "package org.paninij.runtime.ducks;",
                 "",

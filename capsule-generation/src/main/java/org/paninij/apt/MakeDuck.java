@@ -26,7 +26,7 @@ public abstract class MakeDuck
 
     String buildDuck(DuckShape currentDuck)
     {
-        switch (currentDuck.category)
+        switch (DuckShape.categoryOf(currentDuck))
         {
         case NORMAL:
             return buildNormalDuck(currentDuck);
@@ -68,7 +68,7 @@ public abstract class MakeDuck
     {
         String facades = "";
 
-        for (Element el : currentDuck.returnType.getEnclosedElements())
+        for (Element el : currentDuck.returnType.asElement().getEnclosedElements())
         {
             if (el.getKind() == ElementKind.METHOD)
             {
