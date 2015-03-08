@@ -1,14 +1,18 @@
 package org.paninij.apt;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.Source;
+import org.paninij.lang.Signature;
 
 public class MakeCapsuleInterface
 {
@@ -51,7 +55,30 @@ public class MakeCapsuleInterface
 
     private String buildCapsuleDecl()
     {
-        return "public interface " + buildCapsuleName();
+        return "public interface " + buildCapsuleName() + buildCapsuleInterfaces();
+    }
+
+    private String buildCapsuleInterfaces()
+    {
+        List<? extends TypeMirror> interfaces = template.getInterfaces();
+        if (interfaces.size() > 0) {
+            String extend = " extends ";
+            for (TypeMirror i : interfaces)
+            {
+                Element interf = ((DeclaredType) i).asElement();
+                extend += interf.getSimpleName() + "$Signature, ";
+                // TODO verify that it is indeed a signature?
+                // perhaps this is part of the Checker class
+//                if (i.getAnnotationsByType(Signature.class).length > 0)
+//                {
+//
+//                }
+            }
+            return extend.replaceAll(", $", "");
+        }
+
+        // there are no signatures to extend
+        return "";
     }
 
     private String buildCapsuleName()
