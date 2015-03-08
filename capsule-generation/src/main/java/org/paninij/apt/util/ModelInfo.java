@@ -1,6 +1,7 @@
 package org.paninij.apt.util;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
 public class ModelInfo {
@@ -76,5 +77,6 @@ public class ModelInfo {
     public static boolean hasPrimitiveReturnType(ExecutableElement exec) {
         return exec.getReturnType().getKind().isPrimitive();
     }
+    
 
 }

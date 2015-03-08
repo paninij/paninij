@@ -21,8 +21,7 @@ public class DuckShape
     public static DuckShape make(PaniniPress context, ExecutableElement method)
     {
         TypeElement rtElement;
-        TypeMirror rtMirror = method.getReturnType();
-        if (rtMirror.getKind() == TypeKind.VOID)
+        if (ModelInfo.hasVoidReturnType(method))
         {
             rtElement = null;
         }

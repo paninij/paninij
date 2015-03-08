@@ -23,6 +23,7 @@ public class MakeDuck$Thread extends MakeDuck
     String buildNormalDuck(DuckShape currentDuck)
     {
         // TODO: Implement Body
+        currentDuck.returnType.getEnclosedElements();
         String src = Source.lines(0, 
                 "package org.paninij.runtime.ducks;",
                 "",
@@ -31,22 +32,58 @@ public class MakeDuck$Thread extends MakeDuck
                 "#0",
                 "import #1;",
                 "",
-                //"public class #2 implements ProcInvocation, ResolvableFuture<#3> {",
-                "public class #2 implements ProcInvocation {",
+                "public class #2 extends #4 implements ProcInvocation, ResolvableFuture<#4> {",
+                //"public class #2 implements ProcInvocation {",
                 "    public final int panini$procID;",
+                "    private #4 panini$result = null;",
+                "    boolean panini$isResolved = false;",
+                "",
+                "#5",
+                "",
+                "#3",
+                "",
+                /*
                 "    public #2() {",
                 "        panini$procID = 0;",
-                "    }",
+                "    }",*/
                 "",
                 "    @Override",
                 "    public int panini$procID() {",
                 "        return panini$procID;",
                 "    }",
+                "",
+                "    @Override",
+                "    public void panini$resolve(#4 result) {",
+                "        synchronized (this) {",
+                "            panini$result = result;",
+                "            panini$isResolved = true;",
+                "            this.notifyAll();",
+                "        }",
+                "#6",
+                "    }",
+                "",
+                "    @Override",
+                "    public #4 panini$get() {",
+                "        while (panini$isResolved == false) {",
+                "            try {",
+                "                synchronized (this) {",
+                "                    while (panini$isResolved == false) this.wait();",
+                "                }",
+                "            } catch (InterruptedException e) { /* try waiting again */ }",
+                "         }",
+                "         return panini$result;",
+                "    }",
+                "    /* The following override the methods of `#4` */",
+                "#7",
                 "}");
         return Source.format(src, this.buildParameterImports(currentDuck),
                                   currentDuck.getQualifiedReturnType(),
-                                  this.buildClassName(currentDuck)/*,
-                                  currentDuck.getSimpleReturnType()*/);
+                                  this.buildClassName(currentDuck),
+                                  this.buildConstructor(currentDuck),
+                                  currentDuck.getSimpleReturnType(),
+                                  this.buildParameterFields(currentDuck),
+                                  this.buildReleaseArgs(currentDuck),
+                                  this.buildFacades(currentDuck));
     }
 
     @Override
