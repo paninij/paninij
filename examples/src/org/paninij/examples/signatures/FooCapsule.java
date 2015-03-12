@@ -7,11 +7,13 @@ public class FooCapsule implements FooSignature
 {
     private String greeting;
 
+    /*
     @Override
     public String greet()
     {
         return greeting;
     }
+    */
 
     @Override
     public void setGreeting(String greeting)
