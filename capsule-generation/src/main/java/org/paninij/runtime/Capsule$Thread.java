@@ -100,12 +100,12 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	 * @return the first available duck in the capsule's queue.
 	 */
 	@SuppressWarnings("rawtypes")
-	protected final synchronized ProcInvocation panini$nextProcInvocation()
+	protected final synchronized Panini$Message panini$nextMessage()
 	{
 		if (this.panini$size <= 0)
 			panini$blockCapsule();
 		panini$size--;
-		ProcInvocation msg = (ProcInvocation) panini$queue[panini$head++];
+		Panini$Message msg = (Panini$Message) panini$queue[panini$head++];
 		if (panini$head >= panini$queue.length)
 			panini$head = 0;
 		return msg;
@@ -161,7 +161,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	{
 		panini$refCount--;
 		if (panini$refCount == 0) {
-			panini$push(new AbstractProcInvocation(PANINI$SHUTDOWN));
+			panini$push(new SimpleMessage(PANINI$SHUTDOWN));
 		}
 	}
 
@@ -179,7 +179,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	public final void exit()
 	{
 		this.checkAccess();
-		ProcInvocation msg = new AbstractProcInvocation(PANINI$EXIT);
+		Panini$Message msg = new SimpleMessage(PANINI$EXIT);
 		panini$push(msg);
 	}
 
