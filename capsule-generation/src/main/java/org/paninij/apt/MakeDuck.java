@@ -7,6 +7,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.ModelInfo;
@@ -25,7 +26,7 @@ public abstract class MakeDuck
 
     String buildDuck(DuckShape currentDuck)
     {
-        switch (DuckShape.categoryOf(currentDuck))
+        switch (currentDuck.category)
         {
         case NORMAL:
             return buildNormalDuck(currentDuck);
@@ -44,27 +45,12 @@ public abstract class MakeDuck
 
     abstract String buildQualifiedClassName(DuckShape currentDuck);
 
-    String buildParameterImports(DuckShape currentDuck)
-    {
-        String importsStr = "";
-        for (VariableElement param : currentDuck.parameters)
-        {
-            if(!ModelInfo.isPrimitive(param))
-            {
-                importsStr += "import " + param.asType().toString() + ";\n";
-            }
-        }
-        return importsStr;
-    }
-
     String buildParameterFields(DuckShape currentDuck)
     {
         String fieldsStr = "";
-        for (int i = 0; i < currentDuck.parameters.size(); i++)
+        for (int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
-            fieldsStr += "    public "
-                    + Source.dropPackageName(currentDuck.parameters.get(i).asType().toString()) + " panini$arg" + i
-                    + ";\n";
+            fieldsStr += "    public " + currentDuck.slotTypes.get(i) + " panini$arg" + i + ";\n";
         }
         return fieldsStr;
     }
@@ -72,8 +58,10 @@ public abstract class MakeDuck
     String buildFacades(DuckShape currentDuck)
     {
         String facades = "";
+        
+        DeclaredType returnType = (DeclaredType) currentDuck.returnType;
 
-        for (Element el : currentDuck.returnType.asElement().getEnclosedElements())
+        for (Element el : returnType.asElement().getEnclosedElements())
         {
             if (el.getKind() == ElementKind.METHOD)
             {
@@ -154,9 +142,9 @@ public abstract class MakeDuck
     String buildReleaseArgs(DuckShape currentDuck) {
         
         String args = "";
-        for(int i = 0; i < currentDuck.parameters.size(); i++)
+        for(int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
-            if(!ModelInfo.isPrimitive(currentDuck.parameters.get(i)))
+            if(currentDuck.slotTypes.get(i).equals("Object"))
             {
                 args += "        panini$arg" + i + " = null;\n";
             }

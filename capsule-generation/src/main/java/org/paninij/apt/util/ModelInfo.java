@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -80,24 +81,47 @@ public class ModelInfo {
         return exec.getReturnType().getKind() == TypeKind.VOID;
     }
 
-    public static boolean hasPrimitiveReturnType(ExecutableElement exec)
+    public static boolean isFinalType(TypeMirror returnType)
     {
-        return exec.getReturnType().getKind().isPrimitive();
+        if (returnType.getKind() != TypeKind.DECLARED)
+        {
+            return false;
+        }
+        else
+        {
+            Element elem = ((DeclaredType) returnType).asElement();
+            return isFinalType((TypeElement) elem);
+        }
+    }
+    
+    public static boolean isFinalType(TypeElement type)
+    {
+        return type.getModifiers().contains(Modifier.FINAL);
+    }
+    
+    public static boolean isPrimitive(TypeMirror type)
+    {
+        return type.getKind().isPrimitive();
+    }
+    
+    public static boolean isPrimitive(Element type)
+    {
+        return isPrimitive(type.asType());
     }
 
-    public static boolean isFinalType(DeclaredType returnType)
+    public static boolean hasPrimitiveReturnType(ExecutableElement exec)
     {
-        return returnType.asElement().getModifiers().contains(Modifier.FINAL);
+        return isPrimitive(exec.getReturnType());
+    }
+
+    public static boolean isArray(TypeMirror type)
+    {
+        return type.getKind() == TypeKind.ARRAY;
     }
     
-    public static boolean isPrimitive(Element parameter)
+    public static boolean isArray(Element type)
     {
-        return parameter.asType().getKind().isPrimitive();
-    }
-    
-    public static boolean isArray(Element parameter)
-    {
-        return parameter.asType().getKind() == TypeKind.ARRAY;
+        return isArray(type.asType());
     }
 
     /*

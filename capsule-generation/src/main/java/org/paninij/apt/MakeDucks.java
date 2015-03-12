@@ -14,7 +14,6 @@ import org.paninij.apt.util.DuckShape;
 
 public class MakeDucks
 {
-
     PaniniPress context;
     TypeElement template;
     
@@ -63,10 +62,9 @@ public class MakeDucks
             if(el.getKind() == ElementKind.METHOD)
             {
                 ExecutableElement method = (ExecutableElement) el;
-                duckShapes.add(DuckShape.make(this.context, method));
+                duckShapes.add(new DuckShape(method));
             }
         }
         return duckShapes;
     }
-
 }

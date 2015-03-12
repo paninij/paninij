@@ -14,13 +14,13 @@ public class Void {
         
     }
     
-    /*public void arrayArg(Object[] i)
+    public void arrayArg(Object[] i)
     {
         
     }
     
-    public void primArrayArg(short[] b)
+    public void primitiveArrayArg(short[] b)
     {
         
-    }*/
+    }
 }

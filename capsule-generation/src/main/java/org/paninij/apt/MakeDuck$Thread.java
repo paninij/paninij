@@ -27,13 +27,11 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     String buildNormalDuck(DuckShape currentDuck)
     {
-        currentDuck.returnType.asElement().getEnclosedElements();
         String src = Source.lines(0, 
                 "package org.paninij.runtime.ducks;",
                 "",
                 "import org.paninij.runtime.ProcInvocation;",
                 "import org.paninij.runtime.ResolvableFuture;",
-                "#0",
                 "import #1;",
                 "",
                 "public class #2 extends #4 implements ProcInvocation, ResolvableFuture<#4> {",
@@ -71,10 +69,11 @@ public class MakeDuck$Thread extends MakeDuck
                 "         }",
                 "         return panini$result;",
                 "    }",
+                "",
                 "    /* The following override the methods of `#4` */",
                 "#7",
                 "}");
-        return Source.format(src, this.buildParameterImports(currentDuck),
+        return Source.format(src, null,
                                   currentDuck.getQualifiedReturnType(),
                                   this.buildClassName(currentDuck),
                                   this.buildConstructor(currentDuck),
@@ -90,13 +89,12 @@ public class MakeDuck$Thread extends MakeDuck
         String src = Source.lines(0, "package org.paninij.runtime.ducks;",
                                      "",
                                      "import org.paninij.runtime.ProcInvocation;",
-                                     "#0",
                                      "",
-                                     "public class #1 implements ProcInvocation {",
+                                     "public class #0 implements ProcInvocation {",
                                      "    public final int panini$procID;",
-                                     "#2",
+                                     "#1",
                                      "",
-                                     "#3",
+                                     "#2",
                                      "",
                                      "    @Override",
                                      "    public int panini$procID() {",
@@ -104,8 +102,7 @@ public class MakeDuck$Thread extends MakeDuck
                                      "    }",
                                      "}");
         
-        return Source.format(src, this.buildParameterImports(currentDuck), 
-                                  this.buildClassName(currentDuck), 
+        return Source.format(src, this.buildClassName(currentDuck), 
                                   this.buildParameterFields(currentDuck),
                                   this.buildConstructor(currentDuck));
     }
@@ -130,7 +127,7 @@ public class MakeDuck$Thread extends MakeDuck
        String constructor = buildConstructorDecl(currentDuck);
        constructor += "        panini$procID = procID;\n";
        
-       for(int i = 0; i < currentDuck.parameters.size(); i++)
+       for(int i = 0; i < currentDuck.slotTypes.size(); i++)
        {
            constructor += "        panini$arg" + i + " = arg" + i +";\n";
        }
@@ -142,12 +139,10 @@ public class MakeDuck$Thread extends MakeDuck
     String buildConstructorDecl(DuckShape currentDuck)
     {
         String constructorDecl = "    public " + buildClassName(currentDuck) + "(int procID";
-        
-        for(int i = 0; i < currentDuck.parameters.size(); i++)
+        for(int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
-            constructorDecl += ", " + Source.dropPackageName(currentDuck.parameters.get(i).asType().toString()) + " arg" + i;
+            constructorDecl += ", " + currentDuck.slotTypes.get(i) + " arg" + i;
         }
-        
         constructorDecl += ") {\n";
         
         return constructorDecl;
