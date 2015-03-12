@@ -25,6 +25,7 @@ class MakeCapsule$Thread extends MakeCapsule
     }
 
 
+    @Override
     String buildCapsule()
     {
         String pkg = buildPackage();
@@ -47,31 +48,36 @@ class MakeCapsule$Thread extends MakeCapsule
     }
 
 
+    @Override
     String buildCapsuleName() {
         return template.getSimpleName() + "Capsule$Thread";
     }
 
 
+    @Override
     String buildQualifiedCapsuleName() {
         return template.getQualifiedName() + "Capsule$Thread";
     }
 
+    @Override
     String buildCapsuleImports() {
         return "// TODO: imports";
     }
 
 
+    @Override
     String buildCapsuleDecl() {
-        return "public class " + buildCapsuleName();
+        return "public class " + buildCapsuleName() + " implements " + template.getSimpleName() + "$Capsule";
     }
 
 
+    @Override
     String buildCapsuleBody()
     {
         ArrayList<String> decls = new ArrayList<String>();
         decls.add(buildCapsuleFields());
         decls.add("");
-        
+
         for (Element child : template.getEnclosedElements())
         {
             // For now, ignore everything except for constructors and methods which need to be
@@ -83,11 +89,12 @@ class MakeCapsule$Thread extends MakeCapsule
                 decls.add(buildProcedure((ExecutableElement) child));
             }
         }
-        
+
         return String.join("\n", decls);
     }
-    
 
+
+    @Override
     String buildCapsuleFields()
     {
         /*
@@ -100,24 +107,29 @@ class MakeCapsule$Thread extends MakeCapsule
         */
         return "";
     }
-    
-    
+
+
+    @Override
     String buildProcedure(ExecutableElement method)
     {
-        /*
+
         String src = Source.lines(1, "public #0 #1(#2)",
                                      "{",
                                      "    #3",
                                      "}");
-        return Source.format(src, getBoxedReturnType(method),
+
+        return Source.format(src, method.getReturnType(),
                                         method.getSimpleName(),
                                         buildProcedureParameters(method),
-                                        buildCallBody(method));
-        */
-        return "";
+                                        buildProcedureBody(method));
     }
-    
-    
+
+    String buildProcedureBody(ExecutableElement method) {
+        return "throw new UnsupportedOperationException();";
+    }
+
+
+    @Override
     String buildProcedureParameters(ExecutableElement method)
     {
         //TODO: Use version in Source
@@ -129,6 +141,7 @@ class MakeCapsule$Thread extends MakeCapsule
     }
 
 
+    @Override
     String buildArgsList(ExecutableElement method)
     {
         //TODO: Use version in Source
@@ -140,12 +153,13 @@ class MakeCapsule$Thread extends MakeCapsule
     }
 
 
+    @Override
     String buildParamDecl(VariableElement param)
     {
         return param.asType().toString() + " " + param.toString();
     }
-    
-    
+
+
     boolean needsProceedureWrapper(Element elem)
     {
         if (elem.getKind() == ElementKind.METHOD) {
