@@ -39,11 +39,19 @@ class MakeCapsule$Thread extends MakeCapsule
                                      "#3",
                                      "{",
                                      "#4",
+                                     "#5",
+                                     "#6",
+                                     "#7",
+                                     "#8",
                                      "}");
         return Source.format(src, pkg,
                                   buildCapsuleImports(),
                                   pkg + "." + template.getSimpleName(),
                                   buildCapsuleDecl(),
+                                  buildPaniniStart(),
+                                  buildPaniniExit(),
+                                  buildPaniniJoin(),
+                                  buildPaniniShutdown(),
                                   buildCapsuleBody());
     }
 
@@ -61,13 +69,13 @@ class MakeCapsule$Thread extends MakeCapsule
 
     @Override
     String buildCapsuleImports() {
-        return "// TODO: imports";
+        return "import org.paninij.runtime.Capsule$Thread;";
     }
 
 
     @Override
     String buildCapsuleDecl() {
-        return "public class " + buildCapsuleName() + " implements " + template.getSimpleName() + "$Capsule";
+        return "public class " + buildCapsuleName() + " extends Capsule$Thread implements " + template.getSimpleName() + "$Capsule";
     }
 
 
@@ -159,6 +167,45 @@ class MakeCapsule$Thread extends MakeCapsule
         return param.asType().toString() + " " + param.toString();
     }
 
+    String buildPaniniExit()
+    {
+        String src = Source.lines(1, "@Override",
+                "public void panini$exit()",
+                "{",
+                "    //TODO",
+                "}");
+        return Source.format(src);
+    }
+
+    String buildPaniniJoin()
+    {
+        String src = Source.lines(1, "@Override",
+                "public void panini$join()",
+                "{",
+                "    //TODO",
+                "}");
+        return Source.format(src);
+    }
+
+    String buildPaniniStart()
+    {
+        String src = Source.lines(1, "@Override",
+                "public void panini$start()",
+                "{",
+                "    //TODO",
+                "}");
+        return Source.format(src);
+    }
+
+    String buildPaniniShutdown()
+    {
+        String src = Source.lines(1, "@Override",
+                "public void panini$shutdown()",
+                "{",
+                "    //TODO",
+                "}");
+        return Source.format(src);
+    }
 
     boolean needsProceedureWrapper(Element elem)
     {
