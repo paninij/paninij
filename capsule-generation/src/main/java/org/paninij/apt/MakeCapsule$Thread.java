@@ -50,13 +50,13 @@ class MakeCapsule$Thread extends MakeCapsule
 
     @Override
     String buildCapsuleName() {
-        return template.getSimpleName() + "Capsule$Thread";
+        return template.getSimpleName() + "$Capsule$Thread";
     }
 
 
     @Override
     String buildQualifiedCapsuleName() {
-        return template.getQualifiedName() + "Capsule$Thread";
+        return template.getQualifiedName() + "$Capsule$Thread";
     }
 
     @Override
