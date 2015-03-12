@@ -48,12 +48,12 @@ class MakeCapsule$Thread extends MakeCapsule
 
 
     String buildCapsuleName() {
-        return template.getSimpleName() + "Capsule$Thread";
+        return template.getSimpleName() + "$Capsule$Thread";
     }
 
 
     String buildQualifiedCapsuleName() {
-        return template.getQualifiedName() + "Capsule$Thread";
+        return template.getQualifiedName() + "$Capsule$Thread";
     }
 
     String buildCapsuleImports() {
