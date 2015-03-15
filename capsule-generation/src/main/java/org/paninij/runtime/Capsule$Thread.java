@@ -136,7 +136,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	 * @throws IllegalArgumentException If the value of millis is negative
 	 *
 	 */
-	public void yield(long millis)
+	public void panini$yield(long millis)
 	{
 		if (millis < 0) {
 			throw new IllegalArgumentException();
@@ -157,7 +157,8 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	 * parents, a terminate call is made to shutdown the capsule running thread. This is part of
 	 * automatic garbage collection of capsules.
 	 */
-	public final synchronized void shutdown()
+	@Override
+    public final synchronized void panini$shutdown()
 	{
 		panini$refCount--;
 		if (panini$refCount == 0) {
@@ -176,7 +177,8 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	 *
 	 * @throws SecurityException if the client capsule is not allowed to access this capsule.
 	 */
-	public final void exit()
+	@Override
+    public final void panini$exit()
 	{
 		this.checkAccess();
 		Panini$Message msg = new SimpleMessage(PANINI$EXIT);
@@ -307,19 +309,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
     }
 
     @Override
-    public void panini$exit()
-    {
-        //TODO
-    }
-
-    @Override
     public void panini$join()
-    {
-        //TODO
-    }
-
-    @Override
-    public void panini$shutdown()
     {
         //TODO
     }
