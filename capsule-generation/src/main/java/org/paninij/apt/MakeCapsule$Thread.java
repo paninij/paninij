@@ -39,19 +39,11 @@ class MakeCapsule$Thread extends MakeCapsule
                                      "#3",
                                      "{",
                                      "#4",
-                                     "#5",
-                                     "#6",
-                                     "#7",
-                                     "#8",
                                      "}");
         return Source.format(src, pkg,
                                   buildCapsuleImports(),
                                   pkg + "." + template.getSimpleName(),
                                   buildCapsuleDecl(),
-                                  buildPaniniStart(),
-                                  buildPaniniExit(),
-                                  buildPaniniJoin(),
-                                  buildPaniniShutdown(),
                                   buildCapsuleBody());
     }
 

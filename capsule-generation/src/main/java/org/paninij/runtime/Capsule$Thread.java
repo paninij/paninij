@@ -10,10 +10,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
  * License.
- * 
+ *
  * For more details and the latest version of this code please see
  * http://paninij.org
- * 
+ *
  * Contributor(s): Hridesh Rajan
  */
 
@@ -70,7 +70,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	/**
 	 * Checks to ensure whether this capsule's queue can accommodate numElems number of elements,
 	 * and if not extends it.
-	 * 
+	 *
 	 * @param numElems
 	 */
 	protected final void panini$ensureSpace(int numElems)
@@ -94,9 +94,9 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	/**
 	 * Extracts and returns the first duck from the capsule's queue. This method blocks if there
 	 * are no ducks in the queue.
-	 * 
+	 *
 	 * Precondition: it is assumed that the lock queueLock is held before calling this method.
-	 * 
+	 *
 	 * @return the first available duck in the capsule's queue.
 	 */
 	@SuppressWarnings("rawtypes")
@@ -131,10 +131,10 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	 * Causes the current capsule to sleep (temporarily cease execution) for the specified number
 	 * of milliseconds, subject to the precision and accuracy of system timers and schedulers. The
 	 * capsule does not lose ownership of any monitors.
-	 * 
+	 *
 	 * @param millis The length of time to sleep in milliseconds
 	 * @throws IllegalArgumentException If the value of millis is negative
-	 * 
+	 *
 	 */
 	public void yield(long millis)
 	{
@@ -168,12 +168,12 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 
 	/**
 	 * Causes the current capsule to immediately cease execution.
-	 * 
+	 *
 	 * Shutdown is allowed only if the client capsule has permission to modify this capsule.
-	 * 
+	 *
 	 * If there is a security manager, its checkAccess method is called with this capsule as its
 	 * argument. This may result in throwing a SecurityException.
-	 * 
+	 *
 	 * @throws SecurityException if the client capsule is not allowed to access this capsule.
 	 */
 	public final void exit()
@@ -185,10 +185,11 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 
 	/**
 	 * Pushes a single object on this capsule's queue.
-	 * 
+	 *
 	 * @param o Object to be stored.
 	 */
-	public final synchronized void panini$push(Object o)
+	@Override
+    public final synchronized void panini$push(Object o)
 	{
 		panini$ensureSpace(1);
 		panini$size = panini$size + 1;
@@ -206,7 +207,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 
 	/**
 	 * Pushes two objects on this capsule's queue.
-	 * 
+	 *
 	 * @param o1 first object to be stored.
 	 * @param o2 second object to be stored.
 	 */
@@ -233,7 +234,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 
 	/**
 	 * Pushes three objects on this capsule's queue.
-	 * 
+	 *
 	 * @param o1 First object to be stored.
 	 * @param o2 Second object to be stored.
 	 * @param o3 Third object to be stored.
@@ -266,7 +267,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 
 	/**
 	 * Pushes multiple objects on this capsule's queue.
-	 * 
+	 *
 	 * @param items List of objects to be stored.
 	 */
 	protected final synchronized void panini$push(Object... items)
@@ -298,4 +299,28 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 
 	protected void panini$capsule$init() {
 	}
+
+	@Override
+    public void panini$start()
+    {
+        //TODO
+    }
+
+    @Override
+    public void panini$exit()
+    {
+        //TODO
+    }
+
+    @Override
+    public void panini$join()
+    {
+        //TODO
+    }
+
+    @Override
+    public void panini$shutdown()
+    {
+        //TODO
+    }
 }

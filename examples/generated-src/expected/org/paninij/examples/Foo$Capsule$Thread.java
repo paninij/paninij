@@ -14,30 +14,6 @@ public class Foo$Capsule$Thread extends Capsule$Thread implements Foo$Capsule
     //State Variables
     private String greeting;
     
-    @Override
-    public void panini$start()
-    {
-        //TODO
-    }
-
-    @Override
-    public void panini$exit()
-    {
-        //TODO
-    }
-
-    @Override
-    public void panini$join()
-    {
-        //TODO
-    }
-
-    @Override
-    public void panini$shutdown()
-    {
-        //TODO
-    }
-
     private final void setGreeting$Original(java.lang.String greeting) 
     {
         this.greeting = greeting;
