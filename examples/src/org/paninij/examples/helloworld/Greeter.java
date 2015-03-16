@@ -1,6 +1,7 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.String;
 
 @Capsule
 class Greeter
@@ -10,15 +11,15 @@ class Greeter
     Stream s;
 
     public void init() {
-        message = "Hello World!";
+        message = new String("Hello World!");
     }
 
     public void design(Stream s) { ; }
 
     public void greet() {
-        s.write("Panini: " + message);
+        s.write(new String("Panini: " + message));
         long time = System.currentTimeMillis();
-        s.write("Time is now: " + time);
+        s.write(new String("Time is now: " + time));
     }
     */
 }

@@ -29,7 +29,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 
-import org.paninij.runtime.types.Panini$Duck;
+import org.paninij.runtime.ResolvableFuture;
+import org.paninij.runtime.Panini$Message;
 
 /**
  * The {@code Long} class wraps a value of the primitive type {@code
@@ -39,7 +40,11 @@ import org.paninij.runtime.types.Panini$Duck;
  * 'duck' behavior required by capsules.
  */
 public class String extends Object implements CharSequence,
-    java.io.Serializable, Panini$Duck<java.lang.String>, Comparable<String> {
+                                              java.io.Serializable,
+                                              Comparable<String>,
+                                              ResolvableFuture<java.lang.String>,
+                                              Panini$Message
+{
 
     
     /**
@@ -235,7 +240,7 @@ public class String extends Object implements CharSequence,
      * Should only be set in either a constructor that has an actual value
      * or when the {@link #panini$finish(String)} method is called.
      */
-    private boolean panini$redeemed;
+    private boolean panini$resolved;
 
     /**
      * Save the value and notify listeners the value is available.
@@ -244,10 +249,10 @@ public class String extends Object implements CharSequence,
      *             the wrapped {@code String} out as the value.
      */
     @Override
-    public void panini$finish(java.lang.String s) {
+    public void panini$resolve(java.lang.String s) {
         synchronized(this) {
             value = s;
-            panini$redeemed = true;
+            panini$resolved = true;
             notifyAll();
         }
     }
@@ -259,10 +264,10 @@ public class String extends Object implements CharSequence,
      * @param s    {@code java.lang.String} to use as a value. Method will pull
      *             the wrapped {@code String} out as the value.
      */
-    public void panini$finish2(java.lang.String s) {
+    public void panini$resolve2(java.lang.String s) {
         synchronized(this) {
             value = s;
-            panini$redeemed = true;
+            panini$resolved = true;
             notifyAll();
         }
     }
@@ -273,7 +278,7 @@ public class String extends Object implements CharSequence,
      * of the duck.
      */
     @Override
-    public int panini$message$id() {
+    public int panini$msgID() {
         return this.panini$message$id;
     }
 
@@ -284,10 +289,10 @@ public class String extends Object implements CharSequence,
      */
     @Override
     public java.lang.String panini$get() {
-        while (panini$redeemed == false) {
+        while (panini$resolved == false) {
             try{
                 synchronized (this) {
-                    while (panini$redeemed == false) {
+                    while (panini$resolved == false) {
                         wait();
                     }
                 }
@@ -307,7 +312,7 @@ public class String extends Object implements CharSequence,
      */
     public String(int panini$message$id) {
         this.panini$message$id = panini$message$id;
-        this.panini$redeemed = false;
+        this.panini$resolved = false;
     }
 
     /**
@@ -324,7 +329,7 @@ public class String extends Object implements CharSequence,
     public String(java.lang.String value) {
         this.value = value;
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
 
     /**
@@ -341,7 +346,7 @@ public class String extends Object implements CharSequence,
     public String(char[] value) {
         this.value = new java.lang.String(value);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -368,7 +373,7 @@ public class String extends Object implements CharSequence,
     public String(char[] value, int offset, int count) {
         this.value = new java.lang.String(value, offset, count);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -395,7 +400,7 @@ public class String extends Object implements CharSequence,
     public String(int[] codePoints, int offset, int count) {
         this.value = new java.lang.String(codePoints, offset, count);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -441,7 +446,7 @@ public class String extends Object implements CharSequence,
     public String(byte[] ascii, int hibyte, int offset, int count) {
         this.value = new java.lang.String(ascii, hibyte, offset, count);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -478,7 +483,7 @@ public class String extends Object implements CharSequence,
     public String(byte ascii[], int hibyte) {
     	this.value = new java.lang.String(ascii, hibyte);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -520,7 +525,7 @@ public class String extends Object implements CharSequence,
     {
     	this.value = new java.lang.String(bytes, offset, length, charsetName);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -557,7 +562,7 @@ public class String extends Object implements CharSequence,
     public String(byte bytes[], int offset, int length, Charset charset) {
     	this.value = new java.lang.String(bytes, offset, length, charset);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -588,7 +593,7 @@ public class String extends Object implements CharSequence,
     {
     	this.value = new java.lang.String(bytes, charsetName);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -614,7 +619,7 @@ public class String extends Object implements CharSequence,
     public String(byte bytes[], Charset charset) {
     	this.value = new java.lang.String(bytes, charset);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -647,7 +652,7 @@ public class String extends Object implements CharSequence,
     public String(byte bytes[], int offset, int length) {
     	this.value = new java.lang.String(bytes, offset, length);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -670,7 +675,7 @@ public class String extends Object implements CharSequence,
     public String(byte bytes[]) {
     	this.value = new java.lang.String(bytes);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -686,7 +691,7 @@ public class String extends Object implements CharSequence,
     public String(StringBuffer buffer) {
     	this.value = new java.lang.String(buffer);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
 
     /**
@@ -707,7 +712,7 @@ public class String extends Object implements CharSequence,
     public String(StringBuilder builder) {
     	this.value = new java.lang.String(builder);
         this.panini$message$id = 0;
-        this.panini$redeemed = true;
+        this.panini$resolved = true;
     }
     
     /**
@@ -719,7 +724,7 @@ public class String extends Object implements CharSequence,
      *          object.
      */
     public int length() {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
         return value.length();
     }
     
@@ -732,7 +737,7 @@ public class String extends Object implements CharSequence,
      * @since 1.6
      */
     public boolean isEmpty() {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
         return value.isEmpty();
     }
     
@@ -755,7 +760,7 @@ public class String extends Object implements CharSequence,
      *             string.
      */
     public char charAt(int index) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.charAt(index);
     }
     
@@ -782,7 +787,7 @@ public class String extends Object implements CharSequence,
      * @since      1.5
      */
     public int codePointAt(int index) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.codePointAt(index);
     }
     
@@ -809,7 +814,7 @@ public class String extends Object implements CharSequence,
      * @since     1.5
      */
     public int codePointBefore(int index) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.codePointBefore(index);
     }
     
@@ -835,7 +840,7 @@ public class String extends Object implements CharSequence,
      * @since  1.5
      */
     public int codePointCount(int beginIndex, int endIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.codePointCount(beginIndex, endIndex);
     }
     
@@ -860,7 +865,7 @@ public class String extends Object implements CharSequence,
      * @since 1.5
      */
     public int offsetByCodePoints(int index, int codePointOffset) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.offsetByCodePoints(index, codePointOffset);
     }
     
@@ -895,7 +900,7 @@ public class String extends Object implements CharSequence,
      *                <code>dst.length</code></ul>
      */
     public void getChars(int srcBegin, int srcEnd, char dst[], int dstBegin) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	value.getChars(srcBegin, srcEnd, dst, dstBegin);
     }
     
@@ -944,7 +949,7 @@ public class String extends Object implements CharSequence,
      */
     @Deprecated
     public void getBytes(int srcBegin, int srcEnd, byte dst[], int dstBegin) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	value.getBytes(srcBegin, srcEnd, dst, dstBegin);
     }
     
@@ -971,7 +976,7 @@ public class String extends Object implements CharSequence,
     public byte[] getBytes(java.lang.String charsetName)
         throws UnsupportedEncodingException
     {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.getBytes(charsetName);
     }
 
@@ -994,7 +999,7 @@ public class String extends Object implements CharSequence,
      * @since  1.6
      */
     public byte[] getBytes(Charset charset) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.getBytes(charset);
     }
     
@@ -1012,7 +1017,7 @@ public class String extends Object implements CharSequence,
      * @since      JDK1.1
      */
     public byte[] getBytes() {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.getBytes();
     }
     
@@ -1030,7 +1035,7 @@ public class String extends Object implements CharSequence,
      * @return  a hash code value for this object.
      */
     public int hashCode() {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.hashCode();
     }
 
@@ -1045,10 +1050,10 @@ public class String extends Object implements CharSequence,
      *          {@code false} otherwise.
      */
     public boolean equals(java.lang.Object obj) {
-        if (panini$redeemed == false) panini$get();
+        if (panini$resolved == false) panini$get();
         if (obj instanceof String) {
         	String other = (String)obj;
-        	if(other.panini$redeemed == false) other.panini$get();
+        	if(other.panini$resolved == false) other.panini$get();
             return value.equals(other.value);
         }
         else if(obj instanceof java.lang.String){
@@ -1073,7 +1078,7 @@ public class String extends Object implements CharSequence,
      * @since  1.4
      */
     public boolean contentEquals(StringBuffer sb) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.contentEquals(sb);
     }
     
@@ -1092,7 +1097,7 @@ public class String extends Object implements CharSequence,
      * @since  1.5
      */
     public boolean contentEquals(CharSequence cs) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.contentEquals(cs);
     }
     
@@ -1125,7 +1130,7 @@ public class String extends Object implements CharSequence,
      * @see  #equals(Object)
      */
     public boolean equalsIgnoreCase(java.lang.String anotherString) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.equalsIgnoreCase(anotherString);
     }
     
@@ -1158,8 +1163,8 @@ public class String extends Object implements CharSequence,
      * @see  #equals(Object)
      */
     public boolean equalsIgnoreCase(String anotherString) {
-    	if (panini$redeemed == false) panini$get();
-    	if (anotherString.panini$redeemed == false) anotherString.panini$get();
+    	if (panini$resolved == false) panini$get();
+    	if (anotherString.panini$resolved == false) anotherString.panini$get();
     	return value.equalsIgnoreCase(anotherString.value);
     }
     
@@ -1205,7 +1210,7 @@ public class String extends Object implements CharSequence,
      *          lexicographically greater than the string argument.
      */
     public int compareTo(java.lang.String anotherString) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.compareTo(anotherString);
     }
     
@@ -1251,8 +1256,8 @@ public class String extends Object implements CharSequence,
      *          lexicographically greater than the string argument.
      */
     public int compareTo(String anotherString) {
-    	if (panini$redeemed == false) panini$get();
-    	if (anotherString.panini$redeemed == false) anotherString.panini$get();
+    	if (panini$resolved == false) panini$get();
+    	if (anotherString.panini$resolved == false) anotherString.panini$get();
     	return value.compareTo(anotherString.value);
     }
 
@@ -1272,8 +1277,8 @@ public class String extends Object implements CharSequence,
     		new Comparator<String>(){
 				@Override
 				public int compare(String arg0, String arg1) {
-					if (arg0.panini$redeemed == false) arg0.panini$get();
-					if (arg1.panini$redeemed == false) arg1.panini$get();
+					if (arg0.panini$resolved == false) arg0.panini$get();
+					if (arg1.panini$resolved == false) arg1.panini$get();
 					return java.lang.String.CASE_INSENSITIVE_ORDER.compare(
 							arg0.value, arg1.value);
 				}
@@ -1324,7 +1329,7 @@ public class String extends Object implements CharSequence,
      * @since   1.2
      */
     public int compareToIgnoreCase(java.lang.String str) {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
         return java.lang.String.CASE_INSENSITIVE_ORDER.compare(this.value, str);
     }
     
@@ -1361,7 +1366,7 @@ public class String extends Object implements CharSequence,
      */
     public boolean regionMatches(int toffset, java.lang.String other, int ooffset,
                                  int len) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.regionMatches(toffset, other, ooffset, len);
     }
     
@@ -1417,7 +1422,7 @@ public class String extends Object implements CharSequence,
      */
     public boolean regionMatches(boolean ignoreCase, int toffset,
                            java.lang.String other, int ooffset, int len) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.regionMatches(ignoreCase, toffset, other, ooffset, len);
     }
     
@@ -1439,7 +1444,7 @@ public class String extends Object implements CharSequence,
      *          </pre>
      */
     public boolean startsWith(java.lang.String prefix, int toffset) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.startsWith(prefix, toffset);
     }
     
@@ -1457,7 +1462,7 @@ public class String extends Object implements CharSequence,
      * @since   1. 0
      */
     public boolean startsWith(java.lang.String prefix) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.startsWith(prefix);
     }
     
@@ -1473,7 +1478,7 @@ public class String extends Object implements CharSequence,
      *          as determined by the {@link #equals(Object)} method.
      */
     public boolean endsWith(java.lang.String suffix) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.endsWith(suffix);
     }
     
@@ -1502,7 +1507,7 @@ public class String extends Object implements CharSequence,
      *          <code>-1</code> if the character does not occur.
      */
     public int indexOf(int ch) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.indexOf(ch);
     }
     
@@ -1546,7 +1551,7 @@ public class String extends Object implements CharSequence,
      *          if the character does not occur.
      */
     public int indexOf(int ch, int fromIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.indexOf(ch, fromIndex);
     }
 
@@ -1574,7 +1579,7 @@ public class String extends Object implements CharSequence,
      *          <code>-1</code> if the character does not occur.
      */
     public int lastIndexOf(int ch) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.lastIndexOf(ch);
     }
     
@@ -1613,7 +1618,7 @@ public class String extends Object implements CharSequence,
      *          if the character does not occur before that point.
      */
     public int lastIndexOf(int ch, int fromIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.lastIndexOf(ch, fromIndex);
     }
     
@@ -1632,7 +1637,7 @@ public class String extends Object implements CharSequence,
      *          or {@code -1} if there is no such occurrence.
      */
     public int indexOf(java.lang.String str) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.indexOf(str);
     }
     
@@ -1653,7 +1658,7 @@ public class String extends Object implements CharSequence,
      *          or {@code -1} if there is no such occurrence.
      */
     public int indexOf(java.lang.String str, int fromIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.indexOf(str, fromIndex);
     }
     
@@ -1673,7 +1678,7 @@ public class String extends Object implements CharSequence,
      *          or {@code -1} if there is no such occurrence.
      */
     public int lastIndexOf(java.lang.String str) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.lastIndexOf(str);
     }
     
@@ -1694,7 +1699,7 @@ public class String extends Object implements CharSequence,
      *          or {@code -1} if there is no such occurrence.
      */
     public int lastIndexOf(java.lang.String str, int fromIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.lastIndexOf(str, fromIndex);
     }
     
@@ -1716,7 +1721,7 @@ public class String extends Object implements CharSequence,
      *             length of this <code>String</code> object.
      */
     public java.lang.String substring(int beginIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.substring(beginIndex);
     }
     
@@ -1743,7 +1748,7 @@ public class String extends Object implements CharSequence,
      *             <code>endIndex</code>.
      */
     public java.lang.String substring(int beginIndex, int endIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.substring(beginIndex, endIndex);
     }
 
@@ -1776,7 +1781,7 @@ public class String extends Object implements CharSequence,
      * @spec JSR-51
      */
     public CharSequence subSequence(int beginIndex, int endIndex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.subSequence(beginIndex, endIndex);
     }
 
@@ -1801,7 +1806,7 @@ public class String extends Object implements CharSequence,
      *          characters followed by the string argument's characters.
      */
     public java.lang.String concat(java.lang.String str) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.concat(str);
     }
     
@@ -1835,7 +1840,7 @@ public class String extends Object implements CharSequence,
      *          occurrence of <code>oldChar</code> with <code>newChar</code>.
      */
     public java.lang.String replace(char oldChar, char newChar) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.replace(oldChar, newChar);
     }
     
@@ -1866,7 +1871,7 @@ public class String extends Object implements CharSequence,
      * @spec JSR-51
      */
     public boolean matches(java.lang.String regex) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.matches(regex);
     }
     
@@ -1897,8 +1902,8 @@ public class String extends Object implements CharSequence,
      * @spec JSR-51
      */
     public boolean matches(String regex) {
-    	if (panini$redeemed == false) panini$get();
-    	if (regex.panini$redeemed == false) regex.panini$get();
+    	if (panini$resolved == false) panini$get();
+    	if (regex.panini$resolved == false) regex.panini$get();
     	return value.matches(regex.value);
     }
     
@@ -1912,7 +1917,7 @@ public class String extends Object implements CharSequence,
      * @since 1.5
      */
     public boolean contains(CharSequence s) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.contains(s);
     }
     
@@ -1956,7 +1961,7 @@ public class String extends Object implements CharSequence,
      * @spec JSR-51
      */
     public java.lang.String replaceFirst(java.lang.String regex, java.lang.String replacement) {
-    	if (panini$redeemed == false) panini$get();
+    	if (panini$resolved == false) panini$get();
     	return value.replaceFirst(regex, replacement);
     }
     
@@ -2000,7 +2005,7 @@ public class String extends Object implements CharSequence,
      * @spec JSR-51
      */
     public java.lang.String replaceAll(java.lang.String regex, java.lang.String replacement) {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.replaceAll(regex, replacement);
     }
     
@@ -2019,7 +2024,7 @@ public class String extends Object implements CharSequence,
      * @since 1.5
      */
     public java.lang.String replace(CharSequence target, CharSequence replacement) {
-    if(panini$redeemed == false) panini$get(); 
+    if(panini$resolved == false) panini$get(); 
      return value.replace(target, replacement);
     }
     
@@ -2104,7 +2109,7 @@ public class String extends Object implements CharSequence,
      * @spec JSR-51
      */
     public java.lang.String[] split(java.lang.String regex, int limit) {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.split(regex, limit);
     }
     
@@ -2147,7 +2152,7 @@ public class String extends Object implements CharSequence,
      * @spec JSR-51
      */
     public java.lang.String[] split(java.lang.String regex) {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.split(regex);
     }
     
@@ -2204,7 +2209,7 @@ public class String extends Object implements CharSequence,
      * @since   1.1
      */
     public java.lang.String toLowerCase(java.util.Locale locale) {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.toLowerCase(locale);
     }
     
@@ -2228,7 +2233,7 @@ public class String extends Object implements CharSequence,
      * @see     java.lang.String#toLowerCase(Locale)
      */
     public java.lang.String toLowerCase() {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.toLowerCase();
     }
     
@@ -2281,7 +2286,7 @@ public class String extends Object implements CharSequence,
      * @since   1.1
      */
     public java.lang.String toUpperCase(java.util.Locale locale) {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.toUpperCase(locale);
     }
     
@@ -2305,7 +2310,7 @@ public class String extends Object implements CharSequence,
      * @see     java.lang.String#toUpperCase(Locale)
      */
     public java.lang.String toUpperCase() {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.toUpperCase();
     }
     
@@ -2341,7 +2346,7 @@ public class String extends Object implements CharSequence,
      *          trailing white space.
      */
     public java.lang.String trim() {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.trim();
     }
     
@@ -2351,7 +2356,7 @@ public class String extends Object implements CharSequence,
      * @return  the string itself.
      */
     public java.lang.String toString() {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value;
     }
     
@@ -2363,7 +2368,7 @@ public class String extends Object implements CharSequence,
      *          the character sequence represented by this string.
      */
     public char[] toCharArray() {
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.toCharArray();
     }
     
@@ -2477,7 +2482,7 @@ public class String extends Object implements CharSequence,
      *          guaranteed to be from a pool of unique strings.
      */
     public java.lang.String intern(){
-    	if(panini$redeemed == false) panini$get();
+    	if(panini$resolved == false) panini$get();
     	return value.intern();
     }
 
