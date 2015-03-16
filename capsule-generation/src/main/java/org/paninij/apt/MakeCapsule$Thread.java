@@ -1,6 +1,7 @@
 package org.paninij.apt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,12 +59,6 @@ class MakeCapsule$Thread extends MakeCapsule
     String buildQualifiedCapsuleName() {
         return template.getQualifiedName() + "$Capsule$Thread";
     }
-
-    @Override
-    String buildCapsuleImports() {
-        return "import org.paninij.runtime.Capsule$Thread;";
-    }
-
 
     @Override
     String buildCapsuleDecl() {
@@ -213,5 +208,12 @@ class MakeCapsule$Thread extends MakeCapsule
         }
 
         return false;
+    }
+    
+    @Override
+    Set<String> getUniversalImports() {
+        Set<String> imports = new HashSet<String>();
+        imports.add("org.paninij.runtime.Capsule$Thread");
+        return imports;
     }
 }
