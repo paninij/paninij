@@ -67,6 +67,10 @@ public class DuckShape
         {
             return Category.PRIMITIVE;
         }
+        else if (ModelInfo.isPaniniCustom(returnType))
+        {
+            return Category.PANINICUSTOM;
+        }
         else
         {
             return Category.NORMAL;
@@ -147,13 +151,14 @@ public class DuckShape
     private static String encodeReturnType(ExecutableElement method)
     {
         // TODO: Handle other cases.
-
-        switch(categoryOf(method)) {
+        Category category = categoryOf(method);
+        switch(category) {
 
         case VOID:
             return "void";
 
         case NORMAL:
+        case PANINICUSTOM:
             return method.getReturnType()
                          .toString()
                          .replaceAll("_", "__")
@@ -161,10 +166,9 @@ public class DuckShape
 
         case FINAL:
         case FINALARRAY:
-        case PANINICUSTOM:
         case PRIMITIVE:
         default:
-            throw new IllegalArgumentException("TODO: Handle cases.");
+            throw new IllegalArgumentException("Cannot handle duck category: " + category);
         }
     }
 

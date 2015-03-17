@@ -26,18 +26,17 @@ public abstract class MakeDuck
 
     String buildDuck(DuckShape currentDuck)
     {
-        switch (currentDuck.category)
+        DuckShape.Category category = currentDuck.category;
+        switch (category)
         {
         case NORMAL:
             return buildNormalDuck(currentDuck);
         case VOID:
             return buildVoidDuck(currentDuck);
-        case FINAL:
-            // TODO
-            context.note("Ignoring a final duck shape: " + currentDuck);
-            throw new UnsupportedOperationException("Ducks category FINAL not supported.");
+        case PANINICUSTOM:
+            return buildPaniniCustomDuck(currentDuck);
         default:
-            throw new UnsupportedOperationException("Duck category not supported.");
+            throw new UnsupportedOperationException("Duck category not supported: " + category);
         }
     }
 
@@ -160,6 +159,8 @@ public abstract class MakeDuck
     abstract String buildNormalDuck(DuckShape currentDuck);
 
     abstract String buildVoidDuck(DuckShape currentDuck);
+
+    abstract String buildPaniniCustomDuck(DuckShape currentDuck);
 
     public abstract void makeSourceFile(DuckShape currentDuck);
 }

@@ -1,6 +1,7 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.String;
 
 
 @Capsule
@@ -12,7 +13,7 @@ public class HelloWorldShort
     }
 
     String getMessage() {
-        return "vinegar";
+        return new String("vinegar");
     }
     */
 }

@@ -124,4 +124,9 @@ public class ModelInfo {
     {
         return isArray(type.asType());
     }
+
+    public static boolean isPaniniCustom(TypeMirror returnType)
+    {
+        return returnType.toString().equals("org.paninij.lang.String");
+    }
 }
