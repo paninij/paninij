@@ -19,12 +19,12 @@ import javax.lang.model.util.SimpleTypeVisitor8;
 
 /**
  * Use the type collector to gather a set of `String` representations of the fully qualified type
- * names being used on the interface of the visited type. For example, given some `Element e`,
+ * names being used on the interface of the visited type. For example, given some `Element elem`,
  * 
  * ```
- * TypeCollector c = new TypeCollector();
+ * TypeCollector collector = new TypeCollector();
  * Set<String> collectedTypes = new HashSet<String>();
- * c.accept(e, collectedTypes);
+ * elem.accept(collector, collectedTypes);
  * ```
  * 
  * One can use `TypeCollector.collect(Element e)` as a convenience method for doing this.
@@ -104,9 +104,8 @@ public class TypeCollector extends SimpleElementVisitor8<Void, Set<String>>
         @Override
         public Void visitDeclared(DeclaredType t, Set<String> p)
         {
-            p.add(t.toString());
+            p.add(ModelInfo.toStringWithoutTypeArgs(t));
             for (TypeMirror typeArg : t.getTypeArguments()) {
-                p.add(t.toString());
                 typeArg.accept(this, p);
             }
             return null;

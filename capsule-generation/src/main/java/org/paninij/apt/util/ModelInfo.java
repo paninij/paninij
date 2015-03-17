@@ -129,4 +129,17 @@ public class ModelInfo {
     {
         return returnType.toString().equals("org.paninij.lang.String");
     }
+            
+    /**
+     * @return String representation of the type (fully qualified) with any type arguments dropped.
+     */
+    public static String toStringWithoutTypeArgs(DeclaredType t)
+    {
+        String orig = t.toString();
+        if (t.getTypeArguments().isEmpty()) {
+            return orig;
+        } else {
+            return orig.substring(0, orig.indexOf('<'));
+        }
+    }
 }
