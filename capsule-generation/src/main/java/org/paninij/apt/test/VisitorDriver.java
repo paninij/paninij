@@ -27,19 +27,20 @@ public class VisitorDriver extends AbstractProcessor
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
-        //note("VisitorDriver.process()");
+        //note("VisitorDriver.process():");
         testTypeCollector(roundEnv);
         return false;
     }
     
     private void testTypeCollector(RoundEnvironment roundEnv)
     {
+        //note("VisitorDriver.testTypeCollector():");
         //printAllTypeCollectorResults(roundEnv);
     }
     
     private void printAllTypeCollectorResults(RoundEnvironment roundEnv)
     {
-        note("VisitorDriver.testTypeCollector() - results:");
+        note("VisitorDriver.printAllTypeCollectorResults():");
         for (Element elem : roundEnv.getElementsAnnotatedWith(Visit.class))
         {
             for (String result : TypeCollector.collect(elem)) {
