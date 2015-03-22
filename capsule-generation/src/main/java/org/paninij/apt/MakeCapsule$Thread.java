@@ -10,6 +10,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.Source;
 
@@ -97,17 +98,43 @@ class MakeCapsule$Thread extends MakeCapsule
     @Override
     String buildCapsuleFields()
     {
-        /*
-    	String src = Source.lines(1,
-            "private LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();",
-            "private {0} encapsulated = new {0}();",
-            "private Thread thread;"
-        );
-        return MessageFormat.format(src, template.getSimpleName());
-        */
-        return "";
+        String src = Source.lines(0, "#0", "", "#1");
+        return Source.format(src, buildPaniniTemplateDecl(), buildProcedureIDs());
     }
 
+    String buildPaniniTemplateDecl() {
+        String src = Source.lines(1, "private #0 panini$Template;");
+        return Source.format(src, template.getQualifiedName());
+    }
+
+    String buildProcedureIDs() {
+        ArrayList<String> decls = new ArrayList<String>();
+        String src = Source.lines(1, "#0");
+        int currID = 0;
+        String base = "public static final int panini$proc$";
+        for (Element child : template.getEnclosedElements())
+        {
+            if (needsProceedureWrapper(child)) {
+                ExecutableElement method = (ExecutableElement) child;
+                String name = method.getSimpleName().toString();
+                List<String> params = new ArrayList<String>();
+                for (VariableElement param : method.getParameters()) {
+                    params.add(parseType(param.asType()));
+                }
+                String paramStrings = params.size() > 0 ? "$" + String.join("$", params) : "";
+                decls.add(base + name + paramStrings + " = " + currID + ";");
+                currID++;
+            }
+        }
+        return Source.format(src, String.join("\n", decls));
+    }
+
+
+    String parseType(TypeMirror type) {
+        String src = type.toString().replaceAll("\\.", "_");
+        src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");
+        return src;
+    }
 
     @Override
     String buildProcedure(ExecutableElement method)
