@@ -12,6 +12,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.Source;
 
 
@@ -62,7 +63,7 @@ class MakeCapsule$Thread extends MakeCapsule
 
     @Override
     String buildCapsuleImports() {
-        return "import org.paninij.runtime.Capsule$Thread;";
+        return "import org.paninij.runtime.Capsule$Thread;\nimport org.paninij.runtime.ducks.*;";
     }
 
 
@@ -111,22 +112,28 @@ class MakeCapsule$Thread extends MakeCapsule
         ArrayList<String> decls = new ArrayList<String>();
         String src = Source.lines(1, "#0");
         int currID = 0;
-        String base = "public static final int panini$proc$";
         for (Element child : template.getEnclosedElements())
         {
             if (needsProceedureWrapper(child)) {
-                ExecutableElement method = (ExecutableElement) child;
-                String name = method.getSimpleName().toString();
-                List<String> params = new ArrayList<String>();
-                for (VariableElement param : method.getParameters()) {
-                    params.add(parseType(param.asType()));
-                }
-                String paramStrings = params.size() > 0 ? "$" + String.join("$", params) : "";
-                decls.add(base + name + paramStrings + " = " + currID + ";");
+                
+                decls.add("public static final int " + buildProcedureID((ExecutableElement)child)+ " = " + currID + ";");
                 currID++;
             }
         }
-        return Source.format(src, String.join("\n", decls));
+        return Source.format(src, String.join("\n    ", decls));
+    }
+    
+    String buildProcedureID(ExecutableElement method)
+    {
+        String base = "panini$proc$";
+        String name = method.getSimpleName().toString();
+        List<String> params = new ArrayList<String>();
+        for (VariableElement param : method.getParameters()) {
+            params.add(parseType(param.asType()));
+        }
+        String paramStrings = params.size() > 0 ? "$" + String.join("$", params) : "";
+        
+        return base + name + paramStrings;
     }
 
 
@@ -142,7 +149,7 @@ class MakeCapsule$Thread extends MakeCapsule
 
         String src = Source.lines(1, "public #0 #1(#2)",
                                      "{",
-                                     "    #3",
+                                     "#3",
                                      "}");
 
         return Source.format(src, method.getReturnType(),
@@ -152,7 +159,30 @@ class MakeCapsule$Thread extends MakeCapsule
     }
 
     String buildProcedureBody(ExecutableElement method) {
-        return "throw new UnsupportedOperationException();";
+        
+        DuckShape duck = new DuckShape(method);
+        String possibleReturn = "";
+        String fmt = Source.lines(0, "    #0$Thread panini$duck$future = null;",
+                                     "        panini$duck$future = new #0$Thread(#1);",
+                                     "        panini$push(panini$duck$future);",
+                                     "        #2");
+        
+        List<String> args = new ArrayList<String>();
+        
+        args.add(buildProcedureID(method));
+        
+        for(Element el : method.getParameters())
+        {
+            VariableElement param = (VariableElement)el;
+            args.add(param.toString());
+        }
+        
+        if(duck.getSimpleReturnType() != "void")
+        {
+            possibleReturn = "return panini$duck$future;";
+        }
+        
+        return Source.format(fmt, duck.toString(), String.join(", ", args), possibleReturn);
     }
 
 
