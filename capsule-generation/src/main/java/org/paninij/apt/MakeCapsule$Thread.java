@@ -159,46 +159,6 @@ class MakeCapsule$Thread extends MakeCapsule
         return param.asType().toString() + " " + param.toString();
     }
 
-    String buildPaniniExit()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$exit()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
-    String buildPaniniJoin()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$join()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
-    String buildPaniniStart()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$start()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
-    String buildPaniniShutdown()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$shutdown()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
     boolean needsProceedureWrapper(Element elem)
     {
         if (elem.getKind() == ElementKind.METHOD) {
