@@ -2,17 +2,15 @@ package org.paninij.apt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
 
@@ -85,7 +83,7 @@ class MakeCapsule$Thread extends MakeCapsule
             // TODO: For now, ignore everything except for methods which need to be wrapped
             // procedures. In the future, other enclosed elements may need to be treated specially
             // while building the capsule body.
-            if (needsProcedureWrapper(child)) {
+            if (PaniniModelInfo.needsProcedureWrapper(child)) {
                 decls.add(buildProcedure((ExecutableElement) child));
             }
         }
@@ -111,7 +109,7 @@ class MakeCapsule$Thread extends MakeCapsule
         int currID = 0;
         for (Element child : template.getEnclosedElements())
         {
-            if (needsProcedureWrapper(child)) {
+            if (PaniniModelInfo.needsProcedureWrapper(child)) {
                 
                 decls.add("public static final int " + buildProcedureID((ExecutableElement)child)+ " = " + currID + ";");
                 currID++;
@@ -172,22 +170,5 @@ class MakeCapsule$Thread extends MakeCapsule
                                      "panini$push(panini$duck);",
                                      "#2");
         return Source.format(fmt, duck.toString(), args, possibleReturn);
-    }
-
-
-    boolean needsProcedureWrapper(Element elem)
-    {
-        if (elem.getKind() == ElementKind.METHOD) {
-            ExecutableElement method = (ExecutableElement) elem;
-            Set<Modifier> modifiers = method.getModifiers();
-            // TODO: decide on appropriate semantics.
-            if (modifiers.contains(Modifier.STATIC)) {
-            	return false;
-            } else if (modifiers.contains(Modifier.PUBLIC)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

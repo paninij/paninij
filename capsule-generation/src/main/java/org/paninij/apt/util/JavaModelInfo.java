@@ -10,7 +10,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-public class ModelInfo {
+public class JavaModelInfo {
 
     /**
      * Gives a string representation of the executable element's return type. If the return type is
@@ -122,11 +122,6 @@ public class ModelInfo {
     public static boolean isArray(Element type)
     {
         return isArray(type.asType());
-    }
-
-    public static boolean isPaniniCustom(TypeMirror returnType)
-    {
-        return returnType.toString().equals("org.paninij.lang.String");
     }
 
     /*

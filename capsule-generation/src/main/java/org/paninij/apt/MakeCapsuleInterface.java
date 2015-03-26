@@ -11,6 +11,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.lang.Signature;
 
@@ -36,21 +37,22 @@ public class MakeCapsuleInterface
     {
         String pkg = buildPackage();
         String src = Source.lines(0, "package #0;",
-                "",
-                "#1",
-                "",
-                "/**",
-                " * This Capsule Interface was auto-generated from `#2`",
-                " */",
-                "#3",
-                "{",
-                "#4",
-                "}");
+                                     "",
+                                     "#1",
+                                     "",
+                                     "/**",
+                                     " * This Capsule Interface was auto-generated from `#2`",
+                                     " */",
+                                     "#3",
+                                     "{",
+                                     "#4",
+                                     "}");
+
         return Source.format(src, pkg,
-                buildCapsuleImports(),
-                pkg + "." + template.getSimpleName(),
-                buildCapsuleDecl(),
-                buildCapsuleBody());
+                                  buildCapsuleImports(),
+                                  pkg + "." + template.getSimpleName(),
+                                  buildCapsuleDecl(),
+                                  buildCapsuleBody());
     }
 
     private String buildCapsuleDecl()
@@ -61,24 +63,23 @@ public class MakeCapsuleInterface
     private String buildCapsuleInterfaces()
     {
         List<? extends TypeMirror> interfaces = template.getInterfaces();
-        if (interfaces.size() > 0) {
+        if (interfaces.size() > 0)
+        {
             String extend = " extends ";
             for (TypeMirror i : interfaces)
             {
                 Element interf = ((DeclaredType) i).asElement();
                 extend += interf.getSimpleName() + "$Signature, ";
-                // TODO verify that it is indeed a signature?
-                // perhaps this is part of the Checker class
-//                if (i.getAnnotationsByType(Signature.class).length > 0)
-//                {
-//
-//                }
+                // TODO: Verify that it is indeed a signature?
+                // Or maybe verification is part of the Checker class.
             }
             return extend.replaceAll(", $", "");
         }
-
-        // there are no signatures to extend
-        return "";
+        else
+        {
+            // There are no signatures to extend.
+            return "";
+        }
     }
 
     private String buildCapsuleName()
@@ -107,28 +108,13 @@ public class MakeCapsuleInterface
         ArrayList<String> decls = new ArrayList<String>();
         for (Element child : template.getEnclosedElements())
         {
-            if (child.getKind() == ElementKind.METHOD)
+            if (PaniniModelInfo.needsProcedureWrapper(child))
             {
-                decls.add(buildMethodSignature((ExecutableElement) child));
+                ExecutableElement method = (ExecutableElement) child;
+                String decl = Source.format("    #0;\n", Source.buildExecutableDecl(method));
+                decls.add(decl);
             }
         }
-        return String.join("\n", decls);
-    }
-
-    private String buildMethodSignature(ExecutableElement method)
-    {
-        String parameters = buildMethodParameters(method);
-        // TODO include "throws"
-        return Source.format("    public #0 #1(#2);", method.getReturnType(), method.getSimpleName(), parameters);
-    }
-
-    private String buildMethodParameters(ExecutableElement method)
-    {
-        String parameters = "";
-        for (VariableElement param : method.getParameters())
-        {
-            parameters += param.asType() + " " + param.getSimpleName() + ", ";
-        }
-        return parameters.replaceAll(", $", "");
+        return String.join("", decls);
     }
 }

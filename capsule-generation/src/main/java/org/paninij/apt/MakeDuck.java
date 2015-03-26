@@ -10,7 +10,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 
 import org.paninij.apt.util.DuckShape;
-import org.paninij.apt.util.ModelInfo;
+import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.Source;
 
 public abstract class MakeDuck
@@ -95,7 +95,7 @@ public abstract class MakeDuck
     String buildFacadeBody(ExecutableElement method)
     {
         String fmt;
-        if (ModelInfo.hasVoidReturnType(method))
+        if (JavaModelInfo.hasVoidReturnType(method))
         {
             fmt = "panini$get().#0(#1);";
         }
