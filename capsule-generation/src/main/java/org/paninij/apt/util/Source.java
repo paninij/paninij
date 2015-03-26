@@ -3,6 +3,7 @@ package org.paninij.apt.util;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -234,5 +235,27 @@ public class Source
         } else {
             return orig.substring(0, orig.indexOf('<'));
         }
+    }
+    
+    /**
+     * Builds a `String` of import declarations from the given set of types. Each of the given
+     * `String` objects is assumed to be a fully qualified type that can be imported as-is.
+     * For example, if the following set of types were passed,
+     * 
+     *     { java.util.HashSet, java.util.Set, java.lang.String }
+     * 
+     * then this method would return the following imports declarations as a single `String`:
+     * 
+     *     import java.util.HashSet;
+     *     import java.util.Set;
+     *     import java.lang.String;
+     */
+    public static String buildImportDecls(Set<String> imports)
+    {
+        String rv = "";
+        for (String i : imports) {
+            rv += "import " + i + ";\n";
+        }
+        return rv;
     }
 }

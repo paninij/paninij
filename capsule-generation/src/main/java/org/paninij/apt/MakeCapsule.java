@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.apt.util.Source;
 import org.paninij.apt.util.TypeCollector;
 
 
@@ -50,12 +51,7 @@ abstract class MakeCapsule
     {
         Set<String> imports = TypeCollector.collect(template);
         imports.addAll(getStandardImports());
-
-        String rv = "";
-        for (String i : imports) {
-            rv += "import " + i + ";\n";
-        }
-        return rv;
+        return Source.buildImportDecls(imports);
     }
 
     abstract String buildCapsuleDecl();
