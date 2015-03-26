@@ -2,7 +2,6 @@ package org.paninij.apt;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 
 
 abstract class MakeCapsule

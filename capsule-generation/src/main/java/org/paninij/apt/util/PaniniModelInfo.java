@@ -1,6 +1,5 @@
 package org.paninij.apt.util;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.lang.model.element.Element;

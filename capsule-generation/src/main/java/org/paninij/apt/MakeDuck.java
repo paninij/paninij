@@ -1,12 +1,8 @@
 package org.paninij.apt;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 
 import org.paninij.apt.util.DuckShape;
