@@ -2,11 +2,14 @@ package org.paninij.apt.util;
 
 import java.lang.StringBuilder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 
@@ -250,7 +253,7 @@ public class Source
      *     import java.util.Set;
      *     import java.lang.String;
      */
-    public static String buildImportDecls(Set<String> imports)
+    public static String buildImportDecls(Iterable<String> imports)
     {
         String rv = "";
         for (String i : imports) {
@@ -258,4 +261,27 @@ public class Source
         }
         return rv;
     }
+    
+    /**
+     * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
+     * given `extraImports` will also be added as import declarations in the returned `String`.
+     */
+    public static String buildCollectedImportDecls(TypeElement t, String... extraImports)
+    {
+        return buildCollectedImportDecls(t, Arrays.asList(extraImports));
+    }
+   
+    /**
+     * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
+     * given `extraImports` will also be added as import declarations in the returned `String`.
+     */
+    public static String buildCollectedImportDecls(TypeElement t, Iterable<String> extraImports)
+    {
+        Set<String> imports = TypeCollector.collect(t);
+        for (String s : extraImports) {
+            imports.add(s);
+        }
+        return buildImportDecls(imports);
+    }
+    
 }

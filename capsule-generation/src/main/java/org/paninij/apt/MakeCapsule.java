@@ -47,11 +47,8 @@ abstract class MakeCapsule
  
     abstract String buildQualifiedCapsuleName();
 
-    String buildCapsuleImports()
-    {
-        Set<String> imports = TypeCollector.collect(template);
-        imports.addAll(getStandardImports());
-        return Source.buildImportDecls(imports);
+    String buildCapsuleImports() {
+        return Source.buildCollectedImportDecls(template, getStandardImports());
     }
 
     abstract String buildCapsuleDecl();
