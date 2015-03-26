@@ -54,10 +54,4 @@ abstract class MakeCapsule
     abstract String buildCapsuleFields();
 
     abstract String buildProcedure(ExecutableElement method);
-    
-    abstract String buildProcedureParameters(ExecutableElement method);
-
-    abstract String buildArgsList(ExecutableElement method);
-
-    abstract String buildParamDecl(VariableElement param);
 }

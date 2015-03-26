@@ -84,10 +84,10 @@ public abstract class MakeDuck
                 "#0 #1 #2(#3) {", 
                 "    #4", 
                 "}");
-        return Source.format(fmt, Source.buildModifierString(method),
+        return Source.format(fmt, Source.buildModifiersList(method),
                 Source.dropPackageName(method.getReturnType().toString()), 
                 method.getSimpleName(),
-                Source.buildParameterList(method), 
+                Source.buildParametersList(method), 
                 buildFacadeBody(method));
 
     }
@@ -103,14 +103,14 @@ public abstract class MakeDuck
         {
             fmt = "return panini$get().#0(#1);";
         }
-        return Source.format(fmt, method.getSimpleName(), Source.buildArgsList(method));
+        return Source.format(fmt, method.getSimpleName(), Source.buildParameterNamesList(method));
     }
 
     boolean canMakeFacade(ExecutableElement method)
     {
         // Some methods do not need to have a facade made for them
         // e.g. native methods, final methods
-        String modifiers = Source.buildModifierString(method);
+        String modifiers = Source.buildModifiersList(method);
         if (modifiers.contains("native"))
         {
             return false;

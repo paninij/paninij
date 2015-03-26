@@ -154,7 +154,7 @@ class MakeCapsule$Thread extends MakeCapsule
 
         return Source.format(src, method.getReturnType(),
                                         method.getSimpleName(),
-                                        buildProcedureParameters(method),
+                                        Source.buildParametersList(method),
                                         buildProcedureBody(method));
     }
 
@@ -185,36 +185,6 @@ class MakeCapsule$Thread extends MakeCapsule
         return Source.format(fmt, duck.toString(), String.join(", ", args), possibleReturn);
     }
 
-
-    @Override
-    String buildProcedureParameters(ExecutableElement method)
-    {
-        //TODO: Use version in Source
-        List<String> paramStrings = new ArrayList<String>();
-        for (VariableElement param : method.getParameters()) {
-            paramStrings.add(buildParamDecl(param));
-        }
-        return String.join(", ", paramStrings);
-    }
-
-
-    @Override
-    String buildArgsList(ExecutableElement method)
-    {
-        //TODO: Use version in Source
-        List<String> paramStrings = new ArrayList<String>();
-        for (VariableElement var : method.getParameters()) {
-            paramStrings.add(var.toString());
-        }
-        return String.join(", ", paramStrings);
-    }
-
-
-    @Override
-    String buildParamDecl(VariableElement param)
-    {
-        return param.asType().toString() + " " + param.toString();
-    }
 
     boolean needsProceedureWrapper(Element elem)
     {
