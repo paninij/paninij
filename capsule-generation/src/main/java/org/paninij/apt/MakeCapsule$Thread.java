@@ -82,19 +82,16 @@ class MakeCapsule$Thread extends MakeCapsule
 
         for (Element child : template.getEnclosedElements())
         {
-            // For now, ignore everything except for constructors and methods which need to be
-            // wrapped with procedures.
-            if (child.getKind() == ElementKind.CONSTRUCTOR) {
-                // TODO:
-                //decls.add(buildCapsuleFactory((ExecutableElement) child));
-            } else if (needsProceedureWrapper(child)) {
+            // TODO: For now, ignore everything except for methods which need to be wrapped
+            // procedures. In the future, other enclosed elements may need to be treated specially
+            // while building the capsule body.
+            if (needsProcedureWrapper(child)) {
                 decls.add(buildProcedure((ExecutableElement) child));
             }
         }
 
         return String.join("\n", decls);
     }
-
 
     @Override
     String buildCapsuleFields()
@@ -114,7 +111,7 @@ class MakeCapsule$Thread extends MakeCapsule
         int currID = 0;
         for (Element child : template.getEnclosedElements())
         {
-            if (needsProceedureWrapper(child)) {
+            if (needsProcedureWrapper(child)) {
                 
                 decls.add("public static final int " + buildProcedureID((ExecutableElement)child)+ " = " + currID + ";");
                 currID++;
@@ -146,47 +143,39 @@ class MakeCapsule$Thread extends MakeCapsule
     @Override
     String buildProcedure(ExecutableElement method)
     {
+        String src = Source.lines(0, "    #0",
+                                     "    {",
+                                     "#1",
+                                     "    }");
 
-        String src = Source.lines(1, "public #0 #1(#2)",
-                                     "{",
-                                     "#3",
-                                     "}");
-
-        return Source.format(src, method.getReturnType(),
-                                        method.getSimpleName(),
-                                        Source.buildParametersList(method),
-                                        buildProcedureBody(method));
+        return Source.format(src, Source.buildExecutableDecl(method),
+                                  buildProcedureBody(method));
     }
 
     String buildProcedureBody(ExecutableElement method) {
         
         DuckShape duck = new DuckShape(method);
         String possibleReturn = "";
-        String fmt = Source.lines(0, "    #0$Thread panini$duck$future = null;",
-                                     "        panini$duck$future = new #0$Thread(#1);",
-                                     "        panini$push(panini$duck$future);",
-                                     "        #2");
-        
-        List<String> args = new ArrayList<String>();
-        
-        args.add(buildProcedureID(method));
-        
-        for(Element el : method.getParameters())
-        {
-            VariableElement param = (VariableElement)el;
-            args.add(param.toString());
-        }
-        
+       
+        // Append the list of parameter names to `args` if there are any.
+        String procID = buildProcedureID(method);
+        String args = Source.buildParameterNamesList(method);
+        args = args.equals("") ? procID : procID + ", " + args;
+
         if(duck.getSimpleReturnType() != "void")
         {
-            possibleReturn = "return panini$duck$future;";
+            possibleReturn = "return panini$duck;";
         }
-        
-        return Source.format(fmt, duck.toString(), String.join(", ", args), possibleReturn);
+
+        String fmt = Source.lines(2, "#0$Thread panini$duck = null;",
+                                     "panini$duck = new #0$Thread(#1);",
+                                     "panini$push(panini$duck);",
+                                     "#2");
+        return Source.format(fmt, duck.toString(), args, possibleReturn);
     }
 
 
-    boolean needsProceedureWrapper(Element elem)
+    boolean needsProcedureWrapper(Element elem)
     {
         if (elem.getKind() == ElementKind.METHOD) {
             ExecutableElement method = (ExecutableElement) elem;
