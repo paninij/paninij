@@ -104,7 +104,7 @@ public class TypeCollector extends SimpleElementVisitor8<Void, Set<String>>
         @Override
         public Void visitDeclared(DeclaredType t, Set<String> p)
         {
-            p.add(ModelInfo.toStringWithoutTypeArgs(t));
+            p.add(Source.buildWithoutTypeArgs(t));
             for (TypeMirror typeArg : t.getTypeArguments()) {
                 typeArg.accept(this, p);
             }

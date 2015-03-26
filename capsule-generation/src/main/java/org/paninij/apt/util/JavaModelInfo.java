@@ -1,8 +1,5 @@
 package org.paninij.apt.util;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -11,7 +8,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-public class ModelInfo {
+public class JavaModelInfo {
 
     /**
      * Gives a string representation of the executable element's return type. If the return type is
@@ -123,23 +120,5 @@ public class ModelInfo {
     public static boolean isArray(Element type)
     {
         return isArray(type.asType());
-    }
-
-    public static boolean isPaniniCustom(TypeMirror returnType)
-    {
-        return returnType.toString().equals("org.paninij.lang.String");
-    }
-            
-    /**
-     * @return String representation of the type (fully qualified) with any type arguments dropped.
-     */
-    public static String toStringWithoutTypeArgs(DeclaredType t)
-    {
-        String orig = t.toString();
-        if (t.getTypeArguments().isEmpty()) {
-            return orig;
-        } else {
-            return orig.substring(0, orig.indexOf('<'));
-        }
     }
 }

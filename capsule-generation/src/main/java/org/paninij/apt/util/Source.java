@@ -7,6 +7,7 @@ import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 
 /**
  * This provides functionality similar to the most basic usage of
@@ -38,11 +39,9 @@ public class Source
      */
     private enum FormatState
     {
-        LITERAL, // The last-seen character was a string-literal (or the scan
-                 // just started).
-        HASH, // The last-seen character was '#'.
-        HASH_NUM, // The last-seen character was part of a '#'-number
-                  // identifier.
+        LITERAL,  // The last-seen character was a string-literal (or the scan just started).
+        HASH,     // The last-seen character was '#'.
+        HASH_NUM, // The last-seen character was part of a '#'-number identifier.
     }
 
     /**
@@ -53,8 +52,7 @@ public class Source
      * into `items` used to find which item to place at that location. For
      * example,
      *
-     * Source.format("#0? #1, #0...", "World", "Hello") ->
-     * "World? Hello, World..."
+     * Source.format("#0? #1, #0...", "World", "Hello") -> "World? Hello, World..."
      */
     public static String format(String fmt, Object... items)
     {
@@ -129,8 +127,34 @@ public class Source
     {
         return qualifiedClassName.substring(qualifiedClassName.lastIndexOf('.') + 1);
     }
+    
+    /**
+     * Builds a `String` matching the declaration of the executable element. For example, if the
+     * given `exec` has the form
+     * 
+     *     public static void foo(int i, String str)
+     * 
+     * then this method would return "public static void foo(int i, String str)".
+     */
+    public static String buildExecutableDecl(ExecutableElement exec)
+    {
+        return format("#0 #1 #2(#3)", buildModifiersList(exec),
+                                      exec.getReturnType(),
+                                      exec.getSimpleName(),
+                                      buildParametersList(exec));
+    }
 
-    public static String buildModifierString(ExecutableElement exec)
+    /**
+     * Builds a `String` matching the declared modifiers of the executable element. For example, if
+     * the given `exec` has the form
+     * 
+     *     public static void foo(int i, String str)
+     * 
+     * then this method will return "public static".
+     * 
+     * If the given `exec` has no parameters, then the empty string is returned.
+     */
+    public static String buildModifiersList(ExecutableElement exec)
     {
         List<String> modifiers = new ArrayList<String>();
         for (Modifier m : exec.getModifiers())
@@ -140,28 +164,75 @@ public class Source
         return String.join(" ", modifiers);
     }
 
-    public static String buildParameterList(ExecutableElement exec)
+    /**
+     * Builds a `String` matching the parameter list of the given executable element. For example,
+     * if the given `exec` has the form
+     * 
+     *     public static void foo(int i, String str)
+     * 
+     * then this method would return "int i, String str".
+     * 
+     * If the given `exec` has no parameters, then the empty string is returned.
+     */
+    public static String buildParametersList(ExecutableElement exec)
     {
         List<String> paramStrings = new ArrayList<String>();
         for (VariableElement param : exec.getParameters()) {
-            paramStrings.add(buildParamDecl(param));
+            paramStrings.add(buildVariableDecl(param));
         }
         return String.join(", ", paramStrings);
     }
     
-    public static String buildParamDecl(VariableElement param)
+    /**
+     * Builds a `String` matching the declaration of the given variable element. For example, if
+     * the given `var` represents a variable declared as
+     * 
+     *     Integer x
+     *     
+     * then this method would simply return "Integer x".
+     * 
+     * (Note that this is applicable/usable in the context of building the declaration of one of an
+     * executable element's formal parameters.)
+     */
+    public static String buildVariableDecl(VariableElement var)
     {
-        return Source.dropPackageName(param.asType().toString()) + " " + param.toString();
+        return Source.dropPackageName(var.asType().toString()) + " " + var.toString();
     }
     
-    public static String buildArgsList(ExecutableElement method)
+    /**
+     * Builds a `String` of the names of the formal parameters of the given executable, where each
+     * name is separated by a comma. For example, if the given `exec` has the form
+     * 
+     *     public static void foo(int i, String str)
+     *     
+     * then this method would return "i, str".
+     * 
+     * If the given `exec` has no parameters, then the empty string is returned.
+     */
+    public static String buildParameterNamesList(ExecutableElement exec)
     {
         List<String> paramStrings = new ArrayList<String>();
-        for (VariableElement var : method.getParameters()) {
+        for (VariableElement var : exec.getParameters()) {
             paramStrings.add(var.toString());
         }
         return String.join(", ", paramStrings);
     }
-    
-    
+
+    /**
+     * Builds a `String` matching the type such that it is fully qualified and with any type
+     * arguments dropped. For example, if the given `t` represents a declared type
+     * 
+     *     HashSet<Integer>
+     * 
+     * then this method would return "java.util.HashSet".
+     */
+    public static String buildWithoutTypeArgs(DeclaredType t)
+    {
+        String orig = t.toString();
+        if (t.getTypeArguments().isEmpty()) {
+            return orig;
+        } else {
+            return orig.substring(0, orig.indexOf('<'));
+        }
+    }
 }

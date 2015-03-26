@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
+import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
 
@@ -75,12 +76,10 @@ class MakeCapsule$Thread extends MakeCapsule
 
         for (Element child : template.getEnclosedElements())
         {
-            // For now, ignore everything except for constructors and methods which need to be
-            // wrapped with procedures.
-            if (child.getKind() == ElementKind.CONSTRUCTOR) {
-                // TODO:
-                //decls.add(buildCapsuleFactory((ExecutableElement) child));
-            } else if (needsProceedureWrapper(child)) {
+            // TODO: For now, ignore everything except for methods which need to be wrapped
+            // procedures. In the future, other enclosed elements may need to be treated specially
+            // while building the capsule body.
+            if (PaniniModelInfo.needsProcedureWrapper(child)) {
                 decls.add(buildProcedure((ExecutableElement) child));
             }
         }
@@ -88,132 +87,92 @@ class MakeCapsule$Thread extends MakeCapsule
         return String.join("\n", decls);
     }
 
-
     @Override
     String buildCapsuleFields()
     {
-        /*
-    	String src = Source.lines(1,
-            "private LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();",
-            "private {0} encapsulated = new {0}();",
-            "private Thread thread;"
-        );
-        return MessageFormat.format(src, template.getSimpleName());
-        */
-        return "";
+        String src = Source.lines(0, "#0", "", "#1");
+        return Source.format(src, buildPaniniTemplateDecl(), buildProcedureIDs());
     }
 
+    String buildPaniniTemplateDecl() {
+        String src = Source.lines(1, "private #0 panini$Template;");
+        return Source.format(src, template.getQualifiedName());
+    }
+
+    String buildProcedureIDs() {
+        ArrayList<String> decls = new ArrayList<String>();
+        String src = Source.lines(1, "#0");
+        int currID = 0;
+        for (Element child : template.getEnclosedElements())
+        {
+            if (PaniniModelInfo.needsProcedureWrapper(child)) {
+                
+                decls.add("public static final int " + buildProcedureID((ExecutableElement)child)+ " = " + currID + ";");
+                currID++;
+            }
+        }
+        return Source.format(src, String.join("\n    ", decls));
+    }
+    
+    String buildProcedureID(ExecutableElement method)
+    {
+        String base = "panini$proc$";
+        String name = method.getSimpleName().toString();
+        List<String> params = new ArrayList<String>();
+        for (VariableElement param : method.getParameters()) {
+            params.add(parseType(param.asType()));
+        }
+        String paramStrings = params.size() > 0 ? "$" + String.join("$", params) : "";
+        
+        return base + name + paramStrings;
+    }
+
+
+    String parseType(TypeMirror type) {
+        String src = type.toString().replaceAll("\\.", "_");
+        src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");
+        return src;
+    }
 
     @Override
     String buildProcedure(ExecutableElement method)
     {
+        String src = Source.lines(0, "    #0",
+                                     "    {",
+                                     "#1",
+                                     "    }");
 
-        String src = Source.lines(1, "public #0 #1(#2)",
-                                     "{",
-                                     "    #3",
-                                     "}");
-
-        return Source.format(src, method.getReturnType(),
-                                        method.getSimpleName(),
-                                        buildProcedureParameters(method),
-                                        buildProcedureBody(method));
+        return Source.format(src, Source.buildExecutableDecl(method),
+                                  buildProcedureBody(method));
     }
 
     String buildProcedureBody(ExecutableElement method) {
-        return "throw new UnsupportedOperationException();";
-    }
+        
+        DuckShape duck = new DuckShape(method);
+        String possibleReturn = "";
+       
+        // Append the list of parameter names to `args` if there are any.
+        String procID = buildProcedureID(method);
+        String args = Source.buildParameterNamesList(method);
+        args = args.equals("") ? procID : procID + ", " + args;
 
-
-    @Override
-    String buildProcedureParameters(ExecutableElement method)
-    {
-        //TODO: Use version in Source
-        List<String> paramStrings = new ArrayList<String>();
-        for (VariableElement param : method.getParameters()) {
-            paramStrings.add(buildParamDecl(param));
-        }
-        return String.join(", ", paramStrings);
-    }
-
-
-    @Override
-    String buildArgsList(ExecutableElement method)
-    {
-        //TODO: Use version in Source
-        List<String> paramStrings = new ArrayList<String>();
-        for (VariableElement var : method.getParameters()) {
-            paramStrings.add(var.toString());
-        }
-        return String.join(", ", paramStrings);
-    }
-
-
-    @Override
-    String buildParamDecl(VariableElement param)
-    {
-        return param.asType().toString() + " " + param.toString();
-    }
-
-    String buildPaniniExit()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$exit()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
-    String buildPaniniJoin()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$join()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
-    String buildPaniniStart()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$start()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
-    String buildPaniniShutdown()
-    {
-        String src = Source.lines(1, "@Override",
-                "public void panini$shutdown()",
-                "{",
-                "    //TODO",
-                "}");
-        return Source.format(src);
-    }
-
-    boolean needsProceedureWrapper(Element elem)
-    {
-        if (elem.getKind() == ElementKind.METHOD) {
-            ExecutableElement method = (ExecutableElement) elem;
-            Set<Modifier> modifiers = method.getModifiers();
-            // TODO: decide on appropriate semantics.
-            if (modifiers.contains(Modifier.STATIC)) {
-            	return false;
-            } else if (modifiers.contains(Modifier.PUBLIC)) {
-                return true;
-            }
+        if(duck.getSimpleReturnType() != "void")
+        {
+            possibleReturn = "return panini$duck;";
         }
 
-        return false;
+        String fmt = Source.lines(2, "#0$Thread panini$duck = null;",
+                                     "panini$duck = new #0$Thread(#1);",
+                                     "panini$push(panini$duck);",
+                                     "#2");
+        return Source.format(fmt, duck.toString(), args, possibleReturn);
     }
     
     @Override
     Set<String> getUniversalImports() {
         Set<String> imports = new HashSet<String>();
         imports.add("org.paninij.runtime.Capsule$Thread");
+        imports.add("org.paninij.runtime.ducks.*");
         return imports;
     }
 }

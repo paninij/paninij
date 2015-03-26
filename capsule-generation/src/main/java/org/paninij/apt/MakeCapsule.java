@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 
 import org.paninij.apt.util.TypeCollector;
 
@@ -69,12 +68,6 @@ abstract class MakeCapsule
     abstract String buildCapsuleFields();
 
     abstract String buildProcedure(ExecutableElement method);
-    
-    abstract String buildProcedureParameters(ExecutableElement method);
-
-    abstract String buildArgsList(ExecutableElement method);
-
-    abstract String buildParamDecl(VariableElement param);
     
     /**
      * In this default implementation, an empty set is always returned.

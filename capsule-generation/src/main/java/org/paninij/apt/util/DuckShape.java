@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -51,23 +50,23 @@ public class DuckShape
         
         TypeMirror returnType = method.getReturnType();
         
-        if (ModelInfo.hasVoidReturnType(method))
+        if (JavaModelInfo.hasVoidReturnType(method))
         {
             return Category.VOID;
         }
-        else if (ModelInfo.isFinalType(returnType))
+        else if (JavaModelInfo.isFinalType(returnType))
         {
             return Category.FINAL;
         }
-        else if (ModelInfo.isArray(returnType))
+        else if (JavaModelInfo.isArray(returnType))
         {
             return Category.ARRAY;
         }
-        else if (ModelInfo.isPrimitive(returnType))
+        else if (JavaModelInfo.isPrimitive(returnType))
         {
             return Category.PRIMITIVE;
         }
-        else if (ModelInfo.isPaniniCustom(returnType))
+        else if (PaniniModelInfo.isPaniniCustom(returnType))
         {
             return Category.PANINICUSTOM;
         }
