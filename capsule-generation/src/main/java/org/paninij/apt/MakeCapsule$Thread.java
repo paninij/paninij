@@ -169,7 +169,7 @@ class MakeCapsule$Thread extends MakeCapsule
     }
     
     @Override
-    Set<String> getUniversalImports() {
+    Set<String> getStandardImports() {
         Set<String> imports = new HashSet<String>();
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.ducks.*");

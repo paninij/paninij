@@ -49,7 +49,7 @@ abstract class MakeCapsule
     String buildCapsuleImports()
     {
         Set<String> imports = TypeCollector.collect(template);
-        imports.addAll(getUniversalImports());
+        imports.addAll(getStandardImports());
 
         String rv = "";
         for (String i : imports) {
@@ -75,7 +75,7 @@ abstract class MakeCapsule
      * @return The set of imports which every capsule will need to import, where each import is
      * represented by a `String` of the fully qualified class name.
      */
-    Set<String> getUniversalImports() {
+    Set<String> getStandardImports() {
         return new HashSet<String>();
     }
 }
