@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 
 
 @Capsule
-public class Final {
+public class FinalTemplate {
     /*
     public String finalReturnType() {
         return null;

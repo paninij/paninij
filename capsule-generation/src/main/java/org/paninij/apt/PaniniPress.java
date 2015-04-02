@@ -54,7 +54,7 @@ public class PaniniPress extends AbstractProcessor
             if (CapsuleChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
 
-                MakeCapsuleInterface.make(this, template).makeSourceFile();
+                MakeCapsule.make(this, template).makeSourceFile();
 
                 //MakeCapsule.make(this, template).makeSourceFile();
                 MakeCapsule$Thread.make(this, template).makeSourceFile();

@@ -14,8 +14,14 @@ import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
 
-class MakeCapsule$Thread extends MakeCapsule
+/**
+ * Inspects a given capsule template class an uses information in it to build capsule artifact with
+ * the `$Thread` execution profile.
+ */
+class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 {
+    private static final String CAPSULE_THREAD_TYPE_SUFFIX = "$Thread";
+    
     static MakeCapsule$Thread make(PaniniPress context, TypeElement template)
     {
         MakeCapsule$Thread cap = new MakeCapsule$Thread();
@@ -24,11 +30,9 @@ class MakeCapsule$Thread extends MakeCapsule
         return cap;
     }
 
-
     @Override
     String buildCapsule()
     {
-        String pkg = buildPackage();
         String src = Source.lines(0, "package #0;",
                                      "",
                                      "#1",
@@ -40,23 +44,21 @@ class MakeCapsule$Thread extends MakeCapsule
                                      "{",
                                      "#4",
                                      "}");
-        return Source.format(src, pkg,
+        return Source.format(src, buildPackage(),
                                   buildCapsuleImports(),
-                                  pkg + "." + template.getSimpleName(),
+                                  PaniniModelInfo.qualifiedTemplateName(template),
                                   buildCapsuleDecl(),
                                   buildCapsuleBody());
     }
 
-
     @Override
     String buildCapsuleName() {
-        return template.getSimpleName() + "$Capsule$Thread";
+        return PaniniModelInfo.simpleCapsuleName(template) + CAPSULE_THREAD_TYPE_SUFFIX;
     }
-
 
     @Override
     String buildQualifiedCapsuleName() {
-        return template.getQualifiedName() + "$Capsule$Thread";
+        return PaniniModelInfo.qualifiedCapsuleName(template) + CAPSULE_THREAD_TYPE_SUFFIX;
     }
 
     @Override
@@ -67,7 +69,10 @@ class MakeCapsule$Thread extends MakeCapsule
 
     @Override
     String buildCapsuleDecl() {
-        return "public class " + buildCapsuleName() + " extends Capsule$Thread implements " + template.getSimpleName() + "$Capsule";
+        // TODO: Remove trailing whitespace from format string after GitHub Issue #24 is resolved.
+        return Source.format("public class #0 extends Capsule$Thread implements #1 ",
+                             buildCapsuleName(),
+                             PaniniModelInfo.simpleCapsuleName(template));
     }
 
 
@@ -94,13 +99,16 @@ class MakeCapsule$Thread extends MakeCapsule
     @Override
     String buildCapsuleFields()
     {
-        String src = Source.lines(0, "#0", "", "#1");
+        String src = Source.lines(0, "#0",
+                                     "",
+                                     "#1");
         return Source.format(src, buildPaniniTemplateDecl(), buildProcedureIDs());
     }
 
-    String buildPaniniTemplateDecl() {
+    String buildPaniniTemplateDecl()
+    {
         String src = Source.lines(1, "private #0 panini$Template;");
-        return Source.format(src, template.getQualifiedName());
+        return Source.format(src, PaniniModelInfo.simpleTemplateName(template));
     }
 
     String buildProcedureIDs() {
@@ -109,9 +117,12 @@ class MakeCapsule$Thread extends MakeCapsule
         int currID = 0;
         for (Element child : template.getEnclosedElements())
         {
-            if (PaniniModelInfo.needsProcedureWrapper(child)) {
-                
-                decls.add("public static final int " + buildProcedureID((ExecutableElement)child)+ " = " + currID + ";");
+            if (PaniniModelInfo.needsProcedureWrapper(child))
+            {
+                String decl = Source.format("public static final int #0 = #1;",
+                                            buildProcedureID((ExecutableElement)child),
+                                            currID);
+                decls.add(decl);
                 currID++;
             }
         }
@@ -132,6 +143,7 @@ class MakeCapsule$Thread extends MakeCapsule
     }
 
 
+    // TODO: This needs a much better name.
     String parseType(TypeMirror type) {
         String src = type.toString().replaceAll("\\.", "_");
         src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");

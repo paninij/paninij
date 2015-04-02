@@ -3,7 +3,7 @@ package org.paninij.examples.signatures;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class Foo implements FooSignature
+public class FooTemplate implements FooSignature
 {
     private String greeting;
 

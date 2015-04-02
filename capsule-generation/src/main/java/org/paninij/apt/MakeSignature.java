@@ -8,9 +8,14 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 
+import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
 
+/**
+ * This class is used to inspect a given (valid) signature template and generate a signature
+ * artifact from it.
+ */
 public class MakeSignature
 {
     TypeElement template;
@@ -31,23 +36,22 @@ public class MakeSignature
 
     String buildSignature()
     {
-        String pkg = buildPackage();
         String src = Source.lines(0, "package #0;",
-                "",
-                "#1",
-                "",
-                "/**",
-                " * This signature was auto-generated from `#2`",
-                " */",
-                "#3",
-                "{",
-                "#4",
-                "}");
-        return Source.format(src, pkg,
-                buildSignatureImports(),
-                pkg + "." + template.getSimpleName(),
-                buildSignatureDecl(),
-                buildSignatureBody());
+                                     "",
+                                     "#1",
+                                     "",
+                                     "/**",
+                                     " * This signature was auto-generated from `#2`",
+                                     " */",
+                                     "#3",
+                                     "{",
+                                     "#4",
+                                     "}");
+        return Source.format(src, buildPackage(),
+                                  buildSignatureImports(),
+                                  PaniniModelInfo.qualifiedTemplateName(template),
+                                  buildSignatureDecl(),
+                                  buildSignatureBody());
     }
 
     String buildPackage()

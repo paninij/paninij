@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
 
 @Capsule
-class HelloWorld
+class HelloWorldTemplate
 {
     /*
     // Capsules: Call to the constructors (if necessary)

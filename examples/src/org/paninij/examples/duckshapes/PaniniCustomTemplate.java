@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
 
 @Capsule
-public class PaniniCustom
+public class PaniniCustomTemplate
 {
     public String proc1() {
         return null;

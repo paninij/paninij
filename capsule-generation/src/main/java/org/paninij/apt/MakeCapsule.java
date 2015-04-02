@@ -1,56 +1,124 @@
 package org.paninij.apt;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 
+import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.Source;
 
-abstract class MakeCapsule
+/**
+ * This class contains logic to inspect a given capsule template class and generate the capsule
+ * interface which every concrete capsule type (e.g. `Foo$Thread`, `Bar$Task`) will implement.
+ * 
+ * For example, if the given capsule template is named `Baz$Template`, then this class will make a
+ * `Baz` interface. For each procedure defined in `Baz$Template`, an equivalent declarations will
+ * be added to the `Baz` interface.
+ */
+public class MakeCapsule
 {
-    PaniniPress context;
     TypeElement template;
+    PaniniPress context;
 
-    /**
-     * Factory method. This must be overridden in concrete subclasses.
-     *
-     * @param context The PaniniPress object in which in which the capsule is being built.
-     * @param template A handle to the original class from which a capsule is being built.
-     */
-    static MakeCapsule make(PaniniPress context, TypeElement template) {
-        throw new UnsupportedOperationException("Cannot instantiate an abstract class.");
+    static MakeCapsule make(PaniniPress context, TypeElement template)
+    {
+        MakeCapsule sig = new MakeCapsule();
+        sig.context = context;
+        sig.template = template;
+        return sig;
     }
 
-
-    /**
-     * Generates the source code for a capsule class from the template class (using the
-     * `buildCapsule()` method; then saves the resulting source code to a file to be compiled later
-     * (sometime after the current processor has finished).
-     */
     void makeSourceFile()
     {
-        String capsuleName = buildQualifiedCapsuleName();
-        context.createJavaFile(capsuleName, buildCapsule());
+        context.createJavaFile(buildQualifiedCapsuleName(), buildCapsuleInterface());
     }
 
-    abstract String buildCapsule();
+    private String buildCapsuleInterface()
+    {
+        String src = Source.lines(0, "package #0;",
+                                     "",
+                                     "#1",
+                                     "",
+                                     "/**",
+                                     " * This capsule interface was auto-generated from `#2`",
+                                     " */",
+                                     "#3",
+                                     "{",
+                                     "#4",
+                                     "}");
 
-    abstract String buildCapsuleName();
+        return Source.format(src, buildPackage(),
+                                  buildCapsuleImports(),
+                                  PaniniModelInfo.qualifiedTemplateName(template),
+                                  buildCapsuleDecl(),
+                                  buildCapsuleBody());
+    }
 
-    String buildPackage() {
+    private String buildCapsuleDecl()
+    {
+        return "public interface " + buildCapsuleName() + buildCapsuleInterfaces();
+    }
+
+    private String buildCapsuleInterfaces()
+    {
+        List<? extends TypeMirror> interfaces = template.getInterfaces();
+        if (interfaces.size() > 0)
+        {
+            String extend = " extends ";
+            for (TypeMirror i : interfaces)
+            {
+                Element interf = ((DeclaredType) i).asElement();
+                extend += interf.getSimpleName() + "$Signature, ";
+                // TODO: Verify that it is indeed a signature?
+                // Or maybe verification is part of the Checker class.
+            }
+            return extend.replaceAll(", $", "");
+        }
+        else
+        {
+            // There are no signatures to extend.
+            return "";
+        }
+    }
+
+    private String buildCapsuleName()
+    {
+        return PaniniModelInfo.simpleCapsuleName(template);
+    }
+
+    private String buildQualifiedCapsuleName()
+    {
+        return PaniniModelInfo.qualifiedCapsuleName(template);
+    }
+
+    private String buildCapsuleImports()
+    {
+        // TODO Auto-generated method stub
+        return "";
+    }
+
+    private String buildPackage()
+    {
         return context.getPackageOf(template);
     }
- 
-    abstract String buildQualifiedCapsuleName();
 
-    abstract String buildCapsuleImports();
- 
-    abstract String buildCapsuleDecl();
-
-    abstract String buildCapsuleBody();
-    
-    /**
-     * @return A string of all of the fields which the capsule needs to declare.
-     */
-    abstract String buildCapsuleFields();
-
-    abstract String buildProcedure(ExecutableElement method);
+    private String buildCapsuleBody()
+    {
+        ArrayList<String> decls = new ArrayList<String>();
+        for (Element child : template.getEnclosedElements())
+        {
+            if (PaniniModelInfo.needsProcedureWrapper(child))
+            {
+                ExecutableElement method = (ExecutableElement) child;
+                String decl = Source.format("    #0;\n", Source.buildExecutableDecl(method));
+                decls.add(decl);
+            }
+        }
+        return String.join("", decls);
+    }
 }
