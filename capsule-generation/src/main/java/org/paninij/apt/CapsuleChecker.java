@@ -17,6 +17,7 @@ class CapsuleChecker
     {
         // TODO: give errors when the user annotates an element which cannot be a capsule.
         // TODO: check that the class does not have any inner classes.
+        // TODO: check that every interface implemented by a capsule template is a signature.
 
         if (template.getKind() != ElementKind.CLASS && template.getKind() != ElementKind.INTERFACE)
         {

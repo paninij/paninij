@@ -73,7 +73,7 @@ public class MakeCapsule
             for (TypeMirror i : interfaces)
             {
                 Element interf = ((DeclaredType) i).asElement();
-                extend += interf.getSimpleName() + "$Signature, ";
+                extend += interf.getSimpleName() + ", ";
                 // TODO: Verify that it is indeed a signature?
                 // Or maybe verification is part of the Checker class.
             }
