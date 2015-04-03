@@ -1,7 +1,9 @@
 package org.paninij.apt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -60,12 +62,6 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     String buildQualifiedCapsuleName() {
         return PaniniModelInfo.qualifiedCapsuleName(template) + CAPSULE_THREAD_TYPE_SUFFIX;
     }
-
-    @Override
-    String buildCapsuleImports() {
-        return "import org.paninij.runtime.Capsule$Thread;\nimport org.paninij.runtime.ducks.*;";
-    }
-
 
     @Override
     String buildCapsuleDecl() {
@@ -182,5 +178,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "panini$push(panini$duck);",
                                      "#2");
         return Source.format(fmt, duck.toString(), args, possibleReturn);
+    }
+    
+    @Override
+    Set<String> getStandardImports() {
+        Set<String> imports = new HashSet<String>();
+        imports.add("org.paninij.runtime.Capsule$Thread");
+        imports.add("org.paninij.runtime.ducks.*");
+        return imports;
     }
 }
