@@ -16,7 +16,7 @@ import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
 
-class MakeCapsule$Thread extends MakeCapsule
+class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 {
     static MakeCapsule$Thread make(PaniniPress context, TypeElement template)
     {
