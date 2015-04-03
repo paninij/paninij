@@ -121,24 +121,4 @@ public class JavaModelInfo {
     {
         return isArray(type.asType());
     }
-
-    /*
-    public static void recurseTypes(Element el, Set<String> classes)
-    {
-        switch(el.asType().getKind())
-        {
-        case ARRAY:
-        
-        default:
-            break;
-            
-        }
-    }
-    
-    public static void recurseTypes(TypeMirror el, Set<String> classes)
-    {
-        
-    }
-    
-    */ 
 }

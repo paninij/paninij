@@ -53,7 +53,7 @@ public class MakeCapsule
                                      "}");
 
         return Source.format(src, buildPackage(),
-                                  buildCapsuleImports(),
+                                  buildImports(),
                                   PaniniModelInfo.qualifiedTemplateName(template),
                                   buildCapsuleDecl(),
                                   buildCapsuleBody());
@@ -96,10 +96,9 @@ public class MakeCapsule
         return PaniniModelInfo.qualifiedCapsuleName(template);
     }
 
-    private String buildCapsuleImports()
+    private String buildImports()
     {
-        // TODO Auto-generated method stub
-        return "";
+        return Source.buildCollectedImportDecls(template);
     }
 
     private String buildPackage()
