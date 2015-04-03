@@ -46,7 +46,7 @@ public class MakeCapsuleInterface
                                      "}");
 
         return Source.format(src, pkg,
-                                  buildCapsuleImports(),
+                                  buildImports(),
                                   pkg + "." + template.getSimpleName(),
                                   buildCapsuleDecl(),
                                   buildCapsuleBody());
@@ -84,10 +84,9 @@ public class MakeCapsuleInterface
         return template.getSimpleName() + "$Capsule";
     }
 
-    private String buildCapsuleImports()
+    private String buildImports()
     {
-        // TODO Auto-generated method stub
-        return "";
+        return Source.buildCollectedImportDecls(template);
     }
 
     private String buildPackage()

@@ -33,21 +33,22 @@ public class MakeSignature
     {
         String pkg = buildPackage();
         String src = Source.lines(0, "package #0;",
-                "",
-                "#1",
-                "",
-                "/**",
-                " * This signature was auto-generated from `#2`",
-                " */",
-                "#3",
-                "{",
-                "#4",
-                "}");
+                                     "",
+                                     "#1",
+                                     "",
+                                     "/**",
+                                     " * This signature was auto-generated from `#2`",
+                                     " */",
+                                     "#3",
+                                     "{",
+                                     "#4",
+                                     "}");
+
         return Source.format(src, pkg,
-                buildSignatureImports(),
-                pkg + "." + template.getSimpleName(),
-                buildSignatureDecl(),
-                buildSignatureBody());
+                                  buildImports(),
+                                  pkg + "." + template.getSimpleName(),
+                                  buildSignatureDecl(),
+                                  buildSignatureBody());
     }
 
     String buildPackage()
@@ -68,10 +69,9 @@ public class MakeSignature
         return String.join("\n", decls);
     }
 
-    String buildSignatureImports()
+    String buildImports()
     {
-        // TODO
-        return "";
+        return Source.buildCollectedImportDecls(template);
     }
 
     String buildSignatureName()

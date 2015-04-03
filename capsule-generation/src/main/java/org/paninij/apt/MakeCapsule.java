@@ -1,7 +1,13 @@
 package org.paninij.apt;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+
+import org.paninij.apt.util.Source;
+import org.paninij.apt.util.TypeCollector;
 
 
 abstract class MakeCapsule
@@ -41,8 +47,10 @@ abstract class MakeCapsule
  
     abstract String buildQualifiedCapsuleName();
 
-    abstract String buildCapsuleImports();
- 
+    String buildCapsuleImports() {
+        return Source.buildCollectedImportDecls(template, getStandardImports());
+    }
+
     abstract String buildCapsuleDecl();
 
     abstract String buildCapsuleBody();
@@ -53,4 +61,14 @@ abstract class MakeCapsule
     abstract String buildCapsuleFields();
 
     abstract String buildProcedure(ExecutableElement method);
+    
+    /**
+     * In this default implementation, an empty set is always returned.
+     * 
+     * @return The set of imports which every capsule will need to import, where each import is
+     * represented by a `String` of the fully qualified class name.
+     */
+    Set<String> getStandardImports() {
+        return new HashSet<String>();
+    }
 }
