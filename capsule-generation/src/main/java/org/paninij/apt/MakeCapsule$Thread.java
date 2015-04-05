@@ -12,6 +12,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
@@ -75,21 +76,15 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     @Override
     String buildCapsuleBody()
     {
-        ArrayList<String> decls = new ArrayList<String>();
-        decls.add(buildCapsuleFields());
-        decls.add("");
-
-        for (Element child : template.getEnclosedElements())
-        {
-            // TODO: For now, ignore everything except for methods which need to be wrapped
-            // procedures. In the future, other enclosed elements may need to be treated specially
-            // while building the capsule body.
-            if (PaniniModelInfo.needsProcedureWrapper(child)) {
-                decls.add(buildProcedure((ExecutableElement) child));
-            }
-        }
-
-        return String.join("\n", decls);
+        String src = Source.lines(0, "    /* Capsule fields: */",
+                                     "#0",
+                                     "",
+                                     "    /* Capsule procedures: */",
+                                     "#1",
+                                     "",
+                                     "    /* Capsule-specific Panini methods: */",
+                                     "#2");
+        return Source.format(src, buildCapsuleFields(), buildProcedures(), buildRunMethod());
     }
 
     @Override
@@ -98,12 +93,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         String src = Source.lines(0, "#0",
                                      "",
                                      "#1");
-        return Source.format(src, buildPaniniTemplateDecl(), buildProcedureIDs());
+        return Source.format(src, buildPaniniEncapsulatedDecl(), buildProcedureIDs());
     }
 
-    String buildPaniniTemplateDecl()
+    String buildPaniniEncapsulatedDecl()
     {
-        String src = Source.lines(1, "private #0 panini$Template;");
+        String src = Source.lines(1, "private #0 panini$encapsulated;");
         return Source.format(src, PaniniModelInfo.simpleTemplateName(template));
     }
 
@@ -145,6 +140,25 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");
         return src;
     }
+    
+    String buildProcedures()
+    {
+        ArrayList<String> decls = new ArrayList<String>();
+        decls.add("");
+
+        for (Element child : template.getEnclosedElements())
+        {
+            // TODO: For now, ignore everything except for methods which need to be wrapped
+            // procedures. In the future, other enclosed elements may need to be treated specially
+            // while building the capsule body.
+            if (PaniniModelInfo.needsProcedureWrapper(child)) {
+                decls.add(buildProcedure((ExecutableElement) child));
+            }
+        }
+
+        return String.join("\n", decls);
+    }
+
 
     @Override
     String buildProcedure(ExecutableElement method)
@@ -158,7 +172,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                   buildProcedureBody(method));
     }
 
-    String buildProcedureBody(ExecutableElement method) {
+    String buildProcedureBody(ExecutableElement method)
+    {
         
         DuckShape duck = new DuckShape(method);
         String possibleReturn = "";
@@ -180,11 +195,151 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.format(fmt, duck.toString(), args, possibleReturn);
     }
     
+    String buildRunMethod()
+    {
+        if (PaniniModelInfo.isActive(template))
+        {
+            return Source.lines(1, "public void run()",
+                                   "{",
+                                   "    try",
+                                   "    {",
+                                   "        //panini$wire$sys();",
+                                   "        //panini$capsule$init();",
+                                   "        panini$encapsulated.run();",
+                                   "    } finally {",
+                                   "        // TODO?",
+                                   "    }",
+                                   "}");
+        }
+        else
+        {
+            String src = Source.lines(1, "public void run()",
+                                         "{",
+                                         "    try",
+                                         "    {",
+                                         "        //panini$wire$sys();",
+                                         "        //panini$capsule$init();",
+                                         "        boolean terminate = false;",
+                                         "        while (!terminate)",
+                                         "        {",
+                                         "            Panini$Message msg = panini$nextMessage();",
+                                         "#0",
+                                         "        }",
+                                         "    }",
+                                         "    catch (Exception ex) { /* do nothing for now */ }",
+                                         "}");
+            return Source.format(src, buildRunMethodSwitch());
+        }
+    }
+    
+    String buildRunMethodSwitch()
+    {
+        // Add a case statement for each procedure wrapper.
+        List<String> lines = new ArrayList<String>();
+        lines.add("switch(msg.panini$msgID()) {");
+
+        for (Element elem : template.getEnclosedElements())
+        {
+            if (PaniniModelInfo.needsProcedureWrapper(elem)) {
+                // TODO: Fix this ugly hack. (Used to make alignment work).
+                lines.add("\n" + buildRunMethodCase((ExecutableElement) elem));
+            }
+        }
+        
+        // TODO: Fix this ugly alignment hack.
+        lines.add("\n" + Source.lines(4, "case PANINI$SHUTDOWN:",
+                                         "    if (panini$isEmpty() == false) {",
+                                         "        panini$push(msg);",
+                                         "    } else {",
+                                         "        terminate = true;",
+                                         "    }",
+                                         "    break;",
+                                         "",
+                                         "case PANINI$EXIT:",
+                                         "    terminate = true;",
+                                         "    break;"));
+
+        lines.add("    }");
+
+        String tabs = "            ";  // Three "tabs" of 4-spaces.
+        return tabs + String.join("\n" + tabs, lines);
+    }
+    
+    /**
+     * Assumes that `method` is a procedure method on a valid capsule template.
+     */
+    String buildRunMethodCase(ExecutableElement method)
+    {
+        // `duck` will need to be resolved if and only if `method` has a return value.
+        if (JavaModelInfo.hasVoidReturnType(method))
+        {
+            // Simply call the template isntance's method with the args encapsulated in the duck.
+            String src = Source.lines(4, "case #0:",
+                                         "    #1;",
+                                         "    break;");
+            return Source.format(src, buildProcedureID(method),
+                                      buildMethodCallOnEncapsulated(method));
+        }
+        else
+        {
+            // Call the template instance's method and resolve the duck using the result.
+            String src = Source.lines(4, "case #0:",
+                                         "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
+                                         "    break;");
+            return Source.format(src, buildProcedureID(method),
+                                      method.getReturnType().toString(),
+                                      buildMethodCallOnEncapsulated(method));
+        }
+    }
+    
+    /**
+     * Builds a string used to call the given `method` on the encapsulated template instance. This
+     * is meant to be used in the context of the capsule's `run()` method.
+     * 
+     * Assumes that the duck being unpacked can be cast to the `DuckShape` type which is used to
+     * handle the given `method`.
+     * 
+     * @param duck The name of the duck variable from which arguments will be unpacked.
+     */
+    String buildMethodCallOnEncapsulated(ExecutableElement method)
+    {
+        List<String> args = new ArrayList<String>();
+        String duckType = DuckShape.encode(method);
+
+        // Generate the list of types defined on the `method`. The `null` value is used to
+        // represent a parameter type whenever that type is primitive.
+        List<String> paramTypes = new ArrayList<String>();
+        for (VariableElement varElem : method.getParameters())
+        {
+            TypeMirror paramType = varElem.asType();
+            paramTypes.add(JavaModelInfo.isPrimitive(paramType) ? null : paramType.toString());
+        }
+
+        // Extract each argument held in the duck. For each of these extractions, one type cast is
+        // used to convert the `Panini$Message` to a concrete duck type. If the duck is storing
+        // an object in an `Object` box, then another type cast is used to convert that argument to
+        // its original type.
+        for (int i = 0; i < paramTypes.size(); i++)
+        {
+            String paramType = paramTypes.get(i);
+            // TODO: Remove trailing whitespace from `fmt` once GitHub Issue #24 has been resolved.
+            args.add(Source.format("#0((#1$Thread) msg).panini$arg#2 ",
+                                   paramType == null ? "" : "(" + paramType + ") ",
+                                   duckType,
+                                   i));
+        }
+
+        return Source.format("panini$encapsulated.#0(#1)", method.getSimpleName(),
+                                                           String.join(", ", args));
+    }
+
     @Override
     Set<String> getStandardImports() {
         Set<String> imports = new HashSet<String>();
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.ducks.*");
+        imports.add("org.paninij.runtime.Panini$Message");
+        imports.add("org.paninij.runtime.Panini$Future");
         return imports;
     }
 }

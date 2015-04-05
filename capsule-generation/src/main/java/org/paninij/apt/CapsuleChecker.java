@@ -18,6 +18,11 @@ class CapsuleChecker
         // TODO: give errors when the user annotates an element which cannot be a capsule.
         // TODO: check that the class does not have any inner classes.
         // TODO: check that every interface implemented by a capsule template is a signature.
+        // TODO: check that every procedure is not variadic.
+        // TODO: check that every procedure returns a class which is NOT final.
+        // TODO: check that every procedure returns a non-primitive value (i.e. an object).
+        // TODO: check that every passive capsule has one or more procedures.
+        // TODO: check that every active capsule has zero procedures.
 
         if (template.getKind() != ElementKind.CLASS && template.getKind() != ElementKind.INTERFACE)
         {

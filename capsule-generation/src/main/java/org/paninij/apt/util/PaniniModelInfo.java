@@ -60,6 +60,36 @@ public class PaniniModelInfo
             return false;
         }
     }
+    
+    /**
+     * @return `true` if and only if the given capsule template describes an active capsule (i.e.
+     * it has a `run()` method).
+     * 
+     * Warning: This method assumes that `template` is a well-defined capsule template (i.e.
+     * `template` passes all checks). Therefore, this method is not sufficient in checking whether
+     * a capsule template is a *valid* template for an active capsule.
+     */
+    public static boolean isActive(TypeElement template)
+    {
+        return hasRunMethod(template);
+    }
+
+    /**
+     * @return `true` if and only if the given capsule template has a it has a void `run()` method
+     * with zero parameters.
+     */
+    public static boolean hasRunMethod(TypeElement template)
+    {
+        for (Element elem : template.getEnclosedElements())
+        {
+            if (elem.getKind() == ElementKind.METHOD) {
+                if (((ExecutableElement) elem).getSimpleName().toString().equals("run")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * @return The name of the simple (i.e. unqualified) type of the given capsule template type.

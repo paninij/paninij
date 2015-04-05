@@ -7,11 +7,11 @@ import org.paninij.lang.String;
 @Capsule
 public class HelloWorldShortTemplate
 {
-    /*
     void run() {
         System.out.println("@PaniniJ: Hello World!");
     }
 
+    /*
     String getMessage() {
         return new String("vinegar");
     }
