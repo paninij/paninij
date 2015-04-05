@@ -228,9 +228,21 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 lines.add("\n" + buildRunMethodCase((ExecutableElement) elem));
             }
         }
+        
+        // TODO: Fix this ugly alignment hack.
+        lines.add("\n" + Source.lines(4, "case PANINI$SHUTDOWN:",
+                                         "    if (panini$isEmpty() == false) {",
+                                         "        panini$push(msg);",
+                                         "    } else {",
+                                         "        terminate = true;",
+                                         "    }",
+                                         "    break;",
+                                         "",
+                                         "case PANINI$EXIT:",
+                                         "    terminate = true;",
+                                         "    break;"));
 
-        lines.add("}");
-        // TODO: Make standard termination and shutdown cases (i.e. define behavior for -1 and -2).
+        lines.add("    }");
 
         String tabs = "            ";  // Three "tabs" of 4-spaces.
         return tabs + String.join("\n" + tabs, lines);
