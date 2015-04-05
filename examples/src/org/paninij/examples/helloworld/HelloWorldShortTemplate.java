@@ -5,7 +5,7 @@ import org.paninij.lang.String;
 
 
 @Capsule
-public class HelloWorldShort
+public class HelloWorldShortTemplate
 {
     /*
     void run() {

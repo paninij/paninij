@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
 
 @Capsule
-class Greeter
+class GreeterTemplate
 {
     /*
     String message;

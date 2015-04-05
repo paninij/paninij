@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 
 
 @Capsule
-public class Normal
+public class NormalTemplate
 {
     public Object foo(Object o, Object i) {
         return new Object();

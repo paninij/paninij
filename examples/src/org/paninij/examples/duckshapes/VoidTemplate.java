@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 
 
 @Capsule
-public class Void {
+public class VoidTemplate {
     public void foo(Object o) {
         // Do nothing.
     }

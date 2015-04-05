@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
 
 @Capsule
-class Console implements Stream
+class ConsoleTemplate implements StreamTemplate
 {
     /*
     public void design() { ; }

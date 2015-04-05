@@ -12,6 +12,14 @@ import javax.lang.model.type.TypeMirror;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
+/**
+ * This class contains logic to inspect a given capsule template class and generate the capsule
+ * interface which every concrete capsule type (e.g. `Foo$Thread`, `Bar$Task`) will implement.
+ * 
+ * For example, if the given capsule template is named `Baz$Template`, then this class will make a
+ * `Baz` interface. For each procedure defined in `Baz$Template`, an equivalent declarations will
+ * be added to the `Baz` interface.
+ */
 public class MakeCapsule
 {
     TypeElement template;
@@ -32,22 +40,21 @@ public class MakeCapsule
 
     private String buildCapsuleInterface()
     {
-        String pkg = buildPackage();
         String src = Source.lines(0, "package #0;",
                                      "",
                                      "#1",
                                      "",
                                      "/**",
-                                     " * This Capsule Interface was auto-generated from `#2`",
+                                     " * This capsule interface was auto-generated from `#2`",
                                      " */",
                                      "#3",
                                      "{",
                                      "#4",
                                      "}");
 
-        return Source.format(src, pkg,
+        return Source.format(src, buildPackage(),
                                   buildImports(),
-                                  pkg + "." + template.getSimpleName(),
+                                  PaniniModelInfo.qualifiedTemplateName(template),
                                   buildCapsuleDecl(),
                                   buildCapsuleBody());
     }
@@ -66,7 +73,7 @@ public class MakeCapsule
             for (TypeMirror i : interfaces)
             {
                 Element interf = ((DeclaredType) i).asElement();
-                extend += interf.getSimpleName() + "$Signature, ";
+                extend += interf.getSimpleName() + ", ";
                 // TODO: Verify that it is indeed a signature?
                 // Or maybe verification is part of the Checker class.
             }
@@ -81,7 +88,12 @@ public class MakeCapsule
 
     private String buildCapsuleName()
     {
-        return template.getSimpleName() + "$Capsule";
+        return PaniniModelInfo.simpleCapsuleName(template);
+    }
+
+    private String buildQualifiedCapsuleName()
+    {
+        return PaniniModelInfo.qualifiedCapsuleName(template);
     }
 
     private String buildImports()
@@ -92,11 +104,6 @@ public class MakeCapsule
     private String buildPackage()
     {
         return context.getPackageOf(template);
-    }
-
-    private String buildQualifiedCapsuleName()
-    {
-        return template.getQualifiedName() + "$Capsule";
     }
 
     private String buildCapsuleBody()

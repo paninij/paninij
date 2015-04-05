@@ -38,10 +38,7 @@ public class PaniniPress extends AbstractProcessor
         this.roundEnv = roundEnv;
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
-            if (SignatureChecker.check(this, elem)) {
-                TypeElement signature = (TypeElement) elem;
-                MakeSignature.make(this, signature).makeSourceFile();
-            } else {
+            if (! SignatureChecker.check(this, elem)) {
                 // TODO better error message
                 error("Signature failed check.");
             }

@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 
 
 @Capsule
-public class Array
+public class ArrayTemplate
 {
     /*
     int[] primitiveArr() {

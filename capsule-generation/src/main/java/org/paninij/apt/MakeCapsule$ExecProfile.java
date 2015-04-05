@@ -10,6 +10,11 @@ import org.paninij.apt.util.Source;
 import org.paninij.apt.util.TypeCollector;
 
 
+/**
+ * An abstract class which is extended by each `MakeCapsule$*` class; each concrete subclass (e.g.
+ * `MakeCapsule$Thread`) is meant to inspect a given capsule template and produce a capsule artifact
+ * with that execution profile.
+ */
 abstract class MakeCapsule$ExecProfile
 {
     PaniniPress context;
