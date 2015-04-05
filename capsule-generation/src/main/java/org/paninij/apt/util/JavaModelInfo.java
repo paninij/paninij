@@ -1,6 +1,10 @@
 package org.paninij.apt.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -72,6 +76,31 @@ public class JavaModelInfo {
             throw new IllegalArgumentException();
         }
         
+    }
+
+    /**
+     * @return A list of methods on the given `typeElem` whose name matches the given `name`; the
+     * returned `ExecutableElement`s are listed in the same order in which the they are defined
+     * within the given `typeElem`.
+     */
+    public static List<ExecutableElement> getMethodsNamed(TypeElement typeElem, String name)
+    {
+        List<ExecutableElement> rv = new ArrayList<ExecutableElement>();
+        for (Element enclosedElem : typeElem.getEnclosedElements())
+        {
+            if (enclosedElem.getKind() == ElementKind.METHOD && isNamed(enclosedElem, name)) {
+                rv.add((ExecutableElement) enclosedElem);
+            }
+        }
+        return rv;
+    }
+    
+    /**
+     * @return `true` if and only if the given executable element has the given name.
+     */
+    public static boolean isNamed(Element elem, String name)
+    {
+        return elem.getSimpleName().toString().equals(name);
     }
     
     public static boolean hasVoidReturnType(ExecutableElement exec)

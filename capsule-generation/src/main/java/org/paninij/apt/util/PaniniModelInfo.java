@@ -67,35 +67,42 @@ public class PaniniModelInfo
     }
 
     /**
-     * @return `true` if and only if the given capsule template describes an active capsule (i.e.
-     * it has a `run()` method).
+     * @return `true` if and only if the given capsule template describes an active capsule.
+     * 
+     * Note: This method is (currently) equivalent to calling `hasRunDeclaration()`.
      *
-     * Warning: This method assumes that `template` is a well-defined capsule template (i.e.
-     * `template` passes all checks). Therefore, this method is not sufficient in checking whether
-     * a capsule template is a *valid* template for an active capsule.
+     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
+     * `template` passes all checks).
      */
     public static boolean isActive(TypeElement template)
     {
-        return hasRunMethod(template);
+        return hasRunDeclaration(template);
     }
 
     /**
-     * @return `true` if and only if the given capsule template has a it has a void `run()` method
-     * with zero parameters.
+     * @return `true` if and only if the given capsule template has a `run()` declaration/method.
+     * 
+     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
+     * `template` passes all checks).
      */
-    public static boolean hasRunMethod(TypeElement template)
+    public static boolean hasRunDeclaration(TypeElement template)
     {
-        for (Element elem : template.getEnclosedElements())
-        {
-            if (elem.getKind() == ElementKind.METHOD) {
-                if (((ExecutableElement) elem).getSimpleName().toString().equals("run")) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        List<ExecutableElement> methods = JavaModelInfo.getMethodsNamed(template, "run");
+        return methods.size() > 0;
     }
-
+    
+    /**
+     * @return `true` if and only if the given capsule template has an `init()` declaration/method.
+     * 
+     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
+     * `template` passes all checks).
+     */
+    public static boolean hasInitDeclaration(TypeElement template)
+    {
+        List<ExecutableElement> methods = JavaModelInfo.getMethodsNamed(template, "init");
+        return methods.size() > 0;
+    }
+    
     /**
      * @return The name of the simple (i.e. unqualified) type of the given capsule template type.
      */
