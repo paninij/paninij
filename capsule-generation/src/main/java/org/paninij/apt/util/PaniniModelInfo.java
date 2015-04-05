@@ -147,13 +147,15 @@ public class PaniniModelInfo
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
 
-    public static boolean isCapsuleDecl(VariableElement e) {
+    public static boolean isCapsuleDecl(VariableElement e)
+    {
         // return e.getAnnotation(org.paninij.lang.Capsule.class) != null; -- this would only work on a template
         // TODO should there be a check for Signature here?
         return e.getClass().isAssignableFrom(org.paninij.runtime.Capsule.class);
     }
 
-    public static List<VariableElement> getCapsuleDecls(TypeElement template) {
+    public static List<VariableElement> getCapsuleDecls(TypeElement template)
+    {
         List<VariableElement> decls = new ArrayList<VariableElement>();
         for (Element e : template.getEnclosedElements()) {
             if (e instanceof VariableElement) {
@@ -166,19 +168,24 @@ public class PaniniModelInfo
         return decls;
     }
 
-    public static ExecutableElement getCapsuleDesignDecl(TypeElement template) {
-        for (Element e : template.getEnclosedElements()) {
-            if (e instanceof ExecutableElement) {
-                ExecutableElement elem = (ExecutableElement) e;
-                if (elem.getSimpleName().equals("design")) {
-                    return elem;
-                }
-            }
+    /**
+     * Returns `null` if there the given capsule template has no design declaration.
+     * 
+     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
+     * `template` passes all checks).
+     */
+    public static ExecutableElement getCapsuleDesignDecl(TypeElement template)
+    {
+        List<ExecutableElement> decls = JavaModelInfo.getMethodsNamed(template, "design");
+        if (decls.isEmpty()) {
+            return null;
+        } else {
+            return decls.get(0);
         }
-        return null;
     }
 
-    public static List<VariableElement> getCapsuleRequirements(TypeElement template) {
+    public static List<VariableElement> getCapsuleRequirements(TypeElement template)
+    {
         ArrayList<VariableElement> reqs = new ArrayList<VariableElement>();
         ExecutableElement design = getCapsuleDesignDecl(template);
 
@@ -198,7 +205,8 @@ public class PaniniModelInfo
         return reqs;
     }
 
-    public static List<VariableElement> getCapsuleChildren(TypeElement template) {
+    public static List<VariableElement> getCapsuleChildren(TypeElement template)
+    {
         List<VariableElement> decls = getCapsuleDecls(template);
         ExecutableElement design = getCapsuleDesignDecl(template);
 

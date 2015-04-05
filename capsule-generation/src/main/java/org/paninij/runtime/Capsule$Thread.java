@@ -288,20 +288,33 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 			notifyAll();
 		}
 	}
+	
+	/**
+	 * Initialize the capsule-requirements of this capsule.
+	 * 
+	 * Should be called *before* `panini$initChildren()` or `panini$initState() are called.
+	 */
+	protected void panini$checkRequired() {
+	    // Do nothing.
+	}
+
+	/**
+	 * Initialize the children of this capsule.
+	 * 
+	 * Must (in general) be called *before* `panini$initState()`.
+	 */
+	protected void panini$initChildren() {
+	    // Do nothing.
+	}
 
 
 	/**
-	 * Initialize the 'internal' system in a capsule.
-	 * <p>
-	 * Must be called <em>BEFORE</em> {@link #panini$init()}.
+	 * Initialize the state variables of this capsule.
 	 */
-	public void panini$wire$sys() {
+	protected void panini$initState() {
+	    // Do nothing.
 	}
-
-
-	protected void panini$init() {
-	}
-
+	
 	@Override
     public void panini$start()
     {

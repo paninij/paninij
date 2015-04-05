@@ -84,11 +84,19 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "",
                                      "    /* Capsule-specific Panini methods: */",
                                      "#2",
-                                     "#3");
+                                     "#3",
+                                     "#4",
+                                     "#5",
+                                     "#6",
+                                     "#7");
         return Source.format(src, buildCapsuleFields(),
                                   buildProcedures(),
-                                  buildInitMethod(),
-                                  buildRunMethod());
+                                  buildDesign(),
+                                  buildCheckRequired(),
+                                  buildInitRequired(),
+                                  buildInitChildren(),
+                                  buildInitState(),
+                                  buildRun());
     }
 
     @Override
@@ -198,8 +206,59 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "#2");
         return Source.format(fmt, duck.toString(), args, possibleReturn);
     }
+     
+    String buildDesign()
+    {
+        // TODO: Everything!
+        String src = Source.lines(1, "public void design(#0)",
+                                     "{",
+                                     "    // TODO",
+                                     "}");
+        return Source.format(src, "/* TODO: parameters */");
+    }   
+
+    private String buildCheckRequired()
+    {
+        // TODO: Everything!
+        String src = Source.lines(1, "@Override",
+                                     "public void panini$checkRequired()",
+                                     "{",
+                                     "    // TODO: Everything!",
+                                     "}");
+        return src;
+    }
+
+    String buildInitRequired()
+    {
+        // TODO: Everything!
+        // Note: called by public facing design method?
+        // Note: make method private
+        String src = Source.lines(1, "private void panini$initRequired(#0)",
+                                     "{",
+                                     "    // TODO: Everything!",
+                                     "",
+                                     "}");
+        return Source.format(src, "/* TODO: parameters */");
+    }
     
-    String buildInitMethod()
+    /**
+     * Build a method which initializes each of the child capsules and delegates .
+     */
+    String buildInitChildren()
+    {
+        // TODO: Everything!
+        String src = Source.lines(1, "protected void panini$initChildren()",
+                                     "{",
+                                     "    // TODO: Everything!",
+                                     "",
+                                     "}");
+
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template);
+
+        return src;
+    }
+    
+    String buildInitState()
     {
         // If there is an `init` declaration on the template class, then override the empty `init()`
         // method inherited from the `Capsule$Thread` superclass with a method that delegates to
@@ -207,7 +266,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         if (PaniniModelInfo.hasInitDeclaration(template))
         {
             return Source.lines(1, "@Override",
-                                   "public void panini$init() {",
+                                   "protected void panini$initState() {",
                                    "    panini$encapsulated.init();",
                                    "}");
         }
@@ -217,7 +276,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         }
     }
     
-    String buildRunMethod()
+    String buildRun()
     {
         if (PaniniModelInfo.isActive(template))
         {
@@ -225,8 +284,9 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                    "{",
                                    "    try",
                                    "    {",
-                                   "        //panini$wire$sys();",
-                                   "        panini$init();",
+                                   "        panini$checkRequired();",
+                                   "        panini$initChildren();",
+                                   "        panini$initState();",
                                    "        panini$encapsulated.run();",
                                    "    } finally {",
                                    "        // TODO?",
@@ -239,8 +299,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                          "{",
                                          "    try",
                                          "    {",
-                                         "        //panini$wire$sys();",
-                                         "        //panini$capsule$init();",
+                                         "        panini$checkRequired();",
+                                         "        panini$initChildren();",
+                                         "        panini$initState();",
+                                         "",
                                          "        boolean terminate = false;",
                                          "        while (!terminate)",
                                          "        {",
@@ -250,11 +312,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                          "    }",
                                          "    catch (Exception ex) { /* do nothing for now */ }",
                                          "}");
-            return Source.format(src, buildRunMethodSwitch());
+            return Source.format(src, buildRunSwitch());
         }
     }
     
-    String buildRunMethodSwitch()
+    String buildRunSwitch()
     {
         // Add a case statement for each procedure wrapper.
         List<String> lines = new ArrayList<String>();
@@ -264,7 +326,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         {
             if (PaniniModelInfo.needsProcedureWrapper(elem)) {
                 // TODO: Fix this ugly hack. (Used to make alignment work).
-                lines.add("\n" + buildRunMethodCase((ExecutableElement) elem));
+                lines.add("\n" + buildRunSwitchCase((ExecutableElement) elem));
             }
         }
         
@@ -290,7 +352,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     /**
      * Assumes that `method` is a procedure method on a valid capsule template.
      */
-    String buildRunMethodCase(ExecutableElement method)
+    String buildRunSwitchCase(ExecutableElement method)
     {
         // `duck` will need to be resolved if and only if `method` has a return value.
         if (JavaModelInfo.hasVoidReturnType(method))
