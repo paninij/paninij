@@ -197,22 +197,39 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     
     String buildRunMethod()
     {
-        String src = Source.lines(1, "public void run()",
-                                     "{",
-                                     "    try",
-                                     "    {",
-                                     "        //panini$wire$sys();",
-                                     "        //panini$capsule$init();",
-                                     "        boolean terminate = false;",
-                                     "        while (!terminate)",
-                                     "        {",
-                                     "            Panini$Message msg = panini$nextMessage();",
-                                     "#0",
-                                     "        }",
-                                     "    }",
-                                     "    catch (Exception ex) { /* do nothing for now */ }",
-                                     "}");
-        return Source.format(src, buildRunMethodSwitch());
+        if (PaniniModelInfo.isActive(template))
+        {
+            return Source.lines(1, "public void run()",
+                                   "{",
+                                   "    try",
+                                   "    {",
+                                   "        //panini$wire$sys();",
+                                   "        //panini$capsule$init();",
+                                   "        panini$encapsulated.run();",
+                                   "    } finally {",
+                                   "        // TODO?",
+                                   "    }",
+                                   "}");
+        }
+        else
+        {
+            String src = Source.lines(1, "public void run()",
+                                         "{",
+                                         "    try",
+                                         "    {",
+                                         "        //panini$wire$sys();",
+                                         "        //panini$capsule$init();",
+                                         "        boolean terminate = false;",
+                                         "        while (!terminate)",
+                                         "        {",
+                                         "            Panini$Message msg = panini$nextMessage();",
+                                         "#0",
+                                         "        }",
+                                         "    }",
+                                         "    catch (Exception ex) { /* do nothing for now */ }",
+                                         "}");
+            return Source.format(src, buildRunMethodSwitch());
+        }
     }
     
     String buildRunMethodSwitch()
