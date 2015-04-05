@@ -1,6 +1,7 @@
 package org.paninij.runtime;
 
-public interface Panini$Future<T> extends Future<T>
+public interface Panini$Future<T>
 {
+    T panini$get();
     void panini$resolve(T t);
 }
