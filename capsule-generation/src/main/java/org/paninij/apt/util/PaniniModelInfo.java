@@ -141,7 +141,9 @@ public class PaniniModelInfo
     }
 
     public static boolean isCapsuleDecl(VariableElement e) {
-        return e.getAnnotation(Capsule.class) != null;
+        // return e.getAnnotation(org.paninij.lang.Capsule.class) != null; -- this would only work on a template
+        // TODO should there be a check for Signature here?
+        return e.getClass().isAssignableFrom(org.paninij.runtime.Capsule.class);
     }
 
     public static List<VariableElement> getCapsuleDecls(TypeElement template) {
@@ -171,7 +173,6 @@ public class PaniniModelInfo
 
     public static List<VariableElement> getCapsuleRequirements(TypeElement template) {
         ArrayList<VariableElement> reqs = new ArrayList<VariableElement>();
-
         ExecutableElement design = getCapsuleDesignDecl(template);
 
         if (design == null) return reqs;
@@ -179,10 +180,10 @@ public class PaniniModelInfo
         List<? extends VariableElement> params = design.getParameters();
         List<VariableElement> decls = getCapsuleDecls(template);
 
-        for (VariableElement e : decls) {
+        for (VariableElement d : decls) {
             for (VariableElement p : params) {
-                if (e.toString().equals(p.toString())) {
-                    reqs.add(e);
+                if (d.toString().equals(p.toString())) {
+                    reqs.add(d);
                 }
             }
         }
@@ -193,22 +194,22 @@ public class PaniniModelInfo
     public static List<VariableElement> getCapsuleChildren(TypeElement template) {
         List<VariableElement> decls = getCapsuleDecls(template);
         ExecutableElement design = getCapsuleDesignDecl(template);
+
         if (design == null) return decls;
 
-        ArrayList<VariableElement> children = new ArrayList<VariableElement>();
         List<? extends VariableElement> params = design.getParameters();
+        ArrayList<VariableElement> children = new ArrayList<VariableElement>();
 
-        boolean found = false;
-
-        for (VariableElement e : decls) {
+        boolean found;
+        for (VariableElement d : decls) {
             found = false;
             for (VariableElement p : params) {
-                if (e.toString().equals(p.toString())) {
+                if (d.toString().equals(p.toString())) {
                     found = true;
                     break;
                 }
             }
-            if (!found) children.add(e);
+            if (!found) children.add(d);
         }
 
         return children;
