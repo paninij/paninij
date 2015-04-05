@@ -83,8 +83,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "#1",
                                      "",
                                      "    /* Capsule-specific Panini methods: */",
-                                     "#2");
-        return Source.format(src, buildCapsuleFields(), buildProcedures(), buildRunMethod());
+                                     "#2",
+                                     "#3");
+        return Source.format(src, buildCapsuleFields(),
+                                  buildProcedures(),
+                                  buildInitMethod(),
+                                  buildRunMethod());
     }
 
     @Override
@@ -195,6 +199,24 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.format(fmt, duck.toString(), args, possibleReturn);
     }
     
+    String buildInitMethod()
+    {
+        // If there is an `init` declaration on the template class, then override the empty `init()`
+        // method inherited from the `Capsule$Thread` superclass with a method that delegates to
+        // the encapsulated template instance.
+        if (PaniniModelInfo.hasInitDeclaration(template))
+        {
+            return Source.lines(1, "@Override",
+                                   "public void panini$init() {",
+                                   "    panini$encapsulated.init();",
+                                   "}");
+        }
+        else
+        {
+            return "";  // Do not override superclass with anything.
+        }
+    }
+    
     String buildRunMethod()
     {
         if (PaniniModelInfo.isActive(template))
@@ -204,7 +226,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                    "    try",
                                    "    {",
                                    "        //panini$wire$sys();",
-                                   "        //panini$capsule$init();",
+                                   "        panini$init();",
                                    "        panini$encapsulated.run();",
                                    "    } finally {",
                                    "        // TODO?",

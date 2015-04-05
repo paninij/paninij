@@ -293,13 +293,13 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	/**
 	 * Initialize the 'internal' system in a capsule.
 	 * <p>
-	 * Must be called <em>BEFORE</em> {@link #panini$capsule$init()}.
+	 * Must be called <em>BEFORE</em> {@link #panini$init()}.
 	 */
 	public void panini$wire$sys() {
 	}
 
 
-	protected void panini$capsule$init() {
+	protected void panini$init() {
 	}
 
 	@Override
