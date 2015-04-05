@@ -29,7 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 
-import org.paninij.runtime.ResolvableFuture;
+import org.paninij.runtime.Panini$Future;
 import org.paninij.runtime.Panini$Message;
 
 /**
@@ -42,7 +42,7 @@ import org.paninij.runtime.Panini$Message;
 public class String extends Object implements CharSequence,
                                               java.io.Serializable,
                                               Comparable<String>,
-                                              ResolvableFuture<java.lang.String>,
+                                              Panini$Future<java.lang.String>,
                                               Panini$Message
 {
 

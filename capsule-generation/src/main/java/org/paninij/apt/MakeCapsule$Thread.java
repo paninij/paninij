@@ -255,7 +255,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         {
             // Call the template instance's method and resolve the duck using the result.
             String src = Source.lines(4, "case #0:",
-                                         "    ((ResolvableFuture<#1>) msg).panini$resolve(#2);",
+                                         "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
                                          "    break;");
             return Source.format(src, buildProcedureID(method),
                                       method.getReturnType().toString(),
@@ -310,7 +310,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.ducks.*");
         imports.add("org.paninij.runtime.Panini$Message");
-        imports.add("org.paninij.runtime.ResolvableFuture");
+        imports.add("org.paninij.runtime.Panini$Future");
         return imports;
     }
 }
