@@ -362,7 +362,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                          "    #1;",
                                          "    break;");
             return Source.format(src, buildProcedureID(method),
-                                      buildMethodCallOnEncapsulated(method));
+                                      buildEncapsulatedMethodCall(method));
         }
         else
         {
@@ -372,7 +372,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                          "    break;");
             return Source.format(src, buildProcedureID(method),
                                       method.getReturnType().toString(),
-                                      buildMethodCallOnEncapsulated(method));
+                                      buildEncapsulatedMethodCall(method));
         }
     }
     
@@ -385,7 +385,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
      * 
      * @param duck The name of the duck variable from which arguments will be unpacked.
      */
-    String buildMethodCallOnEncapsulated(ExecutableElement method)
+    String buildEncapsulatedMethodCall(ExecutableElement method)
     {
         List<String> args = new ArrayList<String>();
         String duckType = DuckShape.encode(method);
