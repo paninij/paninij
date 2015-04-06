@@ -2,6 +2,7 @@ package org.paninij.apt;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -12,12 +13,15 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.Source;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 
@@ -48,8 +52,11 @@ public class PaniniPress extends AbstractProcessor
 
         for (Element elem : annotated)
         {
-            if (CapsuleChecker.check(this, elem)) {
+            if (CapsuleChecker.check(this, elem))
+            {
                 TypeElement template = (TypeElement) elem;
+
+                printCapsuleDeclInfo(template);
 
                 MakeCapsule.make(this, template).makeSourceFile();
 
@@ -77,6 +84,19 @@ public class PaniniPress extends AbstractProcessor
         return processingEnv.getElementUtils().getTypeElement(className);
     }
 
+    
+    public void printCapsuleDeclInfo(TypeElement template)
+    {
+        System.out.println();
+        System.out.println(Source.format("printCapsuleDeclInfo(#0): ", template));
+        
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template);
+        System.out.println(Source.format("#0 children: #1", children.size(), children));
+
+        List<VariableElement> reqs = PaniniModelInfo.getCapsuleRequirements(template);
+        System.out.println(Source.format("#0 requirements: #1", reqs.size(), reqs));
+    }
+    
     /**
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
