@@ -226,13 +226,18 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     private String buildCheckRequired()
     {
-        // TODO: Everything!
+        List<VariableElement> required = PaniniModelInfo.getCapsuleRequirements(template);
+        String[] assertions = new String[required.size()];
+        for (int idx = 0; idx < required.size(); idx++) {
+            assertions[idx] = Source.format("        assert(#0 != null);", required.get(idx).toString());
+        }
+
         String src = Source.lines(1, "@Override",
                                      "public void panini$checkRequired()",
                                      "{",
-                                     "    // TODO: Everything!",
+                                     "    #0",
                                      "}");
-        return src;
+        return Source.format(src, String.join("\n", assertions));
     }
 
     String buildInitRequired()
