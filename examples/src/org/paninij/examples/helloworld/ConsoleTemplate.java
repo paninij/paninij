@@ -4,13 +4,11 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
 
 @Capsule
-class ConsoleTemplate implements StreamTemplate
+class ConsoleTemplate implements Stream
 {
-    /*
-    public void design() { ; }
+    void design(Console self) { ; }
 
     public void write(String s) {
         System.out.println(s);
     }
-    */
 }

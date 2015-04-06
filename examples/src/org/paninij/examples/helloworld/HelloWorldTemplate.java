@@ -6,7 +6,6 @@ import org.paninij.lang.String;
 @Capsule
 class HelloWorldTemplate
 {
-    /*
     // Capsules: Call to the constructors (if necessary)
     Console c;
     Greeter g;
@@ -19,19 +18,18 @@ class HelloWorldTemplate
     // variables must have been initialized. A zero-arg `init()` function must be defined for every
     // capsule which has one or more state variables. If there is nothing to be initialized or
     // passed in, then an empty init function should be inferred (i.e. automatically generated).
-    public void init() {
+    void init() {
         ;  // no state variables to initialize
     }
 
     // No capsule inputs, so no arguments to this.
-    public void design() {
+    void design(HelloWorld self) {
         g.design(c);
     }
 
     // This is an active capsule.
-    public void run()
+    void run()
     {
         g.greet();
     }
-    */
 }

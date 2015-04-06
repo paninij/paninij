@@ -209,12 +209,19 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
      
     String buildDesign()
     {
-        // TODO: Everything!
-        String src = Source.lines(1, "public void design(#0)",
-                                     "{",
-                                     "    // TODO",
-                                     "}");
-        return Source.format(src, "/* TODO: parameters */");
+        String designDecl = PaniniModelInfo.buildCapsuleDesignMethodDecl(template);
+        if (designDecl == null)
+        {
+            return "";
+        }
+        else
+        {
+            return Source.lines(1, "@Override",
+                                   designDecl,
+                                   "{",
+                                   "    // TODO",
+                                   "}");
+        }
     }   
 
     private String buildCheckRequired()

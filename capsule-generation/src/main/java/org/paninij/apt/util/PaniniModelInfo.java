@@ -229,4 +229,41 @@ public class PaniniModelInfo
 
         return children;
     }
+    
+    /**
+     * Inspects the given capsule template, finds the design declaration on it, then returns a
+     * String that should go on the associated capsule.
+     * 
+     * For example, if a user-defined capsule template has the design declaration of the form
+     * 
+     *     void design(Self s, Foo foo, Bar bar) {
+     *         // ...
+     *     }
+     * 
+     * Then this method would return the `String`
+     * 
+     *     "public void design(Foo foo, Bar bar)"
+     * 
+     * Note that if `template` has no design declaration, then this method returns `null`.
+     */
+    public static String buildCapsuleDesignMethodDecl(TypeElement template)
+    {
+        ExecutableElement designDecl = getCapsuleDesignDecl(template);
+        if (designDecl == null) {
+            return null;
+        }
+        
+        List<? extends VariableElement> varElems = designDecl.getParameters();
+        List<String> paramStrings = new ArrayList<String>(varElems.size());
+
+        // For each element in `varElems`, aside from the first `self` element, convert that
+        // element into a String, and add it to `paramStrings`.
+        for (int idx = 1; idx < varElems.size(); idx++)
+        {
+            VariableElement varElem = varElems.get(idx);
+            paramStrings.add(Source.buildVariableDecl(varElem));
+        }
+
+        return Source.format("public void design(#0)", String.join(", ", paramStrings));
+    }
 }
