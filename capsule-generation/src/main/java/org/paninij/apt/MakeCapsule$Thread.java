@@ -116,7 +116,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     String buildProcedureIDs() {
         ArrayList<String> decls = new ArrayList<String>();
-        String src = Source.lines(1, "#0");
+        String src = Source.lines(1, "##");
         int currID = 0;
         for (Element child : template.getEnclosedElements())
         {
@@ -129,7 +129,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 currID++;
             }
         }
-        return Source.format(src, String.join("\n    ", decls));
+        return Source.formatAligned(src, decls.toArray());
     }
     
     String buildProcedureID(ExecutableElement method)

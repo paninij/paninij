@@ -39,11 +39,19 @@ public class Source
     
     public static String formatAligned(String fmt, Object... items)
     {
+        if(items.length == 0)
+        {
+            return "";
+        }
+        
         int hashIndex = fmt.indexOf("##");
         char[] fmtChars = fmt.toCharArray();
         int tempIndex = hashIndex;
         //scan back to last newline character
-        while(tempIndex == 1 || fmtChars[tempIndex-1] != '\n'){ tempIndex--;}
+        while(tempIndex > 0){
+            if(fmtChars[tempIndex-1] == '\n') break;
+            tempIndex--;
+        }
         //depth to place the new hash flags at
         int spaces = (hashIndex - tempIndex);
         //for each item to be aligned, insert hash flag for formatted string
