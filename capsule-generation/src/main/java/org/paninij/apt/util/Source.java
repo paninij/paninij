@@ -36,6 +36,38 @@ public class Source
 
         return String.join("\n", tabbed) + "\n";
     }
+    
+    public static String formatAligned(String fmt, Object... items)
+    {
+        int hashIndex = fmt.indexOf("##");
+        char[] fmtChars = fmt.toCharArray();
+        int tempIndex = hashIndex;
+        //scan back to last newline character
+        while(tempIndex == 1 || fmtChars[tempIndex-1] != '\n'){ tempIndex--;}
+        //depth to place the new hash flags at
+        int spaces = (hashIndex - tempIndex);
+        //for each item to be aligned, insert hash flag for formatted string
+        for(int i = 0; i < items.length; i++)
+        {
+            String[] halves = fmt.split("##");
+            fmt = halves[0] + "#" + i;
+            if(!(i == items.length - 1))
+            {
+                fmt += "\n";
+                for(int j = 0; j < spaces; j++)
+                {
+                    fmt += " ";
+                }
+                fmt += "##" + halves[1];
+            }
+            else
+            {
+                //don't add hanging ## on last item
+                fmt += halves[1];
+            }
+        }
+        return Source.format(fmt, items);
+    }
 
     /**
      * State labels used while parsing a format string and constructing the

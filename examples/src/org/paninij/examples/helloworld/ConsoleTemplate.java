@@ -1,3 +1,4 @@
+/*
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
@@ -12,3 +13,4 @@ class ConsoleTemplate implements Stream
         System.out.println(s);
     }
 }
+*/
