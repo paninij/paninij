@@ -226,10 +226,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     private String buildCheckRequired()
     {
-        List<VariableElement> required = PaniniModelInfo.getCapsuleRequirements(template, context.getProcessingEnvironment());
+        List<VariableElement> required = PaniniModelInfo.getCapsuleRequirements(context, template);
         String[] assertions = new String[required.size()];
         for (int idx = 0; idx < required.size(); idx++) {
-            assertions[idx] = Source.format("        assert(panini$encapsulated.#0 != null);", required.get(idx).toString());
+            assertions[idx] = Source.format("    assert(panini$encapsulated.#0 != null);", required.get(idx).toString());
         }
 
         String src = Source.lines(1, "@Override",
@@ -265,7 +265,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "",
                                      "}");
 
-        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template, context.getProcessingEnvironment());
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(context, template);
 
         return src;
     }

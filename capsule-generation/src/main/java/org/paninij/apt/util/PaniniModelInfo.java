@@ -14,6 +14,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
+import org.paninij.apt.PaniniPress;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.Signature;
@@ -151,20 +152,22 @@ public class PaniniModelInfo
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
 
-    public static boolean isCapsuleDecl(VariableElement e, ProcessingEnvironment processingEnv)
+    public static boolean isCapsuleDecl(PaniniPress context, VariableElement varElem)
     {
-        return JavaModelInfo.isAnnotatedBy(CapsuleInterface.class, e)
-                || JavaModelInfo.isAnnotatedBy(Signature.class, e);
+        return JavaModelInfo.isAnnotatedBy(context, varElem, "org.paninij.lang.CapsuleInterface")
+            || JavaModelInfo.isAnnotatedBy(context, varElem, "org.paninij.lang.Signature");
     }
 
-    public static List<VariableElement> getCapsuleDecls(TypeElement template, ProcessingEnvironment processingEnv)
+    public static List<VariableElement> getCapsuleDecls(PaniniPress context, TypeElement template)
     {
         List<VariableElement> decls = new ArrayList<VariableElement>();
-        for (Element e : template.getEnclosedElements()) {
-            if (e instanceof VariableElement) {
-                VariableElement elem = (VariableElement) e;
-                if (isCapsuleDecl(elem, processingEnv)) {
-                    decls.add(elem);
+        for (Element e : template.getEnclosedElements())
+        {
+            if (e.getKind() == ElementKind.FIELD)
+            {
+                VariableElement varElem = (VariableElement) e;
+                if (isCapsuleDecl(context, varElem)) {
+                    decls.add(varElem);
                 }
             }
         }
@@ -187,7 +190,8 @@ public class PaniniModelInfo
         }
     }
 
-    public static List<VariableElement> getCapsuleRequirements(TypeElement template, ProcessingEnvironment processingEnv)
+    public static List<VariableElement> getCapsuleRequirements(PaniniPress context,
+                                                               TypeElement template)
     {
         ArrayList<VariableElement> reqs = new ArrayList<VariableElement>();
         ExecutableElement design = getCapsuleDesignDecl(template);
@@ -195,7 +199,7 @@ public class PaniniModelInfo
         if (design == null) return reqs;
 
         List<? extends VariableElement> params = design.getParameters();
-        List<VariableElement> decls = getCapsuleDecls(template, processingEnv);
+        List<VariableElement> decls = getCapsuleDecls(context, template);
 
         for (VariableElement d : decls) {
             for (VariableElement p : params) {
@@ -208,9 +212,10 @@ public class PaniniModelInfo
         return reqs;
     }
 
-    public static List<VariableElement> getCapsuleChildren(TypeElement template, ProcessingEnvironment processingEnv)
+    public static List<VariableElement> getCapsuleChildren(PaniniPress context,
+                                                           TypeElement template)
     {
-        List<VariableElement> decls = getCapsuleDecls(template, processingEnv);
+        List<VariableElement> decls = getCapsuleDecls(context, template);
         ExecutableElement design = getCapsuleDesignDecl(template);
 
         if (design == null) return decls;

@@ -81,35 +81,19 @@ public class PaniniPress extends AbstractProcessor
         return false;
     }
 
-    /**
-     * Dynamic helper methods.
-     */
-    private TypeElement getTypeElement(String className) {
-        return processingEnv.getElementUtils().getTypeElement(className);
-    }
-
-    public <A extends Annotation> boolean isAnnotatedBy(String annotationName, TypeMirror type) {
-        TypeMirror annotationType = this.getTypeElement(annotationName).asType();
-        for (AnnotationMirror am : getTypeElement(type.toString()).getAnnotationMirrors()) {
-             processingEnv.getTypeUtils().isSameType(am.getAnnotationType(), annotationType);
-        }
-        return false;
-    }
-
-    public <A extends Annotation> boolean isAnnotatedBy(String annotationName, Element elem) {
-        return this.isAnnotatedBy(annotationName, elem.asType());
-    }
-
     public void printCapsuleDeclInfo(TypeElement template)
     {
         System.out.println();
         System.out.println(Source.format("printCapsuleDeclInfo(#0): ", template));
 
-        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template, processingEnv);
-        System.out.println(Source.format("#0 children: #1", children.size(), children));
+        List<VariableElement> capsules = PaniniModelInfo.getCapsuleDecls(this, template);
+        System.out.println(Source.format("#0 capsules: #1", capsules.size(), capsules.toString()));
 
-        List<VariableElement> reqs = PaniniModelInfo.getCapsuleRequirements(template, processingEnv);
-        System.out.println(Source.format("#0 requirements: #1", reqs.size(), reqs));
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(this, template);
+        System.out.println(Source.format("#0 children: #1", children.size(), children.toString()));
+
+        List<VariableElement> reqs = PaniniModelInfo.getCapsuleRequirements(this, template);
+        System.out.println(Source.format("#0 requirements: #1", reqs.size(), reqs.toString()));
     }
 
     /**
@@ -147,12 +131,11 @@ public class PaniniPress extends AbstractProcessor
         processingEnv.getMessager().printMessage(Kind.ERROR, msg);
     }
 
-    public Types getTypeUtils()
-    {
+    public Types getTypeUtils() {
         return processingEnv.getTypeUtils();
     }
 
-    public ProcessingEnvironment getProcessingEnvironment() {
-        return processingEnv;
+    public Elements getElementUtils() {
+        return processingEnv.getElementUtils();
     }
 }

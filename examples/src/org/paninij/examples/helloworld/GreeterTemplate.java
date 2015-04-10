@@ -8,7 +8,7 @@ import org.paninij.lang.String;
 class GreeterTemplate
 {
     String message;
-    @CapsuleInterface Stream s;
+    Stream s;
 
     void init() {
         message = new String("Hello World!");

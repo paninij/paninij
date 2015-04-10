@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -12,6 +13,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+
+import org.paninij.apt.PaniniPress;
 
 public class JavaModelInfo {
 
@@ -76,7 +79,10 @@ public class JavaModelInfo {
         default:
             throw new IllegalArgumentException();
         }
+    }
 
+    public static TypeElement getTypeElement(PaniniPress context, String className) {
+        return context.getElementUtils().getTypeElement(className);
     }
 
     /**
@@ -152,6 +158,8 @@ public class JavaModelInfo {
         return isArray(type.asType());
     }
 
+    /*
+    // Commented out to instead use the version `PaniniPress`-based version.
     public static <A extends Annotation> boolean isAnnotatedBy(Class<A> annotationType, Element elem) {
         // FIXME
         return elem.getAnnotation(annotationType) != null;
@@ -159,5 +167,35 @@ public class JavaModelInfo {
 //        return elem.asType().getAnnotationsByType(annotationType).length > 0;
 //        return !elem.getAnnotationMirrors().isEmpty();
 //        return elem.getAnnotation(annotationType) != null;
+    }
+    */
+    
+    public static <A extends Annotation> boolean isAnnotatedBy(PaniniPress context,
+                                                               TypeMirror typeMirror,
+                                                               String annotationName)
+    {
+        TypeElement annotationType = getTypeElement(context, annotationName);
+        if (annotationType == null)
+        {
+            String msg = "Called `isAnnotatedBy()` with an `annotationName` which could not be found.";
+            throw new IllegalArgumentException(msg);
+        }
+        
+        TypeElement typeElem = (TypeElement) context.getTypeUtils().asElement(typeMirror);
+        for (AnnotationMirror am : typeElem.getAnnotationMirrors())
+        {
+             if (context.getTypeUtils().isSameType(am.getAnnotationType(), annotationType.asType()))
+             {
+                 return true;
+             }
+        }
+        return false;
+    }
+
+    public static <A extends Annotation> boolean isAnnotatedBy(PaniniPress context,
+                                                               Element elem,
+                                                               String annotationName)
+    {
+        return isAnnotatedBy(context, elem.asType(), annotationName);
     }
 }
