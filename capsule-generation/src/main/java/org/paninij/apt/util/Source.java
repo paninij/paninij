@@ -76,6 +76,12 @@ public class Source
         }
         return Source.format(fmt, items);
     }
+    
+    public static String formatAligned(String fmt, List<String> items)
+    {
+        return formatAligned(fmt, items.toArray());
+    }
+    
 
     /**
      * State labels used while parsing a format string and constructing the
