@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -65,9 +66,9 @@ public class PaniniPress extends AbstractProcessor
                 //MakeCapsule$Task.make(this, template).makeSourceFile();
                 //MakeCapsule$Monitor.make(this, template).makeSourceFile();
                 //MakeCapsule$Serial.make(this, template).makeSourceFile();
-                
+
                 MakeDucks.make(this, template).makeDucks();
-                
+
             } else {
                 error("Capsule failed check.");
             }
@@ -84,19 +85,19 @@ public class PaniniPress extends AbstractProcessor
         return processingEnv.getElementUtils().getTypeElement(className);
     }
 
-    
+
     public void printCapsuleDeclInfo(TypeElement template)
     {
         System.out.println();
         System.out.println(Source.format("printCapsuleDeclInfo(#0): ", template));
-        
-        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template);
+
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template, processingEnv);
         System.out.println(Source.format("#0 children: #1", children.size(), children));
 
-        List<VariableElement> reqs = PaniniModelInfo.getCapsuleRequirements(template);
+        List<VariableElement> reqs = PaniniModelInfo.getCapsuleRequirements(template, processingEnv);
         System.out.println(Source.format("#0 requirements: #1", reqs.size(), reqs));
     }
-    
+
     /**
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
@@ -135,6 +136,9 @@ public class PaniniPress extends AbstractProcessor
     public Types getTypeUtils()
     {
         return processingEnv.getTypeUtils();
-        
+    }
+
+    public ProcessingEnvironment getProcessingEnvironment() {
+        return processingEnv;
     }
 }

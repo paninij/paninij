@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -11,8 +12,11 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleInterface;
+import org.paninij.lang.Signature;
 
 public class PaniniModelInfo
 {
@@ -68,7 +72,7 @@ public class PaniniModelInfo
 
     /**
      * @return `true` if and only if the given capsule template describes an active capsule.
-     * 
+     *
      * Note: This method is (currently) equivalent to calling `hasRunDeclaration()`.
      *
      * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
@@ -81,7 +85,7 @@ public class PaniniModelInfo
 
     /**
      * @return `true` if and only if the given capsule template has a `run()` declaration/method.
-     * 
+     *
      * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
      * `template` passes all checks).
      */
@@ -90,10 +94,10 @@ public class PaniniModelInfo
         List<ExecutableElement> methods = JavaModelInfo.getMethodsNamed(template, "run");
         return methods.size() > 0;
     }
-    
+
     /**
      * @return `true` if and only if the given capsule template has an `init()` declaration/method.
-     * 
+     *
      * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
      * `template` passes all checks).
      */
@@ -102,7 +106,7 @@ public class PaniniModelInfo
         List<ExecutableElement> methods = JavaModelInfo.getMethodsNamed(template, "init");
         return methods.size() > 0;
     }
-    
+
     /**
      * @return The name of the simple (i.e. unqualified) type of the given capsule template type.
      */
@@ -147,20 +151,21 @@ public class PaniniModelInfo
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
 
-    public static boolean isCapsuleDecl(VariableElement e)
+    public static boolean isCapsuleDecl(VariableElement e, ProcessingEnvironment processingEnv)
     {
-        // return e.getAnnotation(org.paninij.lang.Capsule.class) != null; -- this would only work on a template
-        // TODO should there be a check for Signature here?
-        return e.getClass().isAssignableFrom(org.paninij.runtime.Capsule.class);
+//        System.out.println("");
+//        return true;
+        return JavaModelInfo.isAnnotatedBy(CapsuleInterface.class, e)
+                || JavaModelInfo.isAnnotatedBy(Signature.class, e);
     }
 
-    public static List<VariableElement> getCapsuleDecls(TypeElement template)
+    public static List<VariableElement> getCapsuleDecls(TypeElement template, ProcessingEnvironment processingEnv)
     {
         List<VariableElement> decls = new ArrayList<VariableElement>();
         for (Element e : template.getEnclosedElements()) {
             if (e instanceof VariableElement) {
                 VariableElement elem = (VariableElement) e;
-                if (isCapsuleDecl(elem)) {
+                if (isCapsuleDecl(elem, processingEnv)) {
                     decls.add(elem);
                 }
             }
@@ -170,7 +175,7 @@ public class PaniniModelInfo
 
     /**
      * Returns `null` if there the given capsule template has no design declaration.
-     * 
+     *
      * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
      * `template` passes all checks).
      */
@@ -184,7 +189,7 @@ public class PaniniModelInfo
         }
     }
 
-    public static List<VariableElement> getCapsuleRequirements(TypeElement template)
+    public static List<VariableElement> getCapsuleRequirements(TypeElement template, ProcessingEnvironment processingEnv)
     {
         ArrayList<VariableElement> reqs = new ArrayList<VariableElement>();
         ExecutableElement design = getCapsuleDesignDecl(template);
@@ -192,7 +197,7 @@ public class PaniniModelInfo
         if (design == null) return reqs;
 
         List<? extends VariableElement> params = design.getParameters();
-        List<VariableElement> decls = getCapsuleDecls(template);
+        List<VariableElement> decls = getCapsuleDecls(template, processingEnv);
 
         for (VariableElement d : decls) {
             for (VariableElement p : params) {
@@ -205,9 +210,9 @@ public class PaniniModelInfo
         return reqs;
     }
 
-    public static List<VariableElement> getCapsuleChildren(TypeElement template)
+    public static List<VariableElement> getCapsuleChildren(TypeElement template, ProcessingEnvironment processingEnv)
     {
-        List<VariableElement> decls = getCapsuleDecls(template);
+        List<VariableElement> decls = getCapsuleDecls(template, processingEnv);
         ExecutableElement design = getCapsuleDesignDecl(template);
 
         if (design == null) return decls;
@@ -229,21 +234,21 @@ public class PaniniModelInfo
 
         return children;
     }
-    
+
     /**
      * Inspects the given capsule template, finds the design declaration on it, then returns a
      * String that should go on the associated capsule.
-     * 
+     *
      * For example, if a user-defined capsule template has the design declaration of the form
-     * 
+     *
      *     void design(Self s, Foo foo, Bar bar) {
      *         // ...
      *     }
-     * 
+     *
      * Then this method would return the `String`
-     * 
+     *
      *     "public void design(Foo foo, Bar bar)"
-     * 
+     *
      * Note that if `template` has no design declaration, then this method returns `null`.
      */
     public static String buildCapsuleDesignMethodDecl(TypeElement template)
@@ -252,7 +257,7 @@ public class PaniniModelInfo
         if (designDecl == null) {
             return null;
         }
-        
+
         List<? extends VariableElement> varElems = designDecl.getParameters();
         List<String> paramStrings = new ArrayList<String>(varElems.size());
 

@@ -15,7 +15,7 @@ import org.paninij.apt.util.Source;
 /**
  * This class contains logic to inspect a given capsule template class and generate the capsule
  * interface which every concrete capsule type (e.g. `Foo$Thread`, `Bar$Task`) will implement.
- * 
+ *
  * For example, if the given capsule template is named `Baz$Template`, then this class will make a
  * `Baz` interface. For each procedure defined in `Baz$Template`, an equivalent declarations will
  * be added to the `Baz` interface.
@@ -47,6 +47,7 @@ public class MakeCapsule
                                      "/**",
                                      " * This capsule interface was auto-generated from `#2`",
                                      " */",
+                                     "@CapsuleInterface",
                                      "#3",
                                      "{",
                                      "#4",
@@ -98,7 +99,7 @@ public class MakeCapsule
 
     private String buildImports()
     {
-        return Source.buildCollectedImportDecls(template);
+        return Source.buildCollectedImportDecls(template, "org.paninij.lang.CapsuleInterface");
     }
 
     private String buildPackage()

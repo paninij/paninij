@@ -24,7 +24,7 @@ import org.paninij.apt.util.Source;
 class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 {
     private static final String CAPSULE_THREAD_TYPE_SUFFIX = "$Thread";
-    
+
     static MakeCapsule$Thread make(PaniniPress context, TypeElement template)
     {
         MakeCapsule$Thread cap = new MakeCapsule$Thread();
@@ -131,7 +131,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         }
         return Source.format(src, String.join("\n    ", decls));
     }
-    
+
     String buildProcedureID(ExecutableElement method)
     {
         String base = "panini$proc$";
@@ -141,7 +141,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             params.add(parseType(param.asType()));
         }
         String paramStrings = params.size() > 0 ? "$" + String.join("$", params) : "";
-        
+
         return base + name + paramStrings;
     }
 
@@ -152,7 +152,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");
         return src;
     }
-    
+
     String buildProcedures()
     {
         ArrayList<String> decls = new ArrayList<String>();
@@ -186,10 +186,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     String buildProcedureBody(ExecutableElement method)
     {
-        
+
         DuckShape duck = new DuckShape(method);
         String possibleReturn = "";
-       
+
         // Append the list of parameter names to `args` if there are any.
         String procID = buildProcedureID(method);
         String args = Source.buildParameterNamesList(method);
@@ -206,7 +206,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "#2");
         return Source.format(fmt, duck.toString(), args, possibleReturn);
     }
-     
+
     String buildDesign()
     {
         String designDecl = PaniniModelInfo.buildCapsuleDesignMethodDecl(template);
@@ -222,14 +222,14 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                    "    // TODO",
                                    "}");
         }
-    }   
+    }
 
     private String buildCheckRequired()
     {
-        List<VariableElement> required = PaniniModelInfo.getCapsuleRequirements(template);
+        List<VariableElement> required = PaniniModelInfo.getCapsuleRequirements(template, context.getProcessingEnvironment());
         String[] assertions = new String[required.size()];
         for (int idx = 0; idx < required.size(); idx++) {
-            assertions[idx] = Source.format("        assert(#0 != null);", required.get(idx).toString());
+            assertions[idx] = Source.format("        assert(panini$encapsulated.#0 != null);", required.get(idx).toString());
         }
 
         String src = Source.lines(1, "@Override",
@@ -252,7 +252,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "}");
         return Source.format(src, "/* TODO: parameters */");
     }
-    
+
     /**
      * Build a method which initializes each of the child capsules and delegates .
      */
@@ -265,11 +265,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "",
                                      "}");
 
-        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template);
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(template, context.getProcessingEnvironment());
 
         return src;
     }
-    
+
     String buildInitState()
     {
         // If there is an `init` declaration on the template class, then override the empty `init()`
@@ -287,7 +287,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             return "";  // Do not override superclass with anything.
         }
     }
-    
+
     String buildRun()
     {
         if (PaniniModelInfo.isActive(template))
@@ -327,7 +327,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             return Source.format(src, buildRunSwitch());
         }
     }
-    
+
     String buildRunSwitch()
     {
         // Add a case statement for each procedure wrapper.
@@ -341,7 +341,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 lines.add("\n" + buildRunSwitchCase((ExecutableElement) elem));
             }
         }
-        
+
         // TODO: Fix this ugly alignment hack.
         lines.add("\n" + Source.lines(4, "case PANINI$SHUTDOWN:",
                                          "    if (panini$isEmpty() == false) {",
@@ -360,7 +360,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         String tabs = "            ";  // Three "tabs" of 4-spaces.
         return tabs + String.join("\n" + tabs, lines);
     }
-    
+
     /**
      * Assumes that `method` is a procedure method on a valid capsule template.
      */
@@ -387,14 +387,14 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                       buildEncapsulatedMethodCall(method));
         }
     }
-    
+
     /**
      * Builds a string used to call the given `method` on the encapsulated template instance. This
      * is meant to be used in the context of the capsule's `run()` method.
-     * 
+     *
      * Assumes that the duck being unpacked can be cast to the `DuckShape` type which is used to
      * handle the given `method`.
-     * 
+     *
      * @param duck The name of the duck variable from which arguments will be unpacked.
      */
     String buildEncapsulatedMethodCall(ExecutableElement method)

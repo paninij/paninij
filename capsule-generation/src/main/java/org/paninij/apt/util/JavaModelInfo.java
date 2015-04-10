@@ -1,5 +1,6 @@
 package org.paninij.apt.util;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +19,13 @@ public class JavaModelInfo {
      * Gives a string representation of the executable element's return type. If the return type is
      * a primitive (e.g. int, double, etc.), then the returned type will be that primitive's boxed
      * type (e.g. Integer, Double, etc.).
-     * 
+     *
      * In the case that the executable element return has no return type (i.e. `void`), then "void"
      * is returned.
-     * 
+     *
      * An `IllegalArgumentException` is raised whenever the `TypeKind` of `exec`'s return value is
      * any of the following:
-     * 
+     *
      *  - NONE
      *  - NULL
      *  - ERROR
@@ -34,12 +35,12 @@ public class JavaModelInfo {
      *  - OTHER
      *  - UNION
      *  - INTERSECTION
-     * 
+     *
      * @param exec
      * @return A string of the executable's return type.
      */
     public static String getBoxedReturnType(ExecutableElement exec)
-    {	
+    {
         switch (exec.getReturnType().getKind()) {
         case BOOLEAN:
             return "Boolean";
@@ -75,7 +76,7 @@ public class JavaModelInfo {
         default:
             throw new IllegalArgumentException();
         }
-        
+
     }
 
     /**
@@ -94,7 +95,7 @@ public class JavaModelInfo {
         }
         return rv;
     }
-    
+
     /**
      * @return `true` if and only if the given executable element has the given name.
      */
@@ -102,7 +103,7 @@ public class JavaModelInfo {
     {
         return elem.getSimpleName().toString().equals(name);
     }
-    
+
     public static boolean hasVoidReturnType(ExecutableElement exec)
     {
         return exec.getReturnType().getKind() == TypeKind.VOID;
@@ -120,17 +121,17 @@ public class JavaModelInfo {
             return isFinalType((TypeElement) elem);
         }
     }
-    
+
     public static boolean isFinalType(TypeElement type)
     {
         return type.getModifiers().contains(Modifier.FINAL);
     }
-    
+
     public static boolean isPrimitive(TypeMirror type)
     {
         return type.getKind().isPrimitive();
     }
-    
+
     public static boolean isPrimitive(Element type)
     {
         return isPrimitive(type.asType());
@@ -145,9 +146,18 @@ public class JavaModelInfo {
     {
         return type.getKind() == TypeKind.ARRAY;
     }
-    
+
     public static boolean isArray(Element type)
     {
         return isArray(type.asType());
+    }
+
+    public static <A extends Annotation> boolean isAnnotatedBy(Class<A> annotationType, Element elem) {
+        // FIXME
+        return elem.asType().getAnnotation(annotationType) != null;
+//        return !elem.asType().getAnnotationMirrors().isEmpty();
+//        return elem.asType().getAnnotationsByType(annotationType).length > 0;
+//        return !elem.getAnnotationMirrors().isEmpty();
+//        return elem.getAnnotation(annotationType) != null;
     }
 }
