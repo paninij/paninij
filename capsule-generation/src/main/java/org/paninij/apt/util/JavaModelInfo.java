@@ -154,7 +154,7 @@ public class JavaModelInfo {
 
     public static <A extends Annotation> boolean isAnnotatedBy(Class<A> annotationType, Element elem) {
         // FIXME
-        return elem.asType().getAnnotation(annotationType) != null;
+        return elem.getAnnotation(annotationType) != null;
 //        return !elem.asType().getAnnotationMirrors().isEmpty();
 //        return elem.asType().getAnnotationsByType(annotationType).length > 0;
 //        return !elem.getAnnotationMirrors().isEmpty();

@@ -153,8 +153,6 @@ public class PaniniModelInfo
 
     public static boolean isCapsuleDecl(VariableElement e, ProcessingEnvironment processingEnv)
     {
-//        System.out.println("");
-//        return true;
         return JavaModelInfo.isAnnotatedBy(CapsuleInterface.class, e)
                 || JavaModelInfo.isAnnotatedBy(Signature.class, e);
     }
