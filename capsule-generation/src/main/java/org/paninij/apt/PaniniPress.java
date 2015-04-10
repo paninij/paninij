@@ -46,9 +46,8 @@ public class PaniniPress extends AbstractProcessor
         this.roundEnv = roundEnv;
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
-            if (! SignatureChecker.check(this, elem)) {
-                // TODO better error message
-                error("Signature failed check.");
+            if (SignatureChecker.check(this, elem)) {
+                // Nothing to do for now.
             }
         }
 
@@ -71,9 +70,6 @@ public class PaniniPress extends AbstractProcessor
                 //MakeCapsule$Serial.make(this, template).makeSourceFile();
 
                 MakeDucks.make(this, template).makeDucks();
-
-            } else {
-                error("Capsule failed check.");
             }
         }
 

@@ -1,6 +1,7 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.Signature;
 import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.String;
 
@@ -8,7 +9,7 @@ import org.paninij.lang.String;
 class GreeterTemplate
 {
     String message;
-    Stream s;
+    @Signature Stream s;
 
     void init() {
         message = new String("Hello World!");

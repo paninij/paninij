@@ -154,8 +154,9 @@ public class PaniniModelInfo
 
     public static boolean isCapsuleDecl(PaniniPress context, VariableElement varElem)
     {
-        return JavaModelInfo.isAnnotatedBy(context, varElem, "org.paninij.lang.CapsuleInterface")
-            || JavaModelInfo.isAnnotatedBy(context, varElem, "org.paninij.lang.Signature");
+        return JavaModelInfo.isAnnotatedBy(context, varElem.asType(), "org.paninij.lang.CapsuleInterface")
+            || JavaModelInfo.isAnnotatedBy(context, varElem.asType(), "org.paninij.lang.Signature")
+            || JavaModelInfo.isAnnotatedBy(context, varElem, "org.paninij.lang.Capsule");
     }
 
     public static List<VariableElement> getCapsuleDecls(PaniniPress context, TypeElement template)

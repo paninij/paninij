@@ -174,6 +174,14 @@ public class JavaModelInfo {
                                                                TypeMirror typeMirror,
                                                                String annotationName)
     {
+        TypeElement typeElem = (TypeElement) context.getTypeUtils().asElement(typeMirror);
+        return isAnnotatedBy(context, typeElem, annotationName);
+    }
+
+    public static <A extends Annotation> boolean isAnnotatedBy(PaniniPress context,
+                                                               Element elem,
+                                                               String annotationName)
+    {
         TypeElement annotationType = getTypeElement(context, annotationName);
         if (annotationType == null)
         {
@@ -181,8 +189,7 @@ public class JavaModelInfo {
             throw new IllegalArgumentException(msg);
         }
         
-        TypeElement typeElem = (TypeElement) context.getTypeUtils().asElement(typeMirror);
-        for (AnnotationMirror am : typeElem.getAnnotationMirrors())
+        for (AnnotationMirror am : elem.getAnnotationMirrors())
         {
              if (context.getTypeUtils().isSameType(am.getAnnotationType(), annotationType.asType()))
              {
@@ -190,12 +197,5 @@ public class JavaModelInfo {
              }
         }
         return false;
-    }
-
-    public static <A extends Annotation> boolean isAnnotatedBy(PaniniPress context,
-                                                               Element elem,
-                                                               String annotationName)
-    {
-        return isAnnotatedBy(context, elem.asType(), annotationName);
     }
 }

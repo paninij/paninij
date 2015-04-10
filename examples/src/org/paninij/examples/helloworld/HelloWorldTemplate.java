@@ -7,8 +7,8 @@ import org.paninij.lang.String;
 class HelloWorldTemplate
 {
     // Capsules: Call to the constructors (if necessary)
-    Console c;
-    Greeter g;
+    @Capsule Console c;
+    @Capsule Greeter g;
 
     // State Variables:
     // <none>

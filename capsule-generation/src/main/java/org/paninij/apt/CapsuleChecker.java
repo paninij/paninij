@@ -24,6 +24,12 @@ class CapsuleChecker
         // TODO: check that every passive capsule has one or more procedures.
         // TODO: check that every active capsule has zero procedures.
 
+        if (template.getKind() == ElementKind.FIELD)
+        {
+            // Ignore type checking if the given element is actually a field.
+            return false;
+        }
+
         if (template.getKind() != ElementKind.CLASS && template.getKind() != ElementKind.INTERFACE)
         {
             context.error("Capsule template must be either a class or an interface.");
