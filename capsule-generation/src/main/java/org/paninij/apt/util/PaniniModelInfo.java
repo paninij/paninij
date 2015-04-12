@@ -152,31 +152,90 @@ public class PaniniModelInfo
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
 
-    public static boolean isCapsuleFieldDecl(PaniniPress context, VariableElement fieldDecl)
+
+    public static boolean isCapsuleFieldDecl(PaniniPress context, Element elem)
     {
-        TypeMirror fieldType = fieldDecl.asType();
-                
-        return JavaModelInfo.isAnnotatedBy(context, fieldType, "org.paninij.lang.CapsuleInterface")
-            || JavaModelInfo.isAnnotatedBy(context, fieldType, "org.paninij.lang.Signature")
-            || JavaModelInfo.isAnnotatedBy(context, fieldDecl, "org.paninij.lang.Child")
-            || JavaModelInfo.isAnnotatedBy(context, fieldDecl, "org.paninij.lang.Wired");
+        return isChildFieldDecl(context, elem) || isWiredFieldDecl(context, elem);
     }
+
+    
+    public static boolean hasCapsuleFieldDecls(PaniniPress context, TypeElement template)
+    {
+        return getCapsuleFieldDecls(context, template).isEmpty();
+    }
+
 
     public static List<VariableElement> getCapsuleFieldDecls(PaniniPress context, TypeElement template)
     {
-        List<VariableElement> decls = new ArrayList<VariableElement>();
-        for (Element e : template.getEnclosedElements())
+        List<VariableElement> fieldDecls = new ArrayList<VariableElement>();
+        for (Element elem : template.getEnclosedElements())
         {
-            if (e.getKind() == ElementKind.FIELD)
-            {
-                VariableElement varElem = (VariableElement) e;
-                if (isCapsuleFieldDecl(context, varElem)) {
-                    decls.add(varElem);
-                }
+            if (isCapsuleFieldDecl(context, elem)) {
+                fieldDecls.add((VariableElement) elem);
             }
         }
-        return decls;
+        return fieldDecls;
     }
+
+
+    public static boolean isChildFieldDecl(PaniniPress context, Element elem)
+    {
+        return elem.getKind() == ElementKind.FIELD
+            && JavaModelInfo.isAnnotatedBy(context, elem, "org.paninij.lang.Child");
+    }
+
+
+    public static boolean hasChildFieldDecls(PaniniPress context, TypeElement template) {
+        return getWiredFieldDecls(context, template).isEmpty() == false;
+    }
+
+ 
+    public static List<VariableElement> getChildFieldDecls(PaniniPress context,
+                                                           TypeElement template)
+    {
+        List<VariableElement> children = new ArrayList<VariableElement>();
+        for (Element elem : template.getEnclosedElements())
+        {
+            if (isChildFieldDecl(context, elem)) {
+                children.add((VariableElement) elem);
+            }
+        }
+        return children;
+    }
+
+  
+    public static boolean isWiredFieldDecl(PaniniPress context, Element elem)
+    {
+        return elem.getKind() == ElementKind.FIELD
+            && JavaModelInfo.isAnnotatedBy(context, elem, "org.paninij.lang.Wired");
+    }
+
+
+    public static boolean hasWiredFieldDecls(PaniniPress context, TypeElement template) {
+        return getWiredFieldDecls(context, template).isEmpty() == false;
+    }
+    
+    public static List<VariableElement> getWiredFieldDecls(PaniniPress context, TypeElement template)
+    {
+        List<VariableElement> wired = new ArrayList<VariableElement>();
+        for (Element elem : template.getEnclosedElements())
+        {
+            if (isWiredFieldDecl(context, elem)) {
+                wired.add((VariableElement) elem);
+            }
+        }
+        return wired;
+    }
+
+    
+    /**
+     * Returns `true` if and only if the given capsule template has a design declaration.
+     */
+    public static boolean hasCapsuleDesignDecl(TypeElement template)
+    {
+        return getCapsuleDesignDecl(template) != null;
+    }
+
 
     /**
      * Returns the `ExecutableElement` representing the given capsule template design declaration,
@@ -194,102 +253,42 @@ public class PaniniModelInfo
             return decls.get(0);
         }
     }
-    
-    /**
-     * Returns `true` if and only if the given capsule template has a design declaration.
-     */
-    public static boolean hasCapsuleDesignDecl(TypeElement template)
-    {
-        return getCapsuleDesignDecl(template) != null;
-    }
 
-    public static List<VariableElement> getCapsuleRequirements(PaniniPress context,
-                                                               TypeElement template)
-    {
-        ArrayList<VariableElement> reqs = new ArrayList<VariableElement>();
-        ExecutableElement design = getCapsuleDesignDecl(template);
-
-        if (design == null) return reqs;
-
-        List<? extends VariableElement> params = design.getParameters();
-        List<VariableElement> decls = getCapsuleFieldDecls(context, template);
-
-        for (VariableElement d : decls) {
-            for (VariableElement p : params) {
-                if (d.toString().equals(p.toString())) {
-                    reqs.add(d);
-                }
-            }
-        }
-
-        return reqs;
-    }
-    
-    public static boolean hasCapsuleRequirements(PaniniPress context, TypeElement template)
-    {
-        return getCapsuleRequirements(context, template).isEmpty() == false;
-    }
-
-    public static List<VariableElement> getCapsuleChildren(PaniniPress context,
-                                                           TypeElement template)
-    {
-        List<VariableElement> decls = getCapsuleFieldDecls(context, template);
-        ExecutableElement design = getCapsuleDesignDecl(template);
-
-        if (design == null) return decls;
-
-        List<? extends VariableElement> params = design.getParameters();
-        ArrayList<VariableElement> children = new ArrayList<VariableElement>();
-
-        boolean found;
-        for (VariableElement d : decls) {
-            found = false;
-            for (VariableElement p : params) {
-                if (d.toString().equals(p.toString())) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) children.add(d);
-        }
-
-        return children;
-    }
-
+   
     /**
      * Inspects the given capsule template, finds the design declaration on it, then returns a
      * String representation of a `wire()` method declaration.
      *
-     * For example, if a user-defined capsule template has the design declaration of the form
+     * For example, if a user-defined capsule template has the form
      *
-     *     void design(Self s, Foo foo, Bar bar) {
+     *     ```
+     *     @Capsule
+     *     public class BazTemplate
+     *     {
+     *         @Wired Foo foo;
+     *         @Wired Bar bar;
      *         // ...
      *     }
+     *     ```
      *
-     * then this method would return the `String`
+     * where `foo` and `bar` are the only `@Wired`-annotated fields on the template, then this
+     * method would return the `String`
      *
      *     "public void wire(Foo foo, Bar bar)"
      *
-     * Note that if `template` has no design declaration, then this method returns `null`.
+     * Note: If the `template` has no wired capsules, then this method returns `null`.
      */
-    public static String buildCapsuleWireMethodDecl(TypeElement template)
+    public static String buildWireMethodDecl(PaniniPress context, TypeElement template)
     {
-        ExecutableElement designDecl = getCapsuleDesignDecl(template);
-        if (designDecl == null) {
+        List<String> paramDecls = new ArrayList<String>();
+        for (VariableElement varElem : getWiredFieldDecls(context, template)) {
+            paramDecls.add(Source.buildVariableDecl(varElem));
+        }
+
+        if (paramDecls.isEmpty()) {
             return null;
+        } else {
+            return Source.format("public void wire(#0)", String.join(", ", paramDecls));
         }
-
-        List<? extends VariableElement> varElems = designDecl.getParameters();
-        List<String> paramStrings = new ArrayList<String>(varElems.size());
-
-        // For each element in `varElems`, aside from the first `self` element, convert that
-        // element into a String, and add it to `paramStrings`.
-        for (int idx = 1; idx < varElems.size(); idx++)
-        {
-            VariableElement varElem = varElems.get(idx);
-            paramStrings.add(Source.buildVariableDecl(varElem));
-        }
-
-        return Source.format("public void wire(#0)", String.join(", ", paramStrings));
     }
 }

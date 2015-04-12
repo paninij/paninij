@@ -103,8 +103,8 @@ public class MakeCapsule
     {
         ArrayList<String> decls = new ArrayList<String>();
 
-        if (PaniniModelInfo.hasCapsuleRequirements(context, template)) {
-            decls.add("    " + PaniniModelInfo.buildCapsuleWireMethodDecl(template) + ";\n");
+        if (PaniniModelInfo.hasWiredFieldDecls(context, template)) {
+            decls.add("    " + PaniniModelInfo.buildWireMethodDecl(context, template) + ";\n");
         }
 
         for (Element child : template.getEnclosedElements())

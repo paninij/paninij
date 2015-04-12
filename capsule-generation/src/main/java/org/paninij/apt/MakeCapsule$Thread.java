@@ -207,7 +207,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     private String buildCheckRequired()
     {
-        List<VariableElement> required = PaniniModelInfo.getCapsuleRequirements(context, template);
+        List<VariableElement> required = PaniniModelInfo.getWiredFieldDecls(context, template);
 
         if (required.isEmpty()) {
             return "";
@@ -230,19 +230,19 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     String buildWire()
     {
-        if (PaniniModelInfo.hasCapsuleRequirements(context, template) == false) {
+        if (PaniniModelInfo.hasWiredFieldDecls(context, template) == false) {
             return "";
         }
         
         // Assign each of the `wire()` method's arguments into the corresponding field of the
         // encapsulated template instance.
         List<String> assignments = new ArrayList<String>();
-        for (VariableElement req : PaniniModelInfo.getCapsuleRequirements(context, template)) {
+        for (VariableElement req : PaniniModelInfo.getWiredFieldDecls(context, template)) {
             assignments.add(Source.format("panini$encapsulated.#0 = #0;", req.toString()));
         }
  
         String src = Source.lines(1, "@Override",
-                                     PaniniModelInfo.buildCapsuleWireMethodDecl(template),
+                                     PaniniModelInfo.buildWireMethodDecl(context, template),
                                      "{",
                                      "    ##",
                                      "}");
@@ -255,7 +255,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
      */
     String buildInitChildren()
     {
-        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(context, template);
+        List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(context, template);
         
         // TODO: remove bad code style due to use of `tabs` using `Source.formatAligned()`.
         String tabs = "        ";
@@ -264,8 +264,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         List<String> instantiations = new ArrayList<String>();
         for (VariableElement child : children)
         {
-            String inst = Source.format("#0panini$encapsulated.#1 = new #2$Thread();",
-                                        tabs,
+            String inst = Source.format(tabs + "panini$encapsulated.#0 = new #1$Thread();",
                                         child.toString(),
                                         child.asType().toString()); 
             instantiations.add(inst);
@@ -275,7 +274,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         List<String> starts = new ArrayList<String>();
         for (VariableElement child : children)
         {
-            starts.add(Source.format("#0panini$encapsulated.#1.panini$start();", tabs, child.toString()));
+            starts.add(Source.format(tabs + "panini$encapsulated.#0.panini$start();", child.toString()));
         }
 
         // Build the method itself.
@@ -294,23 +293,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     String buildDesignDelegation()
     {
-        // TODO: There is no reason that the `@Required` fields are passed to `design` except that
-        // the interface of that method (on the template class) requires it. The `@Required` fields
-        // themselves are already saved into the fields of the template instance.
-
-        // Pass the appropriate `@Required` fields to the `design()` method of the encapsulated
-        // template instance. `this` should always be passed as the first parameter.
-        if (PaniniModelInfo.hasCapsuleDesignDecl(template) == false) {
+        if (PaniniModelInfo.hasCapsuleDesignDecl(template) == true) {
+            return "panini$encapsulated.design(this);";
+        } else {
             return "";
         }
-
-        List<String> args = new ArrayList<String>();
-        args.add("this");
-        for (VariableElement varElem : PaniniModelInfo.getCapsuleRequirements(context, template)) {
-            args.add("panini$encapsulated." + varElem.toString());
-        }
- 
-        return Source.format("panini$encapsulated.design(#0);", String.join(", ", args));
     }
 
 

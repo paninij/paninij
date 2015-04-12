@@ -85,10 +85,10 @@ public class PaniniPress extends AbstractProcessor
         List<VariableElement> capsules = PaniniModelInfo.getCapsuleFieldDecls(this, template);
         System.out.println(Source.format("#0 capsules: #1", capsules.size(), capsules.toString()));
 
-        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(this, template);
+        List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(this, template);
         System.out.println(Source.format("#0 children: #1", children.size(), children.toString()));
 
-        List<VariableElement> reqs = PaniniModelInfo.getCapsuleRequirements(this, template);
+        List<VariableElement> reqs = PaniniModelInfo.getWiredFieldDecls(this, template);
         System.out.println(Source.format("#0 requirements: #1", reqs.size(), reqs.toString()));
     }
 
