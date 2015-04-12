@@ -1,14 +1,14 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Wired;
 import org.paninij.lang.String;
 
 @Capsule
 class GreeterTemplate
 {
     String message;
-    @Child Stream s;
+    @Wired Stream s;
 
     void init() {
         message = new String("Hello World!");
