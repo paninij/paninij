@@ -1,16 +1,12 @@
 package org.paninij.apt;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 
 import org.paninij.apt.util.DuckShape;
-import org.paninij.apt.util.ModelInfo;
+import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.Source;
 
 public abstract class MakeDuck
@@ -26,18 +22,17 @@ public abstract class MakeDuck
 
     String buildDuck(DuckShape currentDuck)
     {
-        switch (currentDuck.category)
+        DuckShape.Category category = currentDuck.category;
+        switch (category)
         {
         case NORMAL:
             return buildNormalDuck(currentDuck);
         case VOID:
             return buildVoidDuck(currentDuck);
-        case FINAL:
-            // TODO
-            context.note("Ignoring a final duck shape: " + currentDuck);
-            throw new UnsupportedOperationException("Ducks category FINAL not supported.");
+        case PANINICUSTOM:
+            return buildPaniniCustomDuck(currentDuck);
         default:
-            throw new UnsupportedOperationException("Duck category not supported.");
+            throw new UnsupportedOperationException("Duck category not supported: " + category);
         }
     }
 
@@ -85,10 +80,10 @@ public abstract class MakeDuck
                 "#0 #1 #2(#3) {", 
                 "    #4", 
                 "}");
-        return Source.format(fmt, Source.buildModifierString(method),
+        return Source.format(fmt, Source.buildModifiersList(method),
                 Source.dropPackageName(method.getReturnType().toString()), 
                 method.getSimpleName(),
-                Source.buildParameterList(method), 
+                Source.buildParametersList(method), 
                 buildFacadeBody(method));
 
     }
@@ -96,7 +91,7 @@ public abstract class MakeDuck
     String buildFacadeBody(ExecutableElement method)
     {
         String fmt;
-        if (ModelInfo.hasVoidReturnType(method))
+        if (JavaModelInfo.hasVoidReturnType(method))
         {
             fmt = "panini$get().#0(#1);";
         }
@@ -104,14 +99,14 @@ public abstract class MakeDuck
         {
             fmt = "return panini$get().#0(#1);";
         }
-        return Source.format(fmt, method.getSimpleName(), Source.buildArgsList(method));
+        return Source.format(fmt, method.getSimpleName(), Source.buildParameterNamesList(method));
     }
 
     boolean canMakeFacade(ExecutableElement method)
     {
         // Some methods do not need to have a facade made for them
         // e.g. native methods, final methods
-        String modifiers = Source.buildModifierString(method);
+        String modifiers = Source.buildModifiersList(method);
         if (modifiers.contains("native"))
         {
             return false;
@@ -160,6 +155,8 @@ public abstract class MakeDuck
     abstract String buildNormalDuck(DuckShape currentDuck);
 
     abstract String buildVoidDuck(DuckShape currentDuck);
+
+    abstract String buildPaniniCustomDuck(DuckShape currentDuck);
 
     public abstract void makeSourceFile(DuckShape currentDuck);
 }

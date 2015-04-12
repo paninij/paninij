@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -51,21 +50,25 @@ public class DuckShape
         
         TypeMirror returnType = method.getReturnType();
         
-        if (ModelInfo.hasVoidReturnType(method))
+        if (JavaModelInfo.hasVoidReturnType(method))
         {
             return Category.VOID;
         }
-        else if (ModelInfo.isFinalType(returnType))
+        else if (JavaModelInfo.isFinalType(returnType))
         {
             return Category.FINAL;
         }
-        else if (ModelInfo.isArray(returnType))
+        else if (JavaModelInfo.isArray(returnType))
         {
             return Category.ARRAY;
         }
-        else if (ModelInfo.isPrimitive(returnType))
+        else if (JavaModelInfo.isPrimitive(returnType))
         {
             return Category.PRIMITIVE;
+        }
+        else if (PaniniModelInfo.isPaniniCustom(returnType))
+        {
+            return Category.PANINICUSTOM;
         }
         else
         {
@@ -119,7 +122,9 @@ public class DuckShape
             return "short";
 
         default:
-            String msg = "The given `param` has an unexpected `TypeKind`: " + kind.toString();
+            // TODO: remove trailing space character after GitHub issue #24 is resolved.
+            String msg = "The given `param` (of the form `#0`) has an unexpected `TypeKind`: #1 ";
+            msg = Source.format(msg, Source.buildVariableDecl(param), kind.toString());
             throw new IllegalArgumentException(msg);
         }
     }
@@ -147,13 +152,14 @@ public class DuckShape
     private static String encodeReturnType(ExecutableElement method)
     {
         // TODO: Handle other cases.
-
-        switch(categoryOf(method)) {
+        Category category = categoryOf(method);
+        switch(category) {
 
         case VOID:
             return "void";
 
         case NORMAL:
+        case PANINICUSTOM:
             return method.getReturnType()
                          .toString()
                          .replaceAll("_", "__")
@@ -161,10 +167,9 @@ public class DuckShape
 
         case FINAL:
         case FINALARRAY:
-        case PANINICUSTOM:
         case PRIMITIVE:
         default:
-            throw new IllegalArgumentException("TODO: Handle cases.");
+            throw new IllegalArgumentException("Cannot handle duck category: " + category);
         }
     }
 

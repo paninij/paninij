@@ -1,10 +1,10 @@
 package org.paninij.runtime.ducks;
 
-import org.paninij.runtime.ProcInvocation;
+import org.paninij.runtime.Panini$Message;
 import org.paninij.runtime.ResolvableFuture;
 
 
-public class Object$Duck$Object extends Object implements ProcInvocation, ResolvableFuture<Object>
+public class Object$Duck$Object extends Object implements Panini$Message, ResolvableFuture<Object>
 {
     public final int panini$procID;
     public final Object panini$arg0;
@@ -17,7 +17,7 @@ public class Object$Duck$Object extends Object implements ProcInvocation, Resolv
     }
 
     @Override
-    public int panini$procID() {
+    public int panini$msgID() {
         return panini$procID;
     }
     

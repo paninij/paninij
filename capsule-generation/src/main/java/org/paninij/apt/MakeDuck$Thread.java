@@ -5,7 +5,6 @@ import org.paninij.apt.util.Source;
 
 public class MakeDuck$Thread extends MakeDuck
 {
-
     public static MakeDuck$Thread make(PaniniPress context) 
     {
         MakeDuck$Thread m = new MakeDuck$Thread();
@@ -30,11 +29,11 @@ public class MakeDuck$Thread extends MakeDuck
         String src = Source.lines(0, 
                 "package org.paninij.runtime.ducks;",
                 "",
-                "import org.paninij.runtime.ProcInvocation;",
-                "import org.paninij.runtime.ResolvableFuture;",
+                "import org.paninij.runtime.Panini$Message;",
+                "import org.paninij.runtime.Panini$Future;",
                 "import #1;",
                 "",
-                "public class #2 extends #4 implements ProcInvocation, ResolvableFuture<#4> {",
+                "public class #2 extends #4 implements Panini$Message, Panini$Future<#4> {",
                 "    public final int panini$procID;",
                 "    private #4 panini$result = null;",
                 "    boolean panini$isResolved = false;",
@@ -44,7 +43,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "#3",
                 "",
                 "    @Override",
-                "    public int panini$procID() {",
+                "    public int panini$msgID() {",
                 "        return panini$procID;",
                 "    }",
                 "",
@@ -88,16 +87,16 @@ public class MakeDuck$Thread extends MakeDuck
     {
         String src = Source.lines(0, "package org.paninij.runtime.ducks;",
                                      "",
-                                     "import org.paninij.runtime.ProcInvocation;",
+                                     "import org.paninij.runtime.Panini$Message;",
                                      "",
-                                     "public class #0 implements ProcInvocation {",
+                                     "public class #0 implements Panini$Message {",
                                      "    public final int panini$procID;",
                                      "#1",
                                      "",
                                      "#2",
                                      "",
                                      "    @Override",
-                                     "    public int panini$procID() {",
+                                     "    public int panini$msgID() {",
                                      "        return panini$procID;",
                                      "    }",
                                      "}");
@@ -107,7 +106,27 @@ public class MakeDuck$Thread extends MakeDuck
                                   this.buildConstructor(currentDuck));
     }
 
-    
+    @Override
+    String buildPaniniCustomDuck(DuckShape currentDuck)
+    {
+        // TODO: Make this handle more than just `String`.
+        assert(currentDuck.returnType.toString().equals("org.paninij.lang.String"));
+
+        String src = Source.lines(0, "package org.paninij.runtime.ducks;",
+                                     "",
+                                     "import org.paninij.lang.String;",
+                                     "",
+                                     "public class #0 extends String {",
+                                     "",
+                                     "private int panini$procID;",
+                                     "",
+                                     "#1",
+                                     "",
+                                     "}");
+        return Source.format(src, this.buildClassName(currentDuck),
+                                  this.buildConstructor(currentDuck, "        super(\"\");\n"));
+    }
+   
 
     @Override
     String buildClassName(DuckShape currentDuck)
@@ -120,19 +139,25 @@ public class MakeDuck$Thread extends MakeDuck
     {
         return packageName + "." + currentDuck.toString() + "$Thread";
     }
-
+    
+    
     @Override
     String buildConstructor(DuckShape currentDuck)
     {
+        return buildConstructor(currentDuck, "");
+    }
+
+    String buildConstructor(DuckShape currentDuck, String prependToBody)
+    {
        String constructor = buildConstructorDecl(currentDuck);
+       constructor += prependToBody;
        constructor += "        panini$procID = procID;\n";
-       
        for(int i = 0; i < currentDuck.slotTypes.size(); i++)
        {
            constructor += "        panini$arg" + i + " = arg" + i +";\n";
        }
-       
-       return constructor + "    }";
+       constructor += "    }";
+       return constructor;
     }
 
     @Override
@@ -147,10 +172,5 @@ public class MakeDuck$Thread extends MakeDuck
         
         return constructorDecl;
     }
-    
-    
-
-    
-    
 
 }

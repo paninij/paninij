@@ -1,18 +1,17 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.String;
 
 
 @Capsule
-public class HelloWorldShort
+public class HelloWorldShortTemplate
 {
-    /*
     void run() {
         System.out.println("@PaniniJ: Hello World!");
     }
 
-    String getMessage() {
-        return "vinegar";
+    public String getMessage() {
+        return new String("vinegar");
     }
-    */
 }

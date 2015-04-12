@@ -11,6 +11,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.PaniniModelInfo;
 
 public class MakeDucks
 {
@@ -57,11 +58,11 @@ public class MakeDucks
     {
         Set<DuckShape> duckShapes = new HashSet<DuckShape>();
         
-        for(Element el : this.template.getEnclosedElements())
+        for(Element elem : this.template.getEnclosedElements())
         {
-            if(el.getKind() == ElementKind.METHOD)
+            if(PaniniModelInfo.needsProcedureWrapper(elem))
             {
-                ExecutableElement method = (ExecutableElement) el;
+                ExecutableElement method = (ExecutableElement) elem;
                 duckShapes.add(new DuckShape(method));
             }
         }

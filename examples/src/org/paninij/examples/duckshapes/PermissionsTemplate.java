@@ -1,6 +1,6 @@
 package org.paninij.examples.duckshapes;
 
-public class Permissions
+public class PermissionsTemplate
 {
 
     protected void foo() {
