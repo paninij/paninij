@@ -250,16 +250,28 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
      */
     String buildInitChildren()
     {
-        // TODO: Everything!
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(context, template);
+        List<String> initializations = new ArrayList<String>();
+        for (VariableElement child : children) {
+            initializations.add(buildInitChild(child));
+        }
+
         String src = Source.lines(1, "protected void panini$initChildren()",
                                      "{",
-                                     "    // TODO: Everything!",
-                                     "",
+                                     "    ##",
                                      "}");
 
-        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(context, template);
-
-        return src;
+        return Source.formatAligned(src, initializations);
+    }
+    
+    /**
+     * Builds a line of code to instantiate a child capsule for the given capsule field declaration.
+     */
+    String buildInitChild(VariableElement fieldDecl)
+    {
+        return Source.format("panini$encapsulated.#0 = new #1$Thread();",
+                             fieldDecl.toString(),
+                             fieldDecl.asType().toString()); 
     }
 
     String buildInitState()
