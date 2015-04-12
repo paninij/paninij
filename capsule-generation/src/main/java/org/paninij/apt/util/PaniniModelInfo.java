@@ -152,14 +152,17 @@ public class PaniniModelInfo
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
 
-    public static boolean isCapsuleDecl(PaniniPress context, VariableElement varElem)
+    public static boolean isCapsuleFieldDecl(PaniniPress context, VariableElement fieldDecl)
     {
-        return JavaModelInfo.isAnnotatedBy(context, varElem.asType(), "org.paninij.lang.CapsuleInterface")
-            || JavaModelInfo.isAnnotatedBy(context, varElem.asType(), "org.paninij.lang.Signature")
-            || JavaModelInfo.isAnnotatedBy(context, varElem, "org.paninij.lang.Capsule");
+        TypeMirror fieldType = fieldDecl.asType();
+                
+        return JavaModelInfo.isAnnotatedBy(context, fieldType, "org.paninij.lang.CapsuleInterface")
+            || JavaModelInfo.isAnnotatedBy(context, fieldType, "org.paninij.lang.Signature")
+            || JavaModelInfo.isAnnotatedBy(context, fieldDecl, "org.paninij.lang.Child")
+            || JavaModelInfo.isAnnotatedBy(context, fieldDecl, "org.paninij.lang.Wired");
     }
 
-    public static List<VariableElement> getCapsuleDecls(PaniniPress context, TypeElement template)
+    public static List<VariableElement> getCapsuleFieldDecls(PaniniPress context, TypeElement template)
     {
         List<VariableElement> decls = new ArrayList<VariableElement>();
         for (Element e : template.getEnclosedElements())
@@ -167,7 +170,7 @@ public class PaniniModelInfo
             if (e.getKind() == ElementKind.FIELD)
             {
                 VariableElement varElem = (VariableElement) e;
-                if (isCapsuleDecl(context, varElem)) {
+                if (isCapsuleFieldDecl(context, varElem)) {
                     decls.add(varElem);
                 }
             }
@@ -200,7 +203,7 @@ public class PaniniModelInfo
         if (design == null) return reqs;
 
         List<? extends VariableElement> params = design.getParameters();
-        List<VariableElement> decls = getCapsuleDecls(context, template);
+        List<VariableElement> decls = getCapsuleFieldDecls(context, template);
 
         for (VariableElement d : decls) {
             for (VariableElement p : params) {
@@ -216,7 +219,7 @@ public class PaniniModelInfo
     public static List<VariableElement> getCapsuleChildren(PaniniPress context,
                                                            TypeElement template)
     {
-        List<VariableElement> decls = getCapsuleDecls(context, template);
+        List<VariableElement> decls = getCapsuleFieldDecls(context, template);
         ExecutableElement design = getCapsuleDesignDecl(template);
 
         if (design == null) return decls;

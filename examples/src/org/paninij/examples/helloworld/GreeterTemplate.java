@@ -1,15 +1,14 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Signature;
-import org.paninij.lang.CapsuleInterface;
+import org.paninij.lang.Child;
 import org.paninij.lang.String;
 
 @Capsule
 class GreeterTemplate
 {
     String message;
-    @Signature Stream s;
+    @Child Stream s;
 
     void init() {
         message = new String("Hello World!");

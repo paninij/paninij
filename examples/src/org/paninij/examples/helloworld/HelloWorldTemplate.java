@@ -1,14 +1,14 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.String;
+import org.paninij.lang.Child;
 
 @Capsule
 class HelloWorldTemplate
 {
     // Capsules: Call to the constructors (if necessary)
-    @Capsule Console c;
-    @Capsule Greeter g;
+    @Child Console c;
+    @Child Greeter g;
 
     // State Variables:
     // <none>

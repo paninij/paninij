@@ -82,7 +82,7 @@ public class PaniniPress extends AbstractProcessor
         System.out.println();
         System.out.println(Source.format("printCapsuleDeclInfo(#0): ", template));
 
-        List<VariableElement> capsules = PaniniModelInfo.getCapsuleDecls(this, template);
+        List<VariableElement> capsules = PaniniModelInfo.getCapsuleFieldDecls(this, template);
         System.out.println(Source.format("#0 capsules: #1", capsules.size(), capsules.toString()));
 
         List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(this, template);
