@@ -87,13 +87,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "#3",
                                      "#4",
                                      "#5",
-                                     "#6",
-                                     "#7");
+                                     "#6");
         return Source.format(src, buildCapsuleFields(),
                                   buildProcedures(),
-                                  buildDesign(),
                                   buildCheckRequired(),
-                                  buildInitRequired(),
+                                  buildWire(),
                                   buildInitChildren(),
                                   buildInitState(),
                                   buildRun());
@@ -207,23 +205,6 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.format(fmt, duck.toString(), args, possibleReturn);
     }
 
-    String buildDesign()
-    {
-        String designDecl = PaniniModelInfo.buildCapsuleDesignMethodDecl(template);
-        if (designDecl == null)
-        {
-            return "";
-        }
-        else
-        {
-            return Source.lines(1, "@Override",
-                                   designDecl,
-                                   "{",
-                                   "    // TODO",
-                                   "}");
-        }
-    }
-
     private String buildCheckRequired()
     {
         List<VariableElement> required = PaniniModelInfo.getCapsuleRequirements(context, template);
@@ -240,21 +221,32 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.format(src, String.join("\n", assertions));
     }
 
-    String buildInitRequired()
+    String buildWire()
     {
-        // TODO: Everything!
-        // Note: called by public facing design method?
-        // Note: make method private
-        String src = Source.lines(1, "private void panini$initRequired(#0)",
+        if (PaniniModelInfo.hasCapsuleDesignDecl(template) == false) {
+            return "";
+        }
+        
+        // Pass-through each of the arguments to `wire()` to the encapsulated template's `design()`,
+        // except `this` should always be passed as the first parameter.
+        List<String> args = new ArrayList<String>();
+        args.add("this");
+        for (VariableElement varElem : PaniniModelInfo.getCapsuleRequirements(context, template)) {
+            args.add(varElem.toString());
+        }
+ 
+        String src = Source.lines(1, "@Override",
+                                     "#0",
                                      "{",
-                                     "    // TODO: Everything!",
-                                     "",
+                                     "    panini$encapsulated.design(#1);",
                                      "}");
-        return Source.format(src, "/* TODO: parameters */");
+
+        return Source.format(src, PaniniModelInfo.buildCapsuleWireMethodDecl(template),
+                                  String.join(", ", args));
     }
 
     /**
-     * Build a method which initializes each of the child capsules and delegates .
+     * Build a method which initializes each of the child capsules and delegates.
      */
     String buildInitChildren()
     {

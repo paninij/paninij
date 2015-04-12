@@ -179,7 +179,8 @@ public class PaniniModelInfo
     }
 
     /**
-     * Returns `null` if there the given capsule template has no design declaration.
+     * Returns the `ExecutableElement` representing the given capsule template design declaration,
+     * or returns `null` if there is no such declaration.
      *
      * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
      * `template` passes all checks).
@@ -192,6 +193,14 @@ public class PaniniModelInfo
         } else {
             return decls.get(0);
         }
+    }
+    
+    /**
+     * Returns `true` if and only if the given capsule template has a design declaration.
+     */
+    public static boolean hasCapsuleDesignDecl(TypeElement template)
+    {
+        return getCapsuleDesignDecl(template) != null;
     }
 
     public static List<VariableElement> getCapsuleRequirements(PaniniPress context,
@@ -244,7 +253,7 @@ public class PaniniModelInfo
 
     /**
      * Inspects the given capsule template, finds the design declaration on it, then returns a
-     * String that should go on the associated capsule.
+     * String representation of a `wire()` method declaration.
      *
      * For example, if a user-defined capsule template has the design declaration of the form
      *
@@ -252,13 +261,13 @@ public class PaniniModelInfo
      *         // ...
      *     }
      *
-     * Then this method would return the `String`
+     * then this method would return the `String`
      *
-     *     "public void design(Foo foo, Bar bar)"
+     *     "public void wire(Foo foo, Bar bar)"
      *
      * Note that if `template` has no design declaration, then this method returns `null`.
      */
-    public static String buildCapsuleDesignMethodDecl(TypeElement template)
+    public static String buildCapsuleWireMethodDecl(TypeElement template)
     {
         ExecutableElement designDecl = getCapsuleDesignDecl(template);
         if (designDecl == null) {
@@ -276,6 +285,6 @@ public class PaniniModelInfo
             paramStrings.add(Source.buildVariableDecl(varElem));
         }
 
-        return Source.format("public void design(#0)", String.join(", ", paramStrings));
+        return Source.format("public void wire(#0)", String.join(", ", paramStrings));
     }
 }

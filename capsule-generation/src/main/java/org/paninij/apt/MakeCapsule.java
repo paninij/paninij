@@ -111,9 +111,8 @@ public class MakeCapsule
     {
         ArrayList<String> decls = new ArrayList<String>();
 
-        String designDecl = PaniniModelInfo.buildCapsuleDesignMethodDecl(template);
-        if (designDecl != null) {
-            decls.add("    " + designDecl + ";\n");
+        if (PaniniModelInfo.hasCapsuleDesignDecl(template)) {
+            decls.add("    " + PaniniModelInfo.buildCapsuleWireMethodDecl(template) + ";\n");
         }
 
         for (Element child : template.getEnclosedElements())

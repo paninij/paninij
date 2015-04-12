@@ -24,7 +24,7 @@ class HelloWorldTemplate
 
     // No capsule inputs, so no arguments to this.
     void design(HelloWorld self) {
-        g.design(c);
+        g.wire(c);
     }
 
     // This is an active capsule.
