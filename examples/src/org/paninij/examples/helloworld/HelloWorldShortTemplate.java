@@ -11,9 +11,7 @@ public class HelloWorldShortTemplate
         System.out.println("@PaniniJ: Hello World!");
     }
 
-    /*
-    String getMessage() {
+    public String getMessage() {
         return new String("vinegar");
     }
-    */
 }

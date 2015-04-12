@@ -1,23 +1,31 @@
 package org.paninij.apt;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.Source;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 
@@ -38,9 +46,8 @@ public class PaniniPress extends AbstractProcessor
         this.roundEnv = roundEnv;
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
-            if (! SignatureChecker.check(this, elem)) {
-                // TODO better error message
-                error("Signature failed check.");
+            if (SignatureChecker.check(this, elem)) {
+                // Nothing to do for now.
             }
         }
 
@@ -48,8 +55,11 @@ public class PaniniPress extends AbstractProcessor
 
         for (Element elem : annotated)
         {
-            if (CapsuleChecker.check(this, elem)) {
+            if (CapsuleChecker.check(this, elem))
+            {
                 TypeElement template = (TypeElement) elem;
+
+                printCapsuleDeclInfo(template);
 
                 MakeCapsule.make(this, template).makeSourceFile();
 
@@ -58,11 +68,8 @@ public class PaniniPress extends AbstractProcessor
                 //MakeCapsule$Task.make(this, template).makeSourceFile();
                 //MakeCapsule$Monitor.make(this, template).makeSourceFile();
                 //MakeCapsule$Serial.make(this, template).makeSourceFile();
-                
+
                 MakeDucks.make(this, template).makeDucks();
-                
-            } else {
-                error("Capsule failed check.");
             }
         }
 
@@ -70,11 +77,19 @@ public class PaniniPress extends AbstractProcessor
         return false;
     }
 
-    /**
-     * Dynamic helper methods.
-     */
-    private TypeElement getTypeElement(String className) {
-        return processingEnv.getElementUtils().getTypeElement(className);
+    public void printCapsuleDeclInfo(TypeElement template)
+    {
+        System.out.println();
+        System.out.println(Source.format("printCapsuleDeclInfo(#0): ", template));
+
+        List<VariableElement> capsules = PaniniModelInfo.getCapsuleFieldDecls(this, template);
+        System.out.println(Source.format("#0 capsules: #1", capsules.size(), capsules.toString()));
+
+        List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(this, template);
+        System.out.println(Source.format("#0 children: #1", children.size(), children.toString()));
+
+        List<VariableElement> reqs = PaniniModelInfo.getCapsuleRequirements(this, template);
+        System.out.println(Source.format("#0 requirements: #1", reqs.size(), reqs.toString()));
     }
 
     /**
@@ -112,9 +127,11 @@ public class PaniniPress extends AbstractProcessor
         processingEnv.getMessager().printMessage(Kind.ERROR, msg);
     }
 
-    public Types getTypeUtils()
-    {
+    public Types getTypeUtils() {
         return processingEnv.getTypeUtils();
-        
+    }
+
+    public Elements getElementUtils() {
+        return processingEnv.getElementUtils();
     }
 }

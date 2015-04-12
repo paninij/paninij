@@ -1,6 +1,6 @@
 package org.paninij.runtime;
 
-public interface Capsule
+public interface Panini$Capsule
 {
     public void panini$start();
     public void panini$shutdown();
