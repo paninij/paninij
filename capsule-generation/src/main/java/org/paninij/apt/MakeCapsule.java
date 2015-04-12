@@ -62,29 +62,19 @@ public class MakeCapsule
 
     private String buildCapsuleDecl()
     {
-        return "public interface " + buildCapsuleName() + buildCapsuleInterfaces();
+        // TODO: Fix format string once GitHub issue #24 is resolved.
+        return Source.format("public interface #0 extends #1 ", buildCapsuleName(),
+                                                               buildCapsuleInterfaces());
     }
 
     private String buildCapsuleInterfaces()
     {
-        List<? extends TypeMirror> interfaces = template.getInterfaces();
-        if (interfaces.size() > 0)
-        {
-            String extend = " extends ";
-            for (TypeMirror i : interfaces)
-            {
-                Element interf = ((DeclaredType) i).asElement();
-                extend += interf.getSimpleName() + ", ";
-                // TODO: Verify that it is indeed a signature?
-                // Or maybe verification is part of the Checker class.
-            }
-            return extend.replaceAll(", $", "");
+        List<String> interfaces = new ArrayList<String>();
+        interfaces.add("Panini$Capsule");
+        for (TypeMirror i : template.getInterfaces()) {
+            interfaces.add(i.toString());
         }
-        else
-        {
-            // There are no signatures to extend.
-            return "";
-        }
+        return String.join(", ", interfaces);
     }
 
     private String buildCapsuleName()
@@ -99,7 +89,9 @@ public class MakeCapsule
 
     private String buildImports()
     {
-        return Source.buildCollectedImportDecls(template, "org.paninij.lang.CapsuleInterface");
+        return Source.buildCollectedImportDecls(template,
+                                                "org.paninij.lang.CapsuleInterface",
+                                                "org.paninij.runtime.Panini$Capsule");
     }
 
     private String buildPackage()
@@ -111,7 +103,7 @@ public class MakeCapsule
     {
         ArrayList<String> decls = new ArrayList<String>();
 
-        if (PaniniModelInfo.hasCapsuleDesignDecl(template)) {
+        if (PaniniModelInfo.hasCapsuleRequirements(context, template)) {
             decls.add("    " + PaniniModelInfo.buildCapsuleWireMethodDecl(template) + ";\n");
         }
 

@@ -21,8 +21,9 @@ package org.paninij.runtime;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public abstract class Capsule$Thread extends Thread implements Capsule
+public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 {
+    protected Thread panini$thread;
 	protected volatile Object[] panini$queue;
 	protected volatile int panini$head, panini$tail, panini$size;
 	public volatile int panini$refCount;
@@ -95,11 +96,10 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	 * Extracts and returns the first duck from the capsule's queue. This method blocks if there
 	 * are no ducks in the queue.
 	 *
-	 * Precondition: it is assumed that the lock queueLock is held before calling this method.
+	 * Precondition: it is assumed that `panini$queueLock` is held before calling this method.
 	 *
 	 * @return the first available duck in the capsule's queue.
 	 */
-	@SuppressWarnings("rawtypes")
 	protected final synchronized Panini$Message panini$nextMessage()
 	{
 		if (this.panini$size <= 0)
@@ -180,7 +180,7 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	@Override
     public final void panini$exit()
 	{
-		this.checkAccess();
+		panini$thread.checkAccess();
 		Panini$Message msg = new SimpleMessage(PANINI$EXIT);
 		panini$push(msg);
 	}
@@ -318,12 +318,18 @@ public abstract class Capsule$Thread extends Thread implements Capsule
 	@Override
     public void panini$start()
     {
-        //TODO
+	    panini$thread = new Thread(this);
+	    panini$thread.start();
     }
 
     @Override
     public void panini$join()
     {
-        //TODO
+        while (true)
+        {
+            try {
+                panini$thread.join();
+            } catch (InterruptedException e) { /* Do nothing: try again to join indefinitely. */ }
+        }
     }
 }

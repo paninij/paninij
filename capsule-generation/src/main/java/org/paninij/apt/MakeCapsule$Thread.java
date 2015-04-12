@@ -108,7 +108,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     String buildPaniniEncapsulatedDecl()
     {
-        String src = Source.lines(1, "private #0 panini$encapsulated;");
+        String src = Source.lines(1, "private #0 panini$encapsulated = new #0();");
         return Source.format(src, PaniniModelInfo.simpleTemplateName(template));
     }
 
@@ -230,27 +230,25 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     String buildWire()
     {
-        if (PaniniModelInfo.hasCapsuleDesignDecl(template) == false) {
+        if (PaniniModelInfo.hasCapsuleRequirements(context, template) == false) {
             return "";
         }
         
-        // Pass-through each of the arguments to `wire()` to the encapsulated template's `design()`,
-        // except `this` should always be passed as the first parameter.
-        List<String> args = new ArrayList<String>();
-        args.add("this");
-        for (VariableElement varElem : PaniniModelInfo.getCapsuleRequirements(context, template)) {
-            args.add(varElem.toString());
+        // Assign each of the `wire()` method's arguments into the corresponding field of the
+        // encapsulated template instance.
+        List<String> assignments = new ArrayList<String>();
+        for (VariableElement req : PaniniModelInfo.getCapsuleRequirements(context, template)) {
+            assignments.add(Source.format("panini$encapsulated.#0 = #0;", req.toString()));
         }
  
         String src = Source.lines(1, "@Override",
-                                     "#0",
+                                     PaniniModelInfo.buildCapsuleWireMethodDecl(template),
                                      "{",
-                                     "    panini$encapsulated.design(#1);",
+                                     "    ##",
                                      "}");
-
-        return Source.format(src, PaniniModelInfo.buildCapsuleWireMethodDecl(template),
-                                  String.join(", ", args));
+        return Source.formatAligned(src, assignments);
     }
+    
 
     /**
      * Build a method which initializes each of the child capsules and delegates.
@@ -258,28 +256,63 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     String buildInitChildren()
     {
         List<VariableElement> children = PaniniModelInfo.getCapsuleChildren(context, template);
-        List<String> initializations = new ArrayList<String>();
-        for (VariableElement child : children) {
-            initializations.add(buildInitChild(child));
+        
+        // TODO: remove bad code style due to use of `tabs` using `Source.formatAligned()`.
+        String tabs = "        ";
+
+        // For each of the capsule's children, add a line of code to instantiate that child capsule.
+        List<String> instantiations = new ArrayList<String>();
+        for (VariableElement child : children)
+        {
+            String inst = Source.format("#0panini$encapsulated.#1 = new #2$Thread();",
+                                        tabs,
+                                        child.toString(),
+                                        child.asType().toString()); 
+            instantiations.add(inst);
+        }
+        
+        // For each of the capsule's children, add a call to that capsule's `panini$start()` method.
+        List<String> starts = new ArrayList<String>();
+        for (VariableElement child : children)
+        {
+            starts.add(Source.format("#0panini$encapsulated.#1.panini$start();", tabs, child.toString()));
         }
 
-        String src = Source.lines(1, "protected void panini$initChildren()",
-                                     "{",
-                                     "    ##",
-                                     "}");
-
-        return Source.formatAligned(src, initializations);
+        // Build the method itself.
+        // TODO: Fix crazy alignment!
+        String src = Source.lines(0, "    protected void panini$initChildren()",
+                                     "    {",
+                                     "#0",
+                                     "        #1",
+                                     "#2",
+                                     "    }");
+        return Source.format(src, String.join("\n", instantiations),
+                                  buildDesignDelegation(),
+                                  String.join("\n", starts));
     }
     
-    /**
-     * Builds a line of code to instantiate a child capsule for the given capsule field declaration.
-     */
-    String buildInitChild(VariableElement fieldDecl)
+
+    String buildDesignDelegation()
     {
-        return Source.format("panini$encapsulated.#0 = new #1$Thread();",
-                             fieldDecl.toString(),
-                             fieldDecl.asType().toString()); 
+        // TODO: There is no reason that the `@Required` fields are passed to `design` except that
+        // the interface of that method (on the template class) requires it. The `@Required` fields
+        // themselves are already saved into the fields of the template instance.
+
+        // Pass the appropriate `@Required` fields to the `design()` method of the encapsulated
+        // template instance. `this` should always be passed as the first parameter.
+        if (PaniniModelInfo.hasCapsuleDesignDecl(template) == false) {
+            return "";
+        }
+
+        List<String> args = new ArrayList<String>();
+        args.add("this");
+        for (VariableElement varElem : PaniniModelInfo.getCapsuleRequirements(context, template)) {
+            args.add("panini$encapsulated." + varElem.toString());
+        }
+ 
+        return Source.format("panini$encapsulated.design(#0);", String.join(", ", args));
     }
+
 
     String buildInitState()
     {

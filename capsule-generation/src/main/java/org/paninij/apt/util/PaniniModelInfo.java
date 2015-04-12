@@ -224,6 +224,11 @@ public class PaniniModelInfo
 
         return reqs;
     }
+    
+    public static boolean hasCapsuleRequirements(PaniniPress context, TypeElement template)
+    {
+        return getCapsuleRequirements(context, template).isEmpty() == false;
+    }
 
     public static List<VariableElement> getCapsuleChildren(PaniniPress context,
                                                            TypeElement template)

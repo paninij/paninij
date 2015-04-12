@@ -32,4 +32,10 @@ class HelloWorldTemplate
     {
         g.greet();
     }
+    
+    public static void main(String[] args)
+    {
+        HelloWorld root = new HelloWorld$Thread();
+        root.panini$start();
+    }
 }
