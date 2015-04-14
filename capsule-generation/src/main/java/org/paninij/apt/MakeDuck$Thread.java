@@ -1,10 +1,16 @@
 package org.paninij.apt;
 
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.Source;
+import org.paninij.apt.util.TypeCollector;
 
 public class MakeDuck$Thread extends MakeDuck
 {
+    public static final String STANDARD_DUCK_PACKAGE = "org.paninij.runtime.ducks";
+    
     public static MakeDuck$Thread make(PaniniPress context) 
     {
         MakeDuck$Thread m = new MakeDuck$Thread();
@@ -27,11 +33,9 @@ public class MakeDuck$Thread extends MakeDuck
     String buildNormalDuck(DuckShape currentDuck)
     {
         String src = Source.lines(0, 
-                "package org.paninij.runtime.ducks;",
+                "package #0;",
                 "",
-                "import org.paninij.runtime.Panini$Message;",
-                "import org.paninij.runtime.Panini$Future;",
-                "import #1;",
+                "#1",
                 "",
                 "public class #2 extends #4 implements Panini$Message, Panini$Future<#4> {",
                 "    public final int panini$procID;",
@@ -72,14 +76,22 @@ public class MakeDuck$Thread extends MakeDuck
                 "    /* The following override the methods of `#4` */",
                 "#7",
                 "}");
-        return Source.format(src, null,
-                                  currentDuck.getQualifiedReturnType(),
+        return Source.format(src, STANDARD_DUCK_PACKAGE,
+                                  this.buildImports(currentDuck),
                                   this.buildClassName(currentDuck),
                                   this.buildConstructor(currentDuck),
                                   currentDuck.getSimpleReturnType(),
                                   this.buildParameterFields(currentDuck),
                                   this.buildReleaseArgs(currentDuck),
                                   this.buildFacades(currentDuck));
+    }
+    
+    String buildImports(DuckShape currentDuck)
+    {
+        TypeElement typeElem = (TypeElement) ((DeclaredType) currentDuck.returnType).asElement();
+        return Source.buildCollectedImportDecls(typeElem, currentDuck.getQualifiedReturnType(),
+                                                          "org.paninij.runtime.Panini$Message",
+                                                          "org.paninij.runtime.Panini$Future");
     }
 
     @Override
