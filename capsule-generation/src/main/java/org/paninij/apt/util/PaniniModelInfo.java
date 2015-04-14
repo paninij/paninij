@@ -227,6 +227,15 @@ public class PaniniModelInfo
         return wired;
     }
 
+
+    /**
+     * A capsule is a "root" capsule if and only if it is active and has no `@Wired` fields.
+     */
+    public static boolean isRootCapsule(PaniniPress context, TypeElement template)
+    {
+        return hasWiredFieldDecls(context, template) == false && isActive(template);
+    }
+
     
     /**
      * Returns `true` if and only if the given capsule template has a design declaration.
