@@ -120,7 +120,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         int currID = 0;
         for (Element child : template.getEnclosedElements())
         {
-            if (PaniniModelInfo.needsProcedureWrapper(child))
+            if (PaniniModelInfo.isProcedure(child))
             {
                 String decl = Source.format("public static final int #0 = #1;",
                                             buildProcedureID((ExecutableElement)child),
@@ -163,7 +163,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             // TODO: For now, ignore everything except for methods which need to be wrapped
             // procedures. In the future, other enclosed elements may need to be treated specially
             // while building the capsule body.
-            if (PaniniModelInfo.needsProcedureWrapper(child)) {
+            if (PaniniModelInfo.isProcedure(child)) {
                 decls.add(buildProcedure((ExecutableElement) child));
             }
         }
@@ -369,7 +369,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
         for (Element elem : template.getEnclosedElements())
         {
-            if (PaniniModelInfo.needsProcedureWrapper(elem)) {
+            if (PaniniModelInfo.isProcedure(elem)) {
                 // TODO: Fix this ugly hack. (Used to make alignment work).
                 lines.add("\n" + buildRunSwitchCase((ExecutableElement) elem));
             }

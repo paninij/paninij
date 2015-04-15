@@ -109,7 +109,7 @@ public class MakeCapsule
 
         for (Element child : template.getEnclosedElements())
         {
-            if (PaniniModelInfo.needsProcedureWrapper(child))
+            if (PaniniModelInfo.isProcedure(child))
             {
                 ExecutableElement method = (ExecutableElement) child;
                 String decl = Source.format("    #0;\n", Source.buildExecutableDecl(method));
