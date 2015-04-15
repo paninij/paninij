@@ -86,14 +86,6 @@ public class MakeDuck$Thread extends MakeDuck
                                   this.buildFacades(currentDuck));
     }
     
-    String buildImports(DuckShape currentDuck)
-    {
-        TypeElement typeElem = (TypeElement) ((DeclaredType) currentDuck.returnType).asElement();
-        return Source.buildCollectedImportDecls(typeElem, currentDuck.getQualifiedReturnType(),
-                                                          "org.paninij.runtime.Panini$Message",
-                                                          "org.paninij.runtime.Panini$Future");
-    }
-
     @Override
     String buildVoidDuck(DuckShape currentDuck)
     {
@@ -130,15 +122,24 @@ public class MakeDuck$Thread extends MakeDuck
                                      "",
                                      "public class #0 extends String {",
                                      "",
-                                     "private int panini$procID;",
+                                     "    private int panini$procID;",
                                      "",
                                      "#1",
                                      "",
                                      "}");
-        return Source.format(src, this.buildClassName(currentDuck),
-                                  this.buildConstructor(currentDuck, "        super(\"\");\n"));
+        return Source.format(src, buildClassName(currentDuck),
+                                  buildConstructor(currentDuck, "        super(\"\");\n"));
     }
    
+
+    String buildImports(DuckShape currentDuck)
+    {
+        TypeElement typeElem = (TypeElement) ((DeclaredType) currentDuck.returnType).asElement();
+        return Source.buildCollectedImportDecls(typeElem, currentDuck.getQualifiedReturnType(),
+                                                          "org.paninij.runtime.Panini$Message",
+                                                          "org.paninij.runtime.Panini$Future");
+    }
+
 
     @Override
     String buildClassName(DuckShape currentDuck)
