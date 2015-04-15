@@ -16,7 +16,7 @@ public class MakeDuck$Thread extends MakeDuck
     public void makeSourceFile(DuckShape currentDuck)
     {
         try {
-            context.createJavaFile(this.buildQualifiedClassName(currentDuck),
+            context.createJavaFile(buildQualifiedClassName(currentDuck),
                                    buildDuck(currentDuck));
         } catch (UnsupportedOperationException ex) {
             context.warning(ex.toString());
@@ -27,7 +27,7 @@ public class MakeDuck$Thread extends MakeDuck
     String buildNormalDuck(DuckShape currentDuck)
     {
         String src = Source.lines(0, 
-                "package org.paninij.runtime.ducks;",
+                "package #0;",
                 "",
                 "import org.paninij.runtime.Panini$Message;",
                 "import org.paninij.runtime.Panini$Future;",
@@ -72,7 +72,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "    /* The following override the methods of `#4` */",
                 "#7",
                 "}");
-        return Source.format(src, null,
+        return Source.format(src, this.buildPackage(currentDuck),
                                   currentDuck.getQualifiedReturnType(),
                                   this.buildClassName(currentDuck),
                                   this.buildConstructor(currentDuck),
@@ -85,15 +85,15 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     String buildVoidDuck(DuckShape currentDuck)
     {
-        String src = Source.lines(0, "package org.paninij.runtime.ducks;",
+        String src = Source.lines(0, "package #0;",
                                      "",
                                      "import org.paninij.runtime.Panini$Message;",
                                      "",
-                                     "public class #0 implements Panini$Message {",
+                                     "public class #1 implements Panini$Message {",
                                      "    public final int panini$procID;",
-                                     "#1",
-                                     "",
                                      "#2",
+                                     "",
+                                     "#3",
                                      "",
                                      "    @Override",
                                      "    public int panini$msgID() {",
@@ -101,9 +101,10 @@ public class MakeDuck$Thread extends MakeDuck
                                      "    }",
                                      "}");
         
-        return Source.format(src, this.buildClassName(currentDuck), 
-                                  this.buildParameterFields(currentDuck),
-                                  this.buildConstructor(currentDuck));
+        return Source.format(src, buildPackage(currentDuck),
+                                  buildClassName(currentDuck), 
+                                  buildParameterFields(currentDuck),
+                                  buildConstructor(currentDuck));
     }
 
     @Override
@@ -112,19 +113,20 @@ public class MakeDuck$Thread extends MakeDuck
         // TODO: Make this handle more than just `String`.
         assert(currentDuck.returnType.toString().equals("org.paninij.lang.String"));
 
-        String src = Source.lines(0, "package org.paninij.runtime.ducks;",
+        String src = Source.lines(0, "package #0;",
                                      "",
                                      "import org.paninij.lang.String;",
                                      "",
-                                     "public class #0 extends String {",
+                                     "public class #1 extends String",
+                                     "{",
+                                     "    private int panini$procID;",
                                      "",
-                                     "private int panini$procID;",
-                                     "",
-                                     "#1",
+                                     "#2",
                                      "",
                                      "}");
-        return Source.format(src, this.buildClassName(currentDuck),
-                                  this.buildConstructor(currentDuck, "        super(\"\");\n"));
+        return Source.format(src, buildPackage(currentDuck),
+                                  buildClassName(currentDuck),
+                                  buildConstructor(currentDuck, "        super(\"\");\n"));
     }
    
 
@@ -137,7 +139,7 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     String buildQualifiedClassName(DuckShape currentDuck)
     {
-        return packageName + "." + currentDuck.toString() + "$Thread";
+        return buildPackage(currentDuck) + "." + currentDuck.toString() + "$Thread";
     }
     
     

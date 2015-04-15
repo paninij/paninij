@@ -109,10 +109,15 @@ public class PaniniPress extends AbstractProcessor
         }
     }
 
-    String getPackageOf(TypeElement cls) {
+    String getPackageOf(TypeElement type) {
         Elements utils = processingEnv.getElementUtils();
-        Name pkg = utils.getPackageOf(cls).getQualifiedName();
+        Name pkg = utils.getPackageOf(type).getQualifiedName();
         return pkg.toString();
+    }
+    
+    String getPackageOf(TypeMirror type) {
+        Types utils = processingEnv.getTypeUtils();
+        return getPackageOf((TypeElement) utils.asElement(type));
     }
 
     void note(String msg) {

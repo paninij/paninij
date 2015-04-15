@@ -11,9 +11,8 @@ import org.paninij.apt.util.Source;
 
 public abstract class MakeDuck
 {
-
-    final String packageName = "org.paninij.runtime.ducks";
     PaniniPress context;
+    static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
 
     public static MakeDuck make(PaniniPress context)
     {
@@ -33,6 +32,16 @@ public abstract class MakeDuck
             return buildPaniniCustomDuck(currentDuck);
         default:
             throw new UnsupportedOperationException("Duck category not supported: " + category);
+        }
+    }
+    
+    String buildPackage(DuckShape currentDuck)
+    {
+        switch (currentDuck.category) {
+        case NORMAL:
+            return context.getPackageOf(currentDuck.returnType);
+        default:
+            return DEFAULT_DUCK_PACKAGE;
         }
     }
 
