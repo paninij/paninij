@@ -9,8 +9,6 @@ import org.paninij.apt.util.TypeCollector;
 
 public class MakeDuck$Thread extends MakeDuck
 {
-    public static final String STANDARD_DUCK_PACKAGE = "org.paninij.runtime.ducks";
-    
     public static MakeDuck$Thread make(PaniniPress context) 
     {
         MakeDuck$Thread m = new MakeDuck$Thread();

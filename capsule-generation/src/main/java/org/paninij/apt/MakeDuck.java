@@ -12,7 +12,6 @@ import org.paninij.apt.util.Source;
 public abstract class MakeDuck
 {
     PaniniPress context;
-    static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
 
     public static MakeDuck make(PaniniPress context)
     {
@@ -35,14 +34,10 @@ public abstract class MakeDuck
         }
     }
     
+    // TODO: Consider replacing uses of `buildPackage()` with calls to `currentDuck.getPackage()`.
     String buildPackage(DuckShape currentDuck)
     {
-        switch (currentDuck.category) {
-        case NORMAL:
-            return context.getPackageOf(currentDuck.returnType);
-        default:
-            return DEFAULT_DUCK_PACKAGE;
-        }
+        return currentDuck.getPackage();
     }
 
     abstract String buildClassName(DuckShape currentDuck);

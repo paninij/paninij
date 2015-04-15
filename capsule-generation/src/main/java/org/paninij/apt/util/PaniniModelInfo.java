@@ -22,6 +22,7 @@ import org.paninij.lang.Signature;
 
 public class PaniniModelInfo
 {
+    public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
     public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 

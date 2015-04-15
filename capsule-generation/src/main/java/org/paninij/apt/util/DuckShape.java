@@ -200,6 +200,23 @@ public class DuckShape
             return returnType.toString();
         }
     }
+    
+    
+    /**
+     * Returns the string representation of the package in which the duck should be put. This is
+     * generally based on the `returnType` of the duck itself.
+     * 
+     * If the duck has no return type (i.e. its category is `VOID`).
+     */
+    public String getPackage()
+    {
+        switch (category) {
+        case VOID:
+            return PaniniModelInfo.DEFAULT_DUCK_PACKAGE;
+        default:
+            return JavaModelInfo.getPackage(returnType);
+        }
+    }
 
 
     public String toString()

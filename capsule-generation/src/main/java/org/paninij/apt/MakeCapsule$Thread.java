@@ -48,7 +48,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "#4",
                                      "}");
         return Source.format(src, buildPackage(),
-                                  buildCapsuleImports(),
+                                  buildImports(),
                                   PaniniModelInfo.qualifiedTemplateName(template),
                                   buildCapsuleDecl(),
                                   buildCapsuleBody());
@@ -152,6 +152,18 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");
         return src;
     }
+    
+    
+    @Override
+    String buildImports()
+    {
+        Set<String> imports = getStandardImports();
+        for (DuckShape duck : PaniniModelInfo.getDuckShapes(template)) {
+            imports.add(duck.getPackage() + "." + duck.encoded + "$Thread");
+        }
+        return Source.buildCollectedImportDecls(template, imports);
+    }
+    
 
     String buildProcedures()
     {
@@ -486,7 +498,6 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     Set<String> getStandardImports() {
         Set<String> imports = new HashSet<String>();
         imports.add("org.paninij.runtime.Capsule$Thread");
-        imports.add("org.paninij.runtime.ducks.*");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         return imports;
