@@ -81,14 +81,10 @@ public abstract class MakeDuck
         String fmt = Source.lines(1, 
                 "", 
                 "@Override", 
-                "#0 #1 #2(#3) {", 
-                "    #4", 
+                "#0 {", 
+                "    #1", 
                 "}");
-        return Source.format(fmt, Source.buildModifiersList(method),
-                Source.dropPackageName(method.getReturnType().toString()), 
-                method.getSimpleName(),
-                Source.buildParametersList(method), 
-                buildFacadeBody(method));
+        return Source.format(fmt, Source.buildExecutableDecl(method), buildFacadeBody(method));
 
     }
 
