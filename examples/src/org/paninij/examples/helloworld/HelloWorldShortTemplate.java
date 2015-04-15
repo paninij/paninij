@@ -14,4 +14,10 @@ public class HelloWorldShortTemplate
     public String getMessage() {
         return new String("vinegar");
     }
+
+    public static void main(String[] args)
+    {
+        HelloWorldShort$Thread root = new HelloWorldShort$Thread();
+        root.run();
+    }
 }

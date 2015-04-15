@@ -87,14 +87,16 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "#3",
                                      "#4",
                                      "#5",
-                                     "#6");
+                                     "#6",
+                                     "#7");
         return Source.format(src, buildCapsuleFields(),
                                   buildProcedures(),
                                   buildCheckRequired(),
                                   buildWire(),
                                   buildInitChildren(),
                                   buildInitState(),
-                                  buildRun());
+                                  buildRun(),
+                                  buildMain());
     }
 
     @Override
@@ -459,6 +461,26 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.format("panini$encapsulated.#0(#1)", method.getSimpleName(),
                                                            String.join(", ", args));
     }
+    
+    
+    private String buildMain()
+    {
+        // A `Capsule$Thread` should have a main() method if and only if it is a "root" capsule.
+        if (PaniniModelInfo.isRootCapsule(context, template))
+        {
+             String src = Source.lines(1, "public static void main(String[] args)",
+                                         "{",
+                                         "    #0 root = new #0();",
+                                         "    root.run();",
+                                         "}");
+            return Source.format(src, buildCapsuleName());
+       }
+        else
+        {
+            return "";
+        }
+    }
+
 
     @Override
     Set<String> getStandardImports() {
