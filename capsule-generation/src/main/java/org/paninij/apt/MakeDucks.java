@@ -60,7 +60,7 @@ public class MakeDucks
         
         for(Element elem : this.template.getEnclosedElements())
         {
-            if(PaniniModelInfo.needsProcedureWrapper(elem))
+            if(PaniniModelInfo.isProcedure(elem))
             {
                 ExecutableElement method = (ExecutableElement) elem;
                 duckShapes.add(new DuckShape(method));

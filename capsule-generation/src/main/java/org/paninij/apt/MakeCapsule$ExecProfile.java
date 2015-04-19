@@ -52,9 +52,7 @@ abstract class MakeCapsule$ExecProfile
  
     abstract String buildQualifiedCapsuleName();
 
-    String buildCapsuleImports() {
-        return Source.buildCollectedImportDecls(template, getStandardImports());
-    }
+    abstract String buildImports();
 
     abstract String buildCapsuleDecl();
 

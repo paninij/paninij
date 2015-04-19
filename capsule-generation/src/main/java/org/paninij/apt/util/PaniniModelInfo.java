@@ -1,6 +1,7 @@
 package org.paninij.apt.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import org.paninij.lang.Signature;
 
 public class PaniniModelInfo
 {
+    public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
     public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 
@@ -29,7 +31,7 @@ public class PaniniModelInfo
         return returnType.toString().equals("org.paninij.lang.String");
     }
 
-    public static boolean needsProcedureWrapper(Element elem)
+    public static boolean isProcedure(Element elem)
     {
         // TODO: decide on appropriate semantics for other cases.
         if (elem.getKind() == ElementKind.METHOD)
@@ -261,6 +263,36 @@ public class PaniniModelInfo
         } else {
             return decls.get(0);
         }
+    }
+    
+    
+    /**
+     * Returns a list of all of the procedures (represented as `ExcecutableElement`s) defined on the
+     * given `template`.
+     */
+    public static List<ExecutableElement> getProcedures(TypeElement template)
+    {
+        List<ExecutableElement> rv = new ArrayList<ExecutableElement>();
+        for (Element elem : template.getEnclosedElements())
+        {
+            if (isProcedure(elem)) {
+                rv.add((ExecutableElement) elem);
+            }
+        }
+        return rv;
+    }
+    
+    
+    /**
+     * Returns the set of all `DuckShape`s which the given capsule template will use.
+     */
+    public static Set<DuckShape> getDuckShapes(TypeElement template)
+    {
+        Set<DuckShape> rv = new HashSet<DuckShape>();
+        for (ExecutableElement proc : getProcedures(template)) {
+            rv.add(new DuckShape(proc));
+        }
+        return rv;
     }
 
    

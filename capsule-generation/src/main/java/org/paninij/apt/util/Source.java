@@ -12,6 +12,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * This provides functionality similar to the most basic usage of
@@ -187,11 +188,19 @@ public class Source
      * then this method would return "public static void foo(int i, String str)".
      */
     public static String buildExecutableDecl(ExecutableElement exec)
-    {
-        return format("#0 #1 #2(#3)", buildModifiersList(exec),
-                                      exec.getReturnType(),
-                                      exec.getSimpleName(),
-                                      buildParametersList(exec));
+    { 
+        String decl = format("#0 #1 #2(#3)", buildModifiersList(exec),
+                                             exec.getReturnType(),
+                                             exec.getSimpleName(),
+                                             buildParametersList(exec));
+
+        List<String> thrown = new ArrayList<String>();
+        for (TypeMirror type : exec.getThrownTypes()) {
+            System.out.println("throws");
+            thrown.add(type.toString());
+        }
+        
+        return (thrown.isEmpty()) ? decl : decl + " throws " + String.join(", ", thrown);
     }
 
     /**

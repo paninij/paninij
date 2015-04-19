@@ -16,6 +16,7 @@ import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.PaniniPress;
 
+
 public class JavaModelInfo {
 
     /**
@@ -197,5 +198,13 @@ public class JavaModelInfo {
              }
         }
         return false;
+    }
+    
+
+    public static String getPackage(TypeMirror type)
+    {
+        String qualified = type.toString();
+        int idx = qualified.lastIndexOf('.');
+        return qualified.substring(0, idx);
     }
 }

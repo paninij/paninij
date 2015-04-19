@@ -48,7 +48,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "#4",
                                      "}");
         return Source.format(src, buildPackage(),
-                                  buildCapsuleImports(),
+                                  buildImports(),
                                   PaniniModelInfo.qualifiedTemplateName(template),
                                   buildCapsuleDecl(),
                                   buildCapsuleBody());
@@ -120,7 +120,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         int currID = 0;
         for (Element child : template.getEnclosedElements())
         {
-            if (PaniniModelInfo.needsProcedureWrapper(child))
+            if (PaniniModelInfo.isProcedure(child))
             {
                 String decl = Source.format("public static final int #0 = #1;",
                                             buildProcedureID((ExecutableElement)child),
@@ -152,6 +152,18 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");
         return src;
     }
+    
+    
+    @Override
+    String buildImports()
+    {
+        Set<String> imports = getStandardImports();
+        for (DuckShape duck : PaniniModelInfo.getDuckShapes(template)) {
+            imports.add(duck.getPackage() + "." + duck.encoded + "$Thread");
+        }
+        return Source.buildCollectedImportDecls(template, imports);
+    }
+    
 
     String buildProcedures()
     {
@@ -163,7 +175,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             // TODO: For now, ignore everything except for methods which need to be wrapped
             // procedures. In the future, other enclosed elements may need to be treated specially
             // while building the capsule body.
-            if (PaniniModelInfo.needsProcedureWrapper(child)) {
+            if (PaniniModelInfo.isProcedure(child)) {
                 decls.add(buildProcedure((ExecutableElement) child));
             }
         }
@@ -369,7 +381,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
         for (Element elem : template.getEnclosedElements())
         {
-            if (PaniniModelInfo.needsProcedureWrapper(elem)) {
+            if (PaniniModelInfo.isProcedure(elem)) {
                 // TODO: Fix this ugly hack. (Used to make alignment work).
                 lines.add("\n" + buildRunSwitchCase((ExecutableElement) elem));
             }
@@ -486,7 +498,6 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     Set<String> getStandardImports() {
         Set<String> imports = new HashSet<String>();
         imports.add("org.paninij.runtime.Capsule$Thread");
-        imports.add("org.paninij.runtime.ducks.*");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         return imports;
