@@ -59,11 +59,7 @@ public class PaniniProcessor extends AbstractProcessor
             {
                 TypeElement template = (TypeElement) elem;
 
-                printCapsuleDeclInfo(template);
-
                 MakeCapsule.make(this, template).makeSourceFile();
-
-                //MakeCapsule.make(this, template).makeSourceFile();
                 MakeCapsule$Thread.make(this, template).makeSourceFile();
                 //MakeCapsule$Task.make(this, template).makeSourceFile();
                 //MakeCapsule$Monitor.make(this, template).makeSourceFile();
@@ -75,21 +71,6 @@ public class PaniniProcessor extends AbstractProcessor
 
         this.roundEnv = null;
         return false;
-    }
-
-    public void printCapsuleDeclInfo(TypeElement template)
-    {
-        System.out.println();
-        System.out.println(Source.format("printCapsuleDeclInfo(#0): ", template));
-
-        List<VariableElement> capsules = PaniniModelInfo.getCapsuleFieldDecls(this, template);
-        System.out.println(Source.format("#0 capsules: #1", capsules.size(), capsules.toString()));
-
-        List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(this, template);
-        System.out.println(Source.format("#0 children: #1", children.size(), children.toString()));
-
-        List<VariableElement> reqs = PaniniModelInfo.getWiredFieldDecls(this, template);
-        System.out.println(Source.format("#0 requirements: #1", reqs.size(), reqs.toString()));
     }
 
     /**
