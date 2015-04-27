@@ -10,14 +10,4 @@ public class HelloWorldShortTemplate
     void run() {
         System.out.println("@PaniniJ: Hello World!");
     }
-
-    public String getMessage() {
-        return new String("vinegar");
-    }
-
-    public static void main(String[] args)
-    {
-        HelloWorldShort$Thread root = new HelloWorldShort$Thread();
-        root.run();
-    }
 }

@@ -14,8 +14,6 @@ class GreeterTemplate
         message = new String("Hello World!");
     }
 
-    void design(Greeter self) { ; }
-
     public void greet() {
         s.write(new String("Panini: " + message));
         long time = System.currentTimeMillis();
