@@ -15,10 +15,10 @@ import org.paninij.apt.util.PaniniModelInfo;
 
 public class MakeDucks
 {
-    PaniniPress context;
+    PaniniProcessor context;
     TypeElement template;
     
-    public static MakeDucks make(PaniniPress context, TypeElement template)
+    public static MakeDucks make(PaniniProcessor context, TypeElement template)
     {
         MakeDucks m = new MakeDucks();
         m.context = context;

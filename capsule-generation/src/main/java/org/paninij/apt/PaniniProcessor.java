@@ -36,7 +36,7 @@ import org.paninij.lang.Signature;
  */
 @SupportedAnnotationTypes({ "org.paninij.lang.Capsule", "org.paninij.lang.Signature" })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class PaniniPress extends AbstractProcessor
+public class PaniniProcessor extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
     Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();

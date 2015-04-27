@@ -13,7 +13,7 @@ class CapsuleChecker
      * @param template
      * @return `true` if and only if `template` is can be processed as a valid capsule template.
      */
-    static boolean check(PaniniPress context, Element template)
+    static boolean check(PaniniProcessor context, Element template)
     {
         // TODO: give errors when the user annotates an element which cannot be a capsule.
         // TODO: check that the class does not have any inner classes.
@@ -43,7 +43,7 @@ class CapsuleChecker
         return true;
     }
     
-    private static boolean checkTemplateName(PaniniPress context, Element template)
+    private static boolean checkTemplateName(PaniniProcessor context, Element template)
     {
         String templateName = template.getSimpleName().toString();
         if (! templateName.endsWith(PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX))

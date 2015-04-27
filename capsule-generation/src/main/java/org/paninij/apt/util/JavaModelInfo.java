@@ -14,7 +14,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import org.paninij.apt.PaniniPress;
+import org.paninij.apt.PaniniProcessor;
 
 
 public class JavaModelInfo {
@@ -82,7 +82,7 @@ public class JavaModelInfo {
         }
     }
 
-    public static TypeElement getTypeElement(PaniniPress context, String className) {
+    public static TypeElement getTypeElement(PaniniProcessor context, String className) {
         return context.getElementUtils().getTypeElement(className);
     }
 
@@ -171,7 +171,7 @@ public class JavaModelInfo {
     }
     */
     
-    public static <A extends Annotation> boolean isAnnotatedBy(PaniniPress context,
+    public static <A extends Annotation> boolean isAnnotatedBy(PaniniProcessor context,
                                                                TypeMirror typeMirror,
                                                                String annotationName)
     {
@@ -179,7 +179,7 @@ public class JavaModelInfo {
         return isAnnotatedBy(context, typeElem, annotationName);
     }
 
-    public static <A extends Annotation> boolean isAnnotatedBy(PaniniPress context,
+    public static <A extends Annotation> boolean isAnnotatedBy(PaniniProcessor context,
                                                                Element elem,
                                                                String annotationName)
     {

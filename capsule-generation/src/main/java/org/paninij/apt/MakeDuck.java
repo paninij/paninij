@@ -11,9 +11,9 @@ import org.paninij.apt.util.Source;
 
 public abstract class MakeDuck
 {
-    PaniniPress context;
+    PaniniProcessor context;
 
-    public static MakeDuck make(PaniniPress context)
+    public static MakeDuck make(PaniniProcessor context)
     {
         throw new UnsupportedOperationException("Cannot instantiate an abstract class.");
     }

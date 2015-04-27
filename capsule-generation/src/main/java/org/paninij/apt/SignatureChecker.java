@@ -9,7 +9,7 @@ public class SignatureChecker {
      * @return `true` if and only if `elem` is can be processed as a valid
      * capsule.
      */
-    static boolean check(PaniniPress context, Element template)
+    static boolean check(PaniniProcessor context, Element template)
     {
         // TODO: check that the interface does not include defaults
 

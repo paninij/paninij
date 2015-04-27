@@ -23,9 +23,9 @@ import org.paninij.apt.util.Source;
 public class MakeCapsule
 {
     TypeElement template;
-    PaniniPress context;
+    PaniniProcessor context;
 
-    static MakeCapsule make(PaniniPress context, TypeElement template)
+    static MakeCapsule make(PaniniProcessor context, TypeElement template)
     {
         MakeCapsule sig = new MakeCapsule();
         sig.context = context;

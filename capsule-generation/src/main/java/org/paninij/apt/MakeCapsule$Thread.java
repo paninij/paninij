@@ -25,7 +25,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 {
     private static final String CAPSULE_THREAD_TYPE_SUFFIX = "$Thread";
 
-    static MakeCapsule$Thread make(PaniniPress context, TypeElement template)
+    static MakeCapsule$Thread make(PaniniProcessor context, TypeElement template)
     {
         MakeCapsule$Thread cap = new MakeCapsule$Thread();
         cap.context = context;

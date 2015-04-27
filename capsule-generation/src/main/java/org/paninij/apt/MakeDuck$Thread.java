@@ -9,7 +9,7 @@ import org.paninij.apt.util.TypeCollector;
 
 public class MakeDuck$Thread extends MakeDuck
 {
-    public static MakeDuck$Thread make(PaniniPress context) 
+    public static MakeDuck$Thread make(PaniniProcessor context) 
     {
         MakeDuck$Thread m = new MakeDuck$Thread();
         m.context = context;

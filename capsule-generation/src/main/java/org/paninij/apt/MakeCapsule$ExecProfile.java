@@ -17,7 +17,7 @@ import org.paninij.apt.util.TypeCollector;
  */
 abstract class MakeCapsule$ExecProfile
 {
-    PaniniPress context;
+    PaniniProcessor context;
     TypeElement template;
 
     /**
@@ -26,7 +26,7 @@ abstract class MakeCapsule$ExecProfile
      * @param context The PaniniPress object in which in which the capsule is being built.
      * @param template A handle to the original class from which a capsule is being built.
      */
-    static MakeCapsule$ExecProfile make(PaniniPress context, TypeElement template) {
+    static MakeCapsule$ExecProfile make(PaniniProcessor context, TypeElement template) {
         throw new UnsupportedOperationException("Cannot instantiate an abstract class.");
     }
 

@@ -15,7 +15,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
-import org.paninij.apt.PaniniPress;
+import org.paninij.apt.PaniniProcessor;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.Signature;
@@ -155,19 +155,19 @@ public class PaniniModelInfo
     }
 
 
-    public static boolean isCapsuleFieldDecl(PaniniPress context, Element elem)
+    public static boolean isCapsuleFieldDecl(PaniniProcessor context, Element elem)
     {
         return isChildFieldDecl(context, elem) || isWiredFieldDecl(context, elem);
     }
 
     
-    public static boolean hasCapsuleFieldDecls(PaniniPress context, TypeElement template)
+    public static boolean hasCapsuleFieldDecls(PaniniProcessor context, TypeElement template)
     {
         return getCapsuleFieldDecls(context, template).isEmpty();
     }
 
 
-    public static List<VariableElement> getCapsuleFieldDecls(PaniniPress context, TypeElement template)
+    public static List<VariableElement> getCapsuleFieldDecls(PaniniProcessor context, TypeElement template)
     {
         List<VariableElement> fieldDecls = new ArrayList<VariableElement>();
         for (Element elem : template.getEnclosedElements())
@@ -180,19 +180,19 @@ public class PaniniModelInfo
     }
 
 
-    public static boolean isChildFieldDecl(PaniniPress context, Element elem)
+    public static boolean isChildFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
             && JavaModelInfo.isAnnotatedBy(context, elem, "org.paninij.lang.Child");
     }
 
 
-    public static boolean hasChildFieldDecls(PaniniPress context, TypeElement template) {
+    public static boolean hasChildFieldDecls(PaniniProcessor context, TypeElement template) {
         return getWiredFieldDecls(context, template).isEmpty() == false;
     }
 
  
-    public static List<VariableElement> getChildFieldDecls(PaniniPress context,
+    public static List<VariableElement> getChildFieldDecls(PaniniProcessor context,
                                                            TypeElement template)
     {
         List<VariableElement> children = new ArrayList<VariableElement>();
@@ -206,18 +206,18 @@ public class PaniniModelInfo
     }
 
   
-    public static boolean isWiredFieldDecl(PaniniPress context, Element elem)
+    public static boolean isWiredFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
             && JavaModelInfo.isAnnotatedBy(context, elem, "org.paninij.lang.Wired");
     }
 
 
-    public static boolean hasWiredFieldDecls(PaniniPress context, TypeElement template) {
+    public static boolean hasWiredFieldDecls(PaniniProcessor context, TypeElement template) {
         return getWiredFieldDecls(context, template).isEmpty() == false;
     }
     
-    public static List<VariableElement> getWiredFieldDecls(PaniniPress context, TypeElement template)
+    public static List<VariableElement> getWiredFieldDecls(PaniniProcessor context, TypeElement template)
     {
         List<VariableElement> wired = new ArrayList<VariableElement>();
         for (Element elem : template.getEnclosedElements())
@@ -233,7 +233,7 @@ public class PaniniModelInfo
     /**
      * A capsule is a "root" capsule if and only if it is active and has no `@Wired` fields.
      */
-    public static boolean isRootCapsule(PaniniPress context, TypeElement template)
+    public static boolean isRootCapsule(PaniniProcessor context, TypeElement template)
     {
         return hasWiredFieldDecls(context, template) == false && isActive(template);
     }
@@ -319,7 +319,7 @@ public class PaniniModelInfo
      *
      * Note: If the `template` has no wired capsules, then this method returns `null`.
      */
-    public static String buildWireMethodDecl(PaniniPress context, TypeElement template)
+    public static String buildWireMethodDecl(PaniniProcessor context, TypeElement template)
     {
         List<String> paramDecls = new ArrayList<String>();
         for (VariableElement varElem : getWiredFieldDecls(context, template)) {
