@@ -9,12 +9,10 @@ class HelloWorldTemplate
     @Child Console c;
     @Child Greeter g;
 
-    // No capsule inputs, so no arguments to this.
     void design(HelloWorld self) {
         g.wire(c);
     }
 
-    // This is an active capsule.
     void run() {
         g.greet();
     }
