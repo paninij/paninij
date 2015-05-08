@@ -1,20 +1,31 @@
 package org.paninij.apt;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
+import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.Source;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 
@@ -25,9 +36,10 @@ import org.paninij.lang.Signature;
  */
 @SupportedAnnotationTypes({ "org.paninij.lang.Capsule", "org.paninij.lang.Signature" })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class PaniniPress extends AbstractProcessor
+public class PaniniProcessor extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
+    Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -35,40 +47,30 @@ public class PaniniPress extends AbstractProcessor
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
             if (SignatureChecker.check(this, elem)) {
-                TypeElement signature = (TypeElement) elem;
-                MakeSignature.make(this, signature).makeSourceFile();
-            } else {
-                // TODO better error message
-                error("Signature failed check.");
+                // Nothing to do for now.
             }
         }
-        
+
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
         for (Element elem : annotated)
         {
-            if (CapsuleChecker.check(this, elem)) {
+            if (CapsuleChecker.check(this, elem))
+            {
                 TypeElement template = (TypeElement) elem;
 
-                //MakeCapsule.make(this, template).makeSourceFile();
+                MakeCapsule.make(this, template).makeSourceFile();
                 MakeCapsule$Thread.make(this, template).makeSourceFile();
                 //MakeCapsule$Task.make(this, template).makeSourceFile();
                 //MakeCapsule$Monitor.make(this, template).makeSourceFile();
                 //MakeCapsule$Serial.make(this, template).makeSourceFile();
-            } else {
-                error("Capsule failed check.");
+
+                MakeDucks.make(this, template).makeDucks();
             }
         }
 
         this.roundEnv = null;
         return false;
-    }
-
-    /**
-     * Dynamic helper methods.
-     */
-    private TypeElement getTypeElement(String className) {
-        return processingEnv.getElementUtils().getTypeElement(className);
     }
 
     /**
@@ -87,22 +89,35 @@ public class PaniniPress extends AbstractProcessor
             e.printStackTrace();
         }
     }
-    
-    String getPackageOf(TypeElement cls) {
+
+    String getPackageOf(TypeElement type) {
         Elements utils = processingEnv.getElementUtils();
-        Name pkg = utils.getPackageOf(cls).getQualifiedName();
+        Name pkg = utils.getPackageOf(type).getQualifiedName();
         return pkg.toString();
+    }
+    
+    String getPackageOf(TypeMirror type) {
+        Types utils = processingEnv.getTypeUtils();
+        return getPackageOf((TypeElement) utils.asElement(type));
     }
 
     void note(String msg) {
         processingEnv.getMessager().printMessage(Kind.NOTE, msg);
     }
-    
+
     void warning(String msg) {
         processingEnv.getMessager().printMessage(Kind.WARNING, msg);
     }
-    
+
     void error(String msg) {
         processingEnv.getMessager().printMessage(Kind.ERROR, msg);
+    }
+
+    public Types getTypeUtils() {
+        return processingEnv.getTypeUtils();
+    }
+
+    public Elements getElementUtils() {
+        return processingEnv.getElementUtils();
     }
 }

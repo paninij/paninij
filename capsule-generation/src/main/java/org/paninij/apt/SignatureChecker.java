@@ -9,8 +9,16 @@ public class SignatureChecker {
      * @return `true` if and only if `elem` is can be processed as a valid
      * capsule.
      */
-    static boolean check(PaniniPress context, Element template) {
+    static boolean check(PaniniProcessor context, Element template)
+    {
         // TODO: check that the interface does not include defaults
+
+        if (template.getKind() == ElementKind.FIELD)
+        {
+            // Ignore any fields annotated with `@Signature`.
+            return false;
+        }
+        
         if (template.getKind() != ElementKind.INTERFACE) {
             context.error("\"" + template.getKind().toString() + "\" @Signature cannot be a Signature because it is not an interface.");
             return false;

@@ -1,6 +1,6 @@
 package org.paninij.runtime;
 
-public interface Capsule$Task extends Capsule
+public interface Capsule$Task extends Panini$Capsule
 {
     default void panini$start() {
         // TODO

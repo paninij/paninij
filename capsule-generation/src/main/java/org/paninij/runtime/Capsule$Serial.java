@@ -1,6 +1,6 @@
 package org.paninij.runtime;
 
-public interface Capsule$Serial extends Capsule
+public interface Capsule$Serial extends Panini$Capsule
 {
     default void panini$start() {
         // TODO
