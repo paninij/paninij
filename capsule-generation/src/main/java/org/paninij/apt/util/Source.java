@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): David Johnston, Trey Erenberger
+ */
 package org.paninij.apt.util;
 
 import java.lang.StringBuilder;
@@ -37,14 +55,14 @@ public class Source
 
         return String.join("\n", tabbed) + "\n";
     }
-    
+
     public static String formatAligned(String fmt, Object... items)
     {
         if(items.length == 0)
         {
             return "";
         }
-        
+
         int hashIndex = fmt.indexOf("##");
         char[] fmtChars = fmt.toCharArray();
         int tempIndex = hashIndex;
@@ -77,12 +95,12 @@ public class Source
         }
         return Source.format(fmt, items);
     }
-    
+
     public static String formatAligned(String fmt, List<String> items)
     {
         return formatAligned(fmt, items.toArray());
     }
-    
+
 
     /**
      * State labels used while parsing a format string and constructing the
@@ -178,17 +196,17 @@ public class Source
     {
         return qualifiedClassName.substring(qualifiedClassName.lastIndexOf('.') + 1);
     }
-    
+
     /**
      * Builds a `String` matching the declaration of the executable element. For example, if the
      * given `exec` has the form
-     * 
+     *
      *     public static void foo(int i, String str)
-     * 
+     *
      * then this method would return "public static void foo(int i, String str)".
      */
     public static String buildExecutableDecl(ExecutableElement exec)
-    { 
+    {
         String decl = format("#0 #1 #2(#3)", buildModifiersList(exec),
                                              exec.getReturnType(),
                                              exec.getSimpleName(),
@@ -199,18 +217,18 @@ public class Source
             System.out.println("throws");
             thrown.add(type.toString());
         }
-        
+
         return (thrown.isEmpty()) ? decl : decl + " throws " + String.join(", ", thrown);
     }
 
     /**
      * Builds a `String` matching the declared modifiers of the executable element. For example, if
      * the given `exec` has the form
-     * 
+     *
      *     public static void foo(int i, String str)
-     * 
+     *
      * then this method will return "public static".
-     * 
+     *
      * If the given `exec` has no parameters, then the empty string is returned.
      */
     public static String buildModifiersList(ExecutableElement exec)
@@ -226,11 +244,11 @@ public class Source
     /**
      * Builds a `String` matching the parameter list of the given executable element. For example,
      * if the given `exec` has the form
-     * 
+     *
      *     public static void foo(int i, String str)
-     * 
+     *
      * then this method would return "int i, String str".
-     * 
+     *
      * If the given `exec` has no parameters, then the empty string is returned.
      */
     public static String buildParametersList(ExecutableElement exec)
@@ -241,15 +259,15 @@ public class Source
         }
         return String.join(", ", paramStrings);
     }
-    
+
     /**
      * Builds a `String` matching the declaration of the given variable element. For example, if
      * the given `var` represents a variable declared as
-     * 
+     *
      *     Integer x
-     *     
+     *
      * then this method would simply return "Integer x".
-     * 
+     *
      * (Note that this is applicable/usable in the context of building the declaration of one of an
      * executable element's formal parameters.)
      */
@@ -257,15 +275,15 @@ public class Source
     {
         return Source.dropPackageName(var.asType().toString()) + " " + var.toString();
     }
-    
+
     /**
      * Builds a `String` of the names of the formal parameters of the given executable, where each
      * name is separated by a comma. For example, if the given `exec` has the form
-     * 
+     *
      *     public static void foo(int i, String str)
-     *     
+     *
      * then this method would return "i, str".
-     * 
+     *
      * If the given `exec` has no parameters, then the empty string is returned.
      */
     public static String buildParameterNamesList(ExecutableElement exec)
@@ -280,9 +298,9 @@ public class Source
     /**
      * Builds a `String` matching the type such that it is fully qualified and with any type
      * arguments dropped. For example, if the given `t` represents a declared type
-     * 
+     *
      *     HashSet<Integer>
-     * 
+     *
      * then this method would return "java.util.HashSet".
      */
     public static String buildWithoutTypeArgs(DeclaredType t)
@@ -294,16 +312,16 @@ public class Source
             return orig.substring(0, orig.indexOf('<'));
         }
     }
-    
+
     /**
      * Builds a `String` of import declarations from the given set of types. Each of the given
      * `String` objects is assumed to be a fully qualified type that can be imported as-is.
      * For example, if the following set of types were passed,
-     * 
+     *
      *     { java.util.HashSet, java.util.Set, java.lang.String }
-     * 
+     *
      * then this method would return the following imports declarations as a single `String`:
-     * 
+     *
      *     import java.util.HashSet;
      *     import java.util.Set;
      *     import java.lang.String;
@@ -316,7 +334,7 @@ public class Source
         }
         return rv;
     }
-    
+
     /**
      * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
      * given `extraImports` will also be added as import declarations in the returned `String`.
@@ -325,7 +343,7 @@ public class Source
     {
         return buildCollectedImportDecls(t, Arrays.asList(extraImports));
     }
-   
+
     /**
      * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
      * given `extraImports` will also be added as import declarations in the returned `String`.
@@ -338,5 +356,5 @@ public class Source
         }
         return buildImportDecls(imports);
     }
-    
+
 }

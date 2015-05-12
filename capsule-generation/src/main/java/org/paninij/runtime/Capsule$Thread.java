@@ -14,9 +14,8 @@
  * For more details and the latest version of this code please see
  * http://paninij.org
  *
- * Contributor(s): Hridesh Rajan
+ * Contributor(s): Dalton Mills, David Johnston, Hridesh Rajan, Trey Erenberger
  */
-
 package org.paninij.runtime;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,302 +23,302 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 {
     protected Thread panini$thread;
-	protected volatile Object[] panini$queue;
-	protected volatile int panini$head, panini$tail, panini$size;
-	public volatile int panini$refCount;
+    protected volatile Object[] panini$queue;
+    protected volatile int panini$head, panini$tail, panini$size;
+    public volatile int panini$refCount;
 
-	protected final ReentrantLock panini$queueLock;
+    protected final ReentrantLock panini$queueLock;
 
-	public static final int PANINI$SHUTDOWN = -1;
-	public static final int PANINI$EXIT = -2;
-
-
-	protected Capsule$Thread()
-	{
-		panini$queue = new Object[10];
-		panini$head = 0;
-		panini$tail = 0;
-		panini$size = 0;
-		panini$refCount = 0;
-		panini$queueLock = new ReentrantLock();
-	}
+    public static final int PANINI$SHUTDOWN = -1;
+    public static final int PANINI$EXIT = -2;
 
 
-	protected final void panini$extendQueue()
-	{
-		assert (panini$tail >= panini$queue.length);
-
-		Object[] newObjects = new Object[panini$queue.length + 10];
-		if (panini$tail <= panini$head)
-		{
-			System.arraycopy(panini$queue, panini$head, newObjects, 0,
-			                 panini$queue.length - panini$head);
-			System.arraycopy(panini$queue, 0, newObjects, panini$queue.length - panini$head,
-			                 panini$tail);
-		}
-		else
-		{
-			System.arraycopy(panini$queue, panini$head, newObjects, 0, panini$tail - panini$head);
-		}
-
-		panini$head = 0;
-		panini$tail = panini$size;
-		panini$queue = newObjects;
-	}
+    protected Capsule$Thread()
+    {
+        panini$queue = new Object[10];
+        panini$head = 0;
+        panini$tail = 0;
+        panini$size = 0;
+        panini$refCount = 0;
+        panini$queueLock = new ReentrantLock();
+    }
 
 
-	/**
-	 * Checks to ensure whether this capsule's queue can accommodate numElems number of elements,
-	 * and if not extends it.
-	 *
-	 * @param numElems
-	 */
-	protected final void panini$ensureSpace(int numElems)
-	{
-		if (panini$head < panini$tail)
-		{
-			if (panini$queue.length + (panini$head - panini$tail) < numElems) {
-				if (panini$size != 0) {
-					panini$extendQueue();
-				}
-			}
-		}
-		else if (panini$head - panini$tail < numElems)
-		{
-			if (panini$size != 0) {
-				panini$extendQueue();
-			}
-		}
-	}
+    protected final void panini$extendQueue()
+    {
+        assert (panini$tail >= panini$queue.length);
 
-	/**
-	 * Extracts and returns the first duck from the capsule's queue. This method blocks if there
-	 * are no ducks in the queue.
-	 *
-	 * Precondition: it is assumed that `panini$queueLock` is held before calling this method.
-	 *
-	 * @return the first available duck in the capsule's queue.
-	 */
-	protected final synchronized Panini$Message panini$nextMessage()
-	{
-		if (this.panini$size <= 0)
-			panini$blockCapsule();
-		panini$size--;
-		Panini$Message msg = (Panini$Message) panini$queue[panini$head++];
-		if (panini$head >= panini$queue.length)
-			panini$head = 0;
-		return msg;
-	}
+        Object[] newObjects = new Object[panini$queue.length + 10];
+        if (panini$tail <= panini$head)
+        {
+            System.arraycopy(panini$queue, panini$head, newObjects, 0,
+                             panini$queue.length - panini$head);
+            System.arraycopy(panini$queue, 0, newObjects, panini$queue.length - panini$head,
+                             panini$tail);
+        }
+        else
+        {
+            System.arraycopy(panini$queue, panini$head, newObjects, 0, panini$tail - panini$head);
+        }
+
+        panini$head = 0;
+        panini$tail = panini$size;
+        panini$queue = newObjects;
+    }
 
 
-	private final void panini$blockCapsule()
-	{
-		nomessages: while (this.panini$size <= 0) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				continue nomessages;
-			}
-		}
-	}
+    /**
+     * Checks to ensure whether this capsule's queue can accommodate numElems number of elements,
+     * and if not extends it.
+     *
+     * @param numElems
+     */
+    protected final void panini$ensureSpace(int numElems)
+    {
+        if (panini$head < panini$tail)
+        {
+            if (panini$queue.length + (panini$head - panini$tail) < numElems) {
+                if (panini$size != 0) {
+                    panini$extendQueue();
+                }
+            }
+        }
+        else if (panini$head - panini$tail < numElems)
+        {
+            if (panini$size != 0) {
+                panini$extendQueue();
+            }
+        }
+    }
 
-	protected final boolean panini$isEmpty() {
-		return panini$size == 0;
-	}
-
-	/**
-	 * Causes the current capsule to sleep (temporarily cease execution) for the specified number
-	 * of milliseconds, subject to the precision and accuracy of system timers and schedulers. The
-	 * capsule does not lose ownership of any monitors.
-	 *
-	 * @param millis The length of time to sleep in milliseconds
-	 * @throws IllegalArgumentException If the value of millis is negative
-	 *
-	 */
-	public void panini$yield(long millis)
-	{
-		if (millis < 0) {
-			throw new IllegalArgumentException();
-		}
-
-		try {
-			Thread.sleep(millis);
-			// TODO: this may also be a good place to introduce interleaving.
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			// TODO: What should be the semantics here?
-		}
-	}
+    /**
+     * Extracts and returns the first duck from the capsule's queue. This method blocks if there
+     * are no ducks in the queue.
+     *
+     * Precondition: it is assumed that `panini$queueLock` is held before calling this method.
+     *
+     * @return the first available duck in the capsule's queue.
+     */
+    protected final synchronized Panini$Message panini$nextMessage()
+    {
+        if (this.panini$size <= 0)
+            panini$blockCapsule();
+        panini$size--;
+        Panini$Message msg = (Panini$Message) panini$queue[panini$head++];
+        if (panini$head >= panini$queue.length)
+            panini$head = 0;
+        return msg;
+    }
 
 
-	/**
-	 * Causes the current capsule to disconnect from its parent. On disconnecting from all its
-	 * parents, a terminate call is made to shutdown the capsule running thread. This is part of
-	 * automatic garbage collection of capsules.
-	 */
-	@Override
+    private final void panini$blockCapsule()
+    {
+        nomessages: while (this.panini$size <= 0) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                continue nomessages;
+            }
+        }
+    }
+
+    protected final boolean panini$isEmpty() {
+        return panini$size == 0;
+    }
+
+    /**
+     * Causes the current capsule to sleep (temporarily cease execution) for the specified number
+     * of milliseconds, subject to the precision and accuracy of system timers and schedulers. The
+     * capsule does not lose ownership of any monitors.
+     *
+     * @param millis The length of time to sleep in milliseconds
+     * @throws IllegalArgumentException If the value of millis is negative
+     *
+     */
+    public void panini$yield(long millis)
+    {
+        if (millis < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        try {
+            Thread.sleep(millis);
+            // TODO: this may also be a good place to introduce interleaving.
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            // TODO: What should be the semantics here?
+        }
+    }
+
+
+    /**
+     * Causes the current capsule to disconnect from its parent. On disconnecting from all its
+     * parents, a terminate call is made to shutdown the capsule running thread. This is part of
+     * automatic garbage collection of capsules.
+     */
+    @Override
     public final synchronized void panini$shutdown()
-	{
-		panini$refCount--;
-		if (panini$refCount == 0) {
-			panini$push(new SimpleMessage(PANINI$SHUTDOWN));
-		}
-	}
+    {
+        panini$refCount--;
+        if (panini$refCount == 0) {
+            panini$push(new SimpleMessage(PANINI$SHUTDOWN));
+        }
+    }
 
 
-	/**
-	 * Causes the current capsule to immediately cease execution.
-	 *
-	 * Shutdown is allowed only if the client capsule has permission to modify this capsule.
-	 *
-	 * If there is a security manager, its checkAccess method is called with this capsule as its
-	 * argument. This may result in throwing a SecurityException.
-	 *
-	 * @throws SecurityException if the client capsule is not allowed to access this capsule.
-	 */
-	@Override
+    /**
+     * Causes the current capsule to immediately cease execution.
+     *
+     * Shutdown is allowed only if the client capsule has permission to modify this capsule.
+     *
+     * If there is a security manager, its checkAccess method is called with this capsule as its
+     * argument. This may result in throwing a SecurityException.
+     *
+     * @throws SecurityException if the client capsule is not allowed to access this capsule.
+     */
+    @Override
     public final void panini$exit()
-	{
-		panini$thread.checkAccess();
-		Panini$Message msg = new SimpleMessage(PANINI$EXIT);
-		panini$push(msg);
-	}
+    {
+        panini$thread.checkAccess();
+        Panini$Message msg = new SimpleMessage(PANINI$EXIT);
+        panini$push(msg);
+    }
 
-	/**
-	 * Pushes a single object on this capsule's queue.
-	 *
-	 * @param o Object to be stored.
-	 */
-	@Override
+    /**
+     * Pushes a single object on this capsule's queue.
+     *
+     * @param o Object to be stored.
+     */
+    @Override
     public final synchronized void panini$push(Object o)
-	{
-		panini$ensureSpace(1);
-		panini$size = panini$size + 1;
-		panini$queue[panini$tail++] = o;
+    {
+        panini$ensureSpace(1);
+        panini$size = panini$size + 1;
+        panini$queue[panini$tail++] = o;
 
-		if (panini$tail >= panini$queue.length) {
-			panini$tail = 0;
-		}
+        if (panini$tail >= panini$queue.length) {
+            panini$tail = 0;
+        }
 
-		if (panini$size == 1) {
-			notifyAll();
-		}
-	}
-
-
-	/**
-	 * Pushes two objects on this capsule's queue.
-	 *
-	 * @param o1 first object to be stored.
-	 * @param o2 second object to be stored.
-	 */
-	protected final synchronized void panini$push(Object o1, Object o2)
-	{
-		panini$ensureSpace(2);
-		panini$size = panini$size + 2;
-
-		panini$queue[panini$tail++] = o1;
-		if (panini$tail >= panini$queue.length) {
-			panini$tail = 0;
-		}
-
-		panini$queue[panini$tail++] = o2;
-		if (panini$tail >= panini$queue.length) {
-			panini$tail = 0;
-		}
-
-		if (panini$size == 2) {
-			notifyAll();
-		}
-	}
+        if (panini$size == 1) {
+            notifyAll();
+        }
+    }
 
 
-	/**
-	 * Pushes three objects on this capsule's queue.
-	 *
-	 * @param o1 First object to be stored.
-	 * @param o2 Second object to be stored.
-	 * @param o3 Third object to be stored.
-	 */
-	protected final synchronized void panini$push(Object o1, Object o2, Object o3)
-	{
-		panini$ensureSpace(3);
-		panini$size = panini$size + 3;
+    /**
+     * Pushes two objects on this capsule's queue.
+     *
+     * @param o1 first object to be stored.
+     * @param o2 second object to be stored.
+     */
+    protected final synchronized void panini$push(Object o1, Object o2)
+    {
+        panini$ensureSpace(2);
+        panini$size = panini$size + 2;
 
-		panini$queue[panini$tail++] = o1;
-		if (panini$tail >= panini$queue.length) {
-			panini$tail = 0;
-		}
+        panini$queue[panini$tail++] = o1;
+        if (panini$tail >= panini$queue.length) {
+            panini$tail = 0;
+        }
 
-		panini$queue[panini$tail++] = o2;
-		if (panini$tail >= panini$queue.length) {
-			panini$tail = 0;
-		}
+        panini$queue[panini$tail++] = o2;
+        if (panini$tail >= panini$queue.length) {
+            panini$tail = 0;
+        }
 
-		panini$queue[panini$tail++] = o3;
-		if (panini$tail >= panini$queue.length) {
-			panini$tail = 0;
-		}
-
-		if (panini$size == 3) {
-			notifyAll();
-		}
-	}
+        if (panini$size == 2) {
+            notifyAll();
+        }
+    }
 
 
-	/**
-	 * Pushes multiple objects on this capsule's queue.
-	 *
-	 * @param items List of objects to be stored.
-	 */
-	protected final synchronized void panini$push(Object... items)
-	{
-		int numItems = items.length;
-		panini$ensureSpace(numItems);
-		panini$size = panini$size + numItems;
+    /**
+     * Pushes three objects on this capsule's queue.
+     *
+     * @param o1 First object to be stored.
+     * @param o2 Second object to be stored.
+     * @param o3 Third object to be stored.
+     */
+    protected final synchronized void panini$push(Object o1, Object o2, Object o3)
+    {
+        panini$ensureSpace(3);
+        panini$size = panini$size + 3;
 
-		for (Object o : items) {
-			panini$queue[panini$tail++] = o;
-			if (panini$tail >= panini$queue.length) {
-				panini$tail = 0;
-			}
-		}
-		if (panini$size == numItems) {
-			notifyAll();
-		}
-	}
-	
-	/**
-	 * Initialize the capsule-requirements of this capsule.
-	 * 
-	 * Should be called *before* `panini$initChildren()` or `panini$initState() are called.
-	 */
-	protected void panini$checkRequired() {
-	    // Do nothing.
-	}
+        panini$queue[panini$tail++] = o1;
+        if (panini$tail >= panini$queue.length) {
+            panini$tail = 0;
+        }
 
-	/**
-	 * Initialize the children of this capsule.
-	 * 
-	 * Must (in general) be called *before* `panini$initState()`.
-	 */
-	protected void panini$initChildren() {
-	    // Do nothing.
-	}
+        panini$queue[panini$tail++] = o2;
+        if (panini$tail >= panini$queue.length) {
+            panini$tail = 0;
+        }
+
+        panini$queue[panini$tail++] = o3;
+        if (panini$tail >= panini$queue.length) {
+            panini$tail = 0;
+        }
+
+        if (panini$size == 3) {
+            notifyAll();
+        }
+    }
 
 
-	/**
-	 * Initialize the state variables of this capsule.
-	 */
-	protected void panini$initState() {
-	    // Do nothing.
-	}
-	
-	@Override
+    /**
+     * Pushes multiple objects on this capsule's queue.
+     *
+     * @param items List of objects to be stored.
+     */
+    protected final synchronized void panini$push(Object... items)
+    {
+        int numItems = items.length;
+        panini$ensureSpace(numItems);
+        panini$size = panini$size + numItems;
+
+        for (Object o : items) {
+            panini$queue[panini$tail++] = o;
+            if (panini$tail >= panini$queue.length) {
+                panini$tail = 0;
+            }
+        }
+        if (panini$size == numItems) {
+            notifyAll();
+        }
+    }
+
+    /**
+     * Initialize the capsule-requirements of this capsule.
+     *
+     * Should be called *before* `panini$initChildren()` or `panini$initState() are called.
+     */
+    protected void panini$checkRequired() {
+        // Do nothing.
+    }
+
+    /**
+     * Initialize the children of this capsule.
+     *
+     * Must (in general) be called *before* `panini$initState()`.
+     */
+    protected void panini$initChildren() {
+        // Do nothing.
+    }
+
+
+    /**
+     * Initialize the state variables of this capsule.
+     */
+    protected void panini$initState() {
+        // Do nothing.
+    }
+
+    @Override
     public void panini$start()
     {
-	    panini$thread = new Thread(this);
-	    panini$thread.start();
+        panini$thread = new Thread(this);
+        panini$thread.start();
     }
 
     @Override

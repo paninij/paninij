@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): David Johnston, Trey Erenberger
+ */
 package org.paninij.apt.util;
 
 import java.util.ArrayList;
@@ -24,14 +42,14 @@ public class DuckShape
     public DuckShape(ExecutableElement method)
     {
         assert (method != null);
-        
+
         category = categoryOf(method);
         returnType = (category == Category.VOID) ? null : method.getReturnType();
         slotTypes = getSlotTypes(method);
         encoded = encode(method);
     }
-    
-    
+
+
     public enum Category
     {
         NORMAL,
@@ -42,14 +60,14 @@ public class DuckShape
         PRIMITIVE,
         PANINICUSTOM
     }
-    
+
 
     public static DuckShape.Category categoryOf(ExecutableElement method)
     {
         // TODO: Add checks for all categories.
-        
+
         TypeMirror returnType = method.getReturnType();
-        
+
         if (JavaModelInfo.hasVoidReturnType(method))
         {
             return Category.VOID;
@@ -80,8 +98,8 @@ public class DuckShape
         throw new IllegalArgumentException(msg);
         */
     }
- 
-    
+
+
     private static List<String> getSlotTypes(ExecutableElement method)
     {
         List<String> slotTypes = new ArrayList<String>();
@@ -91,8 +109,8 @@ public class DuckShape
         }
         return slotTypes;
     }
-    
-    
+
+
     private static String getSlotType(VariableElement param)
     {
         // TODO: Look for another way to get the strings in the primitive cases.
@@ -135,20 +153,20 @@ public class DuckShape
         return encodeReturnType(method) + "$Duck$" + encodeSlots(method);
     }
 
- 
+
     private static String encodeSlots(ExecutableElement method)
     {
         List<String> slotTypes = getSlotTypes(method);
         return encodeSlots(slotTypes);
     }
-    
-    
+
+
     private static String encodeSlots(List<String> slotTypes)
     {
         return String.join("$", slotTypes);
     }
- 
-  
+
+
     private static String encodeReturnType(ExecutableElement method)
     {
         // TODO: Handle other cases.
@@ -200,12 +218,12 @@ public class DuckShape
             return returnType.toString();
         }
     }
-    
-    
+
+
     /**
      * Returns the string representation of the package in which the duck should be put. This is
      * generally based on the `returnType` of the duck itself.
-     * 
+     *
      * If the duck has no return type (i.e. its category is `VOID`).
      */
     public String getPackage()
@@ -219,23 +237,24 @@ public class DuckShape
     }
 
 
+    @Override
     public String toString()
     {
         return encoded;
     }
-    
-    
+
+
     @Override
     public boolean equals(Object o)
     {
         if (!(o instanceof DuckShape))
             return false;
-        
+
         DuckShape other = (DuckShape) o;
         return this.encoded.equals(other.encoded);
     }
-    
-    
+
+
     @Override
     public int hashCode()
     {

@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): David Johnston, Trey Erenberger
+ */
 package org.paninij.apt;
 
 import javax.lang.model.element.Element;
@@ -33,7 +51,7 @@ public abstract class MakeDuck
             throw new UnsupportedOperationException("Duck category not supported: " + category);
         }
     }
-    
+
     // TODO: Consider replacing uses of `buildPackage()` with calls to `currentDuck.getPackage()`.
     String buildPackage(DuckShape currentDuck)
     {
@@ -57,7 +75,7 @@ public abstract class MakeDuck
     String buildFacades(DuckShape currentDuck)
     {
         String facades = "";
-        
+
         DeclaredType returnType = (DeclaredType) currentDuck.returnType;
 
         for (Element el : returnType.asElement().getEnclosedElements())
@@ -78,11 +96,11 @@ public abstract class MakeDuck
 
     String buildFacade(ExecutableElement method)
     {
-        String fmt = Source.lines(1, 
-                "", 
-                "@Override", 
-                "#0 {", 
-                "    #1", 
+        String fmt = Source.lines(1,
+                "",
+                "@Override",
+                "#0 {",
+                "    #1",
                 "}");
         return Source.format(fmt, Source.buildExecutableDecl(method), buildFacadeBody(method));
 
@@ -133,9 +151,9 @@ public abstract class MakeDuck
         }
         return true;
     }
-    
+
     String buildReleaseArgs(DuckShape currentDuck) {
-        
+
         String args = "";
         for(int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
@@ -144,7 +162,7 @@ public abstract class MakeDuck
                 args += "        panini$arg" + i + " = null;\n";
             }
         }
-            
+
         return args;
     }
 

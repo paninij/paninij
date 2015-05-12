@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): David Johnston, Trey Erenberger
+ */
 package org.paninij.apt;
 
 import java.util.ArrayList;
@@ -17,7 +35,7 @@ public class MakeDucks
 {
     PaniniProcessor context;
     TypeElement template;
-    
+
     public static MakeDucks make(PaniniProcessor context, TypeElement template)
     {
         MakeDucks m = new MakeDucks();
@@ -39,25 +57,25 @@ public class MakeDucks
         //profiles.add(MakeDuck$Monitor.make(context));
         //profiles.add(MakeDuck$Serial.make(context));
         //profiles.add(MakeDuck$Task.make(context));
-        
+
         for(DuckShape currentDuck : duckShapes)
-        { 
+        {
             for(MakeDuck currentProfile : profiles)
             {
                 currentProfile.makeSourceFile(currentDuck);
             }
         }
-        
+
         context.foundDuckShapes.addAll(duckShapes);
     }
     /**
      * Gets duck shapes of all methods of the template class.
-     * @return 
+     * @return
      */
     private Set<DuckShape> getAllDuckShapes()
     {
         Set<DuckShape> duckShapes = new HashSet<DuckShape>();
-        
+
         for(Element elem : this.template.getEnclosedElements())
         {
             if(PaniniModelInfo.isProcedure(elem))

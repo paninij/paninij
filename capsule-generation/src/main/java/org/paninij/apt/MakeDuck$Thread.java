@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): David Johnston, Trey Erenberger
+ */
 package org.paninij.apt;
 
 import javax.lang.model.element.TypeElement;
@@ -9,13 +27,13 @@ import org.paninij.apt.util.TypeCollector;
 
 public class MakeDuck$Thread extends MakeDuck
 {
-    public static MakeDuck$Thread make(PaniniProcessor context) 
+    public static MakeDuck$Thread make(PaniniProcessor context)
     {
         MakeDuck$Thread m = new MakeDuck$Thread();
         m.context = context;
         return m;
     }
-    
+
     @Override
     public void makeSourceFile(DuckShape currentDuck)
     {
@@ -30,7 +48,7 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     String buildNormalDuck(DuckShape currentDuck)
     {
-        String src = Source.lines(0, 
+        String src = Source.lines(0,
                 "package #0;",
                 "",
                 "#1",
@@ -83,7 +101,7 @@ public class MakeDuck$Thread extends MakeDuck
                                   this.buildReleaseArgs(currentDuck),
                                   this.buildFacades(currentDuck));
     }
-    
+
     @Override
     String buildVoidDuck(DuckShape currentDuck)
     {
@@ -102,9 +120,9 @@ public class MakeDuck$Thread extends MakeDuck
                                      "        return panini$procID;",
                                      "    }",
                                      "}");
-        
+
         return Source.format(src, buildPackage(currentDuck),
-                                  buildClassName(currentDuck), 
+                                  buildClassName(currentDuck),
                                   buildParameterFields(currentDuck),
                                   buildConstructor(currentDuck));
     }
@@ -130,7 +148,7 @@ public class MakeDuck$Thread extends MakeDuck
                                   buildClassName(currentDuck),
                                   buildConstructor(currentDuck, "        super(\"\");\n"));
     }
-   
+
 
     String buildImports(DuckShape currentDuck)
     {
@@ -152,8 +170,8 @@ public class MakeDuck$Thread extends MakeDuck
     {
         return buildPackage(currentDuck) + "." + currentDuck.toString() + "$Thread";
     }
-    
-    
+
+
     @Override
     String buildConstructor(DuckShape currentDuck)
     {
@@ -182,7 +200,7 @@ public class MakeDuck$Thread extends MakeDuck
             constructorDecl += ", " + currentDuck.slotTypes.get(i) + " arg" + i;
         }
         constructorDecl += ") {\n";
-        
+
         return constructorDecl;
     }
 

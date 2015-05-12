@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): David Johnston
+ */
 package org.paninij.apt.test;
 
 import java.util.Set;
@@ -16,7 +34,7 @@ import org.paninij.apt.util.TypeCollector;
 
 /**
  * A processor for running tests on various kinds of visitors defined in the `PaniniPress` project.
- * 
+ *
  * Because of the current lack of better alternatives, this is just being used for manual
  * inspection of the results of visitors (e.g. `TypeCollector`).
  */
@@ -31,13 +49,13 @@ public class VisitorDriver extends AbstractProcessor
         testTypeCollector(roundEnv);
         return false;
     }
-    
+
     private void testTypeCollector(RoundEnvironment roundEnv)
     {
         //note("VisitorDriver.testTypeCollector():");
         //printAllTypeCollectorResults(roundEnv);
     }
-    
+
     private void printAllTypeCollectorResults(RoundEnvironment roundEnv)
     {
         note("VisitorDriver.printAllTypeCollectorResults():");

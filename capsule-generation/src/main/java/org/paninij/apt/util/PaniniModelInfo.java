@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): Dalton Mills, David Johnston
+ */
 package org.paninij.apt.util;
 
 import java.util.ArrayList;
@@ -160,7 +178,7 @@ public class PaniniModelInfo
         return isChildFieldDecl(context, elem) || isWiredFieldDecl(context, elem);
     }
 
-    
+
     public static boolean hasCapsuleFieldDecls(PaniniProcessor context, TypeElement template)
     {
         return getCapsuleFieldDecls(context, template).isEmpty();
@@ -191,7 +209,7 @@ public class PaniniModelInfo
         return getWiredFieldDecls(context, template).isEmpty() == false;
     }
 
- 
+
     public static List<VariableElement> getChildFieldDecls(PaniniProcessor context,
                                                            TypeElement template)
     {
@@ -205,7 +223,7 @@ public class PaniniModelInfo
         return children;
     }
 
-  
+
     public static boolean isWiredFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
@@ -216,7 +234,7 @@ public class PaniniModelInfo
     public static boolean hasWiredFieldDecls(PaniniProcessor context, TypeElement template) {
         return getWiredFieldDecls(context, template).isEmpty() == false;
     }
-    
+
     public static List<VariableElement> getWiredFieldDecls(PaniniProcessor context, TypeElement template)
     {
         List<VariableElement> wired = new ArrayList<VariableElement>();
@@ -238,7 +256,7 @@ public class PaniniModelInfo
         return hasWiredFieldDecls(context, template) == false && isActive(template);
     }
 
-    
+
     /**
      * Returns `true` if and only if the given capsule template has a design declaration.
      */
@@ -264,8 +282,8 @@ public class PaniniModelInfo
             return decls.get(0);
         }
     }
-    
-    
+
+
     /**
      * Returns a list of all of the procedures (represented as `ExcecutableElement`s) defined on the
      * given `template`.
@@ -281,8 +299,8 @@ public class PaniniModelInfo
         }
         return rv;
     }
-    
-    
+
+
     /**
      * Returns the set of all `DuckShape`s which the given capsule template will use.
      */
@@ -295,7 +313,7 @@ public class PaniniModelInfo
         return rv;
     }
 
-   
+
     /**
      * Inspects the given capsule template, finds the design declaration on it, then returns a
      * String representation of a `wire()` method declaration.

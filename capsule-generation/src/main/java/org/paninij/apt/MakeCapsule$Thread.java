@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
+ */
 package org.paninij.apt;
 
 import java.util.ArrayList;
@@ -152,8 +170,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = src.replaceAll("\\[", "").replaceAll("\\]", "Array");
         return src;
     }
-    
-    
+
+
     @Override
     String buildImports()
     {
@@ -163,7 +181,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         }
         return Source.buildCollectedImportDecls(template, imports);
     }
-    
+
 
     String buildProcedures()
     {
@@ -247,14 +265,14 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         if (PaniniModelInfo.hasWiredFieldDecls(context, template) == false) {
             return "";
         }
-        
+
         // Assign each of the `wire()` method's arguments into the corresponding field of the
         // encapsulated template instance.
         List<String> assignments = new ArrayList<String>();
         for (VariableElement req : PaniniModelInfo.getWiredFieldDecls(context, template)) {
             assignments.add(Source.format("panini$encapsulated.#0 = #0;", req.toString()));
         }
- 
+
         String src = Source.lines(1, "@Override",
                                      PaniniModelInfo.buildWireMethodDecl(context, template),
                                      "{",
@@ -262,7 +280,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "}");
         return Source.formatAligned(src, assignments);
     }
-    
+
 
     /**
      * Build a method which initializes each of the child capsules and delegates.
@@ -270,7 +288,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     String buildInitChildren()
     {
         List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(context, template);
-        
+
         // TODO: remove bad code style due to use of `tabs` using `Source.formatAligned()`.
         String tabs = "        ";
 
@@ -280,10 +298,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         {
             String inst = Source.format(tabs + "panini$encapsulated.#0 = new #1$Thread();",
                                         child.toString(),
-                                        child.asType().toString()); 
+                                        child.asType().toString());
             instantiations.add(inst);
         }
-        
+
         // For each of the capsule's children, add a call to that capsule's `panini$start()` method.
         List<String> starts = new ArrayList<String>();
         for (VariableElement child : children)
@@ -303,7 +321,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                   buildDesignDelegation(),
                                   String.join("\n", starts));
     }
-    
+
 
     String buildDesignDelegation()
     {
@@ -473,8 +491,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.format("panini$encapsulated.#0(#1)", method.getSimpleName(),
                                                            String.join(", ", args));
     }
-    
-    
+
+
     private String buildMain()
     {
         // A `Capsule$Thread` should have a main() method if and only if it is a "root" capsule.
