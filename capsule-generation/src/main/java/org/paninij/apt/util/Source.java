@@ -21,7 +21,6 @@ package org.paninij.apt.util;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +32,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
- * This provides functionality similar to the most basic usage of
- * `MessageFormat`, but with some features that make it more simpler to use when
- * constructing source code.
+ * This provides functionality similar to the `MessageFormat`, but with some features that make it
+ * simpler to use when constructing source code.
  */
 public class Source
 {
@@ -56,45 +54,69 @@ public class Source
         return String.join("\n", tabbed) + "\n";
     }
 
-    public static String formatAligned(String fmt, Object... items)
+    
+    /**
+     * Inserts each of the given `lines` into the `fmt` string at the first "##" such that each
+     * line is inserted at the same depth as the "##". For example,
+     * 
+     *     formatAligned("    ##", "foo", "bar", "baz") -> "    foo\n    bar\n    baz"
+     * 
+     * Technically, the portion of the line which precedes the "##" will be copied as the prefix of
+     * each of the lines being inserted.
+     * 
+     * @throws `InvalidArgumentException` if any character of prefix is not a whitespace character.
+     * @throws `InvalidArgumentException` if `lines` has zero elements.
+     */
+    public static String formatAligned(String fmt, Object... lines)
     {
-        if(items.length == 0)
-        {
-            return "";
+        if(lines.length == 0) {
+            throw new IllegalArgumentException("`lines` must include one or more elements.");
         }
 
-        int hashIndex = fmt.indexOf("##");
-        char[] fmtChars = fmt.toCharArray();
-        int tempIndex = hashIndex;
-        //scan back to last newline character
-        while(tempIndex > 0){
-            if(fmtChars[tempIndex-1] == '\n') break;
-            tempIndex--;
-        }
-        //depth to place the new hash flags at
-        int spaces = (hashIndex - tempIndex);
-        //for each item to be aligned, insert hash flag for formatted string
-        for(int i = 0; i < items.length; i++)
-        {
-            String[] halves = fmt.split("##");
-            fmt = halves[0] + "#" + i;
-            if(!(i == items.length - 1))
-            {
-                fmt += "\n";
-                for(int j = 0; j < spaces; j++)
-                {
-                    fmt += " ";
-                }
-                fmt += "##" + halves[1];
-            }
-            else
-            {
-                //don't add hanging ## on last item
-                fmt += halves[1];
-            }
-        }
-        return Source.format(fmt, items);
+        final String FORMAT_ELEMENT_SYMBOL = "##";
+        final int hashStartIndex = fmt.indexOf(FORMAT_ELEMENT_SYMBOL);
+        final int hashEndIndex = hashStartIndex + FORMAT_ELEMENT_SYMBOL.length();
+        
+        final String linePrefix = getWhitespaceLinePrefix(fmt, hashStartIndex);
+        
+        final String fmtPrefix = fmt.substring(0, hashStartIndex);
+        final String fmtSuffix = fmt.substring(hashEndIndex);
+
+        // Note that the `linePrefix` is used to separate each stringified line.
+        String[] strings = Arrays.stream(lines).toArray(String[]::new);
+        return fmtPrefix + String.join("\n" + linePrefix, strings) + fmtSuffix;
     }
+    
+    
+    /**
+     * A helper method for `formatAligned()` that returns the line prefix before `idx`, that is,
+     * the substring which spans from the beginning of the line that `idx` points into up to the
+     * given `idx`. For example,
+     * 
+     *     getWhitespaceLinePrefix("    foo", 4) -> "    "
+     * 
+     * Note that this method will throw an `IllegalArgumentException` if the line prefix is not
+     * all whitespace characters.
+     */
+    private static String getWhitespaceLinePrefix(String str, int idx)
+    {
+        // Scan back the start of this line or the beginning of the entire `fmt` string, whichever
+        // comes first. Use this index to extract the line prefix.
+        int lineStartIndex = idx;
+        char c;
+        char[] chars = str.toCharArray();
+        while (lineStartIndex > 0 && (c = chars[lineStartIndex - 1]) != '\n')
+        {
+            if (Character.isWhitespace(c) == false)
+            {
+                String msg = "Line prefix preceeding `idx` must only contain whitespace.";
+                throw new IllegalArgumentException(msg);
+            }
+            lineStartIndex--;
+        }
+        return str.substring(lineStartIndex, idx);
+    }
+
 
     public static String formatAligned(String fmt, List<String> items)
     {

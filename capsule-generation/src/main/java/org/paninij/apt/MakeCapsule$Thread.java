@@ -130,9 +130,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.format(src, PaniniModelInfo.simpleTemplateName(template));
     }
 
-    String buildProcedureIDs() {
+    String buildProcedureIDs()
+    {
+        final int TAB_DEPTH = 1;
+        
         ArrayList<String> decls = new ArrayList<String>();
-        String src = Source.lines(1, "##");
         int currID = 0;
         for (Element child : template.getEnclosedElements())
         {
@@ -145,7 +147,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 currID++;
             }
         }
-        return Source.formatAligned(src, decls.toArray());
+        
+        if (currID == 0) {
+            return "";
+        } else {
+            return Source.formatAligned(Source.lines(TAB_DEPTH, "##"), decls);
+        }
     }
 
     String buildProcedureID(ExecutableElement method)
