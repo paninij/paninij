@@ -84,10 +84,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     @Override
     String buildCapsuleDecl() {
-        // TODO: Remove trailing whitespace from format string after GitHub Issue #24 is resolved.
-        return Source.format("public class #0 extends Capsule$Thread implements #1 ",
-                             buildCapsuleName(),
-                             PaniniModelInfo.simpleCapsuleName(template));
+        return Source.format("public class #0 extends Capsule$Thread implements #1",
+                             buildCapsuleName(), PaniniModelInfo.simpleCapsuleName(template));
     }
 
 
@@ -481,8 +479,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         for (int i = 0; i < paramTypes.size(); i++)
         {
             String paramType = paramTypes.get(i);
-            // TODO: Remove trailing whitespace from `fmt` once GitHub Issue #24 has been resolved.
-            args.add(Source.format("#0((#1$Thread) msg).panini$arg#2 ",
+            args.add(Source.format("#0((#1$Thread) msg).panini$arg#2",
                                    paramType == null ? "" : "(" + paramType + ") ",
                                    duckType,
                                    i));

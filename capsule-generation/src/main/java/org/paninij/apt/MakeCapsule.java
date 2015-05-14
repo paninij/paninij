@@ -80,8 +80,7 @@ public class MakeCapsule
 
     private String buildCapsuleDecl()
     {
-        // TODO: Fix format string once GitHub issue #24 is resolved.
-        return Source.format("public interface #0 extends #1 ", buildCapsuleName(),
+        return Source.format("public interface #0 extends #1", buildCapsuleName(),
                                                                buildCapsuleInterfaces());
     }
 

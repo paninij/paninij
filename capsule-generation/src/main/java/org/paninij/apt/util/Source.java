@@ -116,29 +116,25 @@ public class Source
     /**
      * Inserts any elements in the given list of items into the format string at
      * format elements. A format element is a substring of `fmt` that satisfies
-     * the pattern "#\d+", that is, a hash- symbol followed by one or more
+     * the pattern "#\d+", that is, a hash-symbol followed by one or more
      * digits. The digits of a format element are interpreted to be the index
      * into `items` used to find which item to place at that location. For
      * example,
      *
-     * Source.format("#0? #1, #0...", "World", "Hello") -> "World? Hello, World..."
+     *     Source.format("#0? #1, #0...", "World", "Hello") -> "World? Hello, World..."
      */
     public static String format(String fmt, Object... items)
     {
-        // Make its initial capacity comparable to the length of the given
-        // `fmt`.
+        // Make its initial capacity comparable to the length of the given `fmt`.
         StringBuilder result = new StringBuilder(fmt.length());
 
-        // A temporary to hold format element indices (without '#'-prefix) as
-        // `fmt` is scanned.
+        // A temporary to hold format element indices (without '#'-prefix) as `fmt` is scanned.
         String idxStr = "";
 
         FormatState state = FormatState.LITERAL;
         for (char c : fmt.toCharArray())
         {
-            switch (state)
-            {
-
+            switch (state) {
             case LITERAL:
                 if (c == '#')
                 {
@@ -175,22 +171,59 @@ public class Source
                 else
                 {
                     // A format element has been fully parsed.
-                    int idx = Integer.parseInt(idxStr);
-                    if (idx >= items.length)
-                    {
-                        String msg = "The format element's index, " + idxStr + ", is too large.";
-                        throw new IllegalArgumentException(msg);
+                    appendItem(idxStr, items, result);
+                    if (c == '#') {
+                        state = FormatState.HASH;
+                    } else {
+                        result.append(c);
+                        state = FormatState.LITERAL;
                     }
-                    result.append(items[idx]);
-                    result.append(c);
-                    state = FormatState.LITERAL;
                 }
                 continue;
             }
         }
+        
+        // Finished consuming the format string. Perform last append if necessary.
+        switch (state) {
+        case LITERAL:
+            // Nothing to do, since last literal character was already appended.
+            break;
+        case HASH:
+            // The last character was '#', so it was consumed during above for-loop. Append it now.
+            result.append('#');
+            break;
+        case HASH_NUM:
+            // Interpret the last characters as a format element.
+            appendItem(idxStr, items, result);
+            break;
+        }
 
         return result.toString();
     }
+    
+    
+    /**
+     * A helper method for `format()`. Appends the `String` representation of object in `items`
+     * indicated by `idxStr` to the end of the given `StringBuilder`.
+     * 
+     * Note that this method attempts to convert the String `idxStr` to an `int` value using
+     * `Integer.parseInt()`. That method throws a `NumberFormatException` "if the string does not
+     * contain a parsable integer".
+     * 
+     * This method throws an `IllegalArgumentException` if the parsed value of `idx` is not a valid
+     * index into `items`.
+     */
+    private static void appendItem(String idxStr, Object[] items, StringBuilder builder)
+    {
+        int idx = Integer.parseInt(idxStr);
+        if (idx >= items.length)
+        {
+            String msg = "The format element's index, " + idxStr + ", is too large.";
+            throw new IllegalArgumentException(msg);
+        }
+        builder.append(items[idx]);
+    }
+
 
     public static String dropPackageName(String qualifiedClassName)
     {
