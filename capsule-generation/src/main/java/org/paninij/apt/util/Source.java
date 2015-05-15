@@ -37,21 +37,59 @@ import javax.lang.model.type.TypeMirror;
  */
 public class Source
 {
+    public static String tab(int depth, String line)
+    {
+        final String FOUR_SPACES =   "    ";
+        final String EIGHT_SPACES =  "        ";
+        final String TWELVE_SPACES = "            ";
+        
+        
+        if (depth < 0) {
+            String msg = "`depth` must not be negative, but given value was " + depth + ".";
+            throw new IllegalArgumentException(msg);
+        }
+        
+        switch (depth) {
+        case 0:
+            return line;
+        case 1:
+            return FOUR_SPACES + line;
+        case 2:
+            return EIGHT_SPACES + line;
+        case 3:
+            return TWELVE_SPACES + line;
+        default:
+            String spaces = "";
+            for (int i = 0; i < depth; i++) {
+                spaces += FOUR_SPACES;
+            }
+            return spaces + line;
+        }
+    }
+    
+    
     public static String lines(int depth, String... lines)
     {
-        String tabs = "";
-        for (int i = 0; i < depth; i++)
-        {
-            tabs += "    ";
-        }
-
         String[] tabbed = new String[lines.length];
-        for (int i = 0; i < lines.length; i++)
-        {
-            tabbed[i] = tabs + lines[i];
+        for (int i = 0; i < lines.length; i++) {
+            tabbed[i] = Source.tab(depth, lines[i]);
         }
 
         return String.join("\n", tabbed) + "\n";
+    }
+    
+   
+    /**
+     * A helper method for turning a variable-length method call into a list of Strings, where each
+     * line has been tabbed to the given depth.
+     */
+    public static List<String> linesList(int depth, String... lines)
+    {
+        List<String> rv = new ArrayList<String>();
+        for (String line : lines) {
+            rv.add(tab(depth, line));
+        }
+        return rv;
     }
 
     
@@ -242,6 +280,20 @@ public class Source
             throw new IllegalArgumentException(msg);
         }
         builder.append(items[idx]);
+    }
+    
+    
+    /**
+     * Applies the appropriate `format()` to each of the strings of the list, and returns the
+     * result as another list of strings. (Note that function application is not done in-place.)
+     */
+    public static List<String> formatList(List<String> fmts, Object... items)
+    {
+        List<String> rv = new ArrayList<String>(fmts.size());
+        for (String fmt : fmts) {
+            rv.add(Source.format(fmt, items));
+        }
+        return rv;
     }
 
 
