@@ -140,8 +140,7 @@ public class DuckShape
             return "short";
 
         default:
-            // TODO: remove trailing space character after GitHub issue #24 is resolved.
-            String msg = "The given `param` (of the form `#0`) has an unexpected `TypeKind`: #1 ";
+            String msg = "The given `param` (of the form `#0`) has an unexpected `TypeKind`: #1";
             msg = Source.format(msg, Source.buildVariableDecl(param), kind.toString());
             throw new IllegalArgumentException(msg);
         }

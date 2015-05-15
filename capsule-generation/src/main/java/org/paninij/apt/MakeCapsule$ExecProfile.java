@@ -19,6 +19,7 @@
 package org.paninij.apt;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
@@ -70,18 +71,11 @@ abstract class MakeCapsule$ExecProfile
 
     abstract String buildQualifiedCapsuleName();
 
-    abstract String buildImports();
+    abstract List<String> buildImports();
 
     abstract String buildCapsuleDecl();
 
-    abstract String buildCapsuleBody();
-
-    /**
-     * @return A string of all of the fields which the capsule needs to declare.
-     */
-    abstract String buildCapsuleFields();
-
-    abstract String buildProcedure(ExecutableElement method);
+    abstract List<String> buildCapsuleBody();
 
     /**
      * In this default implementation, an empty set is always returned.

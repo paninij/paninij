@@ -21,7 +21,6 @@ package org.paninij.apt.util;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,72 +32,207 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
- * This provides functionality similar to the most basic usage of
- * `MessageFormat`, but with some features that make it more simpler to use when
- * constructing source code.
+ * This provides functionality similar to the `MessageFormat`, but with some features that make it
+ * simpler to use when constructing source code.
  */
 public class Source
 {
-    public static String lines(int depth, String... lines)
+    public static String tab(int depth, String line)
     {
-        String tabs = "";
-        for (int i = 0; i < depth; i++)
-        {
-            tabs += "    ";
+        final String FOUR_SPACES =   "    ";
+        final String EIGHT_SPACES =  "        ";
+        final String TWELVE_SPACES = "            ";
+        
+        
+        if (depth < 0) {
+            String msg = "`depth` must not be negative, but given value was " + depth + ".";
+            throw new IllegalArgumentException(msg);
         }
-
+        
+        switch (depth) {
+        case 0:
+            return line;
+        case 1:
+            return FOUR_SPACES + line;
+        case 2:
+            return EIGHT_SPACES + line;
+        case 3:
+            return TWELVE_SPACES + line;
+        default:
+            String spaces = "";
+            for (int i = 0; i < depth; i++) {
+                spaces += FOUR_SPACES;
+            }
+            return spaces + line;
+        }
+    }
+    
+    
+    /**
+     * Concatenates each of the lines, separating each with a single '\n' character.
+     */
+    public static String cat(String... lines)
+    {
+        return Source.cat(0, lines);
+    }
+    
+    
+    /**
+     * Concatenates each of the lines, separating each with a single '\n' character and tabbing
+     * each line over the specified `depth`.
+     */
+    public static String cat(int depth, String... lines)
+    {
         String[] tabbed = new String[lines.length];
-        for (int i = 0; i < lines.length; i++)
-        {
-            tabbed[i] = tabs + lines[i];
+        for (int i = 0; i < lines.length; i++) {
+            tabbed[i] = Source.tab(depth, lines[i]);
         }
 
         return String.join("\n", tabbed) + "\n";
     }
-
-    public static String formatAligned(String fmt, Object... items)
+    
+     /**
+     * A helper method for turning a variable-length method call into a list of strings.
+     */
+    public static List<String> lines(String... lines)
     {
-        if(items.length == 0)
-        {
-            return "";
-        }
-
-        int hashIndex = fmt.indexOf("##");
-        char[] fmtChars = fmt.toCharArray();
-        int tempIndex = hashIndex;
-        //scan back to last newline character
-        while(tempIndex > 0){
-            if(fmtChars[tempIndex-1] == '\n') break;
-            tempIndex--;
-        }
-        //depth to place the new hash flags at
-        int spaces = (hashIndex - tempIndex);
-        //for each item to be aligned, insert hash flag for formatted string
-        for(int i = 0; i < items.length; i++)
-        {
-            String[] halves = fmt.split("##");
-            fmt = halves[0] + "#" + i;
-            if(!(i == items.length - 1))
-            {
-                fmt += "\n";
-                for(int j = 0; j < spaces; j++)
-                {
-                    fmt += " ";
-                }
-                fmt += "##" + halves[1];
-            }
-            else
-            {
-                //don't add hanging ## on last item
-                fmt += halves[1];
-            }
-        }
-        return Source.format(fmt, items);
+        return Source.lines(0, lines);
     }
+   
+    /**
+     * A helper method for turning a variable-length method call into a list of strings, where each
+     * line has been tabbed to the given depth.
+     */
+    public static List<String> lines(int depth, String... lines)
+    {
+        List<String> rv = new ArrayList<String>();
+        for (String line : lines) {
+            rv.add(tab(depth, line));
+        }
+        return rv;
+    }
+
+    
+    /**
+     * Inserts each of the given `lines` into the `fmt` string at the first "##" such that each
+     * line is inserted at the same depth as the "##". For example,
+     * 
+     *     formatAligned("    ##", "foo", "bar", "baz") -> "    foo\n    bar\n    baz"
+     * 
+     * Technically, the portion of the line which precedes the "##" will be copied as the prefix of
+     * each of the lines being inserted.
+     * 
+     * Note that if `lines` is empty, then this method will return a string just like `fmt`, except
+     * with the first "##" characters removed.
+     * 
+     * @throws `InvalidArgumentException` if any character of prefix is not a whitespace character.
+     */
+    public static String formatAligned(String fmt, Object... lines)
+    {
+        final String FORMAT_ELEMENT_SYMBOL = "##";
+        final int hashStartIndex = fmt.indexOf(FORMAT_ELEMENT_SYMBOL);
+        final int hashEndIndex = hashStartIndex + FORMAT_ELEMENT_SYMBOL.length();
+        
+        final String linePrefix = getWhitespaceLinePrefix(fmt, hashStartIndex);
+        
+        final String fmtPrefix = fmt.substring(0, hashStartIndex);
+        final String fmtSuffix = fmt.substring(hashEndIndex);
+
+        // Note that the `linePrefix` is used to separate each stringified line.
+        String[] strings = Arrays.stream(lines).toArray(String[]::new);
+        return fmtPrefix + String.join("\n" + linePrefix, strings) + fmtSuffix;
+    }
+    
+    
+    /**
+     * A helper method for `formatAligned()` that returns the line prefix before `idx`, that is,
+     * the substring which spans from the beginning of the line that `idx` points into up to the
+     * given `idx`. For example,
+     * 
+     *     getWhitespaceLinePrefix("    foo", 4) -> "    "
+     * 
+     * Note that this method will throw an `IllegalArgumentException` if the line prefix is not
+     * all whitespace characters.
+     */
+    private static String getWhitespaceLinePrefix(String str, int idx)
+    {
+        // Scan back the start of this line or the beginning of the entire `fmt` string, whichever
+        // comes first. Use this index to extract the line prefix.
+        int lineStartIndex = idx;
+        char c;
+        char[] chars = str.toCharArray();
+        while (lineStartIndex > 0 && (c = chars[lineStartIndex - 1]) != '\n')
+        {
+            if (Character.isWhitespace(c) == false)
+            {
+                String msg = "Line prefix preceeding `idx` must only contain whitespace.";
+                throw new IllegalArgumentException(msg);
+            }
+            lineStartIndex--;
+        }
+        return str.substring(lineStartIndex, idx);
+    }
+
 
     public static String formatAligned(String fmt, List<String> items)
     {
         return formatAligned(fmt, items.toArray());
+    }
+    
+    
+    /**
+     * Applies `formatAligned()` to the first format string in `fmts` which contains "##", and
+     * includes each of the lines which have been expanded into the returned list. For example, if
+     * `fmts` is defined as a list containing the following format strings,
+     * 
+     *     ["public void foo() {",
+     *      "    fooom();",
+     *      "    ##"
+     *      "}"]
+     *  
+     *  then
+     * 
+     *     formatAlignedFirst(fmts, "bar();", "baz();")
+     *  
+     *  would evaluate to a list containing the following strings:
+     *  
+     *     ["public void foo() {",
+     *      "    fooom();",
+     *      "    bar();",
+     *      "    baz();",
+     *      "}"]
+     */
+    public static List<String> formatAlignedFirst(List<String> fmts, Object... items)
+    {
+        List<String> lines = new ArrayList<String>();
+
+        boolean foundHashes = false;
+        for (String fmt : fmts)
+        {
+            if (foundHashes == false && fmt.contains("##"))
+            {
+                // `fmt` is the first string in `fmts` to contain "##".
+                String formatted = formatAligned(fmt, items);
+                for (String line : formatted.split("\n")) {
+                    lines.add(line);
+                }
+                foundHashes = true;
+            }
+            else
+            {
+                // The current `fmt` is either a string in `fmts` which comes before or after the
+                // first string the list which contains "##".
+                lines.add(fmt);
+            }
+        }
+        
+        return lines;
+    }
+
+
+    public static List<String> formatAlignedFirst(List<String> fmts, List<String> items)
+    {
+        return formatAlignedFirst(fmts, items.toArray());
     }
 
 
@@ -116,29 +250,25 @@ public class Source
     /**
      * Inserts any elements in the given list of items into the format string at
      * format elements. A format element is a substring of `fmt` that satisfies
-     * the pattern "#\d+", that is, a hash- symbol followed by one or more
+     * the pattern "#\d+", that is, a hash-symbol followed by one or more
      * digits. The digits of a format element are interpreted to be the index
      * into `items` used to find which item to place at that location. For
      * example,
      *
-     * Source.format("#0? #1, #0...", "World", "Hello") -> "World? Hello, World..."
+     *     Source.format("#0? #1, #0...", "World", "Hello") -> "World? Hello, World..."
      */
     public static String format(String fmt, Object... items)
     {
-        // Make its initial capacity comparable to the length of the given
-        // `fmt`.
+        // Make its initial capacity comparable to the length of the given `fmt`.
         StringBuilder result = new StringBuilder(fmt.length());
 
-        // A temporary to hold format element indices (without '#'-prefix) as
-        // `fmt` is scanned.
+        // A temporary to hold format element indices (without '#'-prefix) as `fmt` is scanned.
         String idxStr = "";
 
         FormatState state = FormatState.LITERAL;
         for (char c : fmt.toCharArray())
         {
-            switch (state)
-            {
-
+            switch (state) {
             case LITERAL:
                 if (c == '#')
                 {
@@ -175,22 +305,73 @@ public class Source
                 else
                 {
                     // A format element has been fully parsed.
-                    int idx = Integer.parseInt(idxStr);
-                    if (idx >= items.length)
-                    {
-                        String msg = "The format element's index, " + idxStr + ", is too large.";
-                        throw new IllegalArgumentException(msg);
+                    appendItem(idxStr, items, result);
+                    if (c == '#') {
+                        state = FormatState.HASH;
+                    } else {
+                        result.append(c);
+                        state = FormatState.LITERAL;
                     }
-                    result.append(items[idx]);
-                    result.append(c);
-                    state = FormatState.LITERAL;
                 }
                 continue;
             }
         }
+        
+        // Finished consuming the format string. Perform last append if necessary.
+        switch (state) {
+        case LITERAL:
+            // Nothing to do, since last literal character was already appended.
+            break;
+        case HASH:
+            // The last character was '#', so it was consumed during above for-loop. Append it now.
+            result.append('#');
+            break;
+        case HASH_NUM:
+            // Interpret the last characters as a format element.
+            appendItem(idxStr, items, result);
+            break;
+        }
 
         return result.toString();
     }
+    
+    
+    /**
+     * A helper method for `format()`. Appends the `String` representation of object in `items`
+     * indicated by `idxStr` to the end of the given `StringBuilder`.
+     * 
+     * Note that this method attempts to convert the String `idxStr` to an `int` value using
+     * `Integer.parseInt()`. That method throws a `NumberFormatException` "if the string does not
+     * contain a parsable integer".
+     * 
+     * This method throws an `IllegalArgumentException` if the parsed value of `idx` is not a valid
+     * index into `items`.
+     */
+    private static void appendItem(String idxStr, Object[] items, StringBuilder builder)
+    {
+        int idx = Integer.parseInt(idxStr);
+        if (idx >= items.length)
+        {
+            String msg = "The format element's index, " + idxStr + ", is too large.";
+            throw new IllegalArgumentException(msg);
+        }
+        builder.append(items[idx]);
+    }
+    
+    
+    /**
+     * Applies the appropriate `format()` to each of the strings of the list, and returns the
+     * result as another list of strings. (Note that function application is not done in-place.)
+     */
+    public static List<String> formatAll(List<String> fmts, Object... items)
+    {
+        List<String> rv = new ArrayList<String>(fmts.size());
+        for (String fmt : fmts) {
+            rv.add(Source.format(fmt, items));
+        }
+        return rv;
+    }
+
 
     public static String dropPackageName(String qualifiedClassName)
     {
@@ -314,8 +495,8 @@ public class Source
     }
 
     /**
-     * Builds a `String` of import declarations from the given set of types. Each of the given
-     * `String` objects is assumed to be a fully qualified type that can be imported as-is.
+     * Builds a `List<String>` of import declarations from the given set of types. Each of the
+     * given `String` objects is assumed to be a fully qualified type that can be imported as-is.
      * For example, if the following set of types were passed,
      *
      *     { java.util.HashSet, java.util.Set, java.lang.String }
@@ -326,11 +507,11 @@ public class Source
      *     import java.util.Set;
      *     import java.lang.String;
      */
-    public static String buildImportDecls(Iterable<String> imports)
+    public static List<String> buildImportDecls(Iterable<String> imports)
     {
-        String rv = "";
+        List<String> rv = new ArrayList<String>();
         for (String i : imports) {
-            rv += "import " + i + ";\n";
+            rv.add("import " + i + ";");
         }
         return rv;
     }
@@ -339,7 +520,7 @@ public class Source
      * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
      * given `extraImports` will also be added as import declarations in the returned `String`.
      */
-    public static String buildCollectedImportDecls(TypeElement t, String... extraImports)
+    public static List<String> buildCollectedImportDecls(TypeElement t, String... extraImports)
     {
         return buildCollectedImportDecls(t, Arrays.asList(extraImports));
     }
@@ -348,7 +529,8 @@ public class Source
      * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
      * given `extraImports` will also be added as import declarations in the returned `String`.
      */
-    public static String buildCollectedImportDecls(TypeElement t, Iterable<String> extraImports)
+    public static List<String> buildCollectedImportDecls(TypeElement t,
+                                                         Iterable<String> extraImports)
     {
         Set<String> imports = TypeCollector.collect(t);
         for (String s : extraImports) {

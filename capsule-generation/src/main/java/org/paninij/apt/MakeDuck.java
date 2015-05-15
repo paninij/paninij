@@ -18,6 +18,9 @@
  */
 package org.paninij.apt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -62,22 +65,21 @@ public abstract class MakeDuck
 
     abstract String buildQualifiedClassName(DuckShape currentDuck);
 
-    String buildParameterFields(DuckShape currentDuck)
+    List<String> buildParameterFields(DuckShape currentDuck)
     {
-        String fieldsStr = "";
+        List<String> fields = new ArrayList<String>(currentDuck.slotTypes.size());
         for (int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
-            fieldsStr += "    public " + currentDuck.slotTypes.get(i) + " panini$arg" + i + ";\n";
+            fields.add("public " + currentDuck.slotTypes.get(i) + " panini$arg" + i + ";");
         }
-        return fieldsStr;
+        return fields;
     }
 
-    String buildFacades(DuckShape currentDuck)
+    List<String> buildFacades(DuckShape currentDuck)
     {
-        String facades = "";
+        List<String> facades = new ArrayList<String>();
 
         DeclaredType returnType = (DeclaredType) currentDuck.returnType;
-
         for (Element el : returnType.asElement().getEnclosedElements())
         {
             if (el.getKind() == ElementKind.METHOD)
@@ -85,36 +87,31 @@ public abstract class MakeDuck
                 ExecutableElement method = (ExecutableElement) el;
                 if (this.canMakeFacade(method))
                 {
-                    facades += buildFacade(method);
+                    facades.addAll(buildFacade(method));
+                    facades.add("");
                 }
-
             }
         }
 
         return facades;
     }
 
-    String buildFacade(ExecutableElement method)
+    List<String> buildFacade(ExecutableElement method)
     {
-        String fmt = Source.lines(1,
-                "",
-                "@Override",
-                "#0 {",
-                "    #1",
-                "}");
-        return Source.format(fmt, Source.buildExecutableDecl(method), buildFacadeBody(method));
-
+        List<String> fmt = Source.lines("@Override",
+                                        Source.buildExecutableDecl(method),
+                                        "{",
+                                        "    #0",
+                                        "}");
+        return Source.formatAll(fmt, buildFacadeBody(method));
     }
 
     String buildFacadeBody(ExecutableElement method)
     {
         String fmt;
-        if (JavaModelInfo.hasVoidReturnType(method))
-        {
+        if (JavaModelInfo.hasVoidReturnType(method)) {
             fmt = "panini$get().#0(#1);";
-        }
-        else
-        {
+        } else {
             fmt = "return panini$get().#0(#1);";
         }
         return Source.format(fmt, method.getSimpleName(), Source.buildParameterNamesList(method));
@@ -152,23 +149,21 @@ public abstract class MakeDuck
         return true;
     }
 
-    String buildReleaseArgs(DuckShape currentDuck) {
+    List<String> buildReleaseArgs(DuckShape currentDuck) {
 
-        String args = "";
+        List<String> statements = new ArrayList<String>();
+
         for(int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
-            if(currentDuck.slotTypes.get(i).equals("Object"))
-            {
-                args += "        panini$arg" + i + " = null;\n";
+            if(currentDuck.slotTypes.get(i).equals("Object")) {
+                statements.add("panini$arg" + i + " = null;");
             }
         }
 
-        return args;
+        return statements;
     }
 
-    abstract String buildConstructor(DuckShape currentDuck);
-
-    abstract String buildConstructorDecl(DuckShape currentDuck);
+    abstract List<String> buildConstructor(DuckShape currentDuck);
 
     abstract String buildNormalDuck(DuckShape currentDuck);
 

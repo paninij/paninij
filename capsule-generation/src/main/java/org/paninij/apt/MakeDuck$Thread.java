@@ -18,6 +18,9 @@
  */
 package org.paninij.apt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
@@ -34,6 +37,7 @@ public class MakeDuck$Thread extends MakeDuck
         return m;
     }
 
+
     @Override
     public void makeSourceFile(DuckShape currentDuck)
     {
@@ -45,22 +49,24 @@ public class MakeDuck$Thread extends MakeDuck
         }
     }
 
+
     @Override
     String buildNormalDuck(DuckShape currentDuck)
     {
-        String src = Source.lines(0,
+        String src = Source.cat(
                 "package #0;",
                 "",
-                "#1",
+                "##",
                 "",
-                "public class #2 extends #4 implements Panini$Message, Panini$Future<#4> {",
+                "public class #1 extends #2 implements Panini$Message, Panini$Future<#2>",
+                "{",
                 "    public final int panini$procID;",
-                "    private #4 panini$result = null;",
+                "    private #2 panini$result = null;",
                 "    boolean panini$isResolved = false;",
                 "",
-                "#5",
+                "    ##",
                 "",
-                "#3",
+                "    ##",
                 "",
                 "    @Override",
                 "    public int panini$msgID() {",
@@ -68,17 +74,17 @@ public class MakeDuck$Thread extends MakeDuck
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#4 result) {",
+                "    public void panini$resolve(#2 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
                 "            this.notifyAll();",
                 "        }",
-                "#6",
+                "        ##",
                 "    }",
                 "",
                 "    @Override",
-                "    public #4 panini$get() {",
+                "    public #2 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -89,43 +95,51 @@ public class MakeDuck$Thread extends MakeDuck
                 "         return panini$result;",
                 "    }",
                 "",
-                "    /* The following override the methods of `#4` */",
-                "#7",
+                "    /* The following override the methods of `#2` */",
+                "    ##",
                 "}");
-        return Source.format(src, this.buildPackage(currentDuck),
-                                  this.buildImports(currentDuck),
-                                  this.buildClassName(currentDuck),
-                                  this.buildConstructor(currentDuck),
-                                  currentDuck.getSimpleReturnType(),
-                                  this.buildParameterFields(currentDuck),
-                                  this.buildReleaseArgs(currentDuck),
-                                  this.buildFacades(currentDuck));
+
+        src = Source.format(src, this.buildPackage(currentDuck),
+                                 this.buildClassName(currentDuck),
+                                 currentDuck.getSimpleReturnType());
+
+        src = Source.formatAligned(src, buildImports(currentDuck));
+        src = Source.formatAligned(src, buildParameterFields(currentDuck));
+        src = Source.formatAligned(src, buildConstructor(currentDuck));
+        src = Source.formatAligned(src, buildReleaseArgs(currentDuck));
+        src = Source.formatAligned(src, buildFacades(currentDuck));
+
+        return src;
     }
+
 
     @Override
     String buildVoidDuck(DuckShape currentDuck)
     {
-        String src = Source.lines(0, "package #0;",
-                                     "",
-                                     "import org.paninij.runtime.Panini$Message;",
-                                     "",
-                                     "public class #1 implements Panini$Message {",
-                                     "    public final int panini$procID;",
-                                     "#2",
-                                     "",
-                                     "#3",
-                                     "",
-                                     "    @Override",
-                                     "    public int panini$msgID() {",
-                                     "        return panini$procID;",
-                                     "    }",
-                                     "}");
+        String src = Source.cat("package #0;",
+                                "",
+                                "import org.paninij.runtime.Panini$Message;",
+                                "",
+                                "public class #1 implements Panini$Message",
+                                "{",
+                                "    public final int panini$procID;",
+                                "",
+                                "    ##",
+                                "",
+                                "    ##",
+                                "",
+                                "    @Override",
+                                "    public int panini$msgID() {",
+                                "        return panini$procID;",
+                                "    }",
+                                "}");
 
-        return Source.format(src, buildPackage(currentDuck),
-                                  buildClassName(currentDuck),
-                                  buildParameterFields(currentDuck),
-                                  buildConstructor(currentDuck));
+        src = Source.format(src, buildPackage(currentDuck), buildClassName(currentDuck));
+        src = Source.formatAligned(src, buildParameterFields(currentDuck));
+        src = Source.formatAligned(src, buildConstructor(currentDuck));
+        return src;
     }
+
 
     @Override
     String buildPaniniCustomDuck(DuckShape currentDuck)
@@ -133,24 +147,25 @@ public class MakeDuck$Thread extends MakeDuck
         // TODO: Make this handle more than just `String`.
         assert(currentDuck.returnType.toString().equals("org.paninij.lang.String"));
 
-        String src = Source.lines(0, "package #0;",
-                                     "",
-                                     "import org.paninij.lang.String;",
-                                     "",
-                                     "public class #1 extends String",
-                                     "{",
-                                     "    private int panini$procID;",
-                                     "",
-                                     "#2",
-                                     "",
-                                     "}");
-        return Source.format(src, buildPackage(currentDuck),
-                                  buildClassName(currentDuck),
-                                  buildConstructor(currentDuck, "        super(\"\");\n"));
+        String src = Source.cat("package #0;",
+                                "",
+                                "import org.paninij.lang.String;",
+                                "",
+                                "public class #1 extends String",
+                                "{",
+                                "    private int panini$procID;",
+                                "",
+                                "    ##",
+                                "",
+                                "}");
+        src = Source.format(src, buildPackage(currentDuck),
+                                 buildClassName(currentDuck));
+        src = Source.formatAligned(src, buildConstructor(currentDuck, "super(\"\");"));
+        return src;
     }
 
 
-    String buildImports(DuckShape currentDuck)
+    List<String> buildImports(DuckShape currentDuck)
     {
         TypeElement typeElem = (TypeElement) ((DeclaredType) currentDuck.returnType).asElement();
         return Source.buildCollectedImportDecls(typeElem, currentDuck.getQualifiedReturnType(),
@@ -165,6 +180,7 @@ public class MakeDuck$Thread extends MakeDuck
         return currentDuck.toString() + "$Thread";
     }
 
+
     @Override
     String buildQualifiedClassName(DuckShape currentDuck)
     {
@@ -173,35 +189,39 @@ public class MakeDuck$Thread extends MakeDuck
 
 
     @Override
-    String buildConstructor(DuckShape currentDuck)
+    List<String> buildConstructor(DuckShape currentDuck)
     {
         return buildConstructor(currentDuck, "");
     }
 
-    String buildConstructor(DuckShape currentDuck, String prependToBody)
-    {
-       String constructor = buildConstructorDecl(currentDuck);
-       constructor += prependToBody;
-       constructor += "        panini$procID = procID;\n";
-       for(int i = 0; i < currentDuck.slotTypes.size(); i++)
-       {
-           constructor += "        panini$arg" + i + " = arg" + i +";\n";
-       }
-       constructor += "    }";
-       return constructor;
-    }
 
-    @Override
-    String buildConstructorDecl(DuckShape currentDuck)
+    List<String> buildConstructor(DuckShape currentDuck, String prependToBody)
     {
-        String constructorDecl = "    public " + buildClassName(currentDuck) + "(int procID";
-        for(int i = 0; i < currentDuck.slotTypes.size(); i++)
-        {
-            constructorDecl += ", " + currentDuck.slotTypes.get(i) + " arg" + i;
+        // Create a list of parameters to the constructor starting with the `procID`.
+        List<String> params = new ArrayList<String>();
+        params.add("int procID");
+        for(int idx = 0; idx < currentDuck.slotTypes.size(); idx++) {
+            params.add(currentDuck.slotTypes.get(idx) + " arg" + idx);
         }
-        constructorDecl += ") {\n";
+        
+        // Create a list of initialization statements.
+        List<String> initializers = new ArrayList<String>();
+        initializers.add("panini$procID = procID;");
+        for (int idx = 0; idx < currentDuck.slotTypes.size(); idx++) {
+            initializers.add(Source.format("panini$arg#0 = arg#0;", idx));
+        }
+        
+        List<String> src = Source.lines("public #0(#1)",
+                                        "{",
+                                        "    #2",
+                                        "    ##",
+                                        "}");
 
-        return constructorDecl;
+        src = Source.formatAll(src, buildClassName(currentDuck),
+                                    String.join(", ", params),
+                                    prependToBody);
+        src = Source.formatAlignedFirst(src, initializers);
+
+        return src;
     }
-
 }

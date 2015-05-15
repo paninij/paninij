@@ -58,32 +58,37 @@ public class MakeCapsule
 
     private String buildCapsuleInterface()
     {
-        String src = Source.lines(0, "package #0;",
-                                     "",
-                                     "#1",
-                                     "",
-                                     "/**",
-                                     " * This capsule interface was auto-generated from `#2`",
-                                     " */",
-                                     "@CapsuleInterface",
-                                     "#3",
-                                     "{",
-                                     "#4",
-                                     "}");
+        String src = Source.cat("package #0;",
+                                "",
+                                "##",
+                                "",
+                                "/**",
+                                " * This capsule interface was auto-generated from `#1`",
+                                " */",
+                                "@CapsuleInterface",
+                                "#2",
+                                "{",
+                                "    #3",
+                                "    ##",
+                                "}");
 
-        return Source.format(src, buildPackage(),
-                                  buildImports(),
-                                  PaniniModelInfo.qualifiedTemplateName(template),
-                                  buildCapsuleDecl(),
-                                  buildCapsuleBody());
+        src = Source.format(src, buildPackage(),
+                                 PaniniModelInfo.qualifiedTemplateName(template),
+                                 buildCapsuleDecl(),
+                                 buildWireMethodDecl());
+        src = Source.formatAligned(src, buildImports());
+        src = Source.formatAligned(src, buildExecutableDecls());
+
+        return src;
     }
+
 
     private String buildCapsuleDecl()
     {
-        // TODO: Fix format string once GitHub issue #24 is resolved.
-        return Source.format("public interface #0 extends #1 ", buildCapsuleName(),
+        return Source.format("public interface #0 extends #1", buildCapsuleName(),
                                                                buildCapsuleInterfaces());
     }
+
 
     private String buildCapsuleInterfaces()
     {
@@ -95,45 +100,60 @@ public class MakeCapsule
         return String.join(", ", interfaces);
     }
 
+
     private String buildCapsuleName()
     {
         return PaniniModelInfo.simpleCapsuleName(template);
     }
+
 
     private String buildQualifiedCapsuleName()
     {
         return PaniniModelInfo.qualifiedCapsuleName(template);
     }
 
-    private String buildImports()
+
+    private List<String> buildImports()
     {
         return Source.buildCollectedImportDecls(template,
                                                 "org.paninij.lang.CapsuleInterface",
                                                 "org.paninij.runtime.Panini$Capsule");
     }
 
+
     private String buildPackage()
     {
         return context.getPackageOf(template);
     }
+    
 
-    private String buildCapsuleBody()
+    /**
+     * Returns the `wire()` method declaration, if the interface needs it. Otherwise returns the
+     * empty string. Note that the `wire()` declaration includes a trailing semicolon.
+     */
+    private String buildWireMethodDecl()
+    {
+        if (PaniniModelInfo.hasWiredFieldDecls(context, template)) {
+            return PaniniModelInfo.buildWireMethodDecl(context, template) + ";";
+        } else {
+            return "";
+        }
+    }
+    
+
+    private List<String> buildExecutableDecls()
     {
         ArrayList<String> decls = new ArrayList<String>();
-
-        if (PaniniModelInfo.hasWiredFieldDecls(context, template)) {
-            decls.add("    " + PaniniModelInfo.buildWireMethodDecl(context, template) + ";\n");
-        }
 
         for (Element child : template.getEnclosedElements())
         {
             if (PaniniModelInfo.isProcedure(child))
             {
                 ExecutableElement method = (ExecutableElement) child;
-                String decl = Source.format("    #0;\n", Source.buildExecutableDecl(method));
+                String decl = Source.format("#0;", Source.buildExecutableDecl(method));
                 decls.add(decl);
             }
         }
-        return String.join("", decls);
+        return decls;
     }
 }
