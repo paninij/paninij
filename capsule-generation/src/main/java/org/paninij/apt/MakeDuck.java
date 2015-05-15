@@ -18,6 +18,7 @@
  */
 package org.paninij.apt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.Element;
@@ -64,14 +65,14 @@ public abstract class MakeDuck
 
     abstract String buildQualifiedClassName(DuckShape currentDuck);
 
-    String buildParameterFields(DuckShape currentDuck)
+    List<String> buildParameterFields(DuckShape currentDuck)
     {
-        String fieldsStr = "";
+        List<String> fields = new ArrayList<String>(currentDuck.slotTypes.size());
         for (int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
-            fieldsStr += "    public " + currentDuck.slotTypes.get(i) + " panini$arg" + i + ";\n";
+            fields.add("public " + currentDuck.slotTypes.get(i) + " panini$arg" + i + ";");
         }
-        return fieldsStr;
+        return fields;
     }
 
     String buildFacades(DuckShape currentDuck)

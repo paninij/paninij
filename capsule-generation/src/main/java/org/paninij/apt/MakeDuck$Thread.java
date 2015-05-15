@@ -58,12 +58,13 @@ public class MakeDuck$Thread extends MakeDuck
                 "",
                 "#1",
                 "",
-                "public class #2 extends #4 implements Panini$Message, Panini$Future<#4> {",
+                "public class #2 extends #4 implements Panini$Message, Panini$Future<#4>",
+                "{",
                 "    public final int panini$procID;",
                 "    private #4 panini$result = null;",
                 "    boolean panini$isResolved = false;",
                 "",
-                "#5",
+                "    ##",
                 "",
                 "    ##",
                 "",
@@ -97,14 +98,17 @@ public class MakeDuck$Thread extends MakeDuck
                 "    /* The following override the methods of `#4` */",
                 "#7",
                 "}");
+
         src = Source.format(src, this.buildPackage(currentDuck),
                                  this.buildImports(currentDuck),
                                  this.buildClassName(currentDuck),
                                  null,
                                  currentDuck.getSimpleReturnType(),
-                                 this.buildParameterFields(currentDuck),
+                                 null,
                                  this.buildReleaseArgs(currentDuck),
                                  this.buildFacades(currentDuck));
+
+        src = Source.formatAligned(src, buildParameterFields(currentDuck));
         src = Source.formatAligned(src, buildConstructor(currentDuck));
 
         return src;
@@ -118,9 +122,11 @@ public class MakeDuck$Thread extends MakeDuck
                                      "",
                                      "import org.paninij.runtime.Panini$Message;",
                                      "",
-                                     "public class #1 implements Panini$Message {",
+                                     "public class #1 implements Panini$Message",
+                                     "{",
                                      "    public final int panini$procID;",
-                                     "#2",
+                                     "",
+                                     "    ##",
                                      "",
                                      "    ##",
                                      "",
@@ -130,11 +136,9 @@ public class MakeDuck$Thread extends MakeDuck
                                      "    }",
                                      "}");
 
-        src = Source.format(src, buildPackage(currentDuck),
-                                 buildClassName(currentDuck),
-                                 buildParameterFields(currentDuck));
+        src = Source.format(src, buildPackage(currentDuck), buildClassName(currentDuck));
+        src = Source.formatAligned(src, buildParameterFields(currentDuck));
         src = Source.formatAligned(src, buildConstructor(currentDuck));
-
         return src;
     }
 
