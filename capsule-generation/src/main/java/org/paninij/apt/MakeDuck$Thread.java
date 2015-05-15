@@ -222,10 +222,10 @@ public class MakeDuck$Thread extends MakeDuck
                                         "    ##",
                                         "}");
 
-        src = Source.formatList(src, buildClassName(currentDuck),
-                                     String.join(", ", params),
-                                     prependToBody);
-        src = Source.formatAlignedList(src, initializers);
+        src = Source.formatAll(src, buildClassName(currentDuck),
+                                    String.join(", ", params),
+                                    prependToBody);
+        src = Source.formatAlignedFirst(src, initializers);
 
         return src;
     }

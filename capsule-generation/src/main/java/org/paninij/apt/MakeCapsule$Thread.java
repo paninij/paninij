@@ -223,10 +223,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         DuckShape duck = new DuckShape(method);
         String maybeReturn = (duck.getSimpleReturnType() != "void") ? "return panini$duck;" : "";
 
-        return Source.formatList(lines, Source.buildExecutableDecl(method),
-                                        duck.toString(),
-                                        args,
-                                        maybeReturn);
+        return Source.formatAll(lines, Source.buildExecutableDecl(method),
+                                       duck.toString(),
+                                       args,
+                                       maybeReturn);
     }
 
 
@@ -250,7 +250,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                           "{",
                                           "    ##",
                                           "}");
-        return Source.formatAlignedList(lines, assertions);
+        return Source.formatAlignedFirst(lines, assertions);
     }
 
 
@@ -273,8 +273,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                         "    ##",
                                         "}");
 
-        src = Source.formatList(src, PaniniModelInfo.buildWireMethodDecl(context, template));
-        src = Source.formatAlignedList(src, assignments);
+        src = Source.formatAll(src, PaniniModelInfo.buildWireMethodDecl(context, template));
+        src = Source.formatAlignedFirst(src, assignments);
 
         return src;
     }
@@ -318,7 +318,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                         "    ##",
                                         "}");
 
-        return Source.formatAlignedList(src, lines);
+        return Source.formatAlignedFirst(src, lines);
     }
 
 
@@ -384,7 +384,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "}"
             );
 
-            return Source.formatAlignedList(src, buildRunSwitch());
+            return Source.formatAlignedFirst(src, buildRunSwitch());
         }
     }
 
@@ -431,8 +431,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                             "    #1;",
                                             "    break;");
 
-            return Source.formatList(src, buildProcedureID(method),
-                                          buildEncapsulatedMethodCall(method));
+            return Source.formatAll(src, buildProcedureID(method),
+                                         buildEncapsulatedMethodCall(method));
         }
         else
         {
@@ -441,9 +441,9 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                             "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
                                             "    break;");
 
-            return Source.formatList(src, buildProcedureID(method),
-                                          method.getReturnType().toString(),
-                                          buildEncapsulatedMethodCall(method));
+            return Source.formatAll(src, buildProcedureID(method),
+                                         method.getReturnType().toString(),
+                                         buildEncapsulatedMethodCall(method));
         }
     }
 
@@ -499,7 +499,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                              "    #0 root = new #0();",
                                              "    root.run();",
                                              "}");
-             return Source.formatList(src, buildCapsuleName());
+             return Source.formatAll(src, buildCapsuleName());
         }
         else
         {

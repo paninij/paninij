@@ -103,7 +103,7 @@ public abstract class MakeDuck
                                         "{",
                                         "    #0",
                                         "}");
-        return Source.formatList(fmt, buildFacadeBody(method));
+        return Source.formatAll(fmt, buildFacadeBody(method));
     }
 
     String buildFacadeBody(ExecutableElement method)

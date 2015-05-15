@@ -192,7 +192,7 @@ public class Source
      *  
      *  then
      * 
-     *     formatAlignedList(fmts, "bar();", "baz();")
+     *     formatAlignedFirst(fmts, "bar();", "baz();")
      *  
      *  would evaluate to a list containing the following strings:
      *  
@@ -230,7 +230,7 @@ public class Source
     }
 
 
-    public static List<String> formatAlignedList(List<String> fmts, List<String> items)
+    public static List<String> formatAlignedFirst(List<String> fmts, List<String> items)
     {
         return formatAlignedFirst(fmts, items.toArray());
     }
@@ -363,7 +363,7 @@ public class Source
      * Applies the appropriate `format()` to each of the strings of the list, and returns the
      * result as another list of strings. (Note that function application is not done in-place.)
      */
-    public static List<String> formatList(List<String> fmts, Object... items)
+    public static List<String> formatAll(List<String> fmts, Object... items)
     {
         List<String> rv = new ArrayList<String>(fmts.size());
         for (String fmt : fmts) {
