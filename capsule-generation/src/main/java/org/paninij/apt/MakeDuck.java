@@ -98,11 +98,11 @@ public abstract class MakeDuck
 
     List<String> buildFacade(ExecutableElement method)
     {
-        List<String> fmt = Source.linesList(0, "@Override",
-                                               Source.buildExecutableDecl(method),
-                                               "{",
-                                               "    #0",
-                                               "}");
+        List<String> fmt = Source.lines("@Override",
+                                        Source.buildExecutableDecl(method),
+                                        "{",
+                                        "    #0",
+                                        "}");
         return Source.formatList(fmt, buildFacadeBody(method));
     }
 

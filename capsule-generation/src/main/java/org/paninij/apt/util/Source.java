@@ -91,12 +91,19 @@ public class Source
         return String.join("\n", tabbed) + "\n";
     }
     
+     /**
+     * A helper method for turning a variable-length method call into a list of strings.
+     */
+    public static List<String> lines(String... lines)
+    {
+        return Source.lines(0, lines);
+    }
    
     /**
-     * A helper method for turning a variable-length method call into a list of Strings, where each
+     * A helper method for turning a variable-length method call into a list of strings, where each
      * line has been tabbed to the given depth.
      */
-    public static List<String> linesList(int depth, String... lines)
+    public static List<String> lines(int depth, String... lines)
     {
         List<String> rv = new ArrayList<String>();
         for (String line : lines) {

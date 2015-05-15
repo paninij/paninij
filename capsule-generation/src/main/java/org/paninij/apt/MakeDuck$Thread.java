@@ -216,11 +216,11 @@ public class MakeDuck$Thread extends MakeDuck
             initializers.add(Source.format("panini$arg#0 = arg#0;", idx));
         }
         
-        List<String> src = Source.linesList(0, "public #0(#1)",
-                                               "{",
-                                               "    #2",
-                                               "    ##",
-                                               "}");
+        List<String> src = Source.lines("public #0(#1)",
+                                        "{",
+                                        "    #2",
+                                        "    ##",
+                                        "}");
 
         src = Source.formatList(src, buildClassName(currentDuck),
                                      String.join(", ", params),
