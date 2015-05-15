@@ -60,25 +60,26 @@ public class MakeCapsule
     {
         String src = Source.lines(0, "package #0;",
                                      "",
-                                     "#1",
+                                     "##",
                                      "",
                                      "/**",
-                                     " * This capsule interface was auto-generated from `#2`",
+                                     " * This capsule interface was auto-generated from `#1`",
                                      " */",
                                      "@CapsuleInterface",
-                                     "#3",
+                                     "#2",
                                      "{",
-                                     "    #4",
+                                     "    #3",
                                      "    ##",
                                      "}");
 
         src = Source.format(src, buildPackage(),
-                                 buildImports(),
                                  PaniniModelInfo.qualifiedTemplateName(template),
                                  buildCapsuleDecl(),
                                  buildWireMethodDecl());
+        src = Source.formatAligned(src, buildImports());
+        src = Source.formatAligned(src, buildExecutableDecls());
 
-        return Source.formatAligned(src, buildExecutableDecls());
+        return src;
     }
 
 
@@ -112,7 +113,7 @@ public class MakeCapsule
     }
 
 
-    private String buildImports()
+    private List<String> buildImports()
     {
         return Source.buildCollectedImportDecls(template,
                                                 "org.paninij.lang.CapsuleInterface",

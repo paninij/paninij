@@ -56,7 +56,7 @@ public class MakeDuck$Thread extends MakeDuck
         String src = Source.lines(0,
                 "package #0;",
                 "",
-                "#1",
+                "##",
                 "",
                 "public class #2 extends #4 implements Panini$Message, Panini$Future<#4>",
                 "{",
@@ -100,7 +100,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "}");
 
         src = Source.format(src, this.buildPackage(currentDuck),
-                                 this.buildImports(currentDuck),
+                                 null,
                                  this.buildClassName(currentDuck),
                                  null,
                                  currentDuck.getSimpleReturnType(),
@@ -108,6 +108,7 @@ public class MakeDuck$Thread extends MakeDuck
                                  null,
                                  null);
 
+        src = Source.formatAligned(src, buildImports(currentDuck));
         src = Source.formatAligned(src, buildParameterFields(currentDuck));
         src = Source.formatAligned(src, buildConstructor(currentDuck));
         src = Source.formatAligned(src, buildReleaseArgs(currentDuck));
@@ -169,7 +170,7 @@ public class MakeDuck$Thread extends MakeDuck
     }
 
 
-    String buildImports(DuckShape currentDuck)
+    List<String> buildImports(DuckShape currentDuck)
     {
         TypeElement typeElem = (TypeElement) ((DeclaredType) currentDuck.returnType).asElement();
         return Source.buildCollectedImportDecls(typeElem, currentDuck.getQualifiedReturnType(),

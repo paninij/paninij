@@ -57,22 +57,23 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     {
         String src = Source.lines(0, "package #0;",
                                      "",
-                                     "#1",
+                                     "##",
                                      "",
                                      "/**",
-                                     " * This capsule was auto-generated from `#2`",
+                                     " * This capsule was auto-generated from `#1`",
                                      " */",
-                                     "#3",
+                                     "#2",
                                      "{",
                                      "    ##",
                                      "}");
 
         src = Source.format(src, buildPackage(),
-                                 buildImports(),
                                  PaniniModelInfo.qualifiedTemplateName(template),
                                  buildCapsuleDecl());
+        src = Source.formatAligned(src, buildImports());
+        src = Source.formatAligned(src, buildCapsuleBody());
 
-        return Source.formatAligned(src, buildCapsuleBody());
+        return src;
     }
 
 
@@ -174,7 +175,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
 
     @Override
-    String buildImports()
+    List<String> buildImports()
     {
         Set<String> imports = getStandardImports();
         for (DuckShape duck : PaniniModelInfo.getDuckShapes(template)) {

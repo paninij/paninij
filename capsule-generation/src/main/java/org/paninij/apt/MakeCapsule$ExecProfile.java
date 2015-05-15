@@ -71,7 +71,7 @@ abstract class MakeCapsule$ExecProfile
 
     abstract String buildQualifiedCapsuleName();
 
-    abstract String buildImports();
+    abstract List<String> buildImports();
 
     abstract String buildCapsuleDecl();
 

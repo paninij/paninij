@@ -475,8 +475,8 @@ public class Source
     }
 
     /**
-     * Builds a `String` of import declarations from the given set of types. Each of the given
-     * `String` objects is assumed to be a fully qualified type that can be imported as-is.
+     * Builds a `List<String>` of import declarations from the given set of types. Each of the
+     * given `String` objects is assumed to be a fully qualified type that can be imported as-is.
      * For example, if the following set of types were passed,
      *
      *     { java.util.HashSet, java.util.Set, java.lang.String }
@@ -487,11 +487,11 @@ public class Source
      *     import java.util.Set;
      *     import java.lang.String;
      */
-    public static String buildImportDecls(Iterable<String> imports)
+    public static List<String> buildImportDecls(Iterable<String> imports)
     {
-        String rv = "";
+        List<String> rv = new ArrayList<String>();
         for (String i : imports) {
-            rv += "import " + i + ";\n";
+            rv.add("import " + i + ";");
         }
         return rv;
     }
@@ -500,7 +500,7 @@ public class Source
      * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
      * given `extraImports` will also be added as import declarations in the returned `String`.
      */
-    public static String buildCollectedImportDecls(TypeElement t, String... extraImports)
+    public static List<String> buildCollectedImportDecls(TypeElement t, String... extraImports)
     {
         return buildCollectedImportDecls(t, Arrays.asList(extraImports));
     }
@@ -509,7 +509,8 @@ public class Source
      * Builds a `String` of import declarations collected from the given `TypeElement`; each of the
      * given `extraImports` will also be added as import declarations in the returned `String`.
      */
-    public static String buildCollectedImportDecls(TypeElement t, Iterable<String> extraImports)
+    public static List<String> buildCollectedImportDecls(TypeElement t,
+                                                         Iterable<String> extraImports)
     {
         Set<String> imports = TypeCollector.collect(t);
         for (String s : extraImports) {
