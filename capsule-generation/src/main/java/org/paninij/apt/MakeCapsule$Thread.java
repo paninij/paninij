@@ -105,13 +105,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "    /* Capsule-specific Panini methods */",
                                      "    ##",
                                      "",
+                                     "    ##",
+                                     "",
                                      "#1",
                                      "#2",
                                      "#3",
-                                     "#4",
-                                     "#5");
+                                     "#4");
         src = Source.format(src, buildEncapsulatedTemplateInstanceDecl(),
-                                 buildWire(),
                                  buildInitChildren(),
                                  buildInitState(),
                                  buildRun(),
@@ -120,6 +120,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = Source.formatAligned(src, buildProcedureIDs());
         src = Source.formatAligned(src, buildProcedures());
         src = Source.formatAligned(src, buildCheckRequired());
+        src = Source.formatAligned(src, buildWire());
 
         return src;
     }
@@ -253,10 +254,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
-    String buildWire()
+    private List<String> buildWire()
     {
         if (PaniniModelInfo.hasWiredFieldDecls(context, template) == false) {
-            return "";
+            return new ArrayList<String>();
         }
 
         // Assign each of the `wire()` method's arguments into the corresponding field of the
@@ -266,12 +267,16 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             assignments.add(Source.format("panini$encapsulated.#0 = #0;", req.toString()));
         }
 
-        String src = Source.lines(1, "@Override",
-                                     PaniniModelInfo.buildWireMethodDecl(context, template),
-                                     "{",
-                                     "    ##",
-                                     "}");
-        return Source.formatAligned(src, assignments);
+        List<String> src = Source.linesList(0, "@Override",
+                                               "#0",
+                                               "{",
+                                               "    ##",
+                                               "}");
+
+        src = Source.formatList(src, PaniniModelInfo.buildWireMethodDecl(context, template));
+        src = Source.formatAlignedList(src, assignments);
+
+        return src;
     }
 
 
@@ -281,6 +286,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     String buildInitChildren()
     {
         List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(context, template);
+        if (children.size() == 0) {
+            return "";
+        }
+        
         List<String> lines = new ArrayList<String>();
 
         // For each of the capsule's children, add a line of code to instantiate that child capsule.
