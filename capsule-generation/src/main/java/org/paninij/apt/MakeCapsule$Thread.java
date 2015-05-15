@@ -280,51 +280,36 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     String buildInitChildren()
     {
         List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(context, template);
-
-        // TODO: remove bad code style due to use of `tabs` using `Source.formatAligned()`.
-        String tabs = "        ";
+        List<String> lines = new ArrayList<String>();
 
         // For each of the capsule's children, add a line of code to instantiate that child capsule.
-        List<String> instantiations = new ArrayList<String>();
         for (VariableElement child : children)
         {
-            String inst = Source.format(tabs + "panini$encapsulated.#0 = new #1$Thread();",
-                                        child.toString(),
-                                        child.asType().toString());
-            instantiations.add(inst);
+            String inst = Source.format("panini$encapsulated.#0 = new #1$Thread();",
+                                        child.toString(), child.asType().toString());
+            lines.add(inst);
+        }
+
+        // If the template has a design method, then it will need to be called.
+        if (PaniniModelInfo.hasCapsuleDesignDecl(template)) {
+            lines.add("panini$encapsulated.design(this);");
         }
 
         // For each of the capsule's children, add a call to that capsule's `panini$start()` method.
-        List<String> starts = new ArrayList<String>();
         for (VariableElement child : children)
         {
-            starts.add(Source.format(tabs + "panini$encapsulated.#0.panini$start();", child.toString()));
+            lines.add(Source.format("panini$encapsulated.#0.panini$start();", child.toString()));
         }
-
+        
         // Build the method itself.
-        // TODO: Fix crazy alignment!
         String src = Source.lines(0, "    @Override",
                                      "    protected void panini$initChildren()",
                                      "    {",
-                                     "#0",
-                                     "        #1",
-                                     "#2",
+                                     "        ##",
                                      "    }");
-        return Source.format(src, String.join("\n", instantiations),
-                                  buildDesignDelegation(),
-                                  String.join("\n", starts));
+
+        return Source.formatAligned(src, lines);
     }
-
-
-    String buildDesignDelegation()
-    {
-        if (PaniniModelInfo.hasCapsuleDesignDecl(template) == true) {
-            return "panini$encapsulated.design(this);";
-        } else {
-            return "";
-        }
-    }
-
 
     String buildInitState()
     {
