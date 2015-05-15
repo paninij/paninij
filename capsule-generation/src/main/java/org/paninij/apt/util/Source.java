@@ -158,6 +158,62 @@ public class Source
     {
         return formatAligned(fmt, items.toArray());
     }
+    
+    
+    /**
+     * Applies `formatAligned()` to the first format string in `fmts` which contains "##", and
+     * includes each of the lines which have been expanded into the returned list. For example, if
+     * `fmts` is defined as a list containing the following format strings,
+     * 
+     *     ["public void foo() {",
+     *      "    fooom();",
+     *      "    ##"
+     *      "}"]
+     *  
+     *  then
+     * 
+     *     formatAlignedList(fmts, "bar();", "baz();")
+     *  
+     *  would evaluate to a list containing the following strings:
+     *  
+     *     ["public void foo() {",
+     *      "    fooom();",
+     *      "    bar();",
+     *      "    baz();",
+     *      "}"]
+     */
+    public static List<String> formatAlignedList(List<String> fmts, Object... items)
+    {
+        List<String> lines = new ArrayList<String>();
+
+        boolean foundHashes = false;
+        for (String fmt : fmts)
+        {
+            if (foundHashes == false && fmt.contains("##"))
+            {
+                // `fmt` is the first string in `fmts` to contain "##".
+                String formatted = formatAligned(fmt, items);
+                for (String line : formatted.split("\n")) {
+                    lines.add(line);
+                }
+                foundHashes = true;
+            }
+            else
+            {
+                // The current `fmt` is either a string in `fmts` which comes before or after the
+                // first string the list which contains "##".
+                lines.add(fmt);
+            }
+        }
+        
+        return lines;
+    }
+
+
+    public static List<String> formatAlignedList(List<String> fmts, List<String> items)
+    {
+        return formatAlignedList(fmts, items.toArray());
+    }
 
 
     /**
