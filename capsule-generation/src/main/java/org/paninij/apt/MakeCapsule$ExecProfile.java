@@ -77,13 +77,6 @@ abstract class MakeCapsule$ExecProfile
     abstract String buildCapsuleBody();
 
     /**
-     * @return A string of all of the fields which the capsule needs to declare.
-     */
-    abstract String buildCapsuleFields();
-
-    abstract String buildProcedure(ExecutableElement method);
-
-    /**
      * In this default implementation, an empty set is always returned.
      *
      * @return The set of imports which every capsule will need to import, where each import is
