@@ -113,9 +113,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "",
                                      "    ##",
                                      "",
-                                     "#1");
-        src = Source.format(src, buildEncapsulatedTemplateInstanceDecl(),
-                                 buildRun());
+                                     "    ##");
+        src = Source.format(src, buildEncapsulatedTemplateInstanceDecl());
 
         src = Source.formatAligned(src, buildProcedureIDs());
         src = Source.formatAligned(src, buildProcedures());
@@ -123,6 +122,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = Source.formatAligned(src, buildWire());
         src = Source.formatAligned(src, buildInitChildren());
         src = Source.formatAligned(src, buildInitState());
+        src = Source.formatAligned(src, buildRun());
         src = Source.formatAligned(src, buildMain());
 
         return src;
@@ -344,65 +344,68 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
-    String buildRun()
+    List<String> buildRun()
     {
         if (PaniniModelInfo.isActive(template))
         {
-            return Source.lines(1, "@Override",
-                                   "public void run()",
-                                   "{",
-                                   "    try",
-                                   "    {",
-                                   "        panini$checkRequired();",
-                                   "        panini$initChildren();",
-                                   "        panini$initState();",
-                                   "        panini$encapsulated.run();",
-                                   "    } finally {",
-                                   "        // TODO?",
-                                   "    }",
-                                   "}");
+            return Source.linesList(0,
+                "@Override",
+                "public void run()",
+                "{",
+                "    try",
+                "    {",
+                "        panini$checkRequired();",
+                "        panini$initChildren();",
+                "        panini$initState();",
+                "        panini$encapsulated.run();",
+                "    } finally {",
+                "        // TODO?",
+                "    }",
+                "}"
+            );
         }
         else
         {
-            String src = Source.lines(1, "@Override",
-                                         "public void run()",
-                                         "{",
-                                         "    try",
-                                         "    {",
-                                         "        panini$checkRequired();",
-                                         "        panini$initChildren();",
-                                         "        panini$initState();",
-                                         "",
-                                         "        boolean terminate = false;",
-                                         "        while (!terminate)",
-                                         "        {",
-                                         "            Panini$Message msg = panini$nextMessage();",
-                                         "#0",
-                                         "        }",
-                                         "    }",
-                                         "    catch (Exception ex) { /* do nothing for now */ }",
-                                         "}");
-            return Source.format(src, buildRunSwitch());
+            List<String> src = Source.linesList(0,
+                "@Override",
+                "public void run()",
+                "{",
+                "    try",
+                "    {",
+                "        panini$checkRequired();",
+                "        panini$initChildren();",
+                "        panini$initState();",
+                "",
+                "        boolean terminate = false;",
+                "        while (!terminate)",
+                "        {",
+                "            Panini$Message msg = panini$nextMessage();",
+                "            ##",
+                "        }",
+                "    }",
+                "    catch (Exception ex) { /* do nothing for now */ }",
+                "}"
+            );
+
+            return Source.formatAlignedList(src, buildRunSwitch());
         }
     }
 
 
-    String buildRunSwitch()
+    List<String> buildRunSwitch()
     {
-        // Add a case statement for each procedure wrapper.
         List<String> lines = new ArrayList<String>();
         lines.add("switch(msg.panini$msgID()) {");
 
+        // Add a case statement for each procedure wrapper.
         for (Element elem : template.getEnclosedElements())
         {
             if (PaniniModelInfo.isProcedure(elem)) {
-                // TODO: Fix this ugly hack. (Used to make alignment work).
-                lines.add("\n" + buildRunSwitchCase((ExecutableElement) elem));
+                lines.addAll(buildRunSwitchCase((ExecutableElement) elem));
             }
         }
 
-        // TODO: Fix this ugly alignment hack.
-        lines.add("\n" + Source.lines(4, "case PANINI$SHUTDOWN:",
+        lines.addAll(Source.linesList(0, "case PANINI$SHUTDOWN:",
                                          "    if (panini$isEmpty() == false) {",
                                          "        panini$push(msg);",
                                          "    } else {",
@@ -413,38 +416,38 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                          "case PANINI$EXIT:",
                                          "    terminate = true;",
                                          "    break;"));
-
         lines.add("    }");
 
-        String tabs = "            ";  // Three "tabs" of 4-spaces.
-        return tabs + String.join("\n" + tabs, lines);
+        return lines;
     }
 
 
     /**
      * Assumes that `method` is a procedure method on a valid capsule template.
      */
-    String buildRunSwitchCase(ExecutableElement method)
+    List<String> buildRunSwitchCase(ExecutableElement method)
     {
         // `duck` will need to be resolved if and only if `method` has a return value.
         if (JavaModelInfo.hasVoidReturnType(method))
         {
             // Simply call the template isntance's method with the args encapsulated in the duck.
-            String src = Source.lines(4, "case #0:",
-                                         "    #1;",
-                                         "    break;");
-            return Source.format(src, buildProcedureID(method),
-                                      buildEncapsulatedMethodCall(method));
+            List<String> src = Source.linesList(0, "case #0:",
+                                                   "    #1;",
+                                                   "    break;");
+
+            return Source.formatList(src, buildProcedureID(method),
+                                          buildEncapsulatedMethodCall(method));
         }
         else
         {
             // Call the template instance's method and resolve the duck using the result.
-            String src = Source.lines(4, "case #0:",
-                                         "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
-                                         "    break;");
-            return Source.format(src, buildProcedureID(method),
-                                      method.getReturnType().toString(),
-                                      buildEncapsulatedMethodCall(method));
+            List<String> src = Source.linesList(0, "case #0:",
+                                                   "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
+                                                   "    break;");
+
+            return Source.formatList(src, buildProcedureID(method),
+                                          method.getReturnType().toString(),
+                                          buildEncapsulatedMethodCall(method));
         }
     }
 
