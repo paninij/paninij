@@ -148,11 +148,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             }
         }
         
-        if (currID == 0) {
-            return "";
-        } else {
-            return Source.formatAligned(Source.lines(TAB_DEPTH, "##"), decls);
-        }
+        return Source.formatAligned(Source.lines(TAB_DEPTH, "##"), decls);
     }
 
     String buildProcedureID(ExecutableElement method)

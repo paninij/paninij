@@ -64,15 +64,13 @@ public class Source
      * Technically, the portion of the line which precedes the "##" will be copied as the prefix of
      * each of the lines being inserted.
      * 
+     * Note that if `lines` is empty, then this method will return a string just like `fmt`, except
+     * with the first "##" characters removed.
+     * 
      * @throws `InvalidArgumentException` if any character of prefix is not a whitespace character.
-     * @throws `InvalidArgumentException` if `lines` has zero elements.
      */
     public static String formatAligned(String fmt, Object... lines)
     {
-        if(lines.length == 0) {
-            throw new IllegalArgumentException("`lines` must include one or more elements.");
-        }
-
         final String FORMAT_ELEMENT_SYMBOL = "##";
         final int hashStartIndex = fmt.indexOf(FORMAT_ELEMENT_SYMBOL);
         final int hashEndIndex = hashStartIndex + FORMAT_ELEMENT_SYMBOL.length();
