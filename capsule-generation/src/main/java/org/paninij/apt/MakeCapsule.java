@@ -58,19 +58,19 @@ public class MakeCapsule
 
     private String buildCapsuleInterface()
     {
-        String src = Source.cat(0, "package #0;",
-                                   "",
-                                   "##",
-                                   "",
-                                   "/**",
-                                   " * This capsule interface was auto-generated from `#1`",
-                                   " */",
-                                   "@CapsuleInterface",
-                                   "#2",
-                                   "{",
-                                   "    #3",
-                                   "    ##",
-                                   "}");
+        String src = Source.cat("package #0;",
+                                "",
+                                "##",
+                                "",
+                                "/**",
+                                " * This capsule interface was auto-generated from `#1`",
+                                " */",
+                                "@CapsuleInterface",
+                                "#2",
+                                "{",
+                                "    #3",
+                                "    ##",
+                                "}");
 
         src = Source.format(src, buildPackage(),
                                  PaniniModelInfo.qualifiedTemplateName(template),

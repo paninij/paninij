@@ -55,17 +55,17 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     @Override
     String buildCapsule()
     {
-        String src = Source.cat(0, "package #0;",
-                                   "",
-                                   "##",
-                                   "",
-                                   "/**",
-                                   " * This capsule was auto-generated from `#1`",
-                                   " */",
-                                   "#2",
-                                   "{",
-                                   "    ##",
-                                   "}");
+        String src = Source.cat("package #0;",
+                                "",
+                                "##",
+                                "",
+                                "/**",
+                                " * This capsule was auto-generated from `#1`",
+                                " */",
+                                "#2",
+                                "{",
+                                "    ##",
+                                "}");
 
         src = Source.format(src, buildPackage(),
                                  PaniniModelInfo.qualifiedTemplateName(template),

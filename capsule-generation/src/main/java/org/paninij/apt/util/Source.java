@@ -68,6 +68,19 @@ public class Source
     }
     
     
+    /**
+     * Concatenates each of the lines, separating each with a single '\n' character.
+     */
+    public static String cat(String... lines)
+    {
+        return Source.cat(0, lines);
+    }
+    
+    
+    /**
+     * Concatenates each of the lines, separating each with a single '\n' character and tabbing
+     * each line over the specified `depth`.
+     */
     public static String cat(int depth, String... lines)
     {
         String[] tabbed = new String[lines.length];

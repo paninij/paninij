@@ -66,16 +66,16 @@ class CapsuleChecker
         String templateName = template.getSimpleName().toString();
         if (! templateName.endsWith(PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX))
         {
-            String msg = Source.cat(0, "Invalid template name: `#0`",
-                                       "Every capsule template name must be suffixed with `#1`");
+            String msg = Source.cat("Invalid template name: `#0`",
+                                    "Every capsule template name must be suffixed with `#1`");
             msg = Source.format(msg, templateName, PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
             context.error(msg);
             return false;
         }
         else if (templateName.length() == PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX.length())
         {
-            String msg = Source.cat(0, "Invalid template name: `#0`",
-                                       "Template name can't be the same as the expected suffix");
+            String msg = Source.cat("Invalid template name: `#0`",
+                                    "Template name can't be the same as the expected suffix");
             msg = Source.format(msg, templateName);
             context.error(msg);
             return false;
