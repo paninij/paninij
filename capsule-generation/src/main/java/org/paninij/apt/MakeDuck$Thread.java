@@ -58,10 +58,10 @@ public class MakeDuck$Thread extends MakeDuck
                 "",
                 "##",
                 "",
-                "public class #2 extends #4 implements Panini$Message, Panini$Future<#4>",
+                "public class #1 extends #2 implements Panini$Message, Panini$Future<#2>",
                 "{",
                 "    public final int panini$procID;",
-                "    private #4 panini$result = null;",
+                "    private #2 panini$result = null;",
                 "    boolean panini$isResolved = false;",
                 "",
                 "    ##",
@@ -74,7 +74,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#4 result) {",
+                "    public void panini$resolve(#2 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
@@ -84,7 +84,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "    }",
                 "",
                 "    @Override",
-                "    public #4 panini$get() {",
+                "    public #2 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -95,18 +95,13 @@ public class MakeDuck$Thread extends MakeDuck
                 "         return panini$result;",
                 "    }",
                 "",
-                "    /* The following override the methods of `#4` */",
+                "    /* The following override the methods of `#2` */",
                 "    ##",
                 "}");
 
         src = Source.format(src, this.buildPackage(currentDuck),
-                                 null,
                                  this.buildClassName(currentDuck),
-                                 null,
-                                 currentDuck.getSimpleReturnType(),
-                                 null,
-                                 null,
-                                 null);
+                                 currentDuck.getSimpleReturnType());
 
         src = Source.formatAligned(src, buildImports(currentDuck));
         src = Source.formatAligned(src, buildParameterFields(currentDuck));
