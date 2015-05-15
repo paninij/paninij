@@ -75,12 +75,11 @@ public abstract class MakeDuck
         return fields;
     }
 
-    String buildFacades(DuckShape currentDuck)
+    List<String> buildFacades(DuckShape currentDuck)
     {
-        String facades = "";
+        List<String> facades = new ArrayList<String>();
 
         DeclaredType returnType = (DeclaredType) currentDuck.returnType;
-
         for (Element el : returnType.asElement().getEnclosedElements())
         {
             if (el.getKind() == ElementKind.METHOD)
@@ -88,36 +87,31 @@ public abstract class MakeDuck
                 ExecutableElement method = (ExecutableElement) el;
                 if (this.canMakeFacade(method))
                 {
-                    facades += buildFacade(method);
+                    facades.addAll(buildFacade(method));
+                    facades.add("");
                 }
-
             }
         }
 
         return facades;
     }
 
-    String buildFacade(ExecutableElement method)
+    List<String> buildFacade(ExecutableElement method)
     {
-        String fmt = Source.lines(1,
-                "",
-                "@Override",
-                "#0 {",
-                "    #1",
-                "}");
-        return Source.format(fmt, Source.buildExecutableDecl(method), buildFacadeBody(method));
-
+        List<String> fmt = Source.linesList(0, "@Override",
+                                               Source.buildExecutableDecl(method),
+                                               "{",
+                                               "    #0",
+                                               "}");
+        return Source.formatList(fmt, buildFacadeBody(method));
     }
 
     String buildFacadeBody(ExecutableElement method)
     {
         String fmt;
-        if (JavaModelInfo.hasVoidReturnType(method))
-        {
+        if (JavaModelInfo.hasVoidReturnType(method)) {
             fmt = "panini$get().#0(#1);";
-        }
-        else
-        {
+        } else {
             fmt = "return panini$get().#0(#1);";
         }
         return Source.format(fmt, method.getSimpleName(), Source.buildParameterNamesList(method));

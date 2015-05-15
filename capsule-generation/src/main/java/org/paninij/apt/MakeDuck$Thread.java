@@ -96,7 +96,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "    }",
                 "",
                 "    /* The following override the methods of `#4` */",
-                "#7",
+                "    ##",
                 "}");
 
         src = Source.format(src, this.buildPackage(currentDuck),
@@ -106,11 +106,12 @@ public class MakeDuck$Thread extends MakeDuck
                                  currentDuck.getSimpleReturnType(),
                                  null,
                                  null,
-                                 this.buildFacades(currentDuck));
+                                 null);
 
         src = Source.formatAligned(src, buildParameterFields(currentDuck));
         src = Source.formatAligned(src, buildConstructor(currentDuck));
         src = Source.formatAligned(src, buildReleaseArgs(currentDuck));
+        src = Source.formatAligned(src, buildFacades(currentDuck));
 
         return src;
     }
