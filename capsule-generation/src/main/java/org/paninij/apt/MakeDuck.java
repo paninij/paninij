@@ -155,18 +155,18 @@ public abstract class MakeDuck
         return true;
     }
 
-    String buildReleaseArgs(DuckShape currentDuck) {
+    List<String> buildReleaseArgs(DuckShape currentDuck) {
 
-        String args = "";
+        List<String> statements = new ArrayList<String>();
+
         for(int i = 0; i < currentDuck.slotTypes.size(); i++)
         {
-            if(currentDuck.slotTypes.get(i).equals("Object"))
-            {
-                args += "        panini$arg" + i + " = null;\n";
+            if(currentDuck.slotTypes.get(i).equals("Object")) {
+                statements.add("panini$arg" + i + " = null;");
             }
         }
 
-        return args;
+        return statements;
     }
 
     abstract List<String> buildConstructor(DuckShape currentDuck);

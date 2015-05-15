@@ -80,7 +80,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "            panini$isResolved = true;",
                 "            this.notifyAll();",
                 "        }",
-                "#6",
+                "        ##",
                 "    }",
                 "",
                 "    @Override",
@@ -105,11 +105,12 @@ public class MakeDuck$Thread extends MakeDuck
                                  null,
                                  currentDuck.getSimpleReturnType(),
                                  null,
-                                 this.buildReleaseArgs(currentDuck),
+                                 null,
                                  this.buildFacades(currentDuck));
 
         src = Source.formatAligned(src, buildParameterFields(currentDuck));
         src = Source.formatAligned(src, buildConstructor(currentDuck));
+        src = Source.formatAligned(src, buildReleaseArgs(currentDuck));
 
         return src;
     }
