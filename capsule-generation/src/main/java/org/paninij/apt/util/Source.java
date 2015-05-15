@@ -68,7 +68,7 @@ public class Source
     }
     
     
-    public static String lines(int depth, String... lines)
+    public static String cat(int depth, String... lines)
     {
         String[] tabbed = new String[lines.length];
         for (int i = 0; i < lines.length; i++) {

@@ -53,7 +53,7 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     String buildNormalDuck(DuckShape currentDuck)
     {
-        String src = Source.lines(0,
+        String src = Source.cat(0,
                 "package #0;",
                 "",
                 "##",
@@ -121,23 +121,23 @@ public class MakeDuck$Thread extends MakeDuck
     @Override
     String buildVoidDuck(DuckShape currentDuck)
     {
-        String src = Source.lines(0, "package #0;",
-                                     "",
-                                     "import org.paninij.runtime.Panini$Message;",
-                                     "",
-                                     "public class #1 implements Panini$Message",
-                                     "{",
-                                     "    public final int panini$procID;",
-                                     "",
-                                     "    ##",
-                                     "",
-                                     "    ##",
-                                     "",
-                                     "    @Override",
-                                     "    public int panini$msgID() {",
-                                     "        return panini$procID;",
-                                     "    }",
-                                     "}");
+        String src = Source.cat(0, "package #0;",
+                                   "",
+                                   "import org.paninij.runtime.Panini$Message;",
+                                   "",
+                                   "public class #1 implements Panini$Message",
+                                   "{",
+                                   "    public final int panini$procID;",
+                                   "",
+                                   "    ##",
+                                   "",
+                                   "    ##",
+                                   "",
+                                   "    @Override",
+                                   "    public int panini$msgID() {",
+                                   "        return panini$procID;",
+                                   "    }",
+                                   "}");
 
         src = Source.format(src, buildPackage(currentDuck), buildClassName(currentDuck));
         src = Source.formatAligned(src, buildParameterFields(currentDuck));
@@ -152,17 +152,17 @@ public class MakeDuck$Thread extends MakeDuck
         // TODO: Make this handle more than just `String`.
         assert(currentDuck.returnType.toString().equals("org.paninij.lang.String"));
 
-        String src = Source.lines(0, "package #0;",
-                                     "",
-                                     "import org.paninij.lang.String;",
-                                     "",
-                                     "public class #1 extends String",
-                                     "{",
-                                     "    private int panini$procID;",
-                                     "",
-                                     "    ##",
-                                     "",
-                                     "}");
+        String src = Source.cat(0, "package #0;",
+                                   "",
+                                   "import org.paninij.lang.String;",
+                                   "",
+                                   "public class #1 extends String",
+                                   "{",
+                                   "    private int panini$procID;",
+                                   "",
+                                   "    ##",
+                                   "",
+                                   "}");
         src = Source.format(src, buildPackage(currentDuck),
                                  buildClassName(currentDuck));
         src = Source.formatAligned(src, buildConstructor(currentDuck, "super(\"\");"));
