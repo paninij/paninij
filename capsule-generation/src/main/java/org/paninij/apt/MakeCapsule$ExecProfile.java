@@ -19,6 +19,7 @@
 package org.paninij.apt;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
@@ -74,7 +75,7 @@ abstract class MakeCapsule$ExecProfile
 
     abstract String buildCapsuleDecl();
 
-    abstract String buildCapsuleBody();
+    abstract List<String> buildCapsuleBody();
 
     /**
      * In this default implementation, an empty set is always returned.

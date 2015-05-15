@@ -64,24 +64,29 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      " */",
                                      "#3",
                                      "{",
-                                     "#4",
+                                     "    ##",
                                      "}");
-        return Source.format(src, buildPackage(),
-                                  buildImports(),
-                                  PaniniModelInfo.qualifiedTemplateName(template),
-                                  buildCapsuleDecl(),
-                                  buildCapsuleBody());
+
+        src = Source.format(src, buildPackage(),
+                                 buildImports(),
+                                 PaniniModelInfo.qualifiedTemplateName(template),
+                                 buildCapsuleDecl());
+
+        return Source.formatAligned(src, buildCapsuleBody());
     }
+
 
     @Override
     String buildCapsuleName() {
         return PaniniModelInfo.simpleCapsuleName(template) + CAPSULE_THREAD_TYPE_SUFFIX;
     }
 
+
     @Override
     String buildQualifiedCapsuleName() {
         return PaniniModelInfo.qualifiedCapsuleName(template) + CAPSULE_THREAD_TYPE_SUFFIX;
     }
+
 
     @Override
     String buildCapsuleDecl() {
@@ -90,41 +95,32 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
+    // TODO: How can this be done without the `@SuppressWarnings`?
+    @SuppressWarnings("unchecked")
     @Override
-    String buildCapsuleBody()
+    List<String> buildCapsuleBody()
     {
-        String src = Source.lines(0, "    /* Procedure IDs */",
-                                     "    ##",
-                                     "",
-                                     "    /* Private Capsule Fields */",
-                                     "    #0",
-                                     "",
-                                     "    /* Capsule procedures */",
-                                     "    ##",
-                                     "",
-                                     "    /* Capsule-specific Panini methods */",
-                                     "    ##",
-                                     "",
-                                     "    ##",
-                                     "",
-                                     "    ##",
-                                     "",
-                                     "    ##",
-                                     "",
-                                     "    ##",
-                                     "",
-                                     "    ##");
-        src = Source.format(src, buildEncapsulatedTemplateInstanceDecl());
+        List<String> src = new ArrayList<String>();
+        src.add(buildEncapsulatedTemplateInstanceDecl());
 
-        src = Source.formatAligned(src, buildProcedureIDs());
-        src = Source.formatAligned(src, buildProcedures());
-        src = Source.formatAligned(src, buildCheckRequired());
-        src = Source.formatAligned(src, buildWire());
-        src = Source.formatAligned(src, buildInitChildren());
-        src = Source.formatAligned(src, buildInitState());
-        src = Source.formatAligned(src, buildRun());
-        src = Source.formatAligned(src, buildMain());
-
+        // TODO: How can this be done without the `@SuppressWarnings`?
+        @SuppressWarnings("rawtypes")
+        List[] xs = {
+            buildProcedureIDs(),
+            buildProcedures(),
+            buildCheckRequired(),
+            buildWire(),
+            buildInitChildren(),
+            buildInitState(),
+            buildRun(),
+            buildMain()
+        };
+        
+        for (List<String> x : xs) {
+            src.addAll(x);
+            src.add("");
+        }
+        
         return src;
     }
 
