@@ -107,12 +107,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "",
                                      "    ##",
                                      "",
+                                     "    ##",
+                                     "",
                                      "#1",
                                      "#2",
-                                     "#3",
-                                     "#4");
+                                     "#3");
         src = Source.format(src, buildEncapsulatedTemplateInstanceDecl(),
-                                 buildInitChildren(),
                                  buildInitState(),
                                  buildRun(),
                                  buildMain());
@@ -121,6 +121,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = Source.formatAligned(src, buildProcedures());
         src = Source.formatAligned(src, buildCheckRequired());
         src = Source.formatAligned(src, buildWire());
+        src = Source.formatAligned(src, buildInitChildren());
 
         return src;
     }
@@ -283,11 +284,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     /**
      * Build a method which initializes each of the child capsules and delegates.
      */
-    String buildInitChildren()
+    private List<String> buildInitChildren()
     {
         List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(context, template);
         if (children.size() == 0) {
-            return "";
+            return new ArrayList<String>();
         }
         
         List<String> lines = new ArrayList<String>();
@@ -312,14 +313,15 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         }
         
         // Build the method itself.
-        String src = Source.lines(0, "    @Override",
-                                     "    protected void panini$initChildren()",
-                                     "    {",
-                                     "        ##",
-                                     "    }");
+        List<String> src = Source.linesList(0, "@Override",
+                                               "protected void panini$initChildren()",
+                                               "{",
+                                               "    ##",
+                                               "}");
 
-        return Source.formatAligned(src, lines);
+        return Source.formatAlignedList(src, lines);
     }
+
 
     String buildInitState()
     {
