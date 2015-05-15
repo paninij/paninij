@@ -65,7 +65,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "",
                 "#5",
                 "",
-                "#3",
+                "    ##",
                 "",
                 "    @Override",
                 "    public int panini$msgID() {",
@@ -97,14 +97,17 @@ public class MakeDuck$Thread extends MakeDuck
                 "    /* The following override the methods of `#4` */",
                 "#7",
                 "}");
-        return Source.format(src, this.buildPackage(currentDuck),
-                                  this.buildImports(currentDuck),
-                                  this.buildClassName(currentDuck),
-                                  this.buildConstructor(currentDuck),
-                                  currentDuck.getSimpleReturnType(),
-                                  this.buildParameterFields(currentDuck),
-                                  this.buildReleaseArgs(currentDuck),
-                                  this.buildFacades(currentDuck));
+        src = Source.format(src, this.buildPackage(currentDuck),
+                                 this.buildImports(currentDuck),
+                                 this.buildClassName(currentDuck),
+                                 null,
+                                 currentDuck.getSimpleReturnType(),
+                                 this.buildParameterFields(currentDuck),
+                                 this.buildReleaseArgs(currentDuck),
+                                 this.buildFacades(currentDuck));
+        src = Source.formatAligned(src, buildConstructor(currentDuck));
+
+        return src;
     }
 
 
@@ -119,7 +122,7 @@ public class MakeDuck$Thread extends MakeDuck
                                      "    public final int panini$procID;",
                                      "#2",
                                      "",
-                                     "#3",
+                                     "    ##",
                                      "",
                                      "    @Override",
                                      "    public int panini$msgID() {",
@@ -127,10 +130,12 @@ public class MakeDuck$Thread extends MakeDuck
                                      "    }",
                                      "}");
 
-        return Source.format(src, buildPackage(currentDuck),
-                                  buildClassName(currentDuck),
-                                  buildParameterFields(currentDuck),
-                                  buildConstructor(currentDuck));
+        src = Source.format(src, buildPackage(currentDuck),
+                                 buildClassName(currentDuck),
+                                 buildParameterFields(currentDuck));
+        src = Source.formatAligned(src, buildConstructor(currentDuck));
+
+        return src;
     }
 
 
@@ -148,12 +153,13 @@ public class MakeDuck$Thread extends MakeDuck
                                      "{",
                                      "    private int panini$procID;",
                                      "",
-                                     "#2",
+                                     "    ##",
                                      "",
                                      "}");
-        return Source.format(src, buildPackage(currentDuck),
-                                  buildClassName(currentDuck),
-                                  buildConstructor(currentDuck, "        super(\"\");\n"));
+        src = Source.format(src, buildPackage(currentDuck),
+                                 buildClassName(currentDuck));
+        src = Source.formatAligned(src, buildConstructor(currentDuck, "super(\"\");"));
+        return src;
     }
 
 
@@ -181,38 +187,39 @@ public class MakeDuck$Thread extends MakeDuck
 
 
     @Override
-    String buildConstructor(DuckShape currentDuck)
+    List<String> buildConstructor(DuckShape currentDuck)
     {
         return buildConstructor(currentDuck, "");
     }
 
 
-    String buildConstructor(DuckShape currentDuck, String prependToBody)
+    List<String> buildConstructor(DuckShape currentDuck, String prependToBody)
     {
-       String constructor = buildConstructorDecl(currentDuck) + "{";
-       constructor += prependToBody;
-       constructor += "        panini$procID = procID;\n";
-       for(int i = 0; i < currentDuck.slotTypes.size(); i++)
-       {
-           constructor += "        panini$arg" + i + " = arg" + i +";\n";
-       }
-       constructor += "    }";
-       return constructor;
-    }
-
-
-    @Override
-    String buildConstructorDecl(DuckShape currentDuck)
-    {
-        String decl = "public #0(#1)";
-
+        // Create a list of parameters to the constructor starting with the `procID`.
         List<String> params = new ArrayList<String>();
         params.add("int procID");
         for(int idx = 0; idx < currentDuck.slotTypes.size(); idx++) {
             params.add(currentDuck.slotTypes.get(idx) + " arg" + idx);
         }
+        
+        // Create a list of initialization statements.
+        List<String> initializers = new ArrayList<String>();
+        initializers.add("panini$procID = procID;");
+        for (int idx = 0; idx < currentDuck.slotTypes.size(); idx++) {
+            initializers.add(Source.format("panini$arg#0 = arg#0;", idx));
+        }
+        
+        List<String> src = Source.linesList(0, "public #0(#1)",
+                                               "{",
+                                               "    #2",
+                                               "    ##",
+                                               "}");
 
-        return Source.format(decl, buildClassName(currentDuck), String.join(", ", params));
+        src = Source.formatList(src, buildClassName(currentDuck),
+                                     String.join(", ", params),
+                                     prependToBody);
+        src = Source.formatAlignedList(src, initializers);
+
+        return src;
     }
-
 }

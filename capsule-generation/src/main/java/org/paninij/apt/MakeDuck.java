@@ -18,6 +18,8 @@
  */
 package org.paninij.apt;
 
+import java.util.List;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -166,9 +168,7 @@ public abstract class MakeDuck
         return args;
     }
 
-    abstract String buildConstructor(DuckShape currentDuck);
-
-    abstract String buildConstructorDecl(DuckShape currentDuck);
+    abstract List<String> buildConstructor(DuckShape currentDuck);
 
     abstract String buildNormalDuck(DuckShape currentDuck);
 
