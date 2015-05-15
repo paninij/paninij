@@ -111,11 +111,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "",
                                      "    ##",
                                      "",
-                                     "#1",
-                                     "#2");
+                                     "    ##",
+                                     "",
+                                     "#1");
         src = Source.format(src, buildEncapsulatedTemplateInstanceDecl(),
-                                 buildRun(),
-                                 buildMain());
+                                 buildRun());
 
         src = Source.formatAligned(src, buildProcedureIDs());
         src = Source.formatAligned(src, buildProcedures());
@@ -123,6 +123,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = Source.formatAligned(src, buildWire());
         src = Source.formatAligned(src, buildInitChildren());
         src = Source.formatAligned(src, buildInitState());
+        src = Source.formatAligned(src, buildMain());
 
         return src;
     }
@@ -489,21 +490,21 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
-    private String buildMain()
+    private List<String> buildMain()
     {
         // A `Capsule$Thread` should have a main() method if and only if it is a "root" capsule.
         if (PaniniModelInfo.isRootCapsule(context, template))
         {
-             String src = Source.lines(1, "public static void main(String[] args)",
-                                         "{",
-                                         "    #0 root = new #0();",
-                                         "    root.run();",
-                                         "}");
-            return Source.format(src, buildCapsuleName());
-       }
+             List<String> src = Source.linesList(0, "public static void main(String[] args)",
+                                                    "{",
+                                                    "    #0 root = new #0();",
+                                                    "    root.run();",
+                                                    "}");
+             return Source.formatList(src, buildCapsuleName());
+        }
         else
         {
-            return "";
+            return new ArrayList<String>();
         }
     }
 
