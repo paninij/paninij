@@ -103,14 +103,14 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "    ##",
                                      "",
                                      "    /* Capsule-specific Panini methods */",
+                                     "    ##",
+                                     "",
                                      "#1",
                                      "#2",
                                      "#3",
                                      "#4",
-                                     "#5",
-                                     "#6");
+                                     "#5");
         src = Source.format(src, buildEncapsulatedTemplateInstanceDecl(),
-                                 buildCheckRequired(),
                                  buildWire(),
                                  buildInitChildren(),
                                  buildInitState(),
@@ -119,6 +119,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
         src = Source.formatAligned(src, buildProcedureIDs());
         src = Source.formatAligned(src, buildProcedures());
+        src = Source.formatAligned(src, buildCheckRequired());
 
         return src;
     }
@@ -228,12 +229,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
-    private String buildCheckRequired()
+    private List<String> buildCheckRequired()
     {
         List<VariableElement> required = PaniniModelInfo.getWiredFieldDecls(context, template);
 
         if (required.isEmpty()) {
-            return "";
+            return new ArrayList<String>();
         }
 
         List<String> assertions = new ArrayList<String>(required.size());
@@ -243,12 +244,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                           required.get(idx).toString()));
         }
 
-        String src = Source.lines(1, "@Override",
-                                     "public void panini$checkRequired()",
-                                     "{",
-                                     "    ##",
-                                     "}");
-        return Source.formatAligned(src, assertions);
+        List<String> lines = Source.linesList(0, "@Override",
+                                                 "public void panini$checkRequired()",
+                                                 "{",
+                                                 "    ##",
+                                                 "}");
+        return Source.formatAlignedList(lines, assertions);
     }
 
 
