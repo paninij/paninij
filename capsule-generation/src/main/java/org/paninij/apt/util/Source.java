@@ -202,7 +202,7 @@ public class Source
      *      "    baz();",
      *      "}"]
      */
-    public static List<String> formatAlignedList(List<String> fmts, Object... items)
+    public static List<String> formatAlignedFirst(List<String> fmts, Object... items)
     {
         List<String> lines = new ArrayList<String>();
 
@@ -232,7 +232,7 @@ public class Source
 
     public static List<String> formatAlignedList(List<String> fmts, List<String> items)
     {
-        return formatAlignedList(fmts, items.toArray());
+        return formatAlignedFirst(fmts, items.toArray());
     }
 
 
