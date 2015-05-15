@@ -18,6 +18,9 @@
  */
 package org.paninij.apt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
@@ -34,6 +37,7 @@ public class MakeDuck$Thread extends MakeDuck
         return m;
     }
 
+
     @Override
     public void makeSourceFile(DuckShape currentDuck)
     {
@@ -44,6 +48,7 @@ public class MakeDuck$Thread extends MakeDuck
             context.warning(ex.toString());
         }
     }
+
 
     @Override
     String buildNormalDuck(DuckShape currentDuck)
@@ -102,6 +107,7 @@ public class MakeDuck$Thread extends MakeDuck
                                   this.buildFacades(currentDuck));
     }
 
+
     @Override
     String buildVoidDuck(DuckShape currentDuck)
     {
@@ -126,6 +132,7 @@ public class MakeDuck$Thread extends MakeDuck
                                   buildParameterFields(currentDuck),
                                   buildConstructor(currentDuck));
     }
+
 
     @Override
     String buildPaniniCustomDuck(DuckShape currentDuck)
@@ -165,6 +172,7 @@ public class MakeDuck$Thread extends MakeDuck
         return currentDuck.toString() + "$Thread";
     }
 
+
     @Override
     String buildQualifiedClassName(DuckShape currentDuck)
     {
@@ -178,9 +186,10 @@ public class MakeDuck$Thread extends MakeDuck
         return buildConstructor(currentDuck, "");
     }
 
+
     String buildConstructor(DuckShape currentDuck, String prependToBody)
     {
-       String constructor = buildConstructorDecl(currentDuck);
+       String constructor = buildConstructorDecl(currentDuck) + "{";
        constructor += prependToBody;
        constructor += "        panini$procID = procID;\n";
        for(int i = 0; i < currentDuck.slotTypes.size(); i++)
@@ -191,17 +200,19 @@ public class MakeDuck$Thread extends MakeDuck
        return constructor;
     }
 
+
     @Override
     String buildConstructorDecl(DuckShape currentDuck)
     {
-        String constructorDecl = "    public " + buildClassName(currentDuck) + "(int procID";
-        for(int i = 0; i < currentDuck.slotTypes.size(); i++)
-        {
-            constructorDecl += ", " + currentDuck.slotTypes.get(i) + " arg" + i;
-        }
-        constructorDecl += ") {\n";
+        String decl = "public #0(#1)";
 
-        return constructorDecl;
+        List<String> params = new ArrayList<String>();
+        params.add("int procID");
+        for(int idx = 0; idx < currentDuck.slotTypes.size(); idx++) {
+            params.add(currentDuck.slotTypes.get(idx) + " arg" + idx);
+        }
+
+        return Source.format(decl, buildClassName(currentDuck), String.join(", ", params));
     }
 
 }
