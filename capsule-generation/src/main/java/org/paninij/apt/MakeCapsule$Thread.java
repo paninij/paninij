@@ -109,11 +109,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                      "",
                                      "    ##",
                                      "",
+                                     "    ##",
+                                     "",
                                      "#1",
-                                     "#2",
-                                     "#3");
+                                     "#2");
         src = Source.format(src, buildEncapsulatedTemplateInstanceDecl(),
-                                 buildInitState(),
                                  buildRun(),
                                  buildMain());
 
@@ -122,6 +122,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         src = Source.formatAligned(src, buildCheckRequired());
         src = Source.formatAligned(src, buildWire());
         src = Source.formatAligned(src, buildInitChildren());
+        src = Source.formatAligned(src, buildInitState());
 
         return src;
     }
@@ -323,21 +324,21 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
-    String buildInitState()
+    List<String> buildInitState()
     {
         // If there is an `init` declaration on the template class, then override the empty `init()`
         // method inherited from the `Capsule$Thread` superclass with a method that delegates to
         // the encapsulated template instance.
         if (PaniniModelInfo.hasInitDeclaration(template))
         {
-            return Source.lines(1, "@Override",
-                                   "protected void panini$initState() {",
-                                   "    panini$encapsulated.init();",
-                                   "}");
+            return Source.linesList(0, "@Override",
+                                       "protected void panini$initState() {",
+                                       "    panini$encapsulated.init();",
+                                       "}");
         }
         else
         {
-            return "";  // Do not override superclass with anything.
+            return new ArrayList<String>();  // Do not override superclass with anything.
         }
     }
 
