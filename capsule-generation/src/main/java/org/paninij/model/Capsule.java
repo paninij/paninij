@@ -1,22 +1,47 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): Dalton Mills
+ */
 package org.paninij.model;
 
 import java.util.ArrayList;
 
-public class Capsule
+public abstract class Capsule
 {
-    private String name;
-    private ArrayList<Procedure> procedures;
+    protected ArrayList<ElementProcedure> procedures;
+    protected String simpleName;
+    protected String qualifiedName;
 
-    public Capsule(String name) {
-        this.name = name;
-        this.procedures = new ArrayList<Procedure>();
+    public Capsule() {
+        this.procedures = new ArrayList<ElementProcedure>();
+        this.simpleName = null;
+        this.qualifiedName = null;
     }
 
-    public ArrayList<Procedure> getProcedures() {
+    public String getSimpleName() {
+        return this.simpleName;
+    }
+
+    public String getQualifiedName() {
+        return this.qualifiedName;
+    }
+
+    public ArrayList<ElementProcedure> getProcedures() {
         return this.procedures;
     }
 
-    public void addProcedure(Procedure p) {
-        this.procedures.add(p);
-    }
 }

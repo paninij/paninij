@@ -43,9 +43,11 @@ import javax.tools.JavaFileObject;
 
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.Reporter;
 import org.paninij.apt.util.Source;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
+import org.paninij.model.ElementCapsule;
 
 
 /**
@@ -71,11 +73,13 @@ public class PaniniProcessor extends AbstractProcessor
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
-        for (Element elem : annotated)
-        {
-            if (CapsuleChecker.check(this, elem))
-            {
+        for (Element elem : annotated) {
+
+            if (CapsuleChecker.check(this, elem)) {
+
                 TypeElement template = (TypeElement) elem;
+
+                org.paninij.model.Capsule cap = ElementCapsule.make(template);
 
                 MakeCapsule.make(this, template).makeSourceFile();
                 MakeCapsule$Thread.make(this, template).makeSourceFile();

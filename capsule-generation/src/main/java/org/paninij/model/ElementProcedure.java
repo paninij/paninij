@@ -18,16 +18,15 @@
  */
 package org.paninij.model;
 
-public abstract class Procedure
+import javax.lang.model.element.ExecutableElement;
+
+public class ElementProcedure
 {
-    protected String name;
+    private ExecutableElement element;
 
-    public Procedure() {
-        this.name = null;
-    }
-
-    public String getName() {
-        return this.name;
+    public ElementProcedure(ExecutableElement e) {
+        super();
+        this.element = e;
     }
 
 }
