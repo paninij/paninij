@@ -18,16 +18,21 @@
  */
 package org.paninij.model;
 
+import java.util.List;
+
+import javax.lang.model.type.TypeMirror;
+
 public abstract class Procedure
 {
-    protected String name;
+    public abstract String getName();
 
-    public Procedure() {
-        this.name = null;
-    }
+    public abstract TypeMirror getReturnType();
 
-    public String getName() {
-        return this.name;
-    }
+    public abstract TypeKind getMessageType();
 
+    public abstract boolean shouldBlock();
+
+    public abstract boolean isReturnTypeFinal();
+
+    public abstract List<Variable> getParameters();
 }

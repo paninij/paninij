@@ -20,6 +20,7 @@ package org.paninij.apt;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +49,7 @@ import org.paninij.apt.util.Source;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 import org.paninij.model.ElementCapsule;
+import org.paninij.model.Procedure;
 
 
 /**
@@ -80,6 +82,12 @@ public class PaniniProcessor extends AbstractProcessor
                 TypeElement template = (TypeElement) elem;
 
                 org.paninij.model.Capsule cap = ElementCapsule.make(template);
+
+                ArrayList<Procedure> procs = cap.getProcedures();
+//                System.out.println("------" + cap.getSimpleName());
+//                for (int i = 0; i < procs.size(); i++) {
+//                    System.out.println(procs.get(i).getName());
+//                }
 
                 MakeCapsule.make(this, template).makeSourceFile();
                 MakeCapsule$Thread.make(this, template).makeSourceFile();

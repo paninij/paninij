@@ -22,12 +22,12 @@ import java.util.ArrayList;
 
 public abstract class Capsule
 {
-    protected ArrayList<ElementProcedure> procedures;
+    protected ArrayList<Procedure> procedures;
     protected String simpleName;
     protected String qualifiedName;
 
     public Capsule() {
-        this.procedures = new ArrayList<ElementProcedure>();
+        this.procedures = new ArrayList<Procedure>();
         this.simpleName = null;
         this.qualifiedName = null;
     }
@@ -40,7 +40,7 @@ public abstract class Capsule
         return this.qualifiedName;
     }
 
-    public ArrayList<ElementProcedure> getProcedures() {
+    public ArrayList<Procedure> getProcedures() {
         return this.procedures;
     }
 

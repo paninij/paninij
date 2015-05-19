@@ -18,6 +18,7 @@
  */
 package org.paninij.apt;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.SimpleElementVisitor8;
@@ -32,12 +33,12 @@ import org.paninij.model.ElementCapsule;
 public class TemplateVisitor extends SimpleElementVisitor8<ElementCapsule, ElementCapsule>
 {
 
-    public TemplateVisitor() {
-    }
-
     @Override
     public ElementCapsule visitType(TypeElement e, ElementCapsule capsule) {
         capsule.setTypeElement(e);
+        for (Element enclosed : e.getEnclosedElements()) {
+            enclosed.accept(this, capsule);
+        }
         return capsule;
     }
 
