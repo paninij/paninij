@@ -35,17 +35,20 @@ public class ElementProcedure extends Procedure
     private ExecutableElement element;
     private TypeMirror returnType;
     private FutureType futureType;
-    private String name;
     private TypeKind messageType;
+    private String name;
     private List<Variable> parameters;
     private boolean isFinal;
 
     public ElementProcedure(ExecutableElement e) {
         super();
         this.element = e;
+        this.returnType = this.element.getReturnType();
+        this.futureType = null;
+        this.messageType = null;
+        this.parameters = null;
         this.name = e.getSimpleName().toString();
         this.isFinal = JavaModelInfo.isFinalType(this.returnType);
-        this.returnType = this.element.getReturnType();
     }
 
     @Override
@@ -57,7 +60,11 @@ public class ElementProcedure extends Procedure
         } else if (this.element.getAnnotation(Block.class) != null) {
             this.futureType = FutureType.BLOCK;
         } else {
-            this.futureType = FutureType.DUCKFUTURE;
+            if (this.isFinal || this.getMessageType() == TypeKind.PRIMITIVE) {
+                this.futureType = FutureType.BLOCK;
+            } else {
+                this.futureType = FutureType.DUCKFUTURE;
+            }
         }
         return this.futureType;
     }

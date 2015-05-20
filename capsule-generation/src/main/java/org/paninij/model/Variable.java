@@ -19,4 +19,9 @@ public class Variable
     public String getIdentifier() {
         return this.identifier;
     }
+
+    @Override
+    public String toString() {
+        return this.type.toString() + " " + this.identifier;
+    }
 }

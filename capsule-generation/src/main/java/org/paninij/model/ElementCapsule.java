@@ -29,6 +29,11 @@ public class ElementCapsule extends Capsule
 {
     private TypeElement element;
 
+    /*
+     * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
+     * any errors. The TypeElement should be annotated with @Capsule and should represent
+     * a CapsuleTemplate
+     */
     public static Capsule make(TypeElement e) {
         ElementCapsule capsule = new ElementCapsule();
         TemplateVisitor visitor = new TemplateVisitor();
@@ -49,6 +54,7 @@ public class ElementCapsule extends Capsule
     public void setTypeElement(TypeElement e) {
         if (this.element == null) {
             this.element = e;
+            // TODO drop "Template"
             this.simpleName = e.getSimpleName().toString();
             this.qualifiedName = e.getQualifiedName().toString();
         }

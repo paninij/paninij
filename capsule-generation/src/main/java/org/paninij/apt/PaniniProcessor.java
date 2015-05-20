@@ -50,6 +50,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 import org.paninij.model.ElementCapsule;
 import org.paninij.model.Procedure;
+import org.paninij.model.Variable;
 
 
 /**
@@ -84,10 +85,16 @@ public class PaniniProcessor extends AbstractProcessor
                 org.paninij.model.Capsule cap = ElementCapsule.make(template);
 
                 ArrayList<Procedure> procs = cap.getProcedures();
-//                System.out.println("------" + cap.getSimpleName());
-//                for (int i = 0; i < procs.size(); i++) {
-//                    System.out.println(procs.get(i).getName());
-//                }
+                System.out.println("# " + cap.getSimpleName());
+                for (int i = 0; i < procs.size(); i++) {
+                    System.out.print("--" + procs.get(i).getName() + "(");
+                    String args = "";
+                    for (Variable v : procs.get(i).getParameters()) {
+                        args += (v + ", ");
+                    }
+                    args = args.length() > 1 ? args.substring(0, args.length() - 2) : "";
+                    System.out.print(args + ")\n");
+                }
 
                 MakeCapsule.make(this, template).makeSourceFile();
                 MakeCapsule$Thread.make(this, template).makeSourceFile();
