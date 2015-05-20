@@ -23,12 +23,13 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.SimpleElementVisitor8;
 
+import org.paninij.lang.Future;
 import org.paninij.model.ElementCapsule;
 
 /**
- * The Template visitor as the main visitor for all capsule templates. This class effectively
- *  converts a Capsule Template to an org.paninij.model.Capsule.
- *
+ * The Template visitor as the main visitor for all capsule templates. This class is used by
+ * org.paninij.model.Capsule to convert a Capsule Template to an org.paninij.model.ElementCapsule.
+ * This class is used when org.paninij.model.ElementCapsule.make(TypeElement e) is called.
  */
 public class TemplateVisitor extends SimpleElementVisitor8<ElementCapsule, ElementCapsule>
 {

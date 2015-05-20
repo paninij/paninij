@@ -1,7 +1,8 @@
 package org.paninij.model;
 
-public enum MessageType
+public enum FutureType
 {
     FUTURE,
     DUCKFUTURE,
+    BLOCK
 }

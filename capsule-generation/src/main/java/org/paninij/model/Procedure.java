@@ -30,7 +30,7 @@ public abstract class Procedure
 
     public abstract TypeKind getMessageType();
 
-    public abstract boolean shouldBlock();
+    public abstract FutureType getFutureType();
 
     public abstract boolean isReturnTypeFinal();
 
