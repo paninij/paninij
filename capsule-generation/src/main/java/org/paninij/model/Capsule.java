@@ -20,28 +20,12 @@ package org.paninij.model;
 
 import java.util.ArrayList;
 
-public abstract class Capsule
+public interface Capsule
 {
-    protected ArrayList<Procedure> procedures;
-    protected String simpleName;
-    protected String qualifiedName;
+    public String getSimpleName();
 
-    public Capsule() {
-        this.procedures = new ArrayList<Procedure>();
-        this.simpleName = null;
-        this.qualifiedName = null;
-    }
+    public String getQualifiedName();
 
-    public String getSimpleName() {
-        return this.simpleName;
-    }
-
-    public String getQualifiedName() {
-        return this.qualifiedName;
-    }
-
-    public ArrayList<Procedure> getProcedures() {
-        return this.procedures;
-    }
+    public ArrayList<Procedure> getProcedures();
 
 }

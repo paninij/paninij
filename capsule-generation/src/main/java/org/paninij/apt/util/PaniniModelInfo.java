@@ -37,9 +37,13 @@ import org.paninij.apt.PaniniProcessor;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.Signature;
+import org.paninij.model.AnnotationKind;
+import org.paninij.model.MessageKind;
 
 public class PaniniModelInfo
 {
+    public static final String DEFAULT_MESSAGE_PACKAGE = "org.paninij.runtime.messages";
+    public static final String DEFAULT_FUTURE_PACKAGE = "org.paninij.runtime.futures";
     public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
     public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
@@ -348,6 +352,15 @@ public class PaniniModelInfo
             return null;
         } else {
             return Source.format("public void wire(#0)", String.join(", ", paramDecls));
+        }
+    }
+
+    public static MessageKind getMessageKind(TypeMirror returnType, AnnotationKind annotation) {
+        // TODO determine other message kinds!
+        if (annotation == AnnotationKind.FUTURE) {
+            return MessageKind.FUTURE;
+        } else {
+            return MessageKind.ERROR;
         }
     }
 }

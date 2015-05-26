@@ -16,20 +16,6 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.model;
+package org.paninij.lang;
 
-import java.util.List;
-
-import javax.lang.model.type.TypeMirror;
-
-public interface Procedure
-{
-    public abstract String getName();
-
-    public abstract AnnotationKind getAnnotationKind();
-
-    public abstract TypeMirror getReturnType();
-
-    public abstract List<Variable> getParameters();
-
-}
+public @interface Duck { }

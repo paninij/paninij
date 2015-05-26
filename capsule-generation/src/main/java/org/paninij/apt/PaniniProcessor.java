@@ -48,7 +48,7 @@ import org.paninij.apt.util.Reporter;
 import org.paninij.apt.util.Source;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
-import org.paninij.model.ElementCapsule;
+import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
 import org.paninij.model.Variable;
 
@@ -70,39 +70,22 @@ public class PaniniProcessor extends AbstractProcessor
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
             if (SignatureChecker.check(this, elem)) {
-                // Nothing to do for now.
+                // TODO
+//                TypeElement template = (TypeElement) elem;
+//                org.paninij.model.Signature signature = SignatureElement.make(template);
+//                SignatureGenerator.generate(this, signature);
             }
         }
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
         for (Element elem : annotated) {
-
             if (CapsuleChecker.check(this, elem)) {
 
                 TypeElement template = (TypeElement) elem;
-
-                org.paninij.model.Capsule cap = ElementCapsule.make(template);
-
-                ArrayList<Procedure> procs = cap.getProcedures();
-                System.out.println("# " + cap.getSimpleName());
-                for (int i = 0; i < procs.size(); i++) {
-                    System.out.print("--" + procs.get(i).getName() + "(");
-                    String args = "";
-                    for (Variable v : procs.get(i).getParameters()) {
-                        args += (v + ", ");
-                    }
-                    args = args.length() > 1 ? args.substring(0, args.length() - 2) : "";
-                    System.out.print(args + ")\n");
-                }
-
-                MakeCapsule.make(this, template).makeSourceFile();
-                MakeCapsule$Thread.make(this, template).makeSourceFile();
-                //MakeCapsule$Task.make(this, template).makeSourceFile();
-                //MakeCapsule$Monitor.make(this, template).makeSourceFile();
-                //MakeCapsule$Serial.make(this, template).makeSourceFile();
-
-                MakeDucks.make(this, template).makeDucks();
+                org.paninij.model.Capsule capsule = CapsuleElement.make(template);
+                CapsuleGenerator.generate(this, capsule);
+                MessageGenerator.generate(this, capsule);
             }
         }
 

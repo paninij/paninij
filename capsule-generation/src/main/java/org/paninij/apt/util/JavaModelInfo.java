@@ -223,6 +223,6 @@ public class JavaModelInfo {
     {
         String qualified = type.toString();
         int idx = qualified.lastIndexOf('.');
-        return qualified.substring(0, idx);
+        return idx == -1 ? "" : qualified.substring(0,  idx);
     }
 }

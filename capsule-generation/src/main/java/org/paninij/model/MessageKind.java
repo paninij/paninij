@@ -1,8 +1,10 @@
 package org.paninij.model;
 
-public enum FutureType
+public enum MessageKind
 {
+    SIMPLE,
     FUTURE,
     DUCKFUTURE,
-    BLOCK
+    PREMADE,
+    ERROR
 }

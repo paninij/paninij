@@ -24,18 +24,18 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.SimpleElementVisitor8;
 
 import org.paninij.lang.Future;
-import org.paninij.model.ElementCapsule;
+import org.paninij.model.CapsuleElement;
 
 /**
  * The Template visitor as the main visitor for all capsule templates. This class is used by
  * org.paninij.model.Capsule to convert a Capsule Template to an org.paninij.model.ElementCapsule.
  * This class is used when org.paninij.model.ElementCapsule.make(TypeElement e) is called.
  */
-public class TemplateVisitor extends SimpleElementVisitor8<ElementCapsule, ElementCapsule>
+public class TemplateVisitor extends SimpleElementVisitor8<CapsuleElement, CapsuleElement>
 {
 
     @Override
-    public ElementCapsule visitType(TypeElement e, ElementCapsule capsule) {
+    public CapsuleElement visitType(TypeElement e, CapsuleElement capsule) {
         capsule.setTypeElement(e);
         for (Element enclosed : e.getEnclosedElements()) {
             enclosed.accept(this, capsule);
@@ -44,7 +44,7 @@ public class TemplateVisitor extends SimpleElementVisitor8<ElementCapsule, Eleme
     }
 
     @Override
-    public ElementCapsule visitExecutable(ExecutableElement e, ElementCapsule capsule) {
+    public CapsuleElement visitExecutable(ExecutableElement e, CapsuleElement capsule) {
         capsule.addExecutable(e);
         return capsule;
     }

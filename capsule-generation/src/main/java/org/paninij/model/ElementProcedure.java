@@ -28,50 +28,51 @@ import javax.lang.model.type.TypeMirror;
 import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.lang.Block;
+import org.paninij.lang.Duck;
 import org.paninij.lang.Future;
 
-public class ElementProcedure extends Procedure
+public class ElementProcedure implements Procedure
 {
     private ExecutableElement element;
+    private AnnotationKind annotationKind;
     private TypeMirror returnType;
-    private FutureType futureType;
-    private TypeKind messageType;
     private String name;
     private List<Variable> parameters;
-    private boolean isFinal;
 
     public ElementProcedure(ExecutableElement e) {
         super();
         this.element = e;
+        this.annotationKind = null;
         this.returnType = this.element.getReturnType();
-        this.futureType = null;
-        this.messageType = null;
         this.parameters = null;
         this.name = e.getSimpleName().toString();
-        this.isFinal = JavaModelInfo.isFinalType(this.returnType);
     }
 
     @Override
-    public FutureType getFutureType() {
-        if (this.futureType != null) return this.futureType;
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public AnnotationKind getAnnotationKind() {
+        if (this.annotationKind != null) return this.annotationKind;
 
         if (this.element.getAnnotation(Future.class) != null) {
-            this.futureType = FutureType.FUTURE;
+            this.annotationKind = AnnotationKind.FUTURE;
         } else if (this.element.getAnnotation(Block.class) != null) {
-            this.futureType = FutureType.BLOCK;
+            this.annotationKind = AnnotationKind.BLOCK;
+        } else if (this.element.getAnnotation(Duck.class) != null) {
+            this.annotationKind = AnnotationKind.DUCKFUTURE;
         } else {
-            if (this.isFinal || this.getMessageType() == TypeKind.PRIMITIVE) {
-                this.futureType = FutureType.BLOCK;
-            } else {
-                this.futureType = FutureType.DUCKFUTURE;
-            }
+            this.annotationKind = AnnotationKind.NONE;
         }
-        return this.futureType;
+
+        return this.annotationKind;
     }
 
     @Override
-    public boolean isReturnTypeFinal() {
-        return this.isFinal;
+    public TypeMirror getReturnType() {
+        return this.returnType;
     }
 
     @Override
@@ -89,31 +90,15 @@ public class ElementProcedure extends Procedure
     }
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public TypeMirror getReturnType() {
-        return this.returnType;
-    }
-
-    @Override
-    public TypeKind getMessageType() {
-        if (this.messageType != null) return this.messageType;
-
-        if (JavaModelInfo.hasVoidReturnType(this.element)) {
-            this.messageType = TypeKind.VOID;
-        } else if (JavaModelInfo.hasPrimitiveReturnType(this.element)) {
-            this.messageType = TypeKind.PRIMITIVE;
-        } else if (JavaModelInfo.isArray(this.returnType)) {
-            this.messageType = TypeKind.ARRAY;
-        } else if (PaniniModelInfo.isPaniniCustom(this.returnType)) {
-            this.messageType = TypeKind.PANINICUSTOM;
-        } else {
-            this.messageType = TypeKind.NORMAL;
+    public String toString() {
+        String str = this.getReturnType() + " " + this.getName() + "(";
+        String args = "";
+        for (Variable v : this.getParameters()) {
+            args += (v + ", ");
         }
-
-        return this.messageType;
+        args = args.length() > 1 ? args.substring(0, args.length() - 2) : "";
+        str += args + ")";
+        return str;
     }
+
 }

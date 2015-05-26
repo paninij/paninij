@@ -18,6 +18,7 @@
  */
 package org.paninij.model;
 
+import java.util.ArrayList;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -25,9 +26,12 @@ import javax.lang.model.element.TypeElement;
 import org.paninij.apt.TemplateVisitor;
 import org.paninij.apt.util.PaniniModelInfo;
 
-public class ElementCapsule extends Capsule
+public class CapsuleElement implements Capsule
 {
+    private String simpleName;
+    private String qualifiedName;
     private TypeElement element;
+    private ArrayList<Procedure> procedures;
 
     /*
      * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
@@ -35,14 +39,32 @@ public class ElementCapsule extends Capsule
      * a CapsuleTemplate
      */
     public static Capsule make(TypeElement e) {
-        ElementCapsule capsule = new ElementCapsule();
+        CapsuleElement capsule = new CapsuleElement();
         TemplateVisitor visitor = new TemplateVisitor();
         e.accept(visitor, capsule);
         return capsule;
     }
 
-    public ElementCapsule() {
-        super();
+    private CapsuleElement() {
+        this.simpleName = "";
+        this.qualifiedName = "";
+        this.element = null;
+        this.procedures = new ArrayList<Procedure>();
+    }
+
+    @Override
+    public String getSimpleName() {
+        return this.simpleName;
+    }
+
+    @Override
+    public String getQualifiedName() {
+        return this.qualifiedName;
+    }
+
+    @Override
+    public ArrayList<Procedure> getProcedures() {
+        return this.procedures;
     }
 
     public void addExecutable(ExecutableElement e) {
