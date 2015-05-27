@@ -4,71 +4,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.DuckShape.Category;
+import org.paninij.apt.util.SourceFile;
 import org.paninij.model.AnnotationKind;
 import org.paninij.model.Capsule;
 import org.paninij.model.MessageKind;
 import org.paninij.model.Procedure;
 import org.paninij.model.Variable;
 
-public class MessageGenerator
+public abstract class MessageSource
 {
-    private PaniniProcessor context;
 
-    public static void generate(PaniniProcessor context, Capsule capsule) {
-        MessageGenerator generator = new MessageGenerator();
-        generator.context = context;
-        generator.generateMessages(capsule);
+    protected Procedure context;
+
+    protected abstract SourceFile generate(Procedure procedure);
+    protected abstract String generateContent();
+    protected abstract String encode();
+    protected abstract String buildPackage();
+    protected abstract List<String> buildConstructor(String prependToBody);
+
+    protected void setContext(Procedure procedure) {
+        this.context = procedure;
     }
 
-    private void generateMessages(Capsule capsule) {
-        for (Procedure procedure : capsule.getProcedures()) {
-            this.generateMessage(procedure);
-        }
-    }
-
-    private void generateMessage(Procedure procedure) {
-        AnnotationKind annotation = procedure.getAnnotationKind();
-        TypeMirror returnType = procedure.getReturnType();
-        MessageKind messageKind = PaniniModelInfo.getMessageKind(returnType, annotation);
-        switch(messageKind) {
-        case SIMPLE:
-            SimpleMessageGenerator.generate(context, procedure);
-            break;
-        case FUTURE:
-            FutureMessageGenerator.generate(context, procedure);
-            break;
-        case DUCKFUTURE:
-            DuckMessageGenerator.generate(context, procedure);
-            break;
-        case PREMADE:
-        default:
-            System.out.println("Unhandled message kind");
-        }
-    }
-
-    protected String encodeReturnType(Procedure procedure) {
-        TypeMirror returnType = procedure.getReturnType();
+    protected String encodeReturnType() {
+        TypeMirror returnType = this.context.getReturnType();
         return returnType.toString().replaceAll("_", "__").replaceAll("\\.", "_");
     }
 
-    protected String encodeParameters(Procedure procedure) {
-        List<String> slots = getSlotTypes(procedure);
+    protected String encodeParameters() {
+        List<String> slots = this.getSlotTypes();
         return String.join("$", slots);
     }
 
-    protected List<String> getSlotTypes(Procedure procedure) {
-        List<Variable> args = procedure.getParameters();
+    public String encode(Procedure context) {
+        Procedure currentContext = this.context;
+        this.setContext(context);
+        String encoded = this.encode();
+        this.setContext(currentContext);
+        return encoded;
+    }
+
+    protected List<String> getSlotTypes() {
+        List<Variable> args = this.context.getParameters();
         List<String> slots = new ArrayList<String>();
         for (Variable arg : args) {
-            slots.add(getSlotType(arg));
+            slots.add(this.getSlotType(arg));
         }
         return slots;
     }
@@ -104,8 +95,8 @@ public class MessageGenerator
         }
     }
 
-    protected String wrapReturnType(Procedure procedure) {
-        TypeMirror mirror = procedure.getReturnType();
+    protected String wrapReturnType() {
+        TypeMirror mirror = this.context.getReturnType();
         TypeKind kind = mirror.getKind();
 
         switch (kind) {
@@ -137,9 +128,8 @@ public class MessageGenerator
         }
     }
 
-    protected List<String> buildParameterFields(Procedure procedure)
-    {
-        List<String> slots = this.getSlotTypes(procedure);
+    protected List<String> buildParameterFields() {
+        List<String> slots = this.getSlotTypes();
         List<String> fields = new ArrayList<String>(slots.size());
         int i = 0;
         for (String slot : slots) {
@@ -148,4 +138,48 @@ public class MessageGenerator
         return fields;
     }
 
+    public String buildQualifiedClassName() {
+        return this.buildPackage() + "." + this.encode();
+    }
+
+    protected List<String> buildImports() {
+        return this.buildImports(new ArrayList<String>());
+    }
+
+    protected List<String> buildImports(List<String> extra) {
+        TypeMirror mirror = this.context.getReturnType();
+        TypeKind kind = mirror.getKind();
+
+        List<String> packs = new ArrayList<String>(extra);
+
+        packs.add("org.paninij.runtime.Panini$Future");
+        packs.add("org.paninij.runtime.Panini$Message");
+        packs.add(this.wrapReturnType());
+
+        switch (kind) {
+        case ARRAY:
+        case DECLARED:
+            TypeElement typeElem = (TypeElement) ((DeclaredType) mirror).asElement();
+            packs = Source.buildCollectedImportDecls(typeElem, packs);
+            return packs;
+        case BOOLEAN:
+        case BYTE:
+        case CHAR:
+        case DOUBLE:
+        case FLOAT:
+        case INT:
+        case LONG:
+        case SHORT:
+        case VOID:
+            return Source.buildImportDecls(packs);
+        default:
+            String msg = "The given `return` (of the form `#0`) has an unexpected `TypeKind`: #1";
+            msg = Source.format(msg, mirror, kind);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+    protected List<String> buildConstructor() {
+        return this.buildConstructor("");
+    }
 }

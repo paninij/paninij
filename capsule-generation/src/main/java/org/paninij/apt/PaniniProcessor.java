@@ -46,6 +46,7 @@ import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Reporter;
 import org.paninij.apt.util.Source;
+import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
@@ -79,18 +80,32 @@ public class PaniniProcessor extends AbstractProcessor
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
+        MessageFactory messageFactory = new MessageFactory();
+
         for (Element elem : annotated) {
             if (CapsuleChecker.check(this, elem)) {
 
                 TypeElement template = (TypeElement) elem;
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
                 CapsuleGenerator.generate(this, capsule);
-                MessageGenerator.generate(this, capsule);
+
+                // this could be a part of CapsuleGenerator
+                for (Procedure procedure : capsule.getProcedures()) {
+                    SourceFile source = messageFactory.make(procedure);
+                    this.createJavaFile(source);
+                }
             }
         }
 
         this.roundEnv = null;
         return false;
+    }
+
+
+    void createJavaFile(SourceFile source) {
+        if (source != null) {
+            this.createJavaFile(source.filename, source.content);
+        }
     }
 
     /**

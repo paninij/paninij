@@ -3,30 +3,31 @@ package org.paninij.apt;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-
 import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
+import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Procedure;
 
-public class FutureMessageGenerator extends MessageGenerator
+public class FutureMessageSource extends MessageSource
 {
-
-    public static void generate(PaniniProcessor context, Procedure procedure) {
-        FutureMessageGenerator generator = new FutureMessageGenerator();
-        String src = generator.generateFuture(procedure);
-        try {
-            context.createJavaFile(generator.buildQualifiedClassName(procedure), src);
-        } catch (UnsupportedOperationException ex) {
-            context.warning(ex.toString());
-        }
+    public FutureMessageSource() {
+        this.context = null;
     }
 
-    private String generateFuture(Procedure procedure) {
+    /*
+     * Create a new Source file (name and content)
+     */
+    @Override
+    public SourceFile generate(Procedure procedure) {
+        this.context = procedure;
+        String name = this.buildQualifiedClassName();
+        String content = this.generateContent();
+        return new SourceFile(name, content);
+    }
+
+    @Override
+    protected String generateContent() {
         String src = Source.cat(
                 "package #0;",
                 "",
@@ -77,6 +78,7 @@ public class FutureMessageGenerator extends MessageGenerator
                 "    @Override",
                 "    public #2 get(long timeout, TimeUnit unit)",
                 "            throws InterruptedException, ExecutionException, TimeoutException {",
+                "        //TODO throw error or implement timeout",
                 "        return this.panini$get();",
                 "    }",
                 "",
@@ -98,86 +100,50 @@ public class FutureMessageGenerator extends MessageGenerator
                 "}");
 
         src = Source.format(src,
-                this.buildPackage(procedure),
-                this.encode(procedure),
-                this.wrapReturnType(procedure));
+                this.buildPackage(),
+                this.encode(),
+                this.wrapReturnType());
 
         System.out.println(src);
-        System.out.println(this.buildImports(procedure));
-        System.out.println(buildParameterFields(procedure));
+        System.out.println(this.buildImports());
+        System.out.println(this.buildParameterFields());
 
-        src = Source.formatAligned(src, this.buildImports(procedure));
-        src = Source.formatAligned(src, this.buildParameterFields(procedure));
-        src = Source.formatAligned(src, this.buildConstructor(procedure));
-        src = Source.formatAligned(src, this.buildReleaseArgs(procedure));
+        src = Source.formatAligned(src, this.buildImports());
+        src = Source.formatAligned(src, this.buildParameterFields());
+        src = Source.formatAligned(src, this.buildConstructor());
+        src = Source.formatAligned(src, this.buildReleaseArgs());
 
         return src;
     }
 
-    private String buildPackage(Procedure procedure) {
-        String pack = JavaModelInfo.getPackage(procedure.getReturnType());
-        return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_FUTURE_PACKAGE;
+    @Override
+    protected String encode() {
+        return this.encodeReturnType() + "$Future$" + this.encodeParameters();
     }
 
-    private String buildQualifiedClassName(Procedure procedure) {
-        return this.buildPackage(procedure) + "." + this.encode(procedure);
-    }
-
-    private String buildClassName(Procedure procedure) {
-        return this.encode(procedure);
-    }
-
-    private String encode(Procedure procedure) {
-        return this.encodeReturnType(procedure) + "$Future$" + this.encodeParameters(procedure);
-    }
-
-    private List<String> buildImports(Procedure procedure) {
-        TypeMirror mirror = procedure.getReturnType();
-        TypeKind kind = mirror.getKind();
-
+    @Override
+    protected List<String> buildImports() {
         List<String> packs = new ArrayList<String>();
-
         packs.add("java.util.concurrent.Future");
         packs.add("java.util.concurrent.ExecutionException");
         packs.add("java.util.concurrent.TimeUnit");
         packs.add("java.util.concurrent.TimeoutException");
-        packs.add("org.paninij.runtime.Panini$Future");
-        packs.add("org.paninij.runtime.Panini$Message");
-        packs.add(wrapReturnType(procedure));
-
-        switch (kind) {
-        case ARRAY:
-        case DECLARED:
-            TypeElement typeElem = (TypeElement) ((DeclaredType) mirror).asElement();
-            packs = Source.buildCollectedImportDecls(typeElem, packs);
-            return packs;
-        case BOOLEAN:
-        case BYTE:
-        case CHAR:
-        case DOUBLE:
-        case FLOAT:
-        case INT:
-        case LONG:
-        case SHORT:
-        case VOID:
-            return Source.buildImportDecls(packs);
-        default:
-            String msg = "The given `return` (of the form `#0`) has an unexpected `TypeKind`: #1";
-            msg = Source.format(msg, mirror, kind);
-            throw new IllegalArgumentException(msg);
-        }
+        return super.buildImports(packs);
     }
 
-    private List<String> buildConstructor(Procedure procedure) {
-        return this.buildConstructor(procedure, "");
+    @Override
+    protected String buildPackage() {
+        String pack = JavaModelInfo.getPackage(this.context.getReturnType());
+        return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_FUTURE_PACKAGE;
     }
 
-    private List<String> buildConstructor(Procedure procedure, String prependToBody) {
+    @Override
+    protected List<String> buildConstructor(String prependToBody) {
         // Create a list of parameters to the constructor starting with the `procID`.
         List<String> params = new ArrayList<String>();
         params.add("int procID");
 
-        List<String> slots = this.getSlotTypes(procedure);
+        List<String> slots = this.getSlotTypes();
         int i = 0;
         for (String slot : slots) {
             params.add(slot + " arg" + (++i));
@@ -198,7 +164,7 @@ public class FutureMessageGenerator extends MessageGenerator
                                         "    ##",
                                         "}");
 
-        src = Source.formatAll(src, this.buildClassName(procedure),
+        src = Source.formatAll(src, this.encode(),
                                     String.join(", ", params),
                                     prependToBody);
         src = Source.formatAlignedFirst(src, initializers);
@@ -206,9 +172,9 @@ public class FutureMessageGenerator extends MessageGenerator
         return src;
     }
 
-    private List<String> buildReleaseArgs(Procedure procedure) {
+    protected List<String> buildReleaseArgs() {
         List<String> statements=  new ArrayList<String>();
-        List<String> slots = this.getSlotTypes(procedure);
+        List<String> slots = this.getSlotTypes();
         int i = 0;
         for (String slot : slots) {
             if (slot.equals("java.lang.Object")) statements.add("panini$arg" + (++i) + " = null;");
