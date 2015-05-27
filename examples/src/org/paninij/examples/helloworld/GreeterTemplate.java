@@ -16,9 +16,10 @@ class GreeterTemplate
     }
 
     @Future
-    public void greet() {
+    public int greet(boolean draw) {
         s.write(new String("Panini: " + message));
         long time = System.currentTimeMillis();
         s.write(new String("Time is now: " + time));
+        return 12;
     }
 }

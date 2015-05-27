@@ -69,7 +69,7 @@ public class CapsuleElement implements Capsule
 
     public void addExecutable(ExecutableElement e) {
         if (PaniniModelInfo.isProcedure(e)) {
-            this.procedures.add(new ElementProcedure(e));
+            this.procedures.add(new ProcedureElement(e));
         }
     }
 

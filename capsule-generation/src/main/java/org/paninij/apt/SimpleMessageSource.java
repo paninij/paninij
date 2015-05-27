@@ -2,6 +2,9 @@ package org.paninij.apt;
 
 import java.util.List;
 
+import org.paninij.apt.util.JavaModelInfo;
+import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Procedure;
 
@@ -25,7 +28,29 @@ public class SimpleMessageSource extends MessageSource
 
     @Override
     protected String generateContent() {
-        return "";
+        String src = Source.cat(
+                "package #0;",
+                "",
+                "import org.paninij.runtime.Panini$Message;",
+                "",
+                "public class #1 implements Panini$Message",
+                "{",
+                "    public final int panini$procID;",
+                "",
+                "    ##",
+                "",
+                "    ##",
+                "",
+                "    @Override",
+                "    public int panini$msgID() {",
+                "        return panini$procID;",
+                "    }",
+                "}");
+
+        src = Source.format(src, this.buildPackage(), this.encode());
+        src = Source.formatAligned(src, this.buildParameterFields());
+        src = Source.formatAligned(src, this.buildConstructor());
+        return src;
     }
 
     @Override
@@ -35,12 +60,7 @@ public class SimpleMessageSource extends MessageSource
 
     @Override
     protected String buildPackage() {
-        return "";
-    }
-
-    @Override
-    protected List<String> buildConstructor(String prependToBody) {
-        // TODO Auto-generated method stub
-        return null;
+        String pack = JavaModelInfo.getPackage(this.context.getReturnType());
+        return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_MESSAGE_PACKAGE;
     }
 }

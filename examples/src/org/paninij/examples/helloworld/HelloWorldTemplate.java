@@ -14,6 +14,7 @@ class HelloWorldTemplate
     }
 
     void run() {
-        g.greet();
+        g.greet(true);
     }
 }
+

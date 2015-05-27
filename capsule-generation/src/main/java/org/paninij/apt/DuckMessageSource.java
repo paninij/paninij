@@ -27,21 +27,12 @@ public class DuckMessageSource extends MessageSource
     }
 
     @Override
-    protected String encode()
-    {
-        // TODO Auto-generated method stub
-        return null;
+    protected String encode() {
+        return this.encodeReturnType() + "$Duck$" + this.encodeParameters();
     }
 
     @Override
     protected String buildPackage()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected List<String> buildConstructor(String prependToBody)
     {
         // TODO Auto-generated method stub
         return null;

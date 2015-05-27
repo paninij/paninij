@@ -104,10 +104,6 @@ public class FutureMessageSource extends MessageSource
                 this.encode(),
                 this.wrapReturnType());
 
-        System.out.println(src);
-        System.out.println(this.buildImports());
-        System.out.println(this.buildParameterFields());
-
         src = Source.formatAligned(src, this.buildImports());
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());
@@ -135,41 +131,6 @@ public class FutureMessageSource extends MessageSource
     protected String buildPackage() {
         String pack = JavaModelInfo.getPackage(this.context.getReturnType());
         return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_FUTURE_PACKAGE;
-    }
-
-    @Override
-    protected List<String> buildConstructor(String prependToBody) {
-        // Create a list of parameters to the constructor starting with the `procID`.
-        List<String> params = new ArrayList<String>();
-        params.add("int procID");
-
-        List<String> slots = this.getSlotTypes();
-        int i = 0;
-        for (String slot : slots) {
-            params.add(slot + " arg" + (++i));
-        }
-
-        // Create a list of initialization statements.
-        List<String> initializers = new ArrayList<String>();
-        initializers.add("panini$procID = procID;");
-
-        i = 0;
-        for (String slot : slots) {
-            initializers.add(Source.format("panini$arg#0 = arg#0;", ++i));
-        }
-
-        List<String> src = Source.lines("public #0(#1)",
-                                        "{",
-                                        "    #2",
-                                        "    ##",
-                                        "}");
-
-        src = Source.formatAll(src, this.encode(),
-                                    String.join(", ", params),
-                                    prependToBody);
-        src = Source.formatAlignedFirst(src, initializers);
-
-        return src;
     }
 
     protected List<String> buildReleaseArgs() {

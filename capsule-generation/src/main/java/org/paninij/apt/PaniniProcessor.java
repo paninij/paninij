@@ -86,8 +86,12 @@ public class PaniniProcessor extends AbstractProcessor
             if (CapsuleChecker.check(this, elem)) {
 
                 TypeElement template = (TypeElement) elem;
+
+                MakeCapsule.make(this, template).makeSourceFile();
+//                MakeDucks.make(this, template).makeDucks();
+
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                CapsuleGenerator.generate(this, capsule);
+//                CapsuleGenerator.generate(this, capsule);
 
                 // this could be a part of CapsuleGenerator
                 for (Procedure procedure : capsule.getProcedures()) {

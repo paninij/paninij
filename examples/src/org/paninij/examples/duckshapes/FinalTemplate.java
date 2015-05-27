@@ -66,14 +66,4 @@ public class FinalTemplate {
     public Object atFutureObject() {
         return new Object();
     }
-
-    /*
-    public Final.Custom customFinalReturnType() {
-        return null;
-    }
-
-    public final static class Custom {
-        // Nothing needed in here.
-    }
-    */
 }

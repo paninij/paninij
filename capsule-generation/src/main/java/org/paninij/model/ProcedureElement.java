@@ -31,7 +31,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Duck;
 import org.paninij.lang.Future;
 
-public class ElementProcedure implements Procedure
+public class ProcedureElement implements Procedure
 {
     private ExecutableElement element;
     private AnnotationKind annotationKind;
@@ -39,7 +39,7 @@ public class ElementProcedure implements Procedure
     private String name;
     private List<Variable> parameters;
 
-    public ElementProcedure(ExecutableElement e) {
+    public ProcedureElement(ExecutableElement e) {
         super();
         this.element = e;
         this.annotationKind = null;

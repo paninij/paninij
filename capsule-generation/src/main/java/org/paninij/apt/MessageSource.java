@@ -31,7 +31,6 @@ public abstract class MessageSource
     protected abstract String generateContent();
     protected abstract String encode();
     protected abstract String buildPackage();
-    protected abstract List<String> buildConstructor(String prependToBody);
 
     protected void setContext(Procedure procedure) {
         this.context = procedure;
@@ -181,5 +180,39 @@ public abstract class MessageSource
 
     protected List<String> buildConstructor() {
         return this.buildConstructor("");
+    }
+
+    protected List<String> buildConstructor(String prependToBody) {
+        // Create a list of parameters to the constructor starting with the `procID`.
+        List<String> params = new ArrayList<String>();
+        params.add("int procID");
+
+        List<String> slots = this.getSlotTypes();
+        int i = 0;
+        for (String slot : slots) {
+            params.add(slot + " arg" + (++i));
+        }
+
+        // Create a list of initialization statements.
+        List<String> initializers = new ArrayList<String>();
+        initializers.add("panini$procID = procID;");
+
+        i = 0;
+        for (String slot : slots) {
+            initializers.add(Source.format("panini$arg#0 = arg#0;", ++i));
+        }
+
+        List<String> src = Source.lines("public #0(#1)",
+                                        "{",
+                                        "    #2",
+                                        "    ##",
+                                        "}");
+
+        src = Source.formatAll(src, this.encode(),
+                                    String.join(", ", params),
+                                    prependToBody);
+        src = Source.formatAlignedFirst(src, initializers);
+
+        return src;
     }
 }
