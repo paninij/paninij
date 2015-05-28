@@ -32,6 +32,7 @@ import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.JavaModelInfo;
+import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.model.AnnotationKind;
@@ -210,20 +211,29 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     List<String> buildProcedure(ExecutableElement method)
     {
         Procedure p = new ProcedureElement(method);
-        switch (PaniniModelInfo.getMessageKind(p.getReturnType(), p.getAnnotationKind())) {
-        case SIMPLE:
-            return buildSimpleProcedure(method);
-        case FUTURE:
-            if (p.getAnnotationKind() == AnnotationKind.BLOCK) {
-                return buildBlockedProcedure(method);
-            } else {
-                return buildFutureProcedure(method);
-            }
-        case DUCKFUTURE:
-            return buildDuckProcedure(method);
+
+        MessageShape shape = new MessageShape(p);
+
+        // TODO all shapes defined, now delegate!
+        switch (shape.behavior) {
+        case BLOCKED_FUTURE:
+            break;
+        case BLOCKED_PREMADE:
+            break;
+        case ERROR:
+            break;
+        case UNBLOCKED_DUCK:
+            return this.buildDuckProcedure(method);
+        case UNBLOCKED_FUTURE:
+            return this.buildFutureProcedure(method);
+        case UNBLOCKED_PREMADE:
+            break;
+        case UNBLOCKED_SIMPLE:
+            return this.buildSimpleProcedure(method);
         default:
-            return buildDuckProcedure(method);
+            break;
         }
+        return null;
     }
 
     List<String> buildDuckProcedure(ExecutableElement method) {

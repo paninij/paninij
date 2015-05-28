@@ -8,6 +8,8 @@ import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Procedure;
+import org.paninij.model.Type.Category;
+import org.paninij.model.Variable;
 
 public class FutureMessageSource extends MessageSource
 {
@@ -101,8 +103,8 @@ public class FutureMessageSource extends MessageSource
 
         src = Source.format(src,
                 this.buildPackage(),
-                this.encode(),
-                this.wrapReturnType());
+                this.shape.encoded,
+                this.context.getReturnType().wrapped());
 
         src = Source.formatAligned(src, this.buildImports());
         src = Source.formatAligned(src, this.buildParameterFields());
@@ -110,11 +112,6 @@ public class FutureMessageSource extends MessageSource
         src = Source.formatAligned(src, this.buildReleaseArgs());
 
         return src;
-    }
-
-    @Override
-    protected String encode() {
-        return this.encodeReturnType() + "$Future$" + this.encodeParameters();
     }
 
     @Override
@@ -129,16 +126,15 @@ public class FutureMessageSource extends MessageSource
 
     @Override
     protected String buildPackage() {
-        String pack = JavaModelInfo.getPackage(this.context.getReturnType());
+        String pack = JavaModelInfo.getPackage(this.context.getReturnType().getMirror());
         return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_FUTURE_PACKAGE;
     }
 
     protected List<String> buildReleaseArgs() {
         List<String> statements=  new ArrayList<String>();
-        List<String> slots = this.getSlotTypes();
         int i = 0;
-        for (String slot : slots) {
-            if (slot.equals("java.lang.Object")) statements.add("panini$arg" + (++i) + " = null;");
+        for (Variable v : context.getParameters()) {
+            if (v.getCategory() == Category.NORMAL) statements.add("panini$arg" + (++i) + " = null;");
         }
         return statements;
     }

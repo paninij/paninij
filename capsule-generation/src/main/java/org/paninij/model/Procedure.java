@@ -20,15 +20,13 @@ package org.paninij.model;
 
 import java.util.List;
 
-import javax.lang.model.type.TypeMirror;
-
 public interface Procedure
 {
     public abstract String getName();
 
     public abstract AnnotationKind getAnnotationKind();
 
-    public abstract TypeMirror getReturnType();
+    public abstract Type getReturnType();
 
     public abstract List<Variable> getParameters();
 

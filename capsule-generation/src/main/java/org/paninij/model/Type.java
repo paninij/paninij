@@ -3,8 +3,23 @@ package org.paninij.model;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.apt.util.JavaModelInfo;
+import org.paninij.apt.util.PaniniModelInfo;
+
 public class Type
 {
+
+    public enum Duckability {
+        UNDUCKABLE,
+        DUCKABLE,
+        DUCKED
+    }
+
+    public enum Category {
+        NORMAL,
+        VOID,
+        PRIMITIVE
+    }
 
     private TypeMirror mirror;
     private TypeKind kind;
@@ -54,29 +69,64 @@ public class Type
         }
     }
 
+    public Category getCategory() {
+        if (JavaModelInfo.isVoidType(this.mirror)) {
+            return Category.VOID;
+        }
+
+        if (JavaModelInfo.isPrimitive(this.mirror)) {
+            return Category.PRIMITIVE;
+        }
+
+        return Category.NORMAL;
+    }
+
+    public Duckability getDuckability(){
+        // TODO need to fully determine duckability!
+        // see https://github.com/hridesh/panini/wiki/Enumerating-Consequences-of-a-Procedure's-Properties-Along-Three-Dimensions
+
+        if (PaniniModelInfo.isPaniniCustom(this.mirror)) {
+            return Duckability.DUCKED;
+        }
+
+        if (JavaModelInfo.isFinalType(this.mirror)) {
+            return Duckability.UNDUCKABLE;
+        }
+
+        if (JavaModelInfo.isPrimitive(this.mirror)) {
+            return Duckability.UNDUCKABLE;
+        }
+
+        if (JavaModelInfo.isArray(this.mirror)) {
+            return Duckability.UNDUCKABLE;
+        }
+
+        return Duckability.DUCKABLE;
+    }
+
     public String wrapped() {
         switch (this.kind) {
         case BOOLEAN:
-            return "Boolean";
+            return "java.lang.Boolean";
         case BYTE:
-            return "Byte";
+            return "java.lang.Byte";
         case SHORT:
-            return "Short";
+            return "java.lang.Short";
         case INT:
-            return "Integer";
+            return "java.lang.Integer";
         case LONG:
-            return "Long";
+            return "java.lang.Long";
         case CHAR:
-            return "Character";
+            return "java.lang.Character";
         case FLOAT:
-            return "Float";
+            return "java.lang.Float";
         case DOUBLE:
-            return "Double";
+            return "java.lang.Double";
         case VOID:
-            return "Void";
+            return "java.lang.Void";
         case ARRAY:
         case DECLARED:  // A class or interface type.
-            return this.kind.toString();
+            return this.mirror.toString();
         case NONE:
         case NULL:
         case ERROR:

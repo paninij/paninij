@@ -47,20 +47,15 @@ public class SimpleMessageSource extends MessageSource
                 "    }",
                 "}");
 
-        src = Source.format(src, this.buildPackage(), this.encode());
+        src = Source.format(src, this.buildPackage(), this.shape.encoded);
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());
         return src;
     }
 
     @Override
-    protected String encode() {
-        return this.encodeReturnType() + "$Simple$" + this.encodeParameters();
-    }
-
-    @Override
     protected String buildPackage() {
-        String pack = JavaModelInfo.getPackage(this.context.getReturnType());
+        String pack = JavaModelInfo.getPackage(this.context.getReturnType().getMirror());
         return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_MESSAGE_PACKAGE;
     }
 }

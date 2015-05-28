@@ -35,7 +35,7 @@ public class ProcedureElement implements Procedure
 {
     private ExecutableElement element;
     private AnnotationKind annotationKind;
-    private TypeMirror returnType;
+    private Type returnType;
     private String name;
     private List<Variable> parameters;
 
@@ -43,7 +43,7 @@ public class ProcedureElement implements Procedure
         super();
         this.element = e;
         this.annotationKind = null;
-        this.returnType = this.element.getReturnType();
+        this.returnType = new Type(this.element.getReturnType());
         this.parameters = null;
         this.name = e.getSimpleName().toString();
     }
@@ -71,7 +71,7 @@ public class ProcedureElement implements Procedure
     }
 
     @Override
-    public TypeMirror getReturnType() {
+    public Type getReturnType() {
         return this.returnType;
     }
 

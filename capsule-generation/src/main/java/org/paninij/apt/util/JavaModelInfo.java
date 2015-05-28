@@ -134,6 +134,10 @@ public class JavaModelInfo {
         return exec.getReturnType().getKind() == TypeKind.VOID;
     }
 
+    public static boolean isVoidType(TypeMirror type) {
+        return type.getKind() == TypeKind.VOID;
+    }
+
     public static boolean isFinalType(TypeMirror returnType)
     {
         if (returnType.getKind() != TypeKind.DECLARED)

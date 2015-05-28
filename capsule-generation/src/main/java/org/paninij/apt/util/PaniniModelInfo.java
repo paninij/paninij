@@ -41,6 +41,7 @@ import org.paninij.lang.Signature;
 import org.paninij.model.AnnotationKind;
 import org.paninij.model.MessageKind;
 import org.paninij.model.Procedure;
+import org.paninij.model.Type;
 import org.paninij.model.Variable;
 
 public class PaniniModelInfo
@@ -372,9 +373,8 @@ public class PaniniModelInfo
     }
 
     public static String encode(Procedure p, MessageKind k) {
-        TypeMirror returnType = p.getReturnType();
-        String encoded = "";
-        encoded += returnType.toString().replaceAll("_", "__").replaceAll("\\.", "_");
+        Type returnType = p.getReturnType();
+        String encoded = returnType.encodeFull();
         switch(k) {
         case SIMPLE:
             encoded += "$Simple$";
@@ -385,49 +385,14 @@ public class PaniniModelInfo
         case DUCKFUTURE:
             encoded += "$Duck$";
             break;
-        case ERROR:
+        default:
             encoded += "$Error$";
-            break;
         }
 
         List<String> slots = new ArrayList<String>();
 
         for (Variable v : p.getParameters()) {
-            TypeKind kind = v.getType().getKind();
-            switch (kind) {
-            case ARRAY:
-            case DECLARED:
-                slots.add("ref");
-                break;
-            case BOOLEAN:
-                slots.add("boolean");
-                break;
-            case BYTE:
-                slots.add("byte");
-                break;
-            case CHAR:
-                slots.add("char");
-                break;
-            case DOUBLE:
-                slots.add("double");
-                break;
-            case FLOAT:
-                slots.add("float");
-                break;
-            case INT:
-                slots.add("int");
-                break;
-            case LONG:
-                slots.add("long");
-                break;
-            case SHORT:
-                slots.add("short");
-                break;
-            default:
-                String msg = "The given `param` (of the form `#0`) has an unexpected `TypeKind`: #1";
-                msg = Source.format(msg, v, kind);
-                throw new IllegalArgumentException(msg);
-            }
+            slots.add(v.encode());
         }
 
         encoded += String.join("$", slots);
