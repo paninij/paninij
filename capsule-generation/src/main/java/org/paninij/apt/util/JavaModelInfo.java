@@ -81,7 +81,7 @@ public class JavaModelInfo {
         case DOUBLE:
             return "Double";
         case VOID:
-            return "void";
+            return "Void";
         case ARRAY:
         case DECLARED:  // A class or interface type.
             return exec.getReturnType().toString();

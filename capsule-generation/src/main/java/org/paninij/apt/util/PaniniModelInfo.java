@@ -30,6 +30,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
@@ -39,6 +40,8 @@ import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.Signature;
 import org.paninij.model.AnnotationKind;
 import org.paninij.model.MessageKind;
+import org.paninij.model.Procedure;
+import org.paninij.model.Variable;
 
 public class PaniniModelInfo
 {
@@ -359,8 +362,76 @@ public class PaniniModelInfo
         // TODO determine other message kinds!
         if (annotation == AnnotationKind.FUTURE) {
             return MessageKind.FUTURE;
+        } else if (annotation == AnnotationKind.BLOCK) {
+            return MessageKind.FUTURE;
+        } else if (annotation == AnnotationKind.DUCKFUTURE) {
+            return MessageKind.DUCKFUTURE;
         } else {
-            return MessageKind.ERROR;
+            return MessageKind.SIMPLE;
         }
+    }
+
+    public static String encode(Procedure p, MessageKind k) {
+        TypeMirror returnType = p.getReturnType();
+        String encoded = "";
+        encoded += returnType.toString().replaceAll("_", "__").replaceAll("\\.", "_");
+        switch(k) {
+        case SIMPLE:
+            encoded += "$Simple$";
+            break;
+        case FUTURE:
+            encoded += "$Future$";
+            break;
+        case DUCKFUTURE:
+            encoded += "$Duck$";
+            break;
+        case ERROR:
+            encoded += "$Error$";
+            break;
+        }
+
+        List<String> slots = new ArrayList<String>();
+
+        for (Variable v : p.getParameters()) {
+            TypeKind kind = v.getType().getKind();
+            switch (kind) {
+            case ARRAY:
+            case DECLARED:
+                slots.add("ref");
+                break;
+            case BOOLEAN:
+                slots.add("boolean");
+                break;
+            case BYTE:
+                slots.add("byte");
+                break;
+            case CHAR:
+                slots.add("char");
+                break;
+            case DOUBLE:
+                slots.add("double");
+                break;
+            case FLOAT:
+                slots.add("float");
+                break;
+            case INT:
+                slots.add("int");
+                break;
+            case LONG:
+                slots.add("long");
+                break;
+            case SHORT:
+                slots.add("short");
+                break;
+            default:
+                String msg = "The given `param` (of the form `#0`) has an unexpected `TypeKind`: #1";
+                msg = Source.format(msg, v, kind);
+                throw new IllegalArgumentException(msg);
+            }
+        }
+
+        encoded += String.join("$", slots);
+
+        return encoded;
     }
 }

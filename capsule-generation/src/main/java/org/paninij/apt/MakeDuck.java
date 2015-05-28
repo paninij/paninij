@@ -51,7 +51,8 @@ public abstract class MakeDuck
         case PANINICUSTOM:
             return buildPaniniCustomDuck(currentDuck);
         default:
-            throw new UnsupportedOperationException("Duck category not supported: " + category);
+//            throw new UnsupportedOperationException("Duck category not supported: " + category);
+            return "";
         }
     }
 

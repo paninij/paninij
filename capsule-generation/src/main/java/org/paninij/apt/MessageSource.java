@@ -70,7 +70,7 @@ public abstract class MessageSource
         switch (kind) {
         case ARRAY:
         case DECLARED:
-            return "ref";
+            return "Object";
         case BOOLEAN:
             return "boolean";
         case BYTE:

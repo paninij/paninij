@@ -34,6 +34,10 @@ import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
+import org.paninij.model.AnnotationKind;
+import org.paninij.model.MessageKind;
+import org.paninij.model.Procedure;
+import org.paninij.model.ProcedureElement;
 
 
 /**
@@ -116,12 +120,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             buildRun(),
             buildMain()
         };
-        
+
         for (List<String> x : xs) {
             src.addAll(x);
             src.add("");
         }
-        
+
         return src;
     }
 
@@ -148,7 +152,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 currID++;
             }
         }
-        
+
         return decls;
     }
 
@@ -205,13 +209,31 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     List<String> buildProcedure(ExecutableElement method)
     {
+        Procedure p = new ProcedureElement(method);
+        switch (PaniniModelInfo.getMessageKind(p.getReturnType(), p.getAnnotationKind())) {
+        case SIMPLE:
+            return buildSimpleProcedure(method);
+        case FUTURE:
+            if (p.getAnnotationKind() == AnnotationKind.BLOCK) {
+                return buildBlockedProcedure(method);
+            } else {
+                return buildFutureProcedure(method);
+            }
+        case DUCKFUTURE:
+            return buildDuckProcedure(method);
+        default:
+            return buildDuckProcedure(method);
+        }
+    }
+
+    List<String> buildDuckProcedure(ExecutableElement method) {
         List<String> lines = Source.lines("#0",
-                                          "{",
-                                          "    #1$Thread panini$duck = null;",
-                                          "    panini$duck = new #1$Thread(#2);",
-                                          "    panini$push(panini$duck);",
-                                          "    #3",
-                                          "}");
+                "{",
+                "    #1$Thread panini$duck = null;",
+                "    panini$duck = new #1$Thread(#2);",
+                "    panini$push(panini$duck);",
+                "    #3",
+                "}");
 
         // Every `args` list starts with a `procID`. If there are any parameter names, then they
         // are all appended to `args`.
@@ -224,9 +246,118 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         String maybeReturn = (duck.getSimpleReturnType() != "void") ? "return panini$duck;" : "";
 
         return Source.formatAll(lines, Source.buildExecutableDecl(method),
-                                       duck.toString(),
-                                       args,
-                                       maybeReturn);
+                     duck.toString(),
+                     args,
+                     maybeReturn);
+    }
+
+    List<String> buildFutureProcedure(ExecutableElement method) {
+        Procedure p = new ProcedureElement(method);
+        List<String> lines = Source.lines(
+                "#0",
+                "{",
+                "    #1<#2> panini$message = null;",
+                "    panini$message = new #1<#2>(#3);",
+                "    panini$push(panini$message);",
+                "    return panini$message;",
+                "}");
+        String procID = buildProcedureID(method);
+
+        String classname = PaniniModelInfo.encode(p, MessageKind.FUTURE);
+        String type = JavaModelInfo.getBoxedReturnType(method);
+        String args = Source.buildParameterNamesList(method);
+        args = args.equals("") ? procID : procID + ", " + args;
+
+        String declaration = Source.format("#0 Future<#1> #2(#3)",
+                Source.buildModifiersList(method),
+                type,
+                p.getName(),
+                args);
+
+        List<String> thrown = new ArrayList<String>();
+        for (TypeMirror t : method.getThrownTypes()) {
+            thrown.add(t.toString());
+        }
+
+        declaration += (thrown.isEmpty()) ? declaration : declaration + " throws " + String.join(", ", thrown);
+
+        return Source.formatAll(lines,
+                declaration,
+                classname,
+                type,
+                args);
+    }
+
+    List<String> buildBlockedProcedure(ExecutableElement method) {
+        Procedure p = new ProcedureElement(method);
+        List<String> lines = Source.lines(
+                "#0",
+                "{",
+                "    #1<#2> panini$message = null;",
+                "    panini$message = new #1<#2>(#3);",
+                "    panini$push(panini$message);",
+                "    return panini$message.get();",
+                "}");
+        String procID = buildProcedureID(method);
+
+        String classname = PaniniModelInfo.encode(p, MessageKind.FUTURE);
+        String type = JavaModelInfo.getBoxedReturnType(method);
+        String args = Source.buildParameterNamesList(method);
+        args = args.equals("") ? procID : procID + ", " + args;
+
+        String declaration = Source.format("#0 #1 #2(#3)",
+                Source.buildModifiersList(method),
+                type,
+                p.getName(),
+                args);
+
+        List<String> thrown = new ArrayList<String>();
+        for (TypeMirror t : method.getThrownTypes()) {
+            thrown.add(t.toString());
+        }
+
+        declaration += (thrown.isEmpty()) ? declaration : declaration + " throws " + String.join(", ", thrown);
+
+        return Source.formatAll(
+                lines,
+                declaration,
+                classname,
+                type,
+                args);
+    }
+
+    List<String> buildSimpleProcedure(ExecutableElement method) {
+        Procedure p = new ProcedureElement(method);
+        List<String> lines = Source.lines(
+                "#0",
+                "{",
+                "    #1 panini$message = null;",
+                "    panini$message = new #1(#2);",
+                "    panini$push(panini$message);",
+                "}");
+        String procID = buildProcedureID(method);
+        String classname = PaniniModelInfo.encode(p, MessageKind.SIMPLE);
+        String type = JavaModelInfo.getBoxedReturnType(method);
+        String args = Source.buildParameterNamesList(method);
+        args = args.equals("") ? procID : procID + ", " + args;
+
+        String declaration = Source.format("#0 #1 #2(#3)",
+                Source.buildModifiersList(method),
+                type,
+                p.getName(),
+                args);
+
+        List<String> thrown = new ArrayList<String>();
+        for (TypeMirror t : method.getThrownTypes()) {
+            thrown.add(t.toString());
+        }
+
+        declaration += (thrown.isEmpty()) ? declaration : declaration + " throws " + String.join(", ", thrown);
+
+        return Source.formatAll(lines,
+                declaration,
+                classname,
+                args);
     }
 
 
@@ -289,7 +420,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         if (children.size() == 0) {
             return new ArrayList<String>();
         }
-        
+
         List<String> lines = new ArrayList<String>();
 
         // For each of the capsule's children, add a line of code to instantiate that child capsule.
@@ -310,7 +441,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         {
             lines.add(Source.format("panini$encapsulated.#0.panini$start();", child.toString()));
         }
-        
+
         // Build the method itself.
         List<String> src = Source.lines("@Override",
                                         "protected void panini$initChildren()",
