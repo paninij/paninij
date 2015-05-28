@@ -2,18 +2,13 @@ package org.paninij.model;
 
 import javax.lang.model.type.TypeMirror;
 
-public class Variable
+public class Variable extends Type
 {
-    private TypeMirror type;
     private String identifier;
 
-    public Variable(TypeMirror type, String identifier) {
-        this.type = type;
+    public Variable(TypeMirror mirror, String identifier) {
+        super(mirror);
         this.identifier = identifier;
-    }
-
-    public TypeMirror getType() {
-        return this.type;
     }
 
     public String getIdentifier() {
@@ -22,6 +17,6 @@ public class Variable
 
     @Override
     public String toString() {
-        return this.type.toString() + " " + this.identifier;
+        return super.toString() + " " + this.identifier;
     }
 }
