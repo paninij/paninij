@@ -162,9 +162,9 @@ public class MakeCapsule
 
             String argDeclString = String.join(", ", argDecls);
 
-            String declaration = Source.format("#0 Future<#1> #2(#3)",
+            String declaration = Source.format("#0 #1 #2(#3)",
                     String.join(" ", p.getModifiers()),
-                    shape.returnType.wrapped(),
+                    shape.realReturn,
                     p.getName(),
                     argDeclString);
 

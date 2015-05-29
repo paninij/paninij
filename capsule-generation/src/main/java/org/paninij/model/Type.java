@@ -93,6 +93,10 @@ public class Type
             return Duckability.UNDUCKABLE;
         }
 
+        if (JavaModelInfo.isVoidType(this.mirror)) {
+            return Duckability.UNDUCKABLE;
+        }
+
         if (JavaModelInfo.isPrimitive(this.mirror)) {
             return Duckability.UNDUCKABLE;
         }
@@ -140,6 +144,10 @@ public class Type
         default:
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean isVoid() {
+        return this.kind.equals(TypeKind.VOID);
     }
 
     @Override

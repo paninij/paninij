@@ -294,9 +294,9 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         String argDeclString = String.join(", ", argDecls);
         String argNameString = String.join(", ", argNames);
 
-        String declaration = Source.format("#0 Future<#1> #2(#3)",
+        String declaration = Source.format("#0 #1 #2(#3)",
                 Source.buildModifiersList(method),
-                shape.returnType.wrapped(),
+                shape.realReturn,
                 p.getName(),
                 argDeclString);
 
@@ -315,44 +315,54 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     List<String> buildBlockedProcedure(ExecutableElement method) {
         Procedure p = new ProcedureElement(method);
+        MessageShape shape = new MessageShape(new ProcedureElement(method));
+
         List<String> lines = Source.lines(
                 "#0",
                 "{",
-                "    #1<#2> panini$message = null;",
-                "    panini$message = new #1<#2>(#3);",
+                "    #1 panini$message = null;",
+                "    panini$message = new #1(#2);",
                 "    panini$push(panini$message);",
                 "    return panini$message.get();",
                 "}");
         String procID = buildProcedureID(method);
 
-        String classname = PaniniModelInfo.encode(p, MessageKind.FUTURE);
-        String type = JavaModelInfo.getBoxedReturnType(method);
-        String args = Source.buildParameterNamesList(method);
-        args = args.equals("") ? procID : procID + ", " + args;
+        List<String> argDecls = new ArrayList<String>();
+        List<String> argNames = new ArrayList<String>();
+
+
+        argNames.add(procID);
+        for (Variable v : p.getParameters()) {
+            argDecls.add(v.toString());
+            argNames.add(v.getIdentifier());
+        }
+
+        String argDeclString = String.join(", ", argDecls);
+        String argNameString = String.join(", ", argNames);
 
         String declaration = Source.format("#0 #1 #2(#3)",
                 Source.buildModifiersList(method),
-                type,
+                shape.realReturn,
                 p.getName(),
-                args);
+                argDeclString);
 
         List<String> thrown = new ArrayList<String>();
         for (TypeMirror t : method.getThrownTypes()) {
             thrown.add(t.toString());
         }
 
-        declaration += (thrown.isEmpty()) ? declaration : declaration + " throws " + String.join(", ", thrown);
+        declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
 
-        return Source.formatAll(
-                lines,
+        return Source.formatAll(lines,
                 declaration,
-                classname,
-                type,
-                args);
+                shape.encoded,
+                argNameString);
     }
 
     List<String> buildSimpleProcedure(ExecutableElement method) {
         Procedure p = new ProcedureElement(method);
+        MessageShape shape = new MessageShape(new ProcedureElement(method));
+
         List<String> lines = Source.lines(
                 "#0",
                 "{",
@@ -361,28 +371,37 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    panini$push(panini$message);",
                 "}");
         String procID = buildProcedureID(method);
-        String classname = PaniniModelInfo.encode(p, MessageKind.SIMPLE);
-        String type = JavaModelInfo.getBoxedReturnType(method);
-        String args = Source.buildParameterNamesList(method);
-        args = args.equals("") ? procID : procID + ", " + args;
+
+        List<String> argDecls = new ArrayList<String>();
+        List<String> argNames = new ArrayList<String>();
+
+
+        argNames.add(procID);
+        for (Variable v : p.getParameters()) {
+            argDecls.add(v.toString());
+            argNames.add(v.getIdentifier());
+        }
+
+        String argDeclString = String.join(", ", argDecls);
+        String argNameString = String.join(", ", argNames);
 
         String declaration = Source.format("#0 #1 #2(#3)",
                 Source.buildModifiersList(method),
-                type,
+                shape.realReturn,
                 p.getName(),
-                args);
+                argDeclString);
 
         List<String> thrown = new ArrayList<String>();
         for (TypeMirror t : method.getThrownTypes()) {
             thrown.add(t.toString());
         }
 
-        declaration += (thrown.isEmpty()) ? declaration : declaration + " throws " + String.join(", ", thrown);
+        declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
 
         return Source.formatAll(lines,
                 declaration,
-                classname,
-                args);
+                shape.encoded,
+                argNameString);
     }
 
 
@@ -451,7 +470,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         // For each of the capsule's children, add a line of code to instantiate that child capsule.
         for (VariableElement child : children)
         {
-            String inst = Source.format("panini$encapsulated.#0 = new #1();",
+            String inst = Source.format("panini$encapsulated.#0 = new #1$Thread();",
                                         child.toString(), child.asType().toString());
             lines.add(inst);
         }

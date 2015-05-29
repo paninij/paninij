@@ -16,6 +16,7 @@ public class MessageShape
     public final Category category;
     public final Behavior behavior;
     public final String encoded;
+    public final String realReturn;
 
     public MessageShape(Procedure procedure) {
         this.procedure = procedure;
@@ -23,6 +24,7 @@ public class MessageShape
         this.behavior = Behavior.determine(procedure);
         this.category = this.getCategory();
         this.encoded = this.encode();
+        this.realReturn = this.getRealReturn();
     }
 
     public enum Category {
@@ -54,8 +56,9 @@ public class MessageShape
             case FUTURE:
             case BLOCK:
             case NONE:
+                return this.returnType.isVoid() ? Category.SIMPLE : Category.FUTURE;
             default:
-                return Category.FUTURE;
+                return Category.SIMPLE;
             }
         default:
             // this should be unreachable
@@ -101,6 +104,22 @@ public class MessageShape
             break;
         }
         throw new IllegalArgumentException("Message does not have a category, so it cannot fit into a package.");
+    }
+
+    private String getRealReturn() {
+        switch (this.category) {
+        case DUCKFUTURE:
+            this.returnType.getMirror().toString();
+        case FUTURE:
+            return "java.util.concurrent.Future<" + this.returnType.wrapped() + ">";
+        case PREMADE:
+            return this.returnType.wrapped();
+        case SIMPLE:
+            return "void";
+        case ERROR:
+        default:
+            throw new IllegalArgumentException("Message has an illegal (\"ERROR\") category, so the real return type cannot be determined.");
+        }
     }
 
 }
