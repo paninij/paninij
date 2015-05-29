@@ -31,14 +31,17 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.util.DuckShape.Category;
 import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.model.AnnotationKind;
+import org.paninij.model.Capsule;
 import org.paninij.model.MessageKind;
 import org.paninij.model.Procedure;
 import org.paninij.model.ProcedureElement;
+import org.paninij.model.Variable;
 
 
 /**
@@ -49,11 +52,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 {
     private static final String CAPSULE_THREAD_TYPE_SUFFIX = "$Thread";
 
-    static MakeCapsule$Thread make(PaniniProcessor context, TypeElement template)
+    static MakeCapsule$Thread make(PaniniProcessor context, TypeElement template, Capsule capsule)
     {
         MakeCapsule$Thread cap = new MakeCapsule$Thread();
         cap.context = context;
         cap.template = template;
+        cap.capsule = capsule;
         return cap;
     }
 
@@ -183,9 +187,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     List<String> buildImports()
     {
         Set<String> imports = getStandardImports();
-        for (DuckShape duck : PaniniModelInfo.getDuckShapes(template)) {
-            imports.add(duck.getPackage() + "." + duck.encoded + "$Thread");
+
+        for (Procedure p : this.capsule.getProcedures()) {
+            MessageShape shape = new MessageShape(p);
+            imports.add(shape.getPackage() + "." +shape.encoded);
         }
+
         return Source.buildCollectedImportDecls(template, imports);
     }
 
@@ -242,7 +249,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    #1$Thread panini$duck = null;",
                 "    panini$duck = new #1$Thread(#2);",
                 "    panini$push(panini$duck);",
-                "    #3",
+                "    return panini$duck;",
                 "}");
 
         // Every `args` list starts with a `procID`. If there are any parameter names, then they
@@ -252,50 +259,58 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         args = args.equals("") ? procID : procID + ", " + args;
 
         // `void` procedures will not need a return statement, but other procedures will.
-        DuckShape duck = new DuckShape(method);
-        String maybeReturn = (duck.getSimpleReturnType() != "void") ? "return panini$duck;" : "";
+        MessageShape shape = new MessageShape(new ProcedureElement(method));
 
-        return Source.formatAll(lines, Source.buildExecutableDecl(method),
-                     duck.toString(),
-                     args,
-                     maybeReturn);
+        return Source.formatAll(lines,
+                Source.buildExecutableDecl(method),
+                shape.encoded,
+                args);
     }
 
     List<String> buildFutureProcedure(ExecutableElement method) {
         Procedure p = new ProcedureElement(method);
+        MessageShape shape = new MessageShape(new ProcedureElement(method));
+
         List<String> lines = Source.lines(
                 "#0",
                 "{",
-                "    #1<#2> panini$message = null;",
-                "    panini$message = new #1<#2>(#3);",
+                "    #1 panini$message = null;",
+                "    panini$message = new #1(#2);",
                 "    panini$push(panini$message);",
                 "    return panini$message;",
                 "}");
         String procID = buildProcedureID(method);
 
-        String classname = PaniniModelInfo.encode(p, MessageKind.FUTURE);
-        String type = JavaModelInfo.getBoxedReturnType(method);
-        String args = Source.buildParameterNamesList(method);
-        args = args.equals("") ? procID : procID + ", " + args;
+        List<String> argDecls = new ArrayList<String>();
+        List<String> argNames = new ArrayList<String>();
+
+
+        argNames.add(procID);
+        for (Variable v : p.getParameters()) {
+            argDecls.add(v.toString());
+            argNames.add(v.getIdentifier());
+        }
+
+        String argDeclString = String.join(", ", argDecls);
+        String argNameString = String.join(", ", argNames);
 
         String declaration = Source.format("#0 Future<#1> #2(#3)",
                 Source.buildModifiersList(method),
-                type,
+                shape.returnType.wrapped(),
                 p.getName(),
-                args);
+                argDeclString);
 
         List<String> thrown = new ArrayList<String>();
         for (TypeMirror t : method.getThrownTypes()) {
             thrown.add(t.toString());
         }
 
-        declaration += (thrown.isEmpty()) ? declaration : declaration + " throws " + String.join(", ", thrown);
+        declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
 
         return Source.formatAll(lines,
                 declaration,
-                classname,
-                type,
-                args);
+                shape.encoded,
+                argNameString);
     }
 
     List<String> buildBlockedProcedure(ExecutableElement method) {
@@ -436,7 +451,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         // For each of the capsule's children, add a line of code to instantiate that child capsule.
         for (VariableElement child : children)
         {
-            String inst = Source.format("panini$encapsulated.#0 = new #1$Thread();",
+            String inst = Source.format("panini$encapsulated.#0 = new #1();",
                                         child.toString(), child.asType().toString());
             lines.add(inst);
         }
@@ -562,10 +577,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     /**
      * Assumes that `method` is a procedure method on a valid capsule template.
      */
-    List<String> buildRunSwitchCase(ExecutableElement method)
-    {
+    List<String> buildRunSwitchCase(ExecutableElement method) {
+        Procedure p = new ProcedureElement(method);
+        MessageShape shape = new MessageShape(p);
+
+
         // `duck` will need to be resolved if and only if `method` has a return value.
-        if (JavaModelInfo.hasVoidReturnType(method))
+        if (shape.category == MessageShape.Category.SIMPLE)
         {
             // Simply call the template isntance's method with the args encapsulated in the duck.
             List<String> src = Source.lines("case #0:",
@@ -573,7 +591,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                             "    break;");
 
             return Source.formatAll(src, buildProcedureID(method),
-                                         buildEncapsulatedMethodCall(method));
+                                         buildEncapsulatedMethodCall(shape));
         }
         else
         {
@@ -583,8 +601,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                             "    break;");
 
             return Source.formatAll(src, buildProcedureID(method),
-                                         method.getReturnType().toString(),
-                                         buildEncapsulatedMethodCall(method));
+                                         p.getReturnType().wrapped(),
+                                         buildEncapsulatedMethodCall(shape));
         }
     }
 
@@ -598,17 +616,16 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
      *
      * @param duck The name of the duck variable from which arguments will be unpacked.
      */
-    String buildEncapsulatedMethodCall(ExecutableElement method)
+    String buildEncapsulatedMethodCall(MessageShape shape)
     {
         List<String> args = new ArrayList<String>();
-        String duckType = DuckShape.encode(method);
 
         // Generate the list of types defined on the `method`. The `null` value is used to
         // represent a parameter type whenever that type is primitive.
         List<String> paramTypes = new ArrayList<String>();
-        for (VariableElement varElem : method.getParameters())
+        for (Variable v : shape.procedure.getParameters())
         {
-            TypeMirror paramType = varElem.asType();
+            TypeMirror paramType = v.getMirror();
             paramTypes.add(JavaModelInfo.isPrimitive(paramType) ? null : paramType.toString());
         }
 
@@ -619,13 +636,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         for (int i = 0; i < paramTypes.size(); i++)
         {
             String paramType = paramTypes.get(i);
-            args.add(Source.format("#0((#1$Thread) msg).panini$arg#2",
+            args.add(Source.format("#0((#1) msg).panini$arg#2",
                                    paramType == null ? "" : "(" + paramType + ") ",
-                                   duckType,
+                                   shape.encoded,
                                    i));
         }
 
-        return Source.format("panini$encapsulated.#0(#1)", method.getSimpleName(),
+        return Source.format("panini$encapsulated.#0(#1)", shape.procedure.getName(),
                                                            String.join(", ", args));
     }
 
@@ -652,6 +669,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     @Override
     Set<String> getStandardImports() {
         Set<String> imports = new HashSet<String>();
+        imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");

@@ -10,7 +10,7 @@ import org.paninij.model.Variable;
 
 public class MessageShape
 {
-    private Procedure procedure;
+    public final Procedure procedure;
 
     public final Type returnType;
     public final Category category;
@@ -84,6 +84,23 @@ public class MessageShape
             slots.add(v.encode());
         }
         return String.join("$", slots);
+    }
+
+    public String getPackage() {
+        switch (this.category) {
+        case DUCKFUTURE:
+            return "org.paninij.runtime.ducks";
+        case FUTURE:
+        case ERROR:
+            return "org.paninij.runtime.futures";
+        case PREMADE:
+            return "org.paninij.lang";
+        case SIMPLE:
+            return "org.paninij.runtime.messages";
+        default:
+            break;
+        }
+        throw new IllegalArgumentException("Message does not have a category, so it cannot fit into a package.");
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.paninij.apt.util.JavaModelInfo;
+import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
@@ -23,6 +24,7 @@ public class FutureMessageSource extends MessageSource
     @Override
     public SourceFile generate(Procedure procedure) {
         this.context = procedure;
+        this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
         String content = this.generateContent();
         return new SourceFile(name, content);
@@ -134,7 +136,7 @@ public class FutureMessageSource extends MessageSource
         List<String> statements=  new ArrayList<String>();
         int i = 0;
         for (Variable v : context.getParameters()) {
-            if (v.getCategory() == Category.NORMAL) statements.add("panini$arg" + (++i) + " = null;");
+            if (v.getCategory() == Category.NORMAL) statements.add("panini$arg" + (i++) + " = null;");
         }
         return statements;
     }

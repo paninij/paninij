@@ -30,4 +30,7 @@ public interface Procedure
 
     public abstract List<Variable> getParameters();
 
+    public abstract List<String> getModifiers();
+
+    public abstract List<String> getThrown();
 }

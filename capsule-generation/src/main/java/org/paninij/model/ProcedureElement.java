@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -99,6 +100,24 @@ public class ProcedureElement implements Procedure
         args = args.length() > 1 ? args.substring(0, args.length() - 2) : "";
         str += args + ")";
         return str;
+    }
+
+    @Override
+    public List<String> getModifiers() {
+        List<String> modifiers = new ArrayList<String>();
+        for (Modifier m : this.element.getModifiers()) {
+            modifiers.add(m.toString());
+        }
+        return modifiers;
+    }
+
+    @Override
+    public List<String> getThrown() {
+        List<String> thrown = new ArrayList<String>();
+        for (TypeMirror m : this.element.getThrownTypes()) {
+            thrown.add(m.toString());
+        }
+        return thrown;
     }
 
 }

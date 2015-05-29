@@ -186,7 +186,8 @@ public class DuckShape
         case FINALARRAY:
         case PRIMITIVE:
         default:
-            throw new IllegalArgumentException("Cannot handle duck category: " + category);
+            return "final";
+//            throw new IllegalArgumentException("Cannot handle duck category: " + category);
         }
     }
 

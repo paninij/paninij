@@ -27,6 +27,7 @@ import javax.lang.model.element.TypeElement;
 
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.TypeCollector;
+import org.paninij.model.Capsule;
 
 
 /**
@@ -38,6 +39,7 @@ abstract class MakeCapsule$ExecProfile
 {
     PaniniProcessor context;
     TypeElement template;
+    Capsule capsule;
 
     /**
      * Factory method. This must be overridden in concrete subclasses.

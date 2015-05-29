@@ -1,8 +1,7 @@
 package org.paninij.apt;
 
-import java.util.List;
-
 import org.paninij.apt.util.JavaModelInfo;
+import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
@@ -21,6 +20,7 @@ public class SimpleMessageSource extends MessageSource
     @Override
     public SourceFile generate(Procedure procedure) {
         this.context = procedure;
+        this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
         String content = this.generateContent();
         return new SourceFile(name, content);

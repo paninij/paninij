@@ -27,8 +27,12 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
+import org.paninij.model.Capsule;
+import org.paninij.model.Procedure;
+import org.paninij.model.Variable;
 
 /**
  * This class contains logic to inspect a given capsule template class and generate the capsule
@@ -41,13 +45,15 @@ import org.paninij.apt.util.Source;
 public class MakeCapsule
 {
     TypeElement template;
+    Capsule capsule;
     PaniniProcessor context;
 
-    static MakeCapsule make(PaniniProcessor context, TypeElement template)
+    static MakeCapsule make(PaniniProcessor context, TypeElement template, Capsule capsule)
     {
         MakeCapsule sig = new MakeCapsule();
         sig.context = context;
         sig.template = template;
+        sig.capsule = capsule;
         return sig;
     }
 
@@ -116,8 +122,9 @@ public class MakeCapsule
     private List<String> buildImports()
     {
         return Source.buildCollectedImportDecls(template,
-                                                "org.paninij.lang.CapsuleInterface",
-                                                "org.paninij.runtime.Panini$Capsule");
+            "java.util.concurrent.Future",
+            "org.paninij.lang.CapsuleInterface",
+            "org.paninij.runtime.Panini$Capsule");
     }
 
 
@@ -125,7 +132,7 @@ public class MakeCapsule
     {
         return context.getPackageOf(template);
     }
-    
+
 
     /**
      * Returns the `wire()` method declaration, if the interface needs it. Otherwise returns the
@@ -139,20 +146,33 @@ public class MakeCapsule
             return "";
         }
     }
-    
+
 
     private List<String> buildExecutableDecls()
     {
         ArrayList<String> decls = new ArrayList<String>();
 
-        for (Element child : template.getEnclosedElements())
-        {
-            if (PaniniModelInfo.isProcedure(child))
-            {
-                ExecutableElement method = (ExecutableElement) child;
-                String decl = Source.format("#0;", Source.buildExecutableDecl(method));
-                decls.add(decl);
+        for (Procedure p : this.capsule.getProcedures()) {
+            MessageShape shape = new MessageShape(p);
+            List<String> argDecls = new ArrayList<String>();
+
+            for (Variable v : p.getParameters()) {
+                argDecls.add(v.toString());
             }
+
+            String argDeclString = String.join(", ", argDecls);
+
+            String declaration = Source.format("#0 Future<#1> #2(#3)",
+                    String.join(" ", p.getModifiers()),
+                    shape.returnType.wrapped(),
+                    p.getName(),
+                    argDeclString);
+
+            List<String> thrown = p.getThrown();
+
+            declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
+
+            decls.add(declaration + ";");
         }
         return decls;
     }

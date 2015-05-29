@@ -43,7 +43,7 @@ public abstract class MessageSource
         List<String> fields = new ArrayList<String>();
         int i = 0;
         for (Variable v : this.context.getParameters()) {
-            fields.add("public " + v.getMirror().toString() + " panini$arg" + (++i) + ";");
+            fields.add("public " + v.getMirror().toString() + " panini$arg" + (i++) + ";");
         }
         return fields;
     }
@@ -104,9 +104,9 @@ public abstract class MessageSource
 
         int i = 0;
         for (Variable var : this.context.getParameters()) {
-            i++;
             params.add(var.getMirror().toString() + " arg" + (i));
             initializers.add(Source.format("panini$arg#0 = arg#0;", i));
+            i++;
         }
 
         List<String> src = Source.lines("public #0(#1)",
