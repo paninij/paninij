@@ -224,7 +224,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         // TODO all shapes defined, now delegate!
         switch (shape.behavior) {
         case BLOCKED_FUTURE:
-            break;
+            return this.buildBlockedFutureProcedure(method);
         case BLOCKED_PREMADE:
             break;
         case ERROR:
@@ -265,6 +265,52 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 Source.buildExecutableDecl(method),
                 shape.encoded,
                 args);
+    }
+
+    List<String> buildBlockedFutureProcedure(ExecutableElement method) {
+        Procedure p = new ProcedureElement(method);
+        MessageShape shape = new MessageShape(new ProcedureElement(method));
+
+        List<String> lines = Source.lines(
+                "#0",
+                "{",
+                "    #1 panini$message = null;",
+                "    panini$message = new #1(#2);",
+                "    panini$push(panini$message);",
+                "    return panini$message.get();",
+                "}");
+        String procID = buildProcedureID(method);
+
+        List<String> argDecls = new ArrayList<String>();
+        List<String> argNames = new ArrayList<String>();
+
+
+        argNames.add(procID);
+        for (Variable v : p.getParameters()) {
+            argDecls.add(v.toString());
+            argNames.add(v.getIdentifier());
+        }
+
+        String argDeclString = String.join(", ", argDecls);
+        String argNameString = String.join(", ", argNames);
+
+        String declaration = Source.format("#0 #1 #2(#3)",
+                Source.buildModifiersList(method),
+                shape.realReturn,
+                p.getName(),
+                argDeclString);
+
+        List<String> thrown = new ArrayList<String>();
+        for (TypeMirror t : method.getThrownTypes()) {
+            thrown.add(t.toString());
+        }
+
+        declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
+
+        return Source.formatAll(lines,
+                declaration,
+                shape.encoded,
+                argNameString);
     }
 
     List<String> buildFutureProcedure(ExecutableElement method) {

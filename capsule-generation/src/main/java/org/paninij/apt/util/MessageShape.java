@@ -97,7 +97,8 @@ public class MessageShape
         case ERROR:
             return "org.paninij.runtime.futures";
         case PREMADE:
-            return "org.paninij.lang";
+            // TODO return the exact premade class
+            return "org.paninij.lang.*";
         case SIMPLE:
             return "org.paninij.runtime.messages";
         default:
@@ -107,18 +108,23 @@ public class MessageShape
     }
 
     private String getRealReturn() {
-        switch (this.category) {
-        case DUCKFUTURE:
-            this.returnType.getMirror().toString();
-        case FUTURE:
+
+        switch (this.behavior) {
+        case BLOCKED_FUTURE:
+            return this.returnType.getMirror().toString();
+        case BLOCKED_PREMADE:
+            return this.returnType.getMirror().toString();
+        case UNBLOCKED_DUCK:
+            return this.returnType.getMirror().toString();
+        case UNBLOCKED_FUTURE:
             return "java.util.concurrent.Future<" + this.returnType.wrapped() + ">";
-        case PREMADE:
-            return this.returnType.wrapped();
-        case SIMPLE:
-            return "void";
+        case UNBLOCKED_PREMADE:
+            return this.returnType.getMirror().toString();
+        case UNBLOCKED_SIMPLE:
+            return this.returnType.getMirror().toString();
         case ERROR:
         default:
-            throw new IllegalArgumentException("Message has an illegal (\"ERROR\") category, so the real return type cannot be determined.");
+            throw new IllegalArgumentException("Message has an illegal (\"ERROR\") behavior, so the real return type cannot be determined.");
         }
     }
 

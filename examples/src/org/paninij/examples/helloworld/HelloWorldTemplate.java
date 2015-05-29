@@ -17,22 +17,17 @@ class HelloWorldTemplate
     }
 
     void run() {
-        Future<Integer> ret = g.greet(true);
+        Future<Long> ret = g.greet(true);
 
-        try
-        {
+        try {
             System.out.println("Greet has finished: with " + ret.get());
         }
-        catch (InterruptedException e)
-        {
-            // TODO Auto-generated catch block
+        catch (Exception e) {
             e.printStackTrace();
         }
-        catch (ExecutionException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+        int ret2 = g.greetBlock();
+        System.out.println("Greet has blocked and returned: " + ret2);
     }
 }
 
