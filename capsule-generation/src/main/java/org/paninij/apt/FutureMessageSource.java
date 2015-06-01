@@ -104,7 +104,7 @@ public class FutureMessageSource extends MessageSource
                 "}");
 
         src = Source.format(src,
-                this.buildPackage(),
+                this.shape.getPackage(),
                 this.shape.encoded,
                 this.context.getReturnType().wrapped());
 
@@ -126,14 +126,8 @@ public class FutureMessageSource extends MessageSource
         return super.buildImports(packs);
     }
 
-    @Override
-    protected String buildPackage() {
-        String pack = JavaModelInfo.getPackage(this.context.getReturnType().getMirror());
-        return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_FUTURE_PACKAGE;
-    }
-
     protected List<String> buildReleaseArgs() {
-        List<String> statements=  new ArrayList<String>();
+        List<String> statements =  new ArrayList<String>();
         int i = 0;
         for (Variable v : context.getParameters()) {
             if (v.getCategory() == Category.NORMAL) statements.add("panini$arg" + (i++) + " = null;");

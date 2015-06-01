@@ -1,8 +1,6 @@
 package org.paninij.apt;
 
-import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.MessageShape;
-import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Procedure;
@@ -47,15 +45,9 @@ public class SimpleMessageSource extends MessageSource
                 "    }",
                 "}");
 
-        src = Source.format(src, this.buildPackage(), this.shape.encoded);
+        src = Source.format(src, this.shape.getPackage(), this.shape.encoded);
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());
         return src;
-    }
-
-    @Override
-    protected String buildPackage() {
-        String pack = JavaModelInfo.getPackage(this.context.getReturnType().getMirror());
-        return pack.length() > 0 ? pack : PaniniModelInfo.DEFAULT_MESSAGE_PACKAGE;
     }
 }

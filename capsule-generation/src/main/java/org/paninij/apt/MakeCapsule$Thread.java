@@ -246,10 +246,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     List<String> buildDuckProcedure(ExecutableElement method) {
         List<String> lines = Source.lines("#0",
                 "{",
-                "    #1$Thread panini$duck = null;",
-                "    panini$duck = new #1$Thread(#2);",
-                "    panini$push(panini$duck);",
-                "    return panini$duck;",
+                "    #1 panini$message = null;",
+                "    panini$message = new #1(#2);",
+                "    panini$push(panini$message);",
+                "    return panini$message;",
                 "}");
 
         // Every `args` list starts with a `procID`. If there are any parameter names, then they

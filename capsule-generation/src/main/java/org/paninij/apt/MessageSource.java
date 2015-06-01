@@ -32,7 +32,6 @@ public abstract class MessageSource
 
     protected abstract SourceFile generate(Procedure procedure);
     protected abstract String generateContent();
-    protected abstract String buildPackage();
 
     protected void setContext(Procedure procedure) {
         this.context = procedure;
@@ -43,13 +42,13 @@ public abstract class MessageSource
         List<String> fields = new ArrayList<String>();
         int i = 0;
         for (Variable v : this.context.getParameters()) {
-            fields.add("public " + v.getMirror().toString() + " panini$arg" + (i++) + ";");
+            fields.add("public " + v.slot() + " panini$arg" + (i++) + ";");
         }
         return fields;
     }
 
     public String buildQualifiedClassName() {
-        return this.buildPackage() + "." + this.shape.encoded;
+        return this.shape.getPackage() + "." + this.shape.encoded;
     }
 
     protected List<String> buildImports() {
@@ -104,7 +103,7 @@ public abstract class MessageSource
 
         int i = 0;
         for (Variable var : this.context.getParameters()) {
-            params.add(var.getMirror().toString() + " arg" + (i));
+            params.add(var.slot() + " arg" + (i));
             initializers.add(Source.format("panini$arg#0 = arg#0;", i));
             i++;
         }

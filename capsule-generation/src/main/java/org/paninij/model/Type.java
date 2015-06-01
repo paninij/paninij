@@ -146,6 +146,43 @@ public class Type
         }
     }
 
+    public String slot() {
+        switch (this.kind) {
+        case BOOLEAN:
+            return "boolean";
+        case BYTE:
+            return "byte";
+        case SHORT:
+            return "short";
+        case INT:
+            return "int";
+        case LONG:
+            return "long";
+        case CHAR:
+            return "char";
+        case FLOAT:
+            return "float";
+        case DOUBLE:
+            return "double";
+        case ARRAY:
+        case DECLARED:  // A class or interface type.
+            return "Object";
+        case VOID:
+        case NONE:
+        case NULL:
+        case ERROR:
+        case TYPEVAR:
+        case WILDCARD:
+        case PACKAGE:
+        case EXECUTABLE:
+        case OTHER:
+        case UNION:
+        case INTERSECTION:
+        default:
+            throw new IllegalArgumentException();
+        }
+    }
+
     public boolean isVoid() {
         return this.kind.equals(TypeKind.VOID);
     }
