@@ -14,11 +14,11 @@ public class ArrayTemplate
     int[] anotherPrimitiveArr() {
         return null;
     }
-    
+
     Object[] objectArr() {
         return null;
     }
-    
+
     Object[] anotherObjectArr() {
         return null;
     }

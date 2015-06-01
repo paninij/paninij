@@ -1,3 +1,4 @@
 .factorypath
 /.apt_generated/
 /target/
+/eclipse_apt_generated/

@@ -20,6 +20,7 @@ package org.paninij.apt;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,9 +44,14 @@ import javax.tools.JavaFileObject;
 
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.Reporter;
 import org.paninij.apt.util.Source;
+import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
+import org.paninij.model.CapsuleElement;
+import org.paninij.model.Procedure;
+import org.paninij.model.Variable;
 
 
 /**
@@ -65,30 +71,47 @@ public class PaniniProcessor extends AbstractProcessor
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
             if (SignatureChecker.check(this, elem)) {
-                // Nothing to do for now.
+                // TODO
+//                TypeElement template = (TypeElement) elem;
+//                org.paninij.model.Signature signature = SignatureElement.make(template);
+//                SignatureGenerator.generate(this, signature);
             }
         }
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
-        for (Element elem : annotated)
-        {
-            if (CapsuleChecker.check(this, elem))
-            {
+        MessageFactory messageFactory = new MessageFactory();
+
+        for (Element elem : annotated) {
+            if (CapsuleChecker.check(this, elem)) {
+
                 TypeElement template = (TypeElement) elem;
 
-                MakeCapsule.make(this, template).makeSourceFile();
-                MakeCapsule$Thread.make(this, template).makeSourceFile();
-                //MakeCapsule$Task.make(this, template).makeSourceFile();
-                //MakeCapsule$Monitor.make(this, template).makeSourceFile();
-                //MakeCapsule$Serial.make(this, template).makeSourceFile();
+                org.paninij.model.Capsule capsule = CapsuleElement.make(template);
+                MakeCapsule.make(this, template, capsule).makeSourceFile();
+                MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
+//                MakeDucks.make(this, template).makeDucks();
 
-                MakeDucks.make(this, template).makeDucks();
+
+//                CapsuleGenerator.generate(this, capsule);
+
+                // this could be a part of CapsuleGenerator
+                for (Procedure procedure : capsule.getProcedures()) {
+                    SourceFile source = messageFactory.make(procedure);
+                    this.createJavaFile(source);
+                }
             }
         }
 
         this.roundEnv = null;
         return false;
+    }
+
+
+    void createJavaFile(SourceFile source) {
+        if (source != null) {
+            this.createJavaFile(source.filename, source.content);
+        }
     }
 
     /**

@@ -81,7 +81,7 @@ public class JavaModelInfo {
         case DOUBLE:
             return "Double";
         case VOID:
-            return "void";
+            return "Void";
         case ARRAY:
         case DECLARED:  // A class or interface type.
             return exec.getReturnType().toString();
@@ -132,6 +132,10 @@ public class JavaModelInfo {
     public static boolean hasVoidReturnType(ExecutableElement exec)
     {
         return exec.getReturnType().getKind() == TypeKind.VOID;
+    }
+
+    public static boolean isVoidType(TypeMirror type) {
+        return type.getKind() == TypeKind.VOID;
     }
 
     public static boolean isFinalType(TypeMirror returnType)
@@ -223,6 +227,6 @@ public class JavaModelInfo {
     {
         String qualified = type.toString();
         int idx = qualified.lastIndexOf('.');
-        return qualified.substring(0, idx);
+        return idx == -1 ? "" : qualified.substring(0,  idx);
     }
 }

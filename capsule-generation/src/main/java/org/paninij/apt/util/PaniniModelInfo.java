@@ -30,6 +30,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
@@ -37,9 +38,16 @@ import org.paninij.apt.PaniniProcessor;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.Signature;
+import org.paninij.model.AnnotationKind;
+import org.paninij.model.MessageKind;
+import org.paninij.model.Procedure;
+import org.paninij.model.Type;
+import org.paninij.model.Variable;
 
 public class PaniniModelInfo
 {
+    public static final String DEFAULT_MESSAGE_PACKAGE = "org.paninij.runtime.messages";
+    public static final String DEFAULT_FUTURE_PACKAGE = "org.paninij.runtime.futures";
     public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
     public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
@@ -349,5 +357,46 @@ public class PaniniModelInfo
         } else {
             return Source.format("public void wire(#0)", String.join(", ", paramDecls));
         }
+    }
+
+    public static MessageKind getMessageKind(TypeMirror returnType, AnnotationKind annotation) {
+        // TODO determine other message kinds!
+        if (annotation == AnnotationKind.FUTURE) {
+            return MessageKind.FUTURE;
+        } else if (annotation == AnnotationKind.BLOCK) {
+            return MessageKind.FUTURE;
+        } else if (annotation == AnnotationKind.DUCKFUTURE) {
+            return MessageKind.DUCKFUTURE;
+        } else {
+            return MessageKind.SIMPLE;
+        }
+    }
+
+    public static String encode(Procedure p, MessageKind k) {
+        Type returnType = p.getReturnType();
+        String encoded = returnType.encodeFull();
+        switch(k) {
+        case SIMPLE:
+            encoded += "$Simple$";
+            break;
+        case FUTURE:
+            encoded += "$Future$";
+            break;
+        case DUCKFUTURE:
+            encoded += "$Duck$";
+            break;
+        default:
+            encoded += "$Error$";
+        }
+
+        List<String> slots = new ArrayList<String>();
+
+        for (Variable v : p.getParameters()) {
+            slots.add(v.encode());
+        }
+
+        encoded += String.join("$", slots);
+
+        return encoded;
     }
 }
