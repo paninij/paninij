@@ -73,22 +73,16 @@ public abstract class MessageSource
         packs.add("org.paninij.runtime.Panini$Message");
         packs.add(ret.wrapped());
 
-        switch (kind) {
-        case ARRAY:
-        case DECLARED:
+        switch (this.shape.category) {
+        case DUCKFUTURE:
             TypeElement typeElem = (TypeElement) ((DeclaredType) ret.getMirror()).asElement();
             packs = Source.buildCollectedImportDecls(typeElem, packs);
             return packs;
-        case BOOLEAN:
-        case BYTE:
-        case CHAR:
-        case DOUBLE:
-        case FLOAT:
-        case INT:
-        case LONG:
-        case SHORT:
-        case VOID:
+        case FUTURE:
+        case PREMADE:
+        case SIMPLE:
             return Source.buildImportDecls(packs);
+        case ERROR:
         default:
             String msg = "The given `return` (of the form `#0`) has an unexpected `TypeKind`: #1";
             msg = Source.format(msg, ret, kind);
