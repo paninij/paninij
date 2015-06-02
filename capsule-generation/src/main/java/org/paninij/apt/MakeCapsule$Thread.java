@@ -38,7 +38,6 @@ import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.model.AnnotationKind;
 import org.paninij.model.Capsule;
-import org.paninij.model.MessageKind;
 import org.paninij.model.Procedure;
 import org.paninij.model.ProcedureElement;
 import org.paninij.model.Variable;
