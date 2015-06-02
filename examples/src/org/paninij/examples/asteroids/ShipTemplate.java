@@ -1,7 +1,3 @@
-package org.paninij.examples.asteroids;
-
-import org.paninij.lang.Capsule;
-
 /*
  * This file is part of the Panini project at Iowa State University.
  *
@@ -20,6 +16,10 @@ import org.paninij.lang.Capsule;
  *
  * Contributor(s): Dalton Mills, Hridesh Rajan
  */
+package org.paninij.examples.asteroids;
+
+import org.paninij.lang.Capsule;
+
 @Capsule
 public class ShipTemplate {
     private short state;
