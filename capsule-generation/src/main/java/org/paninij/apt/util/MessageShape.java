@@ -73,6 +73,7 @@ public class MessageShape
                 throw new IllegalArgumentException("Procedure labelled with @Duck is unduckable.");
             case FUTURE:
             case BLOCK:
+                return Category.FUTURE;
             case NONE:
                 return this.returnType.isVoid() ? Category.SIMPLE : Category.FUTURE;
             default:

@@ -40,6 +40,7 @@ import org.paninij.model.AnnotationKind;
 import org.paninij.model.Capsule;
 import org.paninij.model.Procedure;
 import org.paninij.model.ProcedureElement;
+import org.paninij.model.Type;
 import org.paninij.model.Variable;
 
 
@@ -276,7 +277,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
                 "    panini$push(panini$message);",
-                "    return panini$message.get();",
+                "    #3panini$message.get();",
                 "}");
         String procID = buildProcedureID(method);
 
@@ -305,11 +306,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         }
 
         declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
-
+        String ret = shape.returnType.isVoid() ? "" : "return ";
         return Source.formatAll(lines,
                 declaration,
                 shape.encoded,
-                argNameString);
+                argNameString,
+                ret);
     }
 
     List<String> buildFutureProcedure(ExecutableElement method) {
@@ -659,14 +661,27 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         }
         else
         {
-            // Call the template instance's method and resolve the duck using the result.
-            List<String> src = Source.lines("case #0:",
-                                            "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
-                                            "    break;");
-
-            return Source.formatAll(src, buildProcedureID(method),
-                                         p.getReturnType().wrapped(),
-                                         buildEncapsulatedMethodCall(shape));
+            Type r = p.getReturnType();
+            if (r.isVoid()) {
+             // Call the template instance's method and resolve the duck using null.
+                List<String> src = Source.lines("case #0:",
+                                                "    #1;",
+                                                "    ((Panini$Future<#2>) msg).panini$resolve(null);",
+                                                "    break;");
+                return Source.formatAll(src,
+                        buildProcedureID(method),
+                        buildEncapsulatedMethodCall(shape),
+                        p.getReturnType().wrapped());
+            } else {
+                // Call the template instance's method and resolve the duck using the result.
+                List<String> src = Source.lines("case #0:",
+                                                "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
+                                                "    break;");
+                return Source.formatAll(src,
+                        buildProcedureID(method),
+                        p.getReturnType().wrapped(),
+                        buildEncapsulatedMethodCall(shape));
+            }
         }
     }
 
