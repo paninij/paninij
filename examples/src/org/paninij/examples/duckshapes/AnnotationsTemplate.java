@@ -6,7 +6,7 @@ import org.paninij.lang.Future;
 
 
 @Capsule
-public class FinalTemplate {
+public class AnnotationsTemplate {
 
     public void unannotatedVoid() {
 
