@@ -6,19 +6,19 @@ import org.paninij.lang.Capsule;
 @Capsule
 public class ArrayTemplate
 {
-    int[] primitiveArr() {
+    public int[] primitiveArr() {
         return null;
     }
 
-    int[] anotherPrimitiveArr() {
+    public int[][] twoDemPrimitiveArray() {
         return null;
     }
 
-    Object[] objectArr() {
+    public Object[] objectArr() {
         return null;
     }
 
-    Object[] anotherObjectArr() {
+    public Object[][] twoDemNormalArr() {
         return null;
     }
 }
