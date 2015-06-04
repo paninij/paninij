@@ -24,7 +24,9 @@ import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.MessageShape;
@@ -45,8 +47,73 @@ public class DuckMessageSource extends MessageSource
         this.context = procedure;
         this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
-        String content = this.generateContent();
+        String content;
+        if (procedure.getReturnType().isInterface()) {
+            content = this.generateImplContent();
+        } else {
+            content = this.generateContent();
+        }
         return new SourceFile(name, content);
+    }
+
+    protected String generateImplContent() {
+        String src = Source.cat(
+                "package #0;",
+                "",
+                "##",
+                "",
+                "public class #1 implements #2, Panini$Message, Panini$Future<#2>",
+                "{",
+                "    public final int panini$procID;",
+                "    private #2 panini$result = null;",
+                "    boolean panini$isResolved = false;",
+                "",
+                "    ##",
+                "",
+                "    ##",
+                "",
+                "    @Override",
+                "    public int panini$msgID() {",
+                "        return panini$procID;",
+                "    }",
+                "",
+                "    @Override",
+                "    public void panini$resolve(#2 result) {",
+                "        synchronized (this) {",
+                "            panini$result = result;",
+                "            panini$isResolved = true;",
+                "            this.notifyAll();",
+                "        }",
+                "        ##",
+                "    }",
+                "",
+                "    @Override",
+                "    public #2 panini$get() {",
+                "        while (panini$isResolved == false) {",
+                "            try {",
+                "                synchronized (this) {",
+                "                    while (panini$isResolved == false) this.wait();",
+                "                }",
+                "            } catch (InterruptedException e) { /* try waiting again */ }",
+                "         }",
+                "         return panini$result;",
+                "    }",
+                "",
+                "    /* The following implement the methods of `#2` */",
+                "    ##",
+                "}");
+
+        src = Source.format(src, this.shape.getPackage(),
+                                 this.shape.encoded,
+                                 this.shape.returnType.wrapped());
+
+        src = Source.formatAligned(src, this.buildImports());
+        src = Source.formatAligned(src, this.buildParameterFields());
+        src = Source.formatAligned(src, this.buildConstructor());
+        src = Source.formatAligned(src, this.buildReleaseArgs());
+        src = Source.formatAligned(src, this.buildFacades());
+
+        return src;
     }
 
     @Override
@@ -138,11 +205,35 @@ public class DuckMessageSource extends MessageSource
 
     private List<String> buildFacade(ExecutableElement method) {
         List<String> fmt = Source.lines("@Override",
-                Source.buildExecutableDecl(method),
+                this.buildFacadeDecl(method),
                 "{",
                 "    #0",
                 "}");
         return Source.formatAll(fmt, this.buildFacadeBody(method));
+    }
+
+    private String buildFacadeDecl(ExecutableElement method) {
+
+        List<String> modifiers = new ArrayList<String>();
+        for (Modifier m : method.getModifiers()) {
+            if (m != Modifier.ABSTRACT) {
+                modifiers.add(m.toString());
+            }
+        }
+        String mod = String.join(" ", modifiers);
+
+        String decl = Source.format("#0 #1 #2(#3)",
+                mod,
+                method.getReturnType(),
+                method.getSimpleName(),
+                Source.buildParametersList(method));
+
+        List<String> thrown = new ArrayList<String>();
+        for (TypeMirror type : method.getThrownTypes()) {
+            System.out.println("throws");
+            thrown.add(type.toString());
+        }
+        return (thrown.isEmpty()) ? decl : decl + " throws " + String.join(", ", thrown);
     }
 
     private String buildFacadeBody(ExecutableElement method) {
