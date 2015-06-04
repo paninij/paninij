@@ -1,4 +1,4 @@
-package org.paninij.examples.duckshapes;
+package org.paninij.examples.messageshapes;
 
 import org.paninij.lang.Capsule;
 
@@ -6,7 +6,6 @@ import org.paninij.lang.Capsule;
 @Capsule
 public class ArrayTemplate
 {
-    /*
     int[] primitiveArr() {
         return null;
     }
@@ -22,5 +21,4 @@ public class ArrayTemplate
     Object[] anotherObjectArr() {
         return null;
     }
-    */
 }
