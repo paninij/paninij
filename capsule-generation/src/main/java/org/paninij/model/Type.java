@@ -18,6 +18,9 @@
  */
 package org.paninij.model;
 
+import java.util.regex.Pattern;
+
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -56,7 +59,13 @@ public class Type
     }
 
     public String encodeFull() {
-        return this.mirror.toString().replaceAll("_", "__").replaceAll("\\.", "_");
+        String enc = this.mirror.toString().replaceAll("_", "__").replaceAll("\\.", "_");
+        if (this.kind == TypeKind.ARRAY) {
+            enc = enc.replace('[', '$');
+            enc = enc.replace(']', ' ');
+            enc = enc.replaceAll(" ", "array");
+        }
+        return enc;
     }
 
     public String encode() {
@@ -162,6 +171,15 @@ public class Type
         default:
             throw new IllegalArgumentException();
         }
+    }
+
+    public String packed() {
+        if (this.kind == TypeKind.ARRAY) {
+            ArrayType t = (ArrayType) this.mirror;
+            Type comp = new Type(t.getComponentType());
+            return comp.packed();
+        }
+        return this.wrapped();
     }
 
     public String slot() {
