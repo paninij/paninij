@@ -1,4 +1,4 @@
-package org.paninij.examples.duckshapes;
+package org.paninij.examples.messageshapes;
 
 import org.paninij.lang.Capsule;
 

@@ -90,9 +90,6 @@ public class PaniniProcessor extends AbstractProcessor
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
                 MakeCapsule.make(this, template, capsule).makeSourceFile();
                 MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
-//                MakeDucks.make(this, template).makeDucks();
-
-
 //                CapsuleGenerator.generate(this, capsule);
 
                 // this could be a part of CapsuleGenerator

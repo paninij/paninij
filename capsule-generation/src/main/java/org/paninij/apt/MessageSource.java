@@ -71,7 +71,7 @@ public abstract class MessageSource
 
         packs.add("org.paninij.runtime.Panini$Future");
         packs.add("org.paninij.runtime.Panini$Message");
-        packs.add(ret.wrapped());
+        packs.add(ret.packed());
 
         switch (this.shape.category) {
         case DUCKFUTURE:
