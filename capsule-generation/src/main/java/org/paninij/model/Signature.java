@@ -18,7 +18,13 @@
  */
 package org.paninij.model;
 
+import java.util.ArrayList;
+
 public interface Signature
 {
-    // TODO
+    public String getSimpleName();
+
+    public String getQualifiedName();
+
+    public ArrayList<Procedure> getProcedures();
 }
