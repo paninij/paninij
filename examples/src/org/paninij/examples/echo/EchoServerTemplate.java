@@ -27,8 +27,7 @@ import java.net.*;
 
 @Capsule
 public class EchoServerTemplate {
-    // TODO: Change this to an array of workers.
-    @Child Worker w;
+    @Child Worker worker;
 
     ServerSocket ss;
 
@@ -39,7 +38,7 @@ public class EchoServerTemplate {
     }
 
     public void design(EchoServer self) {
-        w.wire(self);
+        worker.wire(self);
     }
 
     @Block
