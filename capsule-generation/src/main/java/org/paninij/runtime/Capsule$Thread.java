@@ -337,16 +337,23 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     
     /**
      * Returns true if it is safe to transfer ownership of the outgoing `msg` (and its object graph)
-     * from a capsule whose state is fully encapsulated within `local`.
+     * from a capsule whose state is fully encapsulated within `local`; also ensures that none of
+     * the objects in `refs` are a part of `msg`. Note that `local` gets explored to find additional
+     * references but the objects in `refs` are not explored.
      */
-    // TODO: Modify to make sure that a message does not leak a reference to the capsule itself.
-    public static boolean panini$isSafeTransfer(Object msg, Object local)
+    public static boolean panini$isSafeTransfer(Object msg, Object local, Iterable<Object> refs)
     {
         Explorer local_explorer = new Explorer();
         local_explorer.explore(local);
         
         Explorer msg_explorer = new Explorer();
         msg_explorer.explore(msg);
+        
+        // If any individual `refs` were provided add them as "local" identities without exploring
+        // outwards from them.
+        if (refs != null) {
+            local_explorer.visited.addAll(refs);
+        }
         
         // Return true iff the intersection of these two sets is empty.
         // TODO: Improve interface of `Explorer` for this use case.
@@ -358,11 +365,13 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     
     /**
      * Asserts that it is safe to transfer ownership of the outgoing `msg` (and its object graph)
-     * from a capsule whose state is fully encapsulated within `local`.
+     * from a capsule whose state is fully encapsulated within `local`; also ensures that none of
+     * the objects in `refs` are a part of `msg`. Note that `local` gets explored to find additional
+     * references but the objects in `refs` are not explored.
      */
-    public static void panini$assertSafeTransfer(Object msg, Object local)
+    public static void panini$assertSafeTransfer(Object msg, Object local, Iterable<Object> refs)
     {
-        if (panini$isSafeTransfer(local, msg) == false) {
+        if (panini$isSafeTransfer(local, msg, refs) == false) {
             throw new OwnershipException();
         }
     }

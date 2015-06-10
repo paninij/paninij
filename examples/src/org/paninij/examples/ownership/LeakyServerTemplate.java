@@ -17,4 +17,8 @@ public class LeakyServerTemplate
     public Integer getSecret() {
         return server_secret;
     }
+    
+    public LeakyServerTemplate getTemplateReference() {
+        return this;
+    }
 }

@@ -691,7 +691,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 // Call the template instance's method and resolve the duck using the result.
                 List<String> src = Source.lines("case #0: {",
                                                 "    #1 result = #2;",
-                                                "    Capsule$Thread.panini$assertSafeTransfer(result, panini$encapsulated);",
+                                                "    Capsule$Thread.panini$assertSafeTransfer(result, panini$encapsulated, null);",
                                                 "    ((Panini$Future<#1>) msg).panini$resolve(result);",
                                                 "    break;",
                                                 "}");
