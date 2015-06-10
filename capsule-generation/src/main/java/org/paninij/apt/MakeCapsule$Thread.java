@@ -19,7 +19,6 @@
 package org.paninij.apt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,13 +29,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
-import org.paninij.apt.util.DuckShape;
-import org.paninij.apt.util.DuckShape.Category;
 import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
-import org.paninij.model.AnnotationKind;
 import org.paninij.model.Capsule;
 import org.paninij.model.Procedure;
 import org.paninij.model.ProcedureElement;
@@ -71,6 +67,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                 "/**",
                                 " * This capsule was auto-generated from `#1`",
                                 " */",
+                                "@SuppressWarnings(\"all\")",  // Suppress unused imports.
                                 "#2",
                                 "{",
                                 "    ##",
@@ -586,6 +583,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         else
         {
             List<String> src = Source.lines(
+                "@SuppressWarnings(\"all\")",  // To suppress "unsafe" casts in message unpacking.
                 "@Override",
                 "public void run()",
                 "{",

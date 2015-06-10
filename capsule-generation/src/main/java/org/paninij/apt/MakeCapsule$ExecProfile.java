@@ -22,11 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
-import org.paninij.apt.util.Source;
-import org.paninij.apt.util.TypeCollector;
 import org.paninij.model.Capsule;
 
 

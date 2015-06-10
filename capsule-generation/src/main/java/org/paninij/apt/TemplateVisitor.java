@@ -23,7 +23,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.SimpleElementVisitor8;
 
-import org.paninij.lang.Future;
 import org.paninij.model.CapsuleElement;
 
 /**

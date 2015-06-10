@@ -19,23 +19,17 @@
 package org.paninij.apt;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -43,15 +37,11 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.paninij.apt.util.DuckShape;
-import org.paninij.apt.util.PaniniModelInfo;
-import org.paninij.apt.util.Reporter;
-import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
-import org.paninij.model.Variable;
 
 
 /**

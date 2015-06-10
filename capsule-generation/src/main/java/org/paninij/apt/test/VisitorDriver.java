@@ -56,6 +56,10 @@ public class VisitorDriver extends AbstractProcessor
         //printAllTypeCollectorResults(roundEnv);
     }
 
+    /**
+     * Method is only intended to be used for debugging (not for printing import statements).
+     */
+    @SuppressWarnings("unused")
     private void printAllTypeCollectorResults(RoundEnvironment roundEnv)
     {
         note("VisitorDriver.printAllTypeCollectorResults():");

@@ -21,10 +21,7 @@ package org.paninij.apt;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.MessageShape;
@@ -71,6 +68,7 @@ public class MakeCapsule
                                 "/**",
                                 " * This capsule interface was auto-generated from `#1`",
                                 " */",
+                                "@SuppressWarnings(\"all\")",  // Suppress unused imports.
                                 "@CapsuleInterface",
                                 "#2",
                                 "{",

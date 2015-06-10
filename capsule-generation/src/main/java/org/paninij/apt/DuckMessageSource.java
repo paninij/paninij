@@ -62,6 +62,7 @@ public class DuckMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "@SuppressWarnings(\"all\")",  // Suppress unused imports.
                 "public class #1 implements #2, Panini$Message, Panini$Future<#2>",
                 "{",
                 "    public final int panini$procID;",
@@ -123,6 +124,7 @@ public class DuckMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "@SuppressWarnings(\"all\")",  // Suppress unused imports.
                 "public class #1 extends #2 implements Panini$Message, Panini$Future<#2>",
                 "{",
                 "    public final int panini$procID;",

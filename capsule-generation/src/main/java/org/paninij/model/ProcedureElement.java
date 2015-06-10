@@ -26,8 +26,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
-import org.paninij.apt.util.JavaModelInfo;
-import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.lang.Block;
 import org.paninij.lang.Duck;
 import org.paninij.lang.Future;

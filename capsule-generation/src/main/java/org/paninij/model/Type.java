@@ -18,8 +18,6 @@
  */
 package org.paninij.model;
 
-import java.util.regex.Pattern;
-
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;

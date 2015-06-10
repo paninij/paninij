@@ -26,7 +26,6 @@ import javax.lang.model.type.DeclaredType;
 
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.Source;
-import org.paninij.apt.util.TypeCollector;
 
 public class MakeDuck$Thread extends MakeDuck
 {
@@ -58,6 +57,7 @@ public class MakeDuck$Thread extends MakeDuck
                 "",
                 "##",
                 "",
+                "@SuppressWarnings(\"all\")",  // Suppress unused imports.
                 "public class #1 extends #2 implements Panini$Message, Panini$Future<#2>",
                 "{",
                 "    public final int panini$procID;",
