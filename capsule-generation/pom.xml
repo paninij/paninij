@@ -29,4 +29,10 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>me.dwtj</groupId>
+      <artifactId>object-graph-explorer</artifactId>
+    </dependency>
+  </dependencies>
 </project>

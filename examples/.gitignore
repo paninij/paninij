@@ -2,3 +2,4 @@
 /.apt_generated/
 /target/
 /eclipse_apt_generated/
+/eclipse-generated-src/

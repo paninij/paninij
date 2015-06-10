@@ -600,7 +600,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "            ##",
                 "        }",
                 "    }",
-                "    catch (Exception ex) { /* do nothing for now */ }",
+                "    catch (OwnershipException ex) {",
+                "        ex.printStackTrace();",
+                "        return;",
+                "    }",
+                "    catch (Exception ex) {",
+                "        /* do nothing for now */",
+                "    }",
                 "}"
             );
 
@@ -672,9 +678,12 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                         p.getReturnType().wrapped());
             } else {
                 // Call the template instance's method and resolve the duck using the result.
-                List<String> src = Source.lines("case #0:",
-                                                "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
-                                                "    break;");
+                List<String> src = Source.lines("case #0: {",
+                                                "    #1 result = #2;",
+                                                "    Capsule$Thread.panini$assertSafeTransfer(result, panini$encapsulated);",
+                                                "    ((Panini$Future<#1>) msg).panini$resolve(result);",
+                                                "    break;",
+                                                "}");
                 return Source.formatAll(src,
                         buildProcedureID(method),
                         p.getReturnType().wrapped(),
@@ -750,6 +759,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
+        imports.add("org.paninij.runtime.OwnershipException");
         return imports;
     }
 }

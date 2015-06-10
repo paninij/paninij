@@ -55,11 +55,6 @@
       <groupId>org.paninij</groupId>
       <artifactId>capsule-generation</artifactId>
     </dependency>
-    <dependency>
-      <groupId>me.dwtj</groupId>
-      <artifactId>object-graph-explorer</artifactId>
-      <version>0.1</version>
-    </dependency>
   </dependencies>
 
 </project>

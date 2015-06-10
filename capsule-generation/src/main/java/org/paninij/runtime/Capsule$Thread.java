@@ -18,7 +18,10 @@
  */
 package org.paninij.runtime;
 
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
+
+import me.dwtj.objectgraph.Explorer;
 
 public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 {
@@ -329,6 +332,38 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
             try {
                 panini$thread.join();
             } catch (InterruptedException e) { /* Do nothing: try again to join indefinitely. */ }
+        }
+    }
+    
+    /**
+     * Returns true if it is safe to transfer ownership of the outgoing `msg` (and its object graph)
+     * from a capsule whose state is fully encapsulated within `local`.
+     */
+    // TODO: Modify to make sure that a message does not leak a reference to the capsule itself.
+    public static boolean panini$isSafeTransfer(Object msg, Object local)
+    {
+        Explorer local_explorer = new Explorer();
+        local_explorer.explore(local);
+        
+        Explorer msg_explorer = new Explorer();
+        msg_explorer.explore(msg);
+        
+        // Return true iff the intersection of these two sets is empty.
+        // TODO: Improve interface of `Explorer` for this use case.
+        Set<Object> local_idents = local_explorer.visited.identities.keySet();
+        Set<Object> msg_idents = msg_explorer.visited.identities.keySet();
+        msg_idents.retainAll(local_idents);
+        return (msg_idents.isEmpty()) ? true : false;
+    }
+    
+    /**
+     * Asserts that it is safe to transfer ownership of the outgoing `msg` (and its object graph)
+     * from a capsule whose state is fully encapsulated within `local`.
+     */
+    public static void panini$assertSafeTransfer(Object msg, Object local)
+    {
+        if (panini$isSafeTransfer(local, msg) == false) {
+            throw new OwnershipException();
         }
     }
 }
