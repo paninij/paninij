@@ -13,11 +13,17 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>PaniniJ Examples</name>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <generated.src.dir>generated-src/actual/</generated.src.dir>
+  </properties>
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
+        <version>2.6.1</version>
         <configuration>
           <filesets>
             <fileset>
@@ -35,7 +41,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
+        <version>3.3</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
@@ -45,16 +51,17 @@
     </plugins>
   </build>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <generated.src.dir>generated-src/actual/</generated.src.dir>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>capsule-generation</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>me.dwtj</groupId>
+      <artifactId>object-graph-explorer</artifactId>
+      <version>0.1</version>
+    </dependency>
   </dependencies>
+
 </project>
