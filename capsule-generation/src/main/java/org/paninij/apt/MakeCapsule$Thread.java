@@ -114,6 +114,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         @SuppressWarnings("rawtypes")
         List[] xs = {
             buildProcedureIDs(),
+            buildConstructor(),
             buildProcedures(),
             buildCheckRequired(),
             buildWire(),
@@ -191,6 +192,16 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         }
 
         return Source.buildCollectedImportDecls(template, imports);
+    }
+    
+    
+    List<String> buildConstructor()
+    {
+        List<String> src = Source.lines("public #0()",
+                                        "{",
+                                        "    Panini$System.self.set(this);",
+                                        "}");
+        return Source.formatAll(src, buildCapsuleName());
     }
 
 
@@ -760,6 +771,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.OwnershipException");
+        imports.add("org.paninij.runtime.Panini$System");
         return imports;
     }
 }
