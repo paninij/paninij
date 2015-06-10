@@ -7,7 +7,6 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <version>0.0.1-SNAPSHOT</version>
   <artifactId>capsule-generation</artifactId>
   <name>PaniniJ Capsule Generation</name>
 
