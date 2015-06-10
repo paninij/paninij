@@ -114,7 +114,6 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         @SuppressWarnings("rawtypes")
         List[] xs = {
             buildProcedureIDs(),
-            buildConstructor(),
             buildProcedures(),
             buildCheckRequired(),
             buildWire(),
@@ -196,16 +195,6 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
     
     
-    List<String> buildConstructor()
-    {
-        List<String> src = Source.lines("public #0()",
-                                        "{",
-                                        "    Panini$System.self.set(this);",
-                                        "}");
-        return Source.formatAll(src, buildCapsuleName());
-    }
-
-
     List<String> buildProcedures()
     {
         ArrayList<String> lines = new ArrayList<String>();
@@ -599,6 +588,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "@Override",
                 "public void run()",
                 "{",
+                "    Panini$System.self.set(this);",
                 "    try",
                 "    {",
                 "        panini$checkRequired();",
@@ -618,6 +608,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "@Override",
                 "public void run()",
                 "{",
+                "    Panini$System.self.set(this);",
                 "    try",
                 "    {",
                 "        panini$checkRequired();",
