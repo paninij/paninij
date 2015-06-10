@@ -120,6 +120,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             buildWire(),
             buildInitChildren(),
             buildInitState(),
+            buildGetAllState(),
             buildRun(),
             buildMain()
         };
@@ -256,6 +257,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "{",
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
+                "    Capsule$Thread caller = Panini$System.self.get();",
+                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
                 "    panini$push(panini$message);",
                 "    return panini$message;",
                 "}");
@@ -284,6 +287,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "{",
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
+                "    Capsule$Thread caller = Panini$System.self.get();",
+                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
                 "    panini$push(panini$message);",
                 "    #3panini$message.get();",
                 "}");
@@ -331,6 +336,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "{",
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
+                "    Capsule$Thread caller = Panini$System.self.get();",
+                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
                 "    panini$push(panini$message);",
                 "    return panini$message;",
                 "}");
@@ -377,6 +384,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "{",
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
+                "    Capsule$Thread caller = Panini$System.self.get();",
+                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
                 "    panini$push(panini$message);",
                 "    return panini$message.get();",
                 "}");
@@ -423,6 +432,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "{",
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
+                "    Capsule$Thread caller = Panini$System.self.get();",
+                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
                 "    panini$push(panini$message);",
                 "}");
         String procID = buildProcedureID(method);
@@ -568,6 +579,15 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         {
             return new ArrayList<String>();  // Do not override superclass with anything.
         }
+    }
+    
+    
+    List<String> buildGetAllState()
+    {
+        return Source.lines("public Object panini$getAllState()",
+                            "{",
+                            "    return panini$encapsulated;",
+                            "}");
     }
 
 

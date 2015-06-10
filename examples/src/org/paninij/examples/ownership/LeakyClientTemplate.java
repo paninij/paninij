@@ -17,7 +17,7 @@ public class LeakyClientTemplate
         //System.out.println(new String("Attempting to make server leak a reference to its template instance..."));
         //LeakyServerTemplate leaked_template = leaky_server.getTemplateReference();
 
-        //System.out.println(new String("Attempting to leak client secret to server..."));
-        //leaky_server.giveSecret(client_secret);
+        System.out.println(new String("Attempting to leak client secret to server..."));
+        leaky_server.giveSecret(client_secret);
     }
 }
