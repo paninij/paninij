@@ -244,7 +244,32 @@ public class PaniniModelInfo
         }
         return wired;
     }
+    
+    public static boolean isStateFieldDecl(PaniniProcessor context, Element elem)
+    {
+        return elem.getKind() == ElementKind.FIELD
+            && isWiredFieldDecl(context, elem) == false
+            && isChildFieldDecl(context, elem) == false;
+        
+    }
+    
+    public static boolean hasStateFieldDecl(PaniniProcessor context, TypeElement template)
+    {
+        return getStateFieldDecls(context, template).isEmpty() == false;
+    }
 
+    public static List<VariableElement> getStateFieldDecls(PaniniProcessor context, TypeElement template)
+    {
+        List<VariableElement> state_decls = new ArrayList<VariableElement>();
+        for (Element elem : template.getEnclosedElements())
+        {
+            if (isStateFieldDecl(context, elem)) {
+                state_decls.add((VariableElement) elem);
+            }
+            
+        }
+        return state_decls;
+    }
 
     /**
      * A capsule is a "root" capsule if and only if it is active and has no `@Wired` fields.

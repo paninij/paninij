@@ -5,7 +5,7 @@ import org.paninij.lang.Capsule;
 @Capsule
 public class FooTemplate implements FooSignature
 {
-    private String greeting;
+    String greeting;
 
     @Override
     public void setGreeting(String greeting)

@@ -604,10 +604,21 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     
     List<String> buildGetAllState()
     {
-        return Source.lines("public Object panini$getAllState()",
-                            "{",
-                            "    return panini$encapsulated;",
-                            "}");
+        List<String> states = new ArrayList<String>();
+        for (VariableElement state_elem : PaniniModelInfo.getStateFieldDecls(context, template))
+        {
+            TypeKind state_kind = state_elem.asType().getKind();
+            if (state_kind == TypeKind.ARRAY || state_kind == TypeKind.DECLARED) {
+                states.add("panini$encapsulated." + state_elem.toString());
+            }
+        }
+
+        List<String> src = Source.lines("public Object panini$getAllState()",
+                                        "{",
+                                        "    Object[] state = {#0};",
+                                        "    return state;",
+                                        "}");
+        return Source.formatAll(src, String.join(", ", states));
     }
 
 
