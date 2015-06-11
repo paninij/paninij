@@ -1,4 +1,4 @@
-package org.paninij.runtime;
+package org.paninij.runtime.ownership;
 
 public class OwnershipException extends RuntimeException
 {
