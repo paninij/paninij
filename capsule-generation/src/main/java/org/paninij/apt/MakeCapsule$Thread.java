@@ -28,6 +28,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.DuckShape;
@@ -454,7 +456,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     private List<String> buildCheckRequired()
     {
+        // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
         List<VariableElement> required = PaniniModelInfo.getWiredFieldDecls(context, template);
+        for (VariableElement child: PaniniModelInfo.getChildFieldDecls(context, template)) {
+            if (child.asType().getKind() == TypeKind.ARRAY) {
+                required.add(child);
+            }
+        }
 
         if (required.isEmpty()) {
             return new ArrayList<String>();
@@ -507,7 +515,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
      */
     private List<String> buildInitChildren()
     {
-        List<VariableElement> children = PaniniModelInfo.getChildFieldDecls(context, template);
+        List<Variable> children = this.capsule.getChildren();
+
         if (children.size() == 0) {
             return new ArrayList<String>();
         }
@@ -515,11 +524,23 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         List<String> lines = new ArrayList<String>();
 
         // For each of the capsule's children, add a line of code to instantiate that child capsule.
-        for (VariableElement child : children)
+        for (Variable child : children)
         {
-            String inst = Source.format("panini$encapsulated.#0 = new #1$Thread();",
-                                        child.toString(), child.asType().toString());
-            lines.add(inst);
+            if (child.isArray()) {
+                ArrayType t = (ArrayType) child.getMirror();
+                Type comp = new Type(t.getComponentType());
+
+                List<String> src = Source.lines(
+                        "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
+                        "    panini$encapsulated.#0[i] = new #1$Thread();",
+                        "}");
+                lines.addAll(Source.formatAll(src, child.getIdentifier(), comp.getMirror().toString()));
+            } else {
+                lines.add(Source.format(
+                        "panini$encapsulated.#0 = new #1$Thread();",
+                        child.getIdentifier(),
+                        child.getMirror().toString()));
+            }
         }
 
         // If the template has a design method, then it will need to be called.
@@ -527,11 +548,21 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             lines.add("panini$encapsulated.design(this);");
         }
 
-        // For each of the capsule's children, add a call to that capsule's `panini$start()` method.
-        for (VariableElement child : children)
+        for (Variable child : children)
         {
-            lines.add(Source.format("panini$encapsulated.#0.panini$start();", child.toString()));
+            if (child.isArray()) {
+                List<String> src = Source.lines(
+                        "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
+                        "    panini$encapsulated.#0[i].panini$start();",
+                        "}");
+                lines.addAll(Source.formatAll(src, child.getIdentifier()));
+            } else {
+                lines.add(Source.format(
+                        "panini$encapsulated.#0.panini$start();",
+                        child.getIdentifier()));
+            }
         }
+
 
         // Build the method itself.
         List<String> src = Source.lines("@Override",

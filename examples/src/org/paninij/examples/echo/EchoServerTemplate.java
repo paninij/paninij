@@ -26,9 +26,10 @@ import java.io.IOException;
 import java.net.*;
 
 @Capsule
-public class EchoServerTemplate {
-    // TODO: Change this to an array of workers.
-    @Child Worker w;
+public class EchoServerTemplate
+{
+    @Child Worker[] workers = new Worker[10];
+    // @Child Worker[] workers;  // This should fail.
 
     ServerSocket ss;
 
@@ -39,7 +40,9 @@ public class EchoServerTemplate {
     }
 
     public void design(EchoServer self) {
-        w.wire(self);
+        for (Worker w : this.workers) {
+            w.wire(self);
+        }
     }
 
     @Block

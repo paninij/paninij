@@ -21,10 +21,14 @@ package org.paninij.apt;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.SimpleElementVisitor8;
 
+import org.paninij.lang.Child;
 import org.paninij.lang.Future;
+import org.paninij.lang.Wired;
 import org.paninij.model.CapsuleElement;
+import org.paninij.model.Variable;
 
 /**
  * The Template visitor as the main visitor for all capsule templates. This class is used by
@@ -46,6 +50,16 @@ public class TemplateVisitor extends SimpleElementVisitor8<CapsuleElement, Capsu
     @Override
     public CapsuleElement visitExecutable(ExecutableElement e, CapsuleElement capsule) {
         capsule.addExecutable(e);
+        return capsule;
+    }
+
+    @Override
+    public CapsuleElement visitVariable(VariableElement e, CapsuleElement capsule) {
+        if (e.getAnnotation(Child.class) != null) {
+            capsule.addChild(new Variable(e.asType(), e.getSimpleName().toString()));
+        } else if (e.getAnnotation(Wired.class) != null) {
+            // TODO
+        }
         return capsule;
     }
 
