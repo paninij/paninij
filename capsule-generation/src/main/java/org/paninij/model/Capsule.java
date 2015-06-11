@@ -18,14 +18,16 @@
  */
 package org.paninij.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface Capsule
 {
+    public List<Variable> getChildren();
+
     public String getSimpleName();
 
     public String getQualifiedName();
 
-    public ArrayList<Procedure> getProcedures();
+    public List<Procedure> getProcedures();
 
 }

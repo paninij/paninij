@@ -19,6 +19,7 @@
 package org.paninij.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -32,6 +33,7 @@ public class CapsuleElement implements Capsule
     private String qualifiedName;
     private TypeElement element;
     private ArrayList<Procedure> procedures;
+    private ArrayList<Variable> children;
 
     /*
      * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
@@ -50,6 +52,17 @@ public class CapsuleElement implements Capsule
         this.qualifiedName = "";
         this.element = null;
         this.procedures = new ArrayList<Procedure>();
+        this.children = new ArrayList<Variable>();
+    }
+
+    @Override
+    public List<Variable> getChildren() {
+        return this.children;
+    }
+
+    public void addChild(Variable v) {
+        System.out.println("CHILD: " + v.toString());
+        this.children.add(v);
     }
 
     @Override
@@ -63,7 +76,7 @@ public class CapsuleElement implements Capsule
     }
 
     @Override
-    public ArrayList<Procedure> getProcedures() {
+    public List<Procedure> getProcedures() {
         return this.procedures;
     }
 

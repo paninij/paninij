@@ -170,6 +170,7 @@ public class Type
         case UNION:
         case INTERSECTION:
         default:
+            System.out.println("DEFAULT: " + this.mirror.toString() + " " + this.kind);
             throw new IllegalArgumentException();
         }
     }
@@ -222,6 +223,10 @@ public class Type
 
     public boolean isVoid() {
         return this.kind.equals(TypeKind.VOID);
+    }
+
+    public boolean isArray() {
+        return this.kind.equals(TypeKind.ARRAY);
     }
 
     public boolean isInterface() {
