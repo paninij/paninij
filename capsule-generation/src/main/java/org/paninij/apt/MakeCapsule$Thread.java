@@ -249,7 +249,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
                 "    Capsule$Thread caller = Panini$System.self.get();",
-                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
+                "    #3;",
                 "    panini$push(panini$message);",
                 "    return panini$message;",
                 "}");
@@ -266,7 +266,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.formatAll(lines,
                 Source.buildExecutableDecl(method),
                 shape.encoded,
-                args);
+                args,
+                buildAssertSafeInvocationTransfer());
     }
 
     List<String> buildBlockedFutureProcedure(ExecutableElement method) {
@@ -279,9 +280,9 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
                 "    Capsule$Thread caller = Panini$System.self.get();",
-                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
+                "    #3;",
                 "    panini$push(panini$message);",
-                "    #3panini$message.get();",
+                "    #4panini$message.get();",
                 "}");
         String procID = buildProcedureID(method);
 
@@ -315,6 +316,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 declaration,
                 shape.encoded,
                 argNameString,
+                buildAssertSafeInvocationTransfer(),
                 ret);
     }
 
@@ -328,7 +330,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
                 "    Capsule$Thread caller = Panini$System.self.get();",
-                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
+                "    #3;",
                 "    panini$push(panini$message);",
                 "    return panini$message;",
                 "}");
@@ -363,7 +365,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.formatAll(lines,
                 declaration,
                 shape.encoded,
-                argNameString);
+                argNameString,
+                buildAssertSafeInvocationTransfer());
     }
 
     List<String> buildBlockedProcedure(ExecutableElement method) {
@@ -376,7 +379,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
                 "    Capsule$Thread caller = Panini$System.self.get();",
-                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
+                "    #3;",
                 "    panini$push(panini$message);",
                 "    return panini$message.get();",
                 "}");
@@ -411,7 +414,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.formatAll(lines,
                 declaration,
                 shape.encoded,
-                argNameString);
+                argNameString,
+                buildAssertSafeInvocationTransfer());
     }
 
     List<String> buildSimpleProcedure(ExecutableElement method) {
@@ -424,7 +428,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
                 "    Capsule$Thread caller = Panini$System.self.get();",
-                "    Capsule$Thread.panini$assertSafeTransfer(panini$message, caller.panini$getAllState(), null);",
+                "    #3;",
                 "    panini$push(panini$message);",
                 "}");
         String procID = buildProcedureID(method);
@@ -458,7 +462,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         return Source.formatAll(lines,
                 declaration,
                 shape.encoded,
-                argNameString);
+                argNameString,
+                buildAssertSafeInvocationTransfer());
+    }
+
+    
+    public static String buildAssertSafeInvocationTransfer() {
+        return "assert Capsule$Thread.panini$isSafeTransfer(panini$message, caller.panini$getAllState())";
     }
 
 
@@ -490,7 +500,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                                           "}");
         return Source.formatAlignedFirst(lines, assertions);
     }
-
+    
 
     private List<String> buildWire()
     {
@@ -744,16 +754,22 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 // Call the template instance's method and resolve the duck using the result.
                 List<String> src = Source.lines("case #0: {",
                                                 "    #1 result = #2;",
-                                                "    Capsule$Thread.panini$assertSafeTransfer(result, panini$encapsulated, null);",
+                                                "    #3;",
                                                 "    ((Panini$Future<#1>) msg).panini$resolve(result);",
                                                 "    break;",
                                                 "}");
                 return Source.formatAll(src,
                         buildProcedureID(method),
                         p.getReturnType().wrapped(),
-                        buildEncapsulatedMethodCall(shape));
+                        buildEncapsulatedMethodCall(shape),
+                        buildAssertSafeResultTransfer());
             }
         }
+    }
+    
+
+    public static String buildAssertSafeResultTransfer() {
+        return "assert Capsule$Thread.panini$isSafeTransfer(result, panini$encapsulated)";
     }
 
 
