@@ -29,6 +29,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.util.DuckShape;
@@ -455,7 +456,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     private List<String> buildCheckRequired()
     {
+        // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
         List<VariableElement> required = PaniniModelInfo.getWiredFieldDecls(context, template);
+        for (VariableElement child: PaniniModelInfo.getChildFieldDecls(context, template)) {
+            if (child.asType().getKind() == TypeKind.ARRAY) {
+                required.add(child);
+            }
+        }
 
         if (required.isEmpty()) {
             return new ArrayList<String>();

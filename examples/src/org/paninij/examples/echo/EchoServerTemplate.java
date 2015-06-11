@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.net.*;
 
 @Capsule
-public class EchoServerTemplate {
+public class EchoServerTemplate
+{
     @Child Worker[] workers = new Worker[10];
+    // @Child Worker[] workers;  // This should fail.
 
     ServerSocket ss;
 
