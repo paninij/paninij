@@ -18,10 +18,14 @@
  */
 package org.paninij.runtime;
 
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import me.dwtj.objectgraph.Explorer;
+import me.dwtj.objectgraph.GreedyNavigator;
+import me.dwtj.objectgraph.Navigator;
 
 public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 {
@@ -349,17 +353,41 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      */
     public static boolean panini$isSafeTransfer(Object msg, Object local)
     {
-        Explorer local_explorer = new Explorer();
+        // These predicates and the navigator are all stateless, so they are safe to reuse.
+        final Predicate<Object> nav_from = (obj -> obj instanceof org.paninij.lang.String == false
+                                                && obj instanceof java.lang.String == false);
+        final Predicate<Class<?>> nav_to = (clazz -> clazz != org.paninij.lang.String.class
+                                                  && clazz != java.lang.String.class);
+
+        final Navigator navigator = new GreedyNavigator(nav_from, nav_to);
+        
+        Explorer local_explorer = new Explorer(navigator);
         local_explorer.explore(local);
         
-        Explorer msg_explorer = new Explorer();
+        Explorer msg_explorer = new Explorer(navigator);
         msg_explorer.explore(msg);
         
+        // Filter out those which are known to be safe to transfer.
+        List<Object> local_refs = local_explorer.visited.identities.keySet().stream()
+                                     .collect(Collectors.toList());
+
+        List<Object> msg_refs = msg_explorer.visited.identities.keySet().stream()
+                                   .collect(Collectors.toList());
+
         // Return true iff the intersection of these two sets is empty.
-        // TODO: Improve interface of `Explorer` for this use case.
-        Set<Object> local_idents = local_explorer.visited.identities.keySet();
-        Set<Object> msg_idents = msg_explorer.visited.identities.keySet();
-        msg_idents.retainAll(local_idents);
-        return (msg_idents.isEmpty()) ? true : false;
+        msg_refs.retainAll(local_refs);
+        return (msg_refs.isEmpty()) ? true : false;
     }
+    
+    
+    /**
+     * Returns true if `obj` is known to be safe to transfer by looking at it directly (e.g. because
+     * it is transitively effectively immutable).
+     */
+    /*
+    public static boolean panini$objSafeToTransfer(Object obj)
+    {
+        return obj instanceof String;
+    }
+    */
 }
