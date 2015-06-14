@@ -18,7 +18,7 @@
  */
 package org.paninij.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface Capsule
 {
@@ -26,6 +26,7 @@ public interface Capsule
 
     public String getQualifiedName();
 
-    public ArrayList<Procedure> getProcedures();
+    public List<Procedure> getProcedures();
 
+    public List<String> getSignatures();
 }

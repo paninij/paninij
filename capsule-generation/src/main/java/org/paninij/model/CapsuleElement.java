@@ -19,9 +19,11 @@
 package org.paninij.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.CapsuleTemplateVisitor;
 import org.paninij.apt.util.PaniniModelInfo;
@@ -65,6 +67,19 @@ public class CapsuleElement implements Capsule
     @Override
     public ArrayList<Procedure> getProcedures() {
         return this.procedures;
+    }
+
+    @Override
+    public ArrayList<String> getSignatures() {
+        ArrayList<String> sigs = new ArrayList<String>();
+
+        for (TypeMirror i : this.element.getInterfaces()) {
+            String name = i.toString();
+            assert(name.endsWith(PaniniModelInfo.SIGNATURE_TEMPLATE_SUFFIX));
+            name = name.substring(0, name.length() - PaniniModelInfo.SIGNATURE_TEMPLATE_SUFFIX.length());
+            sigs.add(name);
+        }
+        return sigs;
     }
 
     public void addExecutable(ExecutableElement e) {
