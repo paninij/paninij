@@ -105,15 +105,18 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
         
-        note("PaniniProcessor: Looking for any `@CapsuleTester` classes.");
         for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTester.class))
         {
-            note("PaniniProcessor: `@CapsuleTester` found.");
-            if (CapsuleTesterChecker.check(this, elem)) {
-                note("PaniniProcessor: `@CapsuleTester` passed all checks.");
+            if (CapsuleTesterChecker.check(this, elem))
+            {
                 TypeElement template = (TypeElement) elem;
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
                 MakeCapsuleTester$Thread.make(this, template, capsule).makeSourceFile();
+
+                for (Procedure procedure : capsule.getProcedures()) {
+                    SourceFile source = messageFactory.make(procedure);
+                    this.createJavaFile(source);
+                }
             }
         }
 
