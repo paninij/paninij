@@ -41,6 +41,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
+import org.paninij.model.SignatureElement;
 
 
 /**
@@ -57,18 +58,23 @@ public class PaniniProcessor extends AbstractProcessor
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         this.roundEnv = roundEnv;
 
+        MessageFactory messageFactory = new MessageFactory();
+        SignatureFactory signatureFactory = new SignatureFactory();
+        CapsuleFactory capsuleFactory = new CapsuleFactory();
+
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
             if (SignatureChecker.check(this, elem)) {
                 // TODO
-//                TypeElement template = (TypeElement) elem;
-//                org.paninij.model.Signature signature = SignatureElement.make(template);
-//                SignatureGenerator.generate(this, signature);
+                TypeElement template = (TypeElement) elem;
+                org.paninij.model.Signature signature = SignatureElement.make(template);
+                SourceFile source = signatureFactory.generate(signature);
+                this.createJavaFile(source);
             }
         }
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
-        MessageFactory messageFactory = new MessageFactory();
+
 
         for (Element elem : annotated) {
             if (CapsuleChecker.check(this, elem)) {
@@ -78,7 +84,6 @@ public class PaniniProcessor extends AbstractProcessor
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
                 MakeCapsule.make(this, template, capsule).makeSourceFile();
                 MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
-//                CapsuleGenerator.generate(this, capsule);
 
                 // this could be a part of CapsuleGenerator
                 for (Procedure procedure : capsule.getProcedures()) {
