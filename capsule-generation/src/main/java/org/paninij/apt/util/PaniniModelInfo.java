@@ -49,6 +49,7 @@ public class PaniniModelInfo
     public static final String DEFAULT_FUTURE_PACKAGE = "org.paninij.runtime.futures";
     public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
     public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
+    public static final String CAPSULE_TESTER_SUFFIX = "Tester";
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 
     public static boolean isPaniniCustom(TypeMirror returnType)
@@ -178,6 +179,36 @@ public class PaniniModelInfo
         assert(name.endsWith(CAPSULE_TEMPLATE_SUFFIX));
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
+    
+    /**
+     * @return The name of the simple (i.e. unqualified) tester type associated with the given
+     * capsule tester template type.
+     *
+     * Assumes that the given tester template type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
+     * is a useful helper method for dropping the `CAPSULE_TESTER_SUFFIX`.
+     */
+    public static String simpleTesterName(TypeElement tester)
+    {
+        // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
+        String name = tester.getSimpleName().toString();
+        assert(name.endsWith(CAPSULE_TESTER_SUFFIX));
+        return name.substring(0, name.length() - CAPSULE_TESTER_SUFFIX.length());
+    }
+
+    /**
+     * @return The name of the fully-qualified tester type associated with the given tester
+     * template type.
+     *
+     * Assumes that the given tester template type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
+     * is a useful helper method for dropping the `CAPSULE_TESTER_SUFFIX`.
+     */
+    public static String qualifiedTesterName(TypeElement tester)
+    {
+         // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
+        String name = tester.getQualifiedName().toString();
+        assert(name.endsWith(CAPSULE_TESTER_SUFFIX));
+        return name.substring(0, name.length() - CAPSULE_TESTER_SUFFIX.length());
+    } 
 
 
     public static boolean isCapsuleFieldDecl(PaniniProcessor context, Element elem)

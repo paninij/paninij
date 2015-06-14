@@ -757,7 +757,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
-    private List<String> buildMain()
+    List<String> buildMain()
     {
         // A `Capsule$Thread` should have a main() method if and only if it is a "root" capsule.
         if (PaniniModelInfo.isRootCapsule(context, template))
