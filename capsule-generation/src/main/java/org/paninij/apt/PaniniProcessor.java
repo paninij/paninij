@@ -64,10 +64,9 @@ public class PaniniProcessor extends AbstractProcessor
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
             if (SignatureChecker.check(this, elem)) {
-                // TODO
                 TypeElement template = (TypeElement) elem;
                 org.paninij.model.Signature signature = SignatureElement.make(template);
-                SourceFile source = signatureFactory.generate(signature);
+                SourceFile source = signatureFactory.make(signature);
                 this.createJavaFile(source);
             }
         }

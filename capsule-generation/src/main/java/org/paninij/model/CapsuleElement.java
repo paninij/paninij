@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
-import org.paninij.apt.TemplateVisitor;
+import org.paninij.apt.CapsuleTemplateVisitor;
 import org.paninij.apt.util.PaniniModelInfo;
 
 public class CapsuleElement implements Capsule
@@ -40,7 +40,7 @@ public class CapsuleElement implements Capsule
      */
     public static Capsule make(TypeElement e) {
         CapsuleElement capsule = new CapsuleElement();
-        TemplateVisitor visitor = new TemplateVisitor();
+        CapsuleTemplateVisitor visitor = new CapsuleTemplateVisitor();
         e.accept(visitor, capsule);
         return capsule;
     }

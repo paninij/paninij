@@ -18,7 +18,8 @@
  */
 package org.paninij.model;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public interface Signature
 {
@@ -26,5 +27,9 @@ public interface Signature
 
     public String getQualifiedName();
 
-    public ArrayList<Procedure> getProcedures();
+    public String getPackage();
+
+    public Set<String> getImports();
+
+    public List<Procedure> getProcedures();
 }

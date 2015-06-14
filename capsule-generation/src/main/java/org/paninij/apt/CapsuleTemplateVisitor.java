@@ -30,7 +30,7 @@ import org.paninij.model.CapsuleElement;
  * org.paninij.model.Capsule to convert a Capsule Template to an org.paninij.model.ElementCapsule.
  * This class is used when org.paninij.model.ElementCapsule.make(TypeElement e) is called.
  */
-public class TemplateVisitor extends SimpleElementVisitor8<CapsuleElement, CapsuleElement>
+public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement, CapsuleElement>
 {
 
     @Override
