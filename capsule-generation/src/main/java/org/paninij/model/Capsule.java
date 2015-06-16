@@ -22,6 +22,8 @@ import java.util.List;
 
 public interface Capsule
 {
+    public List<Variable> getChildren();
+
     public String getSimpleName();
 
     public String getQualifiedName();
