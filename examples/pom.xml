@@ -45,6 +45,10 @@
           <source>1.8</source>
           <target>1.8</target>
           <generatedSourcesDirectory>${generated.src.dir}</generatedSourcesDirectory>
+          <compilerArgs>
+            <!-- <arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg> -->
+            <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

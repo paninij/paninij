@@ -20,11 +20,14 @@ package org.paninij.apt;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -33,11 +36,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.sound.midi.MidiDevice.Info;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.paninij.apt.checks.CapsuleTesterChecker;
+import org.paninij.apt.ownership.OwnershipCheckMethod;
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
@@ -51,12 +54,39 @@ import org.paninij.model.Procedure;
  * Used as a service during compilation to make automatically-generated `.java` files from classes
  * annotated with one of the annotations in `org.paninij.lang`.
  */
-@SupportedAnnotationTypes({ "org.paninij.lang.Capsule", "org.paninij.lang.Signature" })
+@SupportedAnnotationTypes({"org.paninij.lang.Capsule",
+                           "org.paninij.lang.Signature",
+                           "org.paninij.lang.CapsuleTester"})
+@SupportedOptions({"ownership.check.method", "foo"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
     Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();
+    OwnershipCheckMethod ownershipCheckMethod;
+    
+    @Override
+    public void init(ProcessingEnvironment procEnv)
+    {
+        super.init(procEnv);
+        initOptions(procEnv.getOptions());
+    }
+    
+
+    protected void initOptions(Map<String, String> options)
+    {
+        note("Annotation Processor Options: " + options);
+        try
+        {
+            String val = options.get(OwnershipCheckMethod.getArgumentKey());
+            ownershipCheckMethod = OwnershipCheckMethod.fromString(val);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            ownershipCheckMethod = OwnershipCheckMethod.getDefault();
+        }
+    }
+
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
