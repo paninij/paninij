@@ -468,8 +468,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
     
-    public static String buildAssertSafeInvocationTransfer() {
-        return "assert Capsule$Thread.panini$isSafeTransfer(panini$message, caller.panini$getAllState()) : \"Procedure invocation performed unsafe ownership transfer.\"";
+    String buildAssertSafeInvocationTransfer()
+    {
+        return Source.format("assert Panini$Ownership.isSafeTransfer(#0, #1, #2) : #3",
+                             "panini$message",
+                             "caller.panini$getAllState()",
+                             "Panini$Ownership.CheckMethod." + context.ownershipCheckMethod,
+                             "\"Procedure invocation performed unsafe ownership transfer.\"");
     }
 
 
@@ -779,8 +784,13 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
     
 
-    public static String buildAssertSafeResultTransfer() {
-        return "assert Capsule$Thread.panini$isSafeTransfer(result, panini$encapsulated) : \"Procedure return attempted unsafe ownership transfer.\"";
+    String buildAssertSafeResultTransfer()
+    {
+        return Source.format("assert Panini$Ownership.isSafeTransfer(#0, #1, #2) : #3",
+                "result",
+                "panini$getAllState()",
+                "Panini$Ownership.CheckMethod." + context.ownershipCheckMethod,
+                "\"Procedure return attempted unsafe ownership transfer.\"");
     }
 
 
@@ -852,6 +862,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
         imports.add("org.paninij.runtime.Panini$ErrorQueue");
+        imports.add("org.paninij.runtime.check.Panini$Ownership");
         return imports;
     }
 }

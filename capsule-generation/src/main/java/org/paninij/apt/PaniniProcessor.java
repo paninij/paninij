@@ -40,7 +40,6 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.paninij.apt.checks.CapsuleTesterChecker;
-import org.paninij.apt.ownership.OwnershipCheckMethod;
 import org.paninij.apt.util.DuckShape;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
@@ -48,6 +47,7 @@ import org.paninij.lang.CapsuleTester;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
+import org.paninij.runtime.check.Panini$Ownership;
 
 
 /**
@@ -63,7 +63,7 @@ public class PaniniProcessor extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
     Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();
-    OwnershipCheckMethod ownershipCheckMethod;
+    Panini$Ownership.CheckMethod ownershipCheckMethod;
     
     @Override
     public void init(ProcessingEnvironment procEnv)
@@ -78,12 +78,12 @@ public class PaniniProcessor extends AbstractProcessor
         note("Annotation Processor Options: " + options);
         try
         {
-            String val = options.get(OwnershipCheckMethod.getArgumentKey());
-            ownershipCheckMethod = OwnershipCheckMethod.fromString(val);
+            String val = options.get(Panini$Ownership.CheckMethod.getArgumentKey());
+            ownershipCheckMethod = Panini$Ownership.CheckMethod.fromString(val);
         }
         catch (IllegalArgumentException ex)
         {
-            ownershipCheckMethod = OwnershipCheckMethod.getDefault();
+            ownershipCheckMethod = Panini$Ownership.CheckMethod.getDefault();
         }
     }
 
