@@ -23,11 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.type.DeclaredType;
-
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
@@ -40,17 +35,11 @@ public class SignatureFactory
     private Signature context;
 
     public SourceFile make(Signature signature) {
-        // TODO actually generate the source file
-
         this.context = signature;
-
-        System.out.println("GENERATE SIGNATURE: " + signature.getQualifiedName());
-        for (Procedure procedure : signature.getProcedures()) {
-            System.out.println("GENERATE PROC: " + procedure.toString());
-        }
 
         String name = this.context.getQualifiedName();
         String content = this.generateContent();
+
         return new SourceFile(name, content);
     }
 
@@ -64,6 +53,7 @@ public class SignatureFactory
                 "{",
                 "    ##",
                 "}");
+
         src = Source.format(src,
                 this.context.getPackage(),
                 this.context.getSimpleName());
@@ -118,6 +108,7 @@ public class SignatureFactory
                 shape.realReturn,
                 p.getName(),
                 argDeclString);
+
         return declaration;
     }
 }
