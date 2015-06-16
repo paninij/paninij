@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
+
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
@@ -110,12 +113,68 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
+    private List<String> generateRequiredFields() {
+        // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
+        List<Variable> required = this.context.getWired();
+
+        for (Variable child : this.context.getChildren()) {
+            if (child.isArray()) required.add(child);
+        }
+
+        if (required.isEmpty()) return new ArrayList<String>();
+
+        List<String> assertions = new ArrayList<String>(required.size());
+        for (int idx = 0; idx < required.size(); idx++) {
+            assertions.add(Source.format(
+                    "assert(panini$encapsulated.#0 != null);",
+                    required.get(idx).getIdentifier()));
+        }
+
+        List<String> lines = Source.lines(
+                "@Override",
+                "public void panini$checkRequired()",
+                "{",
+                "    ##",
+                "}",
+                "");
+        return Source.formatAlignedFirst(lines, assertions);
+    }
+
+    private List<String> generateWire() {
+        List<Variable> wired = this.context.getWired();
+        List<String> assignments = new ArrayList<String>();
+        List<String> decls = new ArrayList<String>();
+
+        if (wired.isEmpty()) return assignments;
+
+        for (Variable var : wired) {
+            String instantiation = Source.format("panini$encapsulated.#0 = #0;", var.getIdentifier());
+            assignments.add(instantiation);
+            decls.add(var.toString());
+        }
+
+        List<String> src = Source.lines(
+                "@Override",
+                "public void wire(#0)",
+                "{",
+                "    ##",
+                "}",
+                "");
+
+        src = Source.formatAll(src, String.join(", ", decls));
+        src = Source.formatAlignedFirst(src, assignments);
+
+        return src;
+    }
+
     private List<String> generateCapsuleBody() {
         List<String> src = new ArrayList<String>();
 
         src.add(this.generateEncapsulatedDecl());
         src.addAll(this.generateProcedureIDs());
         src.addAll(this.generateProcedures());
+        src.addAll(this.generateRequiredFields());
+        src.addAll(this.generateWire());
 
         return src;
     }
