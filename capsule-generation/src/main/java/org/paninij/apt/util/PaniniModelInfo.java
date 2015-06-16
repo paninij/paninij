@@ -325,19 +325,6 @@ public class PaniniModelInfo
 
 
     /**
-     * Returns the set of all `DuckShape`s which the given capsule template will use.
-     */
-    public static Set<DuckShape> getDuckShapes(TypeElement template)
-    {
-        Set<DuckShape> rv = new HashSet<DuckShape>();
-        for (ExecutableElement proc : getProcedures(template)) {
-            rv.add(new DuckShape(proc));
-        }
-        return rv;
-    }
-
-
-    /**
      * Inspects the given capsule template, finds the design declaration on it, then returns a
      * String representation of a `wire()` method declaration.
      *
