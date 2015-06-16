@@ -328,6 +328,8 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         // Do nothing.
         return null;
     }
+    
+    public abstract Object panini$getEncapsulated();
 
     @Override
     public void panini$start()
@@ -378,16 +380,20 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         msg_refs.retainAll(local_refs);
         return (msg_refs.isEmpty()) ? true : false;
     }
-    
-    
-    /**
-     * Returns true if `obj` is known to be safe to transfer by looking at it directly (e.g. because
-     * it is transitively effectively immutable).
-     */
-    /*
-    public static boolean panini$objSafeToTransfer(Object obj)
+
+
+    @Override
+    public int hashCode()
     {
-        return obj instanceof String;
+        // Strict (default) object identity-based hash code:
+        return System.identityHashCode(this);
     }
-    */
+
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        // Strict identity equality:
+        return obj == this;
+    }
 }

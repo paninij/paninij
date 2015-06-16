@@ -122,6 +122,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             buildInitChildren(),
             buildInitState(),
             buildGetAllState(),
+            buildGetEncapsulated(),
             buildRun(),
             buildMain()
         };
@@ -623,12 +624,23 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
             }
         }
 
-        List<String> src = Source.lines("public Object panini$getAllState()",
+        List<String> src = Source.lines("@Override",
+                                        "public Object panini$getAllState()",
                                         "{",
                                         "    Object[] state = {#0};",
                                         "    return state;",
                                         "}");
         return Source.formatAll(src, String.join(", ", states));
+    }
+    
+    
+    List<String> buildGetEncapsulated()
+    {
+        return Source.lines("@Override",
+                            "public Object panini$getEncapsulated()",
+                            "{",
+                            "    return panini$encapsulated;",
+                            "}");
     }
 
 
@@ -641,14 +653,16 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "public void run()",
                 "{",
                 "    Panini$System.self.set(this);",
+                "    Panini$System.errors.put(this, new Panini$ErrorQueue(4));",
                 "    try",
                 "    {",
                 "        panini$checkRequired();",
                 "        panini$initChildren();",
                 "        panini$initState();",
                 "        panini$encapsulated.run();",
-                "    } finally {",
-                "        // TODO?",
+                "    }",
+                "    catch (Throwable ex) {",
+                "        Panini$System.errors.get(this).add(ex);",
                 "    }",
                 "}"
             );
@@ -661,6 +675,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "public void run()",
                 "{",
                 "    Panini$System.self.set(this);",
+                "    Panini$System.errors.put(this, new Panini$ErrorQueue(2));",
                 "    try",
                 "    {",
                 "        panini$checkRequired();",
@@ -674,8 +689,8 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "            ##",
                 "        }",
                 "    }",
-                "    catch (Exception ex) {",
-                "        /* do nothing for now */",
+                "    catch (Throwable ex) {",
+                "        Panini$System.errors.get(this).add(ex);",
                 "    }",
                 "}"
             );
@@ -836,6 +851,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
+        imports.add("org.paninij.runtime.Panini$ErrorQueue");
         return imports;
     }
 }

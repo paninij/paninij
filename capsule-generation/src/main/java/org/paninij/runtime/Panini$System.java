@@ -1,5 +1,7 @@
 package org.paninij.runtime;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Panini$System
 {
     /**
@@ -11,4 +13,7 @@ public class Panini$System
      * it was running the procedure wrapper on another capsule.)
      */
     public static final ThreadLocal<Capsule$Thread> self = new ThreadLocal<Capsule$Thread>();
+    
+    public static final ConcurrentHashMap<Object, Panini$ErrorQueue> errors
+                         = new ConcurrentHashMap<Object, Panini$ErrorQueue>();
 }

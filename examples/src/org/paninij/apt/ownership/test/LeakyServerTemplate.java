@@ -15,7 +15,7 @@ public class LeakyServerTemplate
     }
 
     public void giveInteger(Integer i) {
-        System.err.println("Server: received Integer " + i);
+        // Nothing to do.
     }
     
     public Integer getSecret() {

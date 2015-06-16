@@ -21,6 +21,38 @@ public class MakeCapsuleTester$Thread extends MakeCapsule$Thread
         cap.capsule = capsule;
         return cap;
     }
+    
+    
+    @Override
+    List<String> buildRun()
+    {
+        List<String> src = Source.lines(
+                "@SuppressWarnings(\"all\")",  // To suppress "unsafe" casts in message unpacking.
+                "@Override",
+                "public void run()",
+                "{",
+                "    Panini$System.self.set(this);",
+                "    try",
+                "    {",
+                "        panini$checkRequired();",
+                "        panini$initChildren();",
+                "        panini$initState();",
+                "",
+                "        boolean terminate = false;",
+                "        while (!terminate)",
+                "        {",
+                "            Panini$Message msg = panini$nextMessage();",
+                "            ##",
+                "        }",
+                "    }",
+                "    catch (Throwable ex) {",
+                "        throw ex;",  // Re-throw everything
+                "    }",
+                "}"
+            );
+
+        return Source.formatAlignedFirst(src, buildRunSwitch());
+    }
 
 
     @Override
