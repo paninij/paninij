@@ -57,7 +57,7 @@ public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement
         if (e.getAnnotation(Child.class) != null) {
             capsule.addChild(new Variable(e.asType(), e.getSimpleName().toString()));
         } else if (e.getAnnotation(Wired.class) != null) {
-            // TODO
+            capsule.addWired(new Variable(e.asType(), e.getSimpleName().toString()));
         }
         return capsule;
     }

@@ -25,6 +25,8 @@ public interface Capsule
 {
     public List<Variable> getChildren();
 
+    public List<Variable> getWired();
+
     public String getSimpleName();
 
     public String getQualifiedName();

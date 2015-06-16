@@ -19,6 +19,7 @@
 package org.paninij.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,8 +37,12 @@ public class CapsuleElement implements Capsule
     private String simpleName;
     private String qualifiedName;
     private TypeElement element;
+
     private ArrayList<Procedure> procedures;
     private ArrayList<Variable> children;
+    private ArrayList<Variable> wired;
+
+    private Set<String> imports;
 
     /*
      * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
@@ -57,6 +62,8 @@ public class CapsuleElement implements Capsule
         this.element = null;
         this.procedures = new ArrayList<Procedure>();
         this.children = new ArrayList<Variable>();
+        this.wired = new ArrayList<Variable>();
+        this.imports = new HashSet<String>();
     }
 
     @Override
@@ -64,9 +71,17 @@ public class CapsuleElement implements Capsule
         return this.children;
     }
 
+    @Override
+    public List<Variable> getWired() {
+        return this.wired;
+    }
+
     public void addChild(Variable v) {
-        System.out.println("CHILD: " + v.toString());
         this.children.add(v);
+    }
+
+    public void addWired(Variable v) {
+        this.wired.add(v);
     }
 
     @Override
@@ -86,7 +101,7 @@ public class CapsuleElement implements Capsule
 
     @Override
     public Set<String> getImports() {
-        return TypeCollector.collect(this.element);
+        return this.imports;
     }
 
     @Override
@@ -117,6 +132,7 @@ public class CapsuleElement implements Capsule
     public void setTypeElement(TypeElement e) {
         if (this.element == null) {
             this.element = e;
+            this.imports = TypeCollector.collect(this.element);
             this.simpleName = PaniniModelInfo.simpleCapsuleName(e);
             this.qualifiedName = PaniniModelInfo.qualifiedCapsuleName(e);
         }

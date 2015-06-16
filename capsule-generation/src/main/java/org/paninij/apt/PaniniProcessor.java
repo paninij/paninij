@@ -81,7 +81,11 @@ public class PaniniProcessor extends AbstractProcessor
                 TypeElement template = (TypeElement) elem;
 
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                MakeCapsule.make(this, template, capsule).makeSourceFile();
+
+                SourceFile src = capsuleFactory.make(capsule);
+                this.createJavaFile(src);
+
+//                MakeCapsule.make(this, template, capsule).makeSourceFile();
                 MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
 
                 // this could be a part of CapsuleGenerator
