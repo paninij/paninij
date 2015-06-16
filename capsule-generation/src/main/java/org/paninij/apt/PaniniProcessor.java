@@ -107,15 +107,11 @@ public class PaniniProcessor extends AbstractProcessor
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
      */
-    void createJavaFile(String cls, String src)
-    {
-        try
-        {
+    void createJavaFile(String cls, String src) {
+        try {
             JavaFileObject file = processingEnv.getFiler().createSourceFile(cls);
             file.openWriter().append(src).close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
