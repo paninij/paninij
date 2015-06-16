@@ -5,9 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
-
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
@@ -105,17 +102,12 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return decls;
     }
 
-    private String generateProcedureID(Procedure p) {
-        String base = "panini$proc$";
-        List<String> params = new ArrayList<String>();
-
-        for (Variable param : p.getParameters()) {
-            params.add(param.encodeFull());
+    private List<String> generateProcedures() {
+        ArrayList<String> src = new ArrayList<String>();
+        for (Procedure p : this.context.getProcedures()) {
+            src.addAll(this.generateProcedure(p));
         }
-
-        String paramStrings = params.size() > 0 ? "$" + String.join("$", params) : "";
-
-        return base + p.getName() + paramStrings;
+        return src;
     }
 
     private List<String> generateCapsuleBody() {
@@ -123,6 +115,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
         src.add(this.generateEncapsulatedDecl());
         src.addAll(this.generateProcedureIDs());
+        src.addAll(this.generateProcedures());
 
         return src;
     }
