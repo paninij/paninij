@@ -1,4 +1,4 @@
-package org.paninij.examples.ownership;
+package org.paninij.apt.ownership.test;
 
 import org.paninij.lang.*;
 
@@ -8,14 +8,18 @@ import org.paninij.lang.*;
 @Capsule
 public class LeakyServerTemplate
 {
-    Integer server_secret = 10;
+    Integer serverSecret = 10;
+    
+    public Integer getInteger() {
+        return new Integer(9);
+    }
 
-    public void giveSecret(Integer client_secret) {
-        System.out.println("Server: Client's secret is " + client_secret);
+    public void giveInteger(Integer i) {
+        System.err.println("Server: received Integer " + i);
     }
     
     public Integer getSecret() {
-        return server_secret;
+        return serverSecret;
     }
     
     public LeakyServerTemplate getTemplateReference() {
