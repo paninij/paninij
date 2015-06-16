@@ -20,13 +20,16 @@ package org.paninij.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.CapsuleTemplateVisitor;
 import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.TypeCollector;
 
 public class CapsuleElement implements Capsule
 {
@@ -82,6 +85,17 @@ public class CapsuleElement implements Capsule
     }
 
     @Override
+    public Set<String> getImports() {
+        return TypeCollector.collect(this.element);
+    }
+
+    @Override
+    public String getPackage() {
+        PackageElement pack = (PackageElement) this.element.getEnclosingElement();
+        return pack.getQualifiedName().toString();
+    }
+
+    @Override
     public ArrayList<String> getSignatures() {
         ArrayList<String> sigs = new ArrayList<String>();
 
@@ -103,9 +117,8 @@ public class CapsuleElement implements Capsule
     public void setTypeElement(TypeElement e) {
         if (this.element == null) {
             this.element = e;
-            // TODO drop "Template"
-            this.simpleName = e.getSimpleName().toString();
-            this.qualifiedName = e.getQualifiedName().toString();
+            this.simpleName = PaniniModelInfo.simpleCapsuleName(e);
+            this.qualifiedName = PaniniModelInfo.qualifiedCapsuleName(e);
         }
     }
 }
