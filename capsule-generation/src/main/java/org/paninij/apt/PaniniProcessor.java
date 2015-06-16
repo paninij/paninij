@@ -62,6 +62,8 @@ public class PaniniProcessor extends AbstractProcessor
         SignatureFactory signatureFactory = new SignatureFactory();
         CapsuleFactory capsuleFactory = new CapsuleFactory();
 
+        ThreadCapsuleProfileFactory threadCapsuleFactory = new ThreadCapsuleProfileFactory();
+
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
             if (SignatureChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
@@ -86,6 +88,8 @@ public class PaniniProcessor extends AbstractProcessor
                 this.createJavaFile(src);
 
                 MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
+                src = threadCapsuleFactory.make(capsule);
+                this.createJavaFile(src);
 
                 // this could be a part of CapsuleGenerator
                 for (Procedure procedure : capsule.getProcedures()) {
