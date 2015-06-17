@@ -12,7 +12,6 @@ public class BarTemplate
     }
     
     public Integer barCount() {
-        System.err.println("barCount(): " + count);
         return count++;
     }
 }

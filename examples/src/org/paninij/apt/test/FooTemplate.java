@@ -14,12 +14,10 @@ public class FooTemplate
     }
     
     public Integer wiredBarCount() {
-        System.err.println("wiredBarCount()");
         return bar.barCount();
     }
     
     public Integer fooCount() {
-        System.err.println("fooCount(): " + count);
         return count++;
     }
 }
