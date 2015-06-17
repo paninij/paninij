@@ -1,6 +1,6 @@
 package org.paninij.apt.ownership.test;
 
-import org.paninij.lang.*;
+import org.paninij.lang.Capsule;
 
 /**
  * Implements a server which gives away a reference to its state.
@@ -8,7 +8,7 @@ import org.paninij.lang.*;
 @Capsule
 public class LeakyServerTemplate
 {
-    Integer serverSecret = 10;
+    Secret serverSecret = new Secret();
     
     public Integer getInteger() {
         return new Integer(9);
@@ -18,7 +18,7 @@ public class LeakyServerTemplate
         // Nothing to do.
     }
     
-    public Integer getSecret() {
+    public Secret getSecret() {
         return serverSecret;
     }
     
