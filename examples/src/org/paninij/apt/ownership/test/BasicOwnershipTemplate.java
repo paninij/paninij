@@ -3,15 +3,15 @@ package org.paninij.apt.ownership.test;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import org.paninij.lang.CapsuleTester;
+import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Child;
 import org.paninij.lang.Test;
 import org.paninij.runtime.Panini$ErrorQueue;
 import org.paninij.runtime.Panini$System;
 import org.paninij.runtime.Panini$Capsule;
 
-@CapsuleTester
-public class BasicOwnershipTester
+@CapsuleTest
+public class BasicOwnershipTemplate
 {
     @Child LeakyServer leakyServer;
     Integer testerSecret = 42;

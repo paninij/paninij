@@ -96,11 +96,8 @@ public class MakeCapsule
 
     private String buildCapsuleInterfaces()
     {
-        List<String> interfaces = new ArrayList<String>();
+        List<String> interfaces = this.capsule.getSignatures();
         interfaces.add("Panini$Capsule");
-        for (TypeMirror i : template.getInterfaces()) {
-            interfaces.add(i.toString());
-        }
         return String.join(", ", interfaces);
     }
 

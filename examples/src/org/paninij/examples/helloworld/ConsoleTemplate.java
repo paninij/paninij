@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
 
 @Capsule
-class ConsoleTemplate implements Stream
+class ConsoleTemplate implements StreamTemplate
 {
     @Override
     public void write(String s) {

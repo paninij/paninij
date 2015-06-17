@@ -39,15 +39,17 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import org.paninij.apt.checks.CapsuleTesterChecker;
-import org.paninij.apt.util.DuckShape;
+import org.paninij.apt.check.CapsuleChecker;
+import org.paninij.apt.check.CapsuleTesterChecker;
+import org.paninij.apt.check.SignatureChecker;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.CapsuleTester;
+import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
 import org.paninij.runtime.check.Panini$Ownership;
+import org.paninij.model.SignatureElement;
 
 
 /**
@@ -62,7 +64,6 @@ import org.paninij.runtime.check.Panini$Ownership;
 public class PaniniProcessor extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
-    Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();
     Panini$Ownership.CheckMethod ownershipCheckMethod;
     
     @Override
@@ -93,18 +94,19 @@ public class PaniniProcessor extends AbstractProcessor
     {
         this.roundEnv = roundEnv;
 
-        // TODO: Clean up this whole method!
+        MessageFactory messageFactory = new MessageFactory();
+        SignatureFactory signatureFactory = new SignatureFactory();
+        CapsuleFactory capsuleFactory = new CapsuleFactory();
 
-        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
+        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class))
+        {
             if (SignatureChecker.check(this, elem)) {
-                // TODO
-//                TypeElement template = (TypeElement) elem;
-//                org.paninij.model.Signature signature = SignatureElement.make(template);
-//                SignatureGenerator.generate(this, signature);
+                TypeElement template = (TypeElement) elem;
+                org.paninij.model.Signature signature = SignatureElement.make(template);
+                SourceFile source = signatureFactory.make(signature);
+                this.createJavaFile(source);
             }
         }
-
-        MessageFactory messageFactory = new MessageFactory();
 
         for (Element elem : roundEnv.getElementsAnnotatedWith(Capsule.class))
         {
@@ -115,7 +117,6 @@ public class PaniniProcessor extends AbstractProcessor
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
                 MakeCapsule.make(this, template, capsule).makeSourceFile();
                 MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
-//                CapsuleGenerator.generate(this, capsule);
 
                 // this could be a part of CapsuleGenerator
                 for (Procedure procedure : capsule.getProcedures()) {
@@ -125,13 +126,13 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
         
-        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTester.class))
+        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class))
         {
             if (CapsuleTesterChecker.check(this, elem))
             {
                 TypeElement template = (TypeElement) elem;
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                MakeCapsuleTester$Thread.make(this, template, capsule).makeSourceFile();
+                MakeCapsuleTest.make(this, template, capsule).makeSourceFile();
 
                 for (Procedure procedure : capsule.getProcedures()) {
                     SourceFile source = messageFactory.make(procedure);
@@ -140,7 +141,7 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
 
-        this.roundEnv = null;  // Release reference, so that the `roundEnv` can be GC'd.
+        this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
         return false;
     }
 
@@ -155,15 +156,11 @@ public class PaniniProcessor extends AbstractProcessor
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
      */
-    void createJavaFile(String cls, String src)
-    {
-        try
-        {
+    void createJavaFile(String cls, String src) {
+        try {
             JavaFileObject file = processingEnv.getFiler().createSourceFile(cls);
             file.openWriter().append(src).close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -179,17 +176,17 @@ public class PaniniProcessor extends AbstractProcessor
         return getPackageOf((TypeElement) utils.asElement(type));
     }
 
-    void note(String msg) {
+    public void note(String msg) {
         //processingEnv.getMessager().printMessage(Kind.NOTE, "--- " + msg);
         System.out.println("--- " + msg);
     }
 
-    void warning(String msg) {
+    public void warning(String msg) {
         //processingEnv.getMessager().printMessage(Kind.WARNING, "~~~ " + msg);
         System.out.println("~~~ " + msg);
     }
 
-    void error(String msg) {
+    public void error(String msg) {
         processingEnv.getMessager().printMessage(Kind.ERROR, "!!! " + msg);
     }
 
