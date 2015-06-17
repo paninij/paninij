@@ -99,7 +99,7 @@ public class PaniniProcessor extends AbstractProcessor
             {
                 TypeElement template = (TypeElement) elem;
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                MakeCapsuleTester.make(this, template, capsule).makeSourceFile();
+                MakeCapsuleTest.make(this, template, capsule).makeSourceFile();
 
                 for (Procedure procedure : capsule.getProcedures()) {
                     SourceFile source = messageFactory.make(procedure);

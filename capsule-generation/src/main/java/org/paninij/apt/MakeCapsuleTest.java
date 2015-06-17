@@ -9,11 +9,11 @@ import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.model.Capsule;
 
-public class MakeCapsuleTester extends MakeCapsule$Thread
+public class MakeCapsuleTest extends MakeCapsule$Thread
 {
-    static MakeCapsuleTester make(PaniniProcessor context, TypeElement template, Capsule capsule)
+    static MakeCapsuleTest make(PaniniProcessor context, TypeElement template, Capsule capsule)
     {
-        MakeCapsuleTester cap = new MakeCapsuleTester();
+        MakeCapsuleTest cap = new MakeCapsuleTest();
         cap.context = context;
         cap.template = template;
         cap.capsule = capsule;
