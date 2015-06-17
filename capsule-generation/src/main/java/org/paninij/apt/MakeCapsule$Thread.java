@@ -604,8 +604,9 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "        panini$initChildren();",
                 "        panini$initState();",
                 "        panini$encapsulated.run();",
-                "    } finally {",
-                "        // TODO?",
+                "    } catch (Throwable thrown)",
+                "    {",
+                "        panini$errors.add(thrown);",
                 "    }",
                 "}"
             );
@@ -629,7 +630,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "            ##",
                 "        }",
                 "    }",
-                "    catch (Exception ex) { /* do nothing for now */ }",
+                "    catch (Throwable thrown)",
+                "    {",
+                "        panini$errors.add(thrown);",
+                "    }",
                 "}"
             );
 
