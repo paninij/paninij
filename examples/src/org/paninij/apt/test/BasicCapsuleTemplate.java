@@ -1,16 +1,16 @@
 package org.paninij.apt.test;
 
-import org.paninij.lang.CapsuleTester;
+import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Child;
 import org.paninij.lang.Test;
 
-@CapsuleTester
-public class BasicCapsuleTester
+@CapsuleTest
+public class BasicCapsuleTemplate
 {
     @Child Foo foo;
     @Child Bar bar;
     
-    void design(BasicCapsule$Thread self) {
+    void design(BasicCapsuleTest self) {
         foo.wire(bar);
     }
     

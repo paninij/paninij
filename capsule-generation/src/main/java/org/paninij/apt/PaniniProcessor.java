@@ -40,7 +40,7 @@ import org.paninij.apt.check.CapsuleTesterChecker;
 import org.paninij.apt.check.SignatureChecker;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.CapsuleTester;
+import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
@@ -93,13 +93,13 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
         
-        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTester.class))
+        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class))
         {
             if (CapsuleTesterChecker.check(this, elem))
             {
                 TypeElement template = (TypeElement) elem;
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                MakeCapsuleTester$Thread.make(this, template, capsule).makeSourceFile();
+                MakeCapsuleTester.make(this, template, capsule).makeSourceFile();
 
                 for (Procedure procedure : capsule.getProcedures()) {
                     SourceFile source = messageFactory.make(procedure);

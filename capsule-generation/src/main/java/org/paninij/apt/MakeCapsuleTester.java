@@ -9,13 +9,11 @@ import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.model.Capsule;
 
-public class MakeCapsuleTester$Thread extends MakeCapsule$Thread
+public class MakeCapsuleTester extends MakeCapsule$Thread
 {
-    private static final String EXEC_TYPE_SUFFIX = "$Thread";
-    
-    static MakeCapsuleTester$Thread make(PaniniProcessor context, TypeElement template, Capsule capsule)
+    static MakeCapsuleTester make(PaniniProcessor context, TypeElement template, Capsule capsule)
     {
-        MakeCapsuleTester$Thread cap = new MakeCapsuleTester$Thread();
+        MakeCapsuleTester cap = new MakeCapsuleTester();
         cap.context = context;
         cap.template = template;
         cap.capsule = capsule;
@@ -57,12 +55,12 @@ public class MakeCapsuleTester$Thread extends MakeCapsule$Thread
     
     @Override
     String buildCapsuleName() {
-        return PaniniModelInfo.simpleTesterName(template) + EXEC_TYPE_SUFFIX;
+        return PaniniModelInfo.simpleTesterName(template);
     }
     
     @Override
     String buildQualifiedCapsuleName() {
-        return PaniniModelInfo.qualifiedTesterName(template) + EXEC_TYPE_SUFFIX;
+        return PaniniModelInfo.qualifiedTesterName(template);
     }
 
     @Override

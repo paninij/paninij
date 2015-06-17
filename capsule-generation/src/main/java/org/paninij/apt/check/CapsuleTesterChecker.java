@@ -33,7 +33,7 @@ public class CapsuleTesterChecker
         // TODO: Add helpful error messages.
 
         String name = tester.getSimpleName().toString();
-        return (name.length() > PaniniModelInfo.CAPSULE_TESTER_SUFFIX.length()
-             && name.endsWith(PaniniModelInfo.CAPSULE_TESTER_SUFFIX));
+        return (name.length() > PaniniModelInfo.CAPSULE_TEST_TEMPLATE_SUFFIX.length()
+             && name.endsWith(PaniniModelInfo.CAPSULE_TEST_TEMPLATE_SUFFIX));
     }
 }
