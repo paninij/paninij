@@ -77,15 +77,21 @@ public class PaniniProcessor extends AbstractProcessor
     protected void initOptions(Map<String, String> options)
     {
         note("Annotation Processor Options: " + options);
-        try
-        {
-            String val = options.get(Panini$Ownership.CheckMethod.getArgumentKey());
-            ownershipCheckMethod = Panini$Ownership.CheckMethod.fromString(val);
-        }
-        catch (IllegalArgumentException ex)
+        initOwnershipCheckMethod(options);
+    }
+    
+    protected void initOwnershipCheckMethod(Map<String, String> options)
+    {
+        String opt = options.get(Panini$Ownership.CheckMethod.getArgumentKey());
+        if (opt == null)
         {
             ownershipCheckMethod = Panini$Ownership.CheckMethod.getDefault();
+            note("No `ownership.check.method` annotation processor argument given. Using default.");
+        } else {
+            // Throws exception if `opt` is invalid:
+            ownershipCheckMethod = Panini$Ownership.CheckMethod.fromString(opt);
         }
+        note("Using ownership.check.method = " + ownershipCheckMethod);
     }
 
 

@@ -24,18 +24,18 @@ public class Panini$Ownership
     {
         switch (method) {
         case RUNTIME_REFLECTION_NAIVE:
-            return isSafeTransfer$REFLECTION_NAIVE(msg, local);
+            return isSafeTransfer$RUNTIME_REFLECTION_NAIVE(msg, local);
         case RUNTIME_REFLECTION_OPTIMIZED:
-            return isSafeTransfer$REFLECTION_OPTIMIZED(msg, local);
+            return isSafeTransfer$RUNTIME_REFLECTION_OPTIMIZED(msg, local);
         case RUNTIME_NATIVE:
-            return isSafeTransfer$NATIVE(msg, local);
+            return isSafeTransfer$RUNTIME_NATIVE(msg, local);
         default:
             throw new IllegalArgumentException("Unknown `OwnershipCheckMethod`: " + method);
         }
     }
     
     
-    public static boolean isSafeTransfer$REFLECTION_NAIVE(Object msg, Object local)
+    public static boolean isSafeTransfer$RUNTIME_REFLECTION_NAIVE(Object msg, Object local)
     {
         // These predicates and the navigator are all stateless, so they are safe to reuse.
         final Predicate<Object> nav_from = (obj -> obj instanceof org.paninij.lang.String == false
@@ -64,14 +64,14 @@ public class Panini$Ownership
     }
 
 
-    public static boolean isSafeTransfer$REFLECTION_OPTIMIZED(Object msg, Object local)
+    public static boolean isSafeTransfer$RUNTIME_REFLECTION_OPTIMIZED(Object msg, Object local)
     {
         // TODO: Everything!
         return false;
     }
     
-
-    public static boolean isSafeTransfer$NATIVE(Object msg, Object local)
+    
+    public static boolean isSafeTransfer$RUNTIME_NATIVE(Object msg, Object local)
     {
         // TODO: Everything!
         return false;
@@ -95,7 +95,7 @@ public class Panini$Ownership
                 throw new IllegalArgumentException("Not a known `OwnershipCheckMethod`: <null>");
             }
             
-            if (s.equals("RUNTIME_RELFECTION_NAIVE"))
+            if (s.equals("RUNTIME_REFLECTION_NAIVE"))
                 return RUNTIME_REFLECTION_NAIVE;
             if (s.equals("RUNTIME_REFLECTION_OPTIMIZED"))
                 return RUNTIME_REFLECTION_OPTIMIZED;
@@ -103,6 +103,19 @@ public class Panini$Ownership
                 return RUNTIME_NATIVE;
             
             throw new IllegalArgumentException("Not a known `OwnershipCheckMethod`: " + s);
+        }
+        
+        public static boolean isKnown(String s)
+        {
+            try
+            {
+                fromString(s);
+                return true;
+            }
+            catch (IllegalArgumentException ex)
+            {
+                return false;
+            }
         }
         
         public static CheckMethod getDefault() {
