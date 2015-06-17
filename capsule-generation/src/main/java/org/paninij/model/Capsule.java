@@ -30,4 +30,5 @@ public interface Capsule
 
     public List<Procedure> getProcedures();
 
+    public List<String> getSignatures();
 }

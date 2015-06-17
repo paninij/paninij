@@ -48,8 +48,11 @@ public class PaniniModelInfo
     public static final String DEFAULT_MESSAGE_PACKAGE = "org.paninij.runtime.messages";
     public static final String DEFAULT_FUTURE_PACKAGE = "org.paninij.runtime.futures";
     public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
+
     public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
     public static final String CAPSULE_TESTER_SUFFIX = "Tester";
+    public static final String SIGNATURE_TEMPLATE_SUFFIX = "Template";
+
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 
     public static boolean isPaniniCustom(TypeMirror returnType)
@@ -165,6 +168,13 @@ public class PaniniModelInfo
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
 
+    public static String simpleSignatureName(TypeElement template) {
+        // Drops the `SIGNATURE_TEMPLATE_SUFFIX`.
+        String name = template.getSimpleName().toString();
+        assert(name.endsWith(SIGNATURE_TEMPLATE_SUFFIX));
+        return name.substring(0, name.length() - SIGNATURE_TEMPLATE_SUFFIX.length());
+    }
+
     /**
      * @return The name of the fully-qualified capsule type associated with the given capsule
      * template type.
@@ -209,6 +219,14 @@ public class PaniniModelInfo
         assert(name.endsWith(CAPSULE_TESTER_SUFFIX));
         return name.substring(0, name.length() - CAPSULE_TESTER_SUFFIX.length());
     } 
+
+    public static String qualifiedSignatureName(TypeElement template)
+    {
+         // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
+        String name = template.getQualifiedName().toString();
+        assert(name.endsWith(SIGNATURE_TEMPLATE_SUFFIX));
+        return name.substring(0, name.length() - SIGNATURE_TEMPLATE_SUFFIX.length());
+    }
 
 
     public static boolean isCapsuleFieldDecl(PaniniProcessor context, Element elem)
@@ -334,19 +352,6 @@ public class PaniniModelInfo
             if (isProcedure(elem)) {
                 rv.add((ExecutableElement) elem);
             }
-        }
-        return rv;
-    }
-
-
-    /**
-     * Returns the set of all `DuckShape`s which the given capsule template will use.
-     */
-    public static Set<DuckShape> getDuckShapes(TypeElement template)
-    {
-        Set<DuckShape> rv = new HashSet<DuckShape>();
-        for (ExecutableElement proc : getProcedures(template)) {
-            rv.add(new DuckShape(proc));
         }
         return rv;
     }

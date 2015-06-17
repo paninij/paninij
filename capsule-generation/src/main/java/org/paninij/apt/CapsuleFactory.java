@@ -20,10 +20,10 @@ package org.paninij.apt;
 
 import org.paninij.model.Capsule;
 
-public class CapsuleGenerator {
+public class CapsuleFactory {
 
     public static void generate(PaniniProcessor context, Capsule capsule) {
-        CapsuleGenerator generator = new CapsuleGenerator();
+        CapsuleFactory generator = new CapsuleFactory();
         generator.generateCapsule(capsule);
     }
 
