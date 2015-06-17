@@ -35,7 +35,9 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import org.paninij.apt.checks.CapsuleTesterChecker;
+import org.paninij.apt.check.CapsuleChecker;
+import org.paninij.apt.check.CapsuleTesterChecker;
+import org.paninij.apt.check.SignatureChecker;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleTester;
@@ -141,17 +143,17 @@ public class PaniniProcessor extends AbstractProcessor
         return getPackageOf((TypeElement) utils.asElement(type));
     }
 
-    void note(String msg) {
+    public void note(String msg) {
         //processingEnv.getMessager().printMessage(Kind.NOTE, "--- " + msg);
         System.out.println("--- " + msg);
     }
 
-    void warning(String msg) {
+    public void warning(String msg) {
         //processingEnv.getMessager().printMessage(Kind.WARNING, "~~~ " + msg);
         System.out.println("~~~ " + msg);
     }
 
-    void error(String msg) {
+    public void error(String msg) {
         processingEnv.getMessager().printMessage(Kind.ERROR, "!!! " + msg);
     }
 

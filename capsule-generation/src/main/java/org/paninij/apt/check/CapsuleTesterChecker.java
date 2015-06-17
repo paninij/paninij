@@ -1,4 +1,4 @@
-package org.paninij.apt.checks;
+package org.paninij.apt.check;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
