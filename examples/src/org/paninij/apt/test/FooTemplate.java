@@ -18,6 +18,6 @@ public class FooTemplate
     }
     
     public Integer fooCount() {
-        return count++;
+        return ++count;
     }
 }

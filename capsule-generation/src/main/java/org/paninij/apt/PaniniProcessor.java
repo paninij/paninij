@@ -40,7 +40,7 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.paninij.apt.check.CapsuleChecker;
-import org.paninij.apt.check.CapsuleTesterChecker;
+import org.paninij.apt.check.CapsuleTestChecker;
 import org.paninij.apt.check.SignatureChecker;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
@@ -114,7 +114,11 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
 
-        for (Element elem : roundEnv.getElementsAnnotatedWith(Capsule.class))
+        @SuppressWarnings("unchecked")
+        Set<Element> toCapsule = (Set<Element>) roundEnv.getElementsAnnotatedWith(Capsule.class);
+        toCapsule.addAll(roundEnv.getElementsAnnotatedWith(CapsuleTest.class));
+
+        for (Element elem : toCapsule)
         {
             if (CapsuleChecker.check(this, elem)) {
 
@@ -134,11 +138,11 @@ public class PaniniProcessor extends AbstractProcessor
         
         for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class))
         {
-            if (CapsuleTesterChecker.check(this, elem))
+            if (CapsuleTestChecker.check(this, elem))
             {
                 TypeElement template = (TypeElement) elem;
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                MakeCapsuleTest.make(this, template, capsule).makeSourceFile();
+                MakeCapsuleTest.make(this, template).makeSourceFile();
 
                 for (Procedure procedure : capsule.getProcedures()) {
                     SourceFile source = messageFactory.make(procedure);

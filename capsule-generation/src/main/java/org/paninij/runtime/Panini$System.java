@@ -13,7 +13,4 @@ public class Panini$System
      * it was running the procedure wrapper on another capsule.)
      */
     public static final ThreadLocal<Capsule$Thread> self = new ThreadLocal<Capsule$Thread>();
-    
-    public static final ConcurrentHashMap<Object, Panini$ErrorQueue> errors
-                         = new ConcurrentHashMap<Object, Panini$ErrorQueue>();
 }

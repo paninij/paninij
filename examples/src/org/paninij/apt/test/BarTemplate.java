@@ -12,6 +12,6 @@ public class BarTemplate
     }
     
     public Integer barCount() {
-        return count++;
+        return ++count;
     }
 }

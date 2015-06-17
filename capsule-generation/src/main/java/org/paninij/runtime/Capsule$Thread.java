@@ -18,6 +18,7 @@
  */
 package org.paninij.runtime;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Capsule$Thread implements Panini$Capsule, Runnable
@@ -28,6 +29,8 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     public volatile int panini$refCount;
 
     protected final ReentrantLock panini$queueLock;
+    
+    protected final Panini$ErrorQueue panini$errors;
 
     public static final int PANINI$SHUTDOWN = -1;
     public static final int PANINI$EXIT = -2;
@@ -41,6 +44,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         panini$size = 0;
         panini$refCount = 0;
         panini$queueLock = new ReentrantLock();
+        panini$errors = new Panini$ErrorQueue();
     }
 
 
@@ -341,20 +345,17 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
             } catch (InterruptedException e) { /* Do nothing: try again to join indefinitely. */ }
         }
     }
-
-
-    @Override
-    public int hashCode()
-    {
-        // Strict (default) object identity-based hash code:
-        return System.identityHashCode(this);
+   
+    public Throwable panini$pollErrors() {
+        return panini$errors.poll();
     }
-
-
-    @Override
-    public boolean equals(Object obj)
+    
+    public Throwable panini$pollErrors(long timeout, TimeUnit unit)
     {
-        // Strict identity equality:
-        return obj == this;
+        try {
+            return panini$errors.poll(timeout, unit);
+        } catch (InterruptedException ex) {
+            return null;
+        }
     }
 }

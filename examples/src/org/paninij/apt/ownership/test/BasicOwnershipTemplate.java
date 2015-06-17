@@ -1,13 +1,13 @@
 package org.paninij.apt.ownership.test;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+
+import org.junit.Assert;
 
 import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Child;
 import org.paninij.lang.Test;
-import org.paninij.runtime.Panini$ErrorQueue;
-import org.paninij.runtime.Panini$System;
+import org.paninij.runtime.Capsule$Thread;
 import org.paninij.runtime.Panini$Capsule;
 
 @CapsuleTest
@@ -17,13 +17,38 @@ public class BasicOwnershipTemplate
     Integer testerSecret = 42;
     
 
+    @Test
+    public void checkAssertionsEnabled()
+    {
+        boolean assert_enabled = false;
+
+        try {
+            assert false;
+        } catch (AssertionError err) {
+            assert_enabled = true;
+        }
+
+        if (assert_enabled == false) {
+            throw new AssertionError("Assertions are not enabled.");
+        }
+    }
+
+
     /**
      * Attempts to perform a completely safe procedure invocation.
      */
     @Test
-    void safeInvocation()
+    public void safeInvocation()
     {
         leakyServer.giveInteger(new Integer(10));
+    }
+    
+    
+    @Test
+    public void safeReturn()
+    {
+        leakyServer.getInteger();
+        assertNoError(leakyServer);
     }
 
 
@@ -32,10 +57,19 @@ public class BasicOwnershipTemplate
      * state to the `leakyServer`.
      */
     @Test
-    void unsafeInvocation()
+    public void unsafeInvocation()
     {
-        Consumer<Void> test = (_dummy -> leakyServer.giveInteger(testerSecret));
-        assertThrowsAssertionError(test);
+        Throwable thrown = null;
+
+        try {
+            leakyServer.giveInteger(testerSecret);
+        } catch (AssertionError err) {
+            thrown = err;
+        }
+
+        if (thrown == null) {
+            Assert.fail("Expected to catch an assertion, but none were thrown.");
+        }
     }
 
 
@@ -43,10 +77,10 @@ public class BasicOwnershipTemplate
      * Attempts to get the client to leak a reference to its template instance (i.e. its `this` ref).
      */
     @Test
-    void unsafeInstanceReturn()
+    public void unsafeInstanceReturn()
     {
-        Consumer<Void> test = (_dummy -> leakyServer.getTemplateReference());
-        assertThrowsAssertionError(test, leakyServer);
+        leakyServer.getTemplateReference();
+        assertError(leakyServer);
     }
 
 
@@ -54,59 +88,38 @@ public class BasicOwnershipTemplate
      * Attempts to make the client leak a reference to its secret.
      */
     @Test
-    void unsafeStateReturn()
+    public void unsafeStateReturn()
     {
-        Consumer<Void> test = (_dummy -> leakyServer.getSecret());
-        assertThrowsAssertionError(test, leakyServer);
+        leakyServer.getSecret();
+        assertError(leakyServer);
     }
     
 
     /**
-     * Runs the given `fn` and asserts that an assertion error is thrown by this capsule tester.
+     * Asserts that no errors or exceptions were thrown by the given `cap`. An assertion error will
+     * be thrown if an assertion error is not thrown in the other `Panini$Capsule` within about 1
+     * second.
      */
-    private static void assertThrowsAssertionError(Consumer<Void> fn)
+    private static void assertNoError(Panini$Capsule cap)
     {
-        boolean assertion_caught = false;
-
-        try {
-            fn.accept(null);
-        } catch (AssertionError err) {
-            assertion_caught = true;
-        }
-
-        if (assertion_caught == false) {
-            String msg = "This `Panini$Capsule` was expected to throw an assertion error, but did not.";
-            throw new AssertionError(msg);
-        }
-    }
-
-    
-    /**
-     * Runs the given `fn` and asserts that an assertion error is thrown over in the other
-     * `Panini$Capsule`.
-     * 
-     * An assertion error will be thrown if an assertion error is not thrown in the other
-     * `Panini$Capsule` after about 1 second.
-     */
-    private static void assertThrowsAssertionError(Consumer<Void> fn, Panini$Capsule cap)
-    {
-        fn.accept(null);
-
         Throwable thrown = null;
-        try
-        {
-            Panini$ErrorQueue queue = Panini$System.errors.get(cap);
-            thrown = queue.poll(1, TimeUnit.SECONDS);
+        thrown = ((Capsule$Thread) cap).panini$pollErrors(1, TimeUnit.SECONDS);
+        if (thrown != null) {
+            throw new AssertionError("The other `Panini$Capsule` did not assert.");
         }
-        catch (InterruptedException ex)
-        {
-            ex.printStackTrace();
-        }
-        finally
-        {
-            if (thrown == null) {
-                throw new AssertionError("The other `Panini$Capsule` did not assert.");
-            }
+    }
+
+    
+    /**
+     * Asserts that an error or exception was thrown by the given `cap`. An assertion error will be
+     * thrown if an assertion error is not thrown in the other `Panini$Capsule` within about 1 sec.
+     */
+    private static void assertError(Panini$Capsule cap)
+    {
+        Throwable thrown = null;
+        thrown = ((Capsule$Thread) cap).panini$pollErrors(1, TimeUnit.SECONDS);
+        if (thrown == null) {
+            throw new AssertionError("The other `Panini$Capsule` did not assert.");
         }
     }
 }

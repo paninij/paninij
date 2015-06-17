@@ -1,11 +1,9 @@
 package org.paninij.runtime;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @SuppressWarnings("serial")
-public class Panini$ErrorQueue extends ArrayBlockingQueue<Throwable>
+public class Panini$ErrorQueue extends LinkedBlockingQueue<Throwable>
 {
-    public Panini$ErrorQueue(int capacity) {
-        super(capacity);
-    }
+    // Nothing to do here.
 }
