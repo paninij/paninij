@@ -19,39 +19,29 @@
 package org.paninij.apt;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import org.paninij.apt.util.DuckShape;
-import org.paninij.apt.util.PaniniModelInfo;
-import org.paninij.apt.util.Reporter;
-import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
-import org.paninij.model.Variable;
+import org.paninij.model.SignatureElement;
 
 
 /**
@@ -63,24 +53,27 @@ import org.paninij.model.Variable;
 public class PaniniProcessor extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
-    Set<DuckShape> foundDuckShapes = new HashSet<DuckShape>();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         this.roundEnv = roundEnv;
 
+        MessageFactory messageFactory = new MessageFactory();
+        SignatureFactory signatureFactory = new SignatureFactory();
+        CapsuleFactory capsuleFactory = new CapsuleFactory();
+
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
             if (SignatureChecker.check(this, elem)) {
-                // TODO
-//                TypeElement template = (TypeElement) elem;
-//                org.paninij.model.Signature signature = SignatureElement.make(template);
-//                SignatureGenerator.generate(this, signature);
+                TypeElement template = (TypeElement) elem;
+                org.paninij.model.Signature signature = SignatureElement.make(template);
+                SourceFile source = signatureFactory.make(signature);
+                this.createJavaFile(source);
             }
         }
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
-        MessageFactory messageFactory = new MessageFactory();
+
 
         for (Element elem : annotated) {
             if (CapsuleChecker.check(this, elem)) {
@@ -90,7 +83,6 @@ public class PaniniProcessor extends AbstractProcessor
                 org.paninij.model.Capsule capsule = CapsuleElement.make(template);
                 MakeCapsule.make(this, template, capsule).makeSourceFile();
                 MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
-//                CapsuleGenerator.generate(this, capsule);
 
                 // this could be a part of CapsuleGenerator
                 for (Procedure procedure : capsule.getProcedures()) {
@@ -115,15 +107,11 @@ public class PaniniProcessor extends AbstractProcessor
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
      */
-    void createJavaFile(String cls, String src)
-    {
-        try
-        {
+    void createJavaFile(String cls, String src) {
+        try {
             JavaFileObject file = processingEnv.getFiler().createSourceFile(cls);
             file.openWriter().append(src).close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
