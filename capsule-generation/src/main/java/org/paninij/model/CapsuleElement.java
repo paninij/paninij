@@ -44,6 +44,9 @@ public class CapsuleElement implements Capsule
 
     private Set<String> imports;
 
+    private boolean hasInitDecl;
+    private boolean hasRunDecl;
+
     /*
      * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
      * any errors. The TypeElement should be annotated with @Capsule and should represent
@@ -64,6 +67,8 @@ public class CapsuleElement implements Capsule
         this.children = new ArrayList<Variable>();
         this.wired = new ArrayList<Variable>();
         this.imports = new HashSet<String>();
+        this.hasInitDecl = false;
+        this.hasRunDecl = false;
     }
 
     @Override
@@ -123,9 +128,28 @@ public class CapsuleElement implements Capsule
         return sigs;
     }
 
+    @Override
+    public boolean hasInit() {
+        return this.hasInitDecl;
+    }
+
+    @Override
+    public boolean hasRun() {
+        return this.hasRunDecl;
+    }
+
+    @Override
+    public boolean isActive() {
+        return this.hasRunDecl;
+    }
+
     public void addExecutable(ExecutableElement e) {
         if (PaniniModelInfo.isProcedure(e)) {
             this.procedures.add(new ProcedureElement(e));
+        } else if (e.getSimpleName().equals("init")) {
+            this.hasInitDecl = true;
+        } else if (e.getSimpleName().equals("run")) {
+            this.hasRunDecl = true;
         }
     }
 

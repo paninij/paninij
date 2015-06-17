@@ -184,6 +184,10 @@ public class Type
         return this.wrapped();
     }
 
+    public String raw() {
+        return this.mirror.toString();
+    }
+
     public String slot() {
         switch (this.kind) {
         case BOOLEAN:
@@ -229,6 +233,11 @@ public class Type
         return this.kind.equals(TypeKind.ARRAY);
     }
 
+    public boolean isPrimitive() {
+        // TODO move away from JavaModelInfo
+        return JavaModelInfo.isPrimitive(this.mirror);
+    }
+
     public boolean isInterface() {
         if (this.kind == TypeKind.DECLARED) {
             DeclaredType comp = (DeclaredType) this.mirror;
@@ -240,6 +249,6 @@ public class Type
 
     @Override
     public String toString() {
-        return this.mirror.toString();
+        return this.raw();
     }
 }

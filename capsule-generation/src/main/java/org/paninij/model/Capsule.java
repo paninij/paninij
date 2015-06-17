@@ -24,18 +24,14 @@ import java.util.Set;
 public interface Capsule
 {
     public List<Variable> getChildren();
-
     public List<Variable> getWired();
-
     public String getSimpleName();
-
     public String getQualifiedName();
-
     public String getPackage();
-
     public Set<String> getImports();
-
     public List<Procedure> getProcedures();
-
     public List<String> getSignatures();
+    public boolean hasInit();
+    public boolean hasRun();
+    public boolean isActive();
 }
