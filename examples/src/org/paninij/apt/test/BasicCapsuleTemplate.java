@@ -18,38 +18,40 @@ public class BasicCapsuleTemplate
     public void testFooCount()
     {
         Integer count = foo.fooCount();
-        assert count.intValue() == 0;
+        assert count.intValue() == 1;
     }
     
     @Test
     public void testFooCountAgain()
     {
         Integer count = foo.fooCount();
-        assert count.intValue() == 0;
+        assert count.intValue() == 1;
     }
 
     @Test
     public void testBarCount()
     {
         Integer count = bar.barCount();
-        assert count.intValue() == 0;
+        assert count.intValue() == 1;
     }
 
     @Test
     public void testWiredBarCount()
     {
         Integer count = foo.wiredBarCount();
-        assert count.intValue() == 0;
+        assert count.intValue() == 1;
     }
     
     @Test
     public void testMultipleCounts()
     {
         final int ITERATIONS = 10;
+        final int EXPECTED  = ITERATIONS;
+
         Integer count = 0;
         for (int idx = 0; idx < ITERATIONS; idx++) {
             count = foo.wiredBarCount();
         }
-        assert count.intValue() == ITERATIONS;
+        assert count.intValue() == EXPECTED;
     }
 }
