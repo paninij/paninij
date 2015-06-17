@@ -6,7 +6,7 @@ import javax.lang.model.element.ElementKind;
 import org.paninij.apt.PaniniProcessor;
 import org.paninij.apt.util.PaniniModelInfo;
 
-public class CapsuleTesterChecker
+public class CapsuleTestChecker
 {
     /*
      * TODO: Check that a user-defined capsule tester template is well formed. Some criteria:
