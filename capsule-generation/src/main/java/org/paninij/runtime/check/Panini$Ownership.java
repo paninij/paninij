@@ -1,10 +1,12 @@
 package org.paninij.runtime.check;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import me.dwtj.objectgraph.Explorer;
 import me.dwtj.objectgraph.GreedyNavigator;
@@ -235,13 +237,22 @@ public class Panini$Ownership
         private static void findUnsafe$addFields(Object obj, Class<? extends Object> cls,
                                                  IdentitySet unsafe, IdentitySet worklist)
         {
-            for (Field f : cls.getFields())
+            for (Field f : findUnsafe$getAllFields(cls))
             {
                 Object found = getFieldValueIfUnsafe(obj, f);
                 if (found != null && unsafe.add(found) == true) {
                     worklist.add(found);
                 }
             } 
+        }
+        
+        
+        /**
+         * A helper method just for `findUnsafe()` for getting all of the fields from a class.
+         */
+        private static List<Field> findUnsafe$getAllFields(Class<? extends Object> cls) {
+            return Stream.concat(Arrays.stream(cls.getFields()),
+                                 Arrays.stream(cls.getDeclaredFields())).collect(Collectors.toList());
         }
         
         
