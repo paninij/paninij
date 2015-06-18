@@ -1,95 +1,89 @@
 package org.paninij.runtime.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
 public class IdentitySet implements Set<Object>
 {
-    private static final int DEFAULT_CAPACITY = 8;
-
-    Object[] table;  // Invariant: length is a power of two greater than or equal to 2^3 = 8.
-    
-    public IdentitySet()
-    {
-        table = new Object[DEFAULT_CAPACITY];
-    }
+    ArrayList<Object> data = new ArrayList<Object>();
     
     @Override
     public int size()
     {
-        throw new UnsupportedOperationException();
+        return data.size();
     }
 
     @Override
     public boolean isEmpty()
     {
-        throw new UnsupportedOperationException();
+        return data.isEmpty();
     }
 
     @Override
     public boolean contains(Object o)
     {
-        throw new UnsupportedOperationException();
+        return data.contains(o);
     }
 
     @Override
     public Iterator<Object> iterator()
     {
-        throw new UnsupportedOperationException();
+        return data.iterator();
     }
 
     @Override
     public Object[] toArray()
     {
-        throw new UnsupportedOperationException();
+        return data.toArray();
     }
 
     @Override
     public <T> T[] toArray(T[] a)
     {
-        throw new UnsupportedOperationException();
+        return data.toArray(a);
     }
 
     @Override
     public boolean add(Object e)
     {
-        throw new UnsupportedOperationException();
+        return data.add(e);
     }
 
     @Override
     public boolean remove(Object o)
     {
-        throw new UnsupportedOperationException();
+        return data.remove(o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c)
     {
-        throw new UnsupportedOperationException();
+        return data.containsAll(c);
     }
 
     @Override
     public boolean addAll(Collection<? extends Object> c)
     {
-        throw new UnsupportedOperationException();
+        return data.addAll(c);
     }
 
     @Override
     public boolean retainAll(Collection<?> c)
     {
-        throw new UnsupportedOperationException();
+        return data.retainAll(c);
     }
 
     @Override
     public boolean removeAll(Collection<?> c)
     {
-        throw new UnsupportedOperationException();
+        return data.removeAll(c);
     }
 
     @Override
     public void clear()
     {
-        throw new UnsupportedOperationException();
+        data.clear();
     }
 }
