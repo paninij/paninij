@@ -40,7 +40,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
     private Capsule context;
 
     @Override
-    public SourceFile make(Capsule capsule) {
+    public SourceFile make(Capsule capsule)
+    {
         this.context = capsule;
 
         String name = this.generateFileName();
@@ -49,11 +50,13 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return new SourceFile(name, content);
     }
 
-    private String generateFileName() {
+    private String generateFileName()
+    {
         return this.context.getQualifiedName() + CAPSULE_PROFILE_THREAD_SUFFIX;
     }
 
-    private String generateContent() {
+    private String generateContent()
+    {
         String src = Source.cat(
                 "package #0;",
                 "",
@@ -75,11 +78,13 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private String generateClassName() {
+    private String generateClassName()
+    {
         return this.context.getSimpleName() + CAPSULE_PROFILE_THREAD_SUFFIX;
     }
 
-    private List<String> generateImports() {
+    private List<String> generateImports()
+    {
         Set<String> imports = new HashSet<String>();
 
         for (Procedure p : this.context.getProcedures()) {
@@ -104,13 +109,15 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return prefixedImports;
     }
 
-    private String generateEncapsulatedDecl() {
+    private String generateEncapsulatedDecl()
+    {
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
                 this.context.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
     }
 
-    private List<String> generateProcedureIDs() {
+    private List<String> generateProcedureIDs()
+    {
         ArrayList<String> decls = new ArrayList<String>();
         int currID = 0;
 
@@ -123,7 +130,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return decls;
     }
 
-    private List<String> generateProcedures() {
+    private List<String> generateProcedures()
+    {
         ArrayList<String> src = new ArrayList<String>();
         for (Procedure p : this.context.getProcedures()) {
             src.addAll(this.generateProcedure(p));
@@ -131,7 +139,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private List<String> generateRequiredFields() {
+    private List<String> generateRequiredFields()
+    {
         // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
         List<Variable> required = this.context.getWired();
 
@@ -157,7 +166,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return Source.formatAlignedFirst(lines, assertions);
     }
 
-    private List<String> generateWire() {
+    private List<String> generateWire()
+    {
         List<Variable> wired = this.context.getWired();
         List<String> assignments = new ArrayList<String>();
         List<String> decls = new ArrayList<String>();
@@ -182,7 +192,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private List<String> generateInitChildren() {
+    private List<String> generateInitChildren()
+    {
         List<Variable> children = this.context.getChildren();
         List<String> source = new ArrayList<String>();
 
@@ -237,7 +248,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return Source.formatAlignedFirst(decl, source);
     }
 
-    private List<String> generateInitState() {
+    private List<String> generateInitState()
+    {
         if (!this.context.hasInit()) return new ArrayList<String>();
         return Source.lines(
                 "@Override",
@@ -247,7 +259,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "");
     }
 
-    private List<String> generateRun() {
+    private List<String> generateRun()
+    {
         if (this.context.isActive()) {
             return Source.lines(
                     "@Override",
@@ -285,16 +298,17 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "    }",
                 "}");
 
-        return Source.formatAlignedFirst(src, buildRunSwitch());
+        return Source.formatAlignedFirst(src, generateRunSwitch());
     }
 
-    private List<String> buildRunSwitch() {
+    private List<String> generateRunSwitch()
+    {
         List<String> lines = new ArrayList<String>();
         lines.add("switch(msg.panini$msgID()) {");
 
         // add a case statement for each procedure wrapper.
         for (Procedure p : this.context.getProcedures()) {
-            lines.addAll(this.buildRunSwitchCase(p));
+            lines.addAll(this.generateRunSwitchCase(p));
         }
 
         // add case statements for when a capsule shuts down and for EXIT command
@@ -314,7 +328,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return lines;
     }
 
-    private List<String> buildRunSwitchCase(Procedure procedure) {
+    private List<String> generateRunSwitchCase(Procedure procedure)
+    {
         MessageShape shape = new MessageShape(procedure);
 
         // `duck` will need to be resolved if and only if `procedure` has a return value.
@@ -354,7 +369,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         }
     }
 
-    private String generateEncapsulatedMethodCall(MessageShape shape) {
+    private String generateEncapsulatedMethodCall(MessageShape shape)
+    {
         List<String> args = new ArrayList<String>();
 
         // Generate the list of types defined on the `method`. The `null` value is used to
@@ -383,7 +399,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 String.join(", ", args));
     }
 
-    private boolean deservesMain() {
+    private boolean deservesMain()
+    {
         // if the capsule has external dependencies, it does
         // not deserve a main
         if (!this.context.getWired().isEmpty()) return false;
@@ -405,7 +422,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         }
     }
 
-    private List<String> generateMain() {
+    private List<String> generateMain()
+    {
         if (this.deservesMain()) {
             List<String> src = Source.lines("public static void main(String[] args)",
                     "{",
@@ -418,7 +436,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return new ArrayList<String>();
     }
 
-    private List<String> generateCapsuleBody() {
+    private List<String> generateCapsuleBody()
+    {
         List<String> src = new ArrayList<String>();
 
         src.add(this.generateEncapsulatedDecl());
