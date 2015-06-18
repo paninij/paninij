@@ -9,6 +9,15 @@ public class IdentitySet implements Set<Object>
 {
     ArrayList<Object> data = new ArrayList<Object>();
     
+    /**
+     * @return Removes and returns an arbitrary object from set, or `null` if no such object exists.
+     */
+    public Object remove()
+    {
+        int size = data.size();
+        return (size == 0) ? null : data.remove(size - 1);
+    }
+    
     @Override
     public int size()
     {
@@ -48,7 +57,15 @@ public class IdentitySet implements Set<Object>
     @Override
     public boolean add(Object e)
     {
-        return data.add(e);
+        if (data.contains(e))
+        {
+            return false;
+        }
+        else
+        {
+            data.add(e);
+            return true;
+        }
     }
 
     @Override
@@ -66,7 +83,7 @@ public class IdentitySet implements Set<Object>
     @Override
     public boolean addAll(Collection<? extends Object> c)
     {
-        return data.addAll(c);
+        return c.stream().anyMatch(obj -> add(obj));
     }
 
     @Override
