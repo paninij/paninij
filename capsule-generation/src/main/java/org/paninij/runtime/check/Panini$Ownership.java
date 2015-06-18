@@ -186,7 +186,10 @@ public class Panini$Ownership
             worklist.clear();
             
             if (isSafeRoot(root_obj) == false)
+            {
+                unsafe.add(root_obj);
                 worklist.add(root_obj);
+            }
             
             Object obj;
             while ((obj = worklist.remove()) != null)
