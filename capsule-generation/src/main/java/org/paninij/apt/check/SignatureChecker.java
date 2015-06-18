@@ -16,10 +16,12 @@
  *
  * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
  */
-package org.paninij.apt;
+package org.paninij.apt.check;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+
+import org.paninij.apt.PaniniProcessor;
 
 public class SignatureChecker {
     /**
@@ -27,7 +29,7 @@ public class SignatureChecker {
      * @return `true` if and only if `elem` is can be processed as a valid
      * capsule.
      */
-    static boolean check(PaniniProcessor context, Element template)
+    public static boolean check(PaniniProcessor context, Element template)
     {
         // TODO: check that the interface does not include defaults
 
