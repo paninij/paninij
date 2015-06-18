@@ -48,8 +48,12 @@ public class PaniniModelInfo
     public static final String DEFAULT_MESSAGE_PACKAGE = "org.paninij.runtime.messages";
     public static final String DEFAULT_FUTURE_PACKAGE = "org.paninij.runtime.futures";
     public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
+
     public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
+    public static final String CAPSULE_TEST_TEMPLATE_SUFFIX = "Template";
+    public static final String CAPSULE_TEST_SUFFIX = "Test";
     public static final String SIGNATURE_TEMPLATE_SUFFIX = "Template";
+
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 
     public static boolean isPaniniCustom(TypeMirror returnType)
@@ -165,12 +169,6 @@ public class PaniniModelInfo
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
 
-    public static String simpleSignatureName(TypeElement template) {
-        // Drops the `SIGNATURE_TEMPLATE_SUFFIX`.
-        String name = template.getSimpleName().toString();
-        assert(name.endsWith(SIGNATURE_TEMPLATE_SUFFIX));
-        return name.substring(0, name.length() - SIGNATURE_TEMPLATE_SUFFIX.length());
-    }
 
     /**
      * @return The name of the fully-qualified capsule type associated with the given capsule
@@ -186,7 +184,15 @@ public class PaniniModelInfo
         assert(name.endsWith(CAPSULE_TEMPLATE_SUFFIX));
         return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
     }
-
+    
+    
+    public static String simpleSignatureName(TypeElement template) {
+        // Drops the `SIGNATURE_TEMPLATE_SUFFIX`.
+        String name = template.getSimpleName().toString();
+        assert(name.endsWith(SIGNATURE_TEMPLATE_SUFFIX));
+        return name.substring(0, name.length() - SIGNATURE_TEMPLATE_SUFFIX.length());
+    }
+    
     public static String qualifiedSignatureName(TypeElement template)
     {
          // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
@@ -194,6 +200,39 @@ public class PaniniModelInfo
         assert(name.endsWith(SIGNATURE_TEMPLATE_SUFFIX));
         return name.substring(0, name.length() - SIGNATURE_TEMPLATE_SUFFIX.length());
     }
+
+    
+    /**
+     * @return The name of the simple (i.e. unqualified) tester type associated with the given
+     * capsule tester template type.
+     *
+     * Assumes that the given tester template type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
+     * is a useful helper method for dropping the `CAPSULE_TESTER_SUFFIX`.
+     */
+    public static String simpleTesterName(TypeElement tester)
+    {
+        // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
+        String name = tester.getSimpleName().toString();
+        assert(name.endsWith(CAPSULE_TEST_TEMPLATE_SUFFIX));
+        name = name.substring(0, name.length() - CAPSULE_TEST_TEMPLATE_SUFFIX.length());
+        return name + CAPSULE_TEST_SUFFIX;
+    }
+
+    /**
+     * @return The name of the fully-qualified tester type associated with the given tester
+     * template type.
+     *
+     * Assumes that the given tester template type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
+     * is a useful helper method for dropping the `CAPSULE_TESTER_SUFFIX`.
+     */
+    public static String qualifiedTesterName(TypeElement tester)
+    {
+         // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
+        String name = tester.getQualifiedName().toString();
+        assert(name.endsWith(CAPSULE_TEST_TEMPLATE_SUFFIX));
+        name = name.substring(0, name.length() - CAPSULE_TEST_TEMPLATE_SUFFIX.length());
+        return name + CAPSULE_TEST_SUFFIX;
+    } 
 
 
     public static boolean isCapsuleFieldDecl(PaniniProcessor context, Element elem)

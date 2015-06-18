@@ -19,7 +19,6 @@
 package org.paninij.apt;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -36,8 +35,12 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
+import org.paninij.apt.check.CapsuleChecker;
+import org.paninij.apt.check.CapsuleTestChecker;
+import org.paninij.apt.check.SignatureChecker;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
@@ -55,7 +58,8 @@ public class PaniniProcessor extends AbstractProcessor
     RoundEnvironment roundEnv;
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
+    {
         this.roundEnv = roundEnv;
 
         MessageFactory messageFactory = new MessageFactory();
@@ -71,11 +75,12 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
 
-        Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
+        @SuppressWarnings("unchecked")
+        Set<Element> toCapsule = (Set<Element>) roundEnv.getElementsAnnotatedWith(Capsule.class);
+        toCapsule.addAll(roundEnv.getElementsAnnotatedWith(CapsuleTest.class));
 
-
-
-        for (Element elem : annotated) {
+        for (Element elem : toCapsule)
+        {
             if (CapsuleChecker.check(this, elem)) {
 
                 TypeElement template = (TypeElement) elem;
@@ -91,8 +96,23 @@ public class PaniniProcessor extends AbstractProcessor
                 }
             }
         }
+        
+        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class))
+        {
+            if (CapsuleTestChecker.check(this, elem))
+            {
+                TypeElement template = (TypeElement) elem;
+                org.paninij.model.Capsule capsule = CapsuleElement.make(template);
+                MakeCapsuleTest.make(this, template).makeSourceFile();
 
-        this.roundEnv = null;
+                for (Procedure procedure : capsule.getProcedures()) {
+                    SourceFile source = messageFactory.make(procedure);
+                    this.createJavaFile(source);
+                }
+            }
+        }
+
+        this.roundEnv = null;  // Release reference, so that the `roundEnv` can be GC'd.
         return false;
     }
 
@@ -127,16 +147,18 @@ public class PaniniProcessor extends AbstractProcessor
         return getPackageOf((TypeElement) utils.asElement(type));
     }
 
-    void note(String msg) {
-        processingEnv.getMessager().printMessage(Kind.NOTE, msg);
+    public void note(String msg) {
+        //processingEnv.getMessager().printMessage(Kind.NOTE, "--- " + msg);
+        System.out.println("--- " + msg);
     }
 
-    void warning(String msg) {
-        processingEnv.getMessager().printMessage(Kind.WARNING, msg);
+    public void warning(String msg) {
+        //processingEnv.getMessager().printMessage(Kind.WARNING, "~~~ " + msg);
+        System.out.println("~~~ " + msg);
     }
 
-    void error(String msg) {
-        processingEnv.getMessager().printMessage(Kind.ERROR, msg);
+    public void error(String msg) {
+        processingEnv.getMessager().printMessage(Kind.ERROR, "!!! " + msg);
     }
 
     public Types getTypeUtils() {

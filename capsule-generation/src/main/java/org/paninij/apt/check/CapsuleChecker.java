@@ -16,22 +16,23 @@
  *
  * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
  */
-package org.paninij.apt;
+package org.paninij.apt.check;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 
+import org.paninij.apt.PaniniProcessor;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 
 
-class CapsuleChecker
+public class CapsuleChecker
 {
     /**
      * @param template
      * @return `true` if and only if `template` is can be processed as a valid capsule template.
      */
-    static boolean check(PaniniProcessor context, Element template)
+    public static boolean check(PaniniProcessor context, Element template)
     {
         // TODO: give errors when the user annotates an element which cannot be a capsule.
         // TODO: check that the class does not have any inner classes.

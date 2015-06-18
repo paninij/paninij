@@ -604,8 +604,9 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "        panini$initChildren();",
                 "        panini$initState();",
                 "        panini$encapsulated.run();",
-                "    } finally {",
-                "        // TODO?",
+                "    } catch (Throwable thrown)",
+                "    {",
+                "        panini$errors.add(thrown);",
                 "    }",
                 "}"
             );
@@ -629,7 +630,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
                 "            ##",
                 "        }",
                 "    }",
-                "    catch (Exception ex) { /* do nothing for now */ }",
+                "    catch (Throwable thrown)",
+                "    {",
+                "        panini$errors.add(thrown);",
+                "    }",
                 "}"
             );
 
@@ -753,7 +757,7 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     }
 
 
-    private List<String> buildMain()
+    List<String> buildMain()
     {
         // A `Capsule$Thread` should have a main() method if and only if it is a "root" capsule.
         if (PaniniModelInfo.isRootCapsule(context, template))
