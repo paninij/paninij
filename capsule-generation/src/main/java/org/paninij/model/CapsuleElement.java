@@ -19,22 +19,34 @@
 package org.paninij.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.CapsuleTemplateVisitor;
 import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.TypeCollector;
 
 public class CapsuleElement implements Capsule
 {
     private String simpleName;
     private String qualifiedName;
     private TypeElement element;
+
     private ArrayList<Procedure> procedures;
     private ArrayList<Variable> children;
+    private ArrayList<Variable> wired;
+
+    private Set<String> imports;
+
+    private boolean hasInitDecl;
+    private boolean hasRunDecl;
+    private boolean hasDesignDecl;
 
     /*
      * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
@@ -54,6 +66,11 @@ public class CapsuleElement implements Capsule
         this.element = null;
         this.procedures = new ArrayList<Procedure>();
         this.children = new ArrayList<Variable>();
+        this.wired = new ArrayList<Variable>();
+        this.imports = new HashSet<String>();
+        this.hasInitDecl = false;
+        this.hasRunDecl = false;
+        this.hasDesignDecl = false;
     }
 
     @Override
@@ -61,9 +78,17 @@ public class CapsuleElement implements Capsule
         return this.children;
     }
 
+    @Override
+    public List<Variable> getWired() {
+        return this.wired;
+    }
+
     public void addChild(Variable v) {
-        System.out.println("CHILD: " + v.toString());
         this.children.add(v);
+    }
+
+    public void addWired(Variable v) {
+        this.wired.add(v);
     }
 
     @Override
@@ -82,6 +107,17 @@ public class CapsuleElement implements Capsule
     }
 
     @Override
+    public Set<String> getImports() {
+        return this.imports;
+    }
+
+    @Override
+    public String getPackage() {
+        PackageElement pack = (PackageElement) this.element.getEnclosingElement();
+        return pack.getQualifiedName().toString();
+    }
+
+    @Override
     public ArrayList<String> getSignatures() {
         ArrayList<String> sigs = new ArrayList<String>();
 
@@ -94,18 +130,50 @@ public class CapsuleElement implements Capsule
         return sigs;
     }
 
+    @Override
+    public boolean hasInit() {
+        return this.hasInitDecl;
+    }
+
+    @Override
+    public boolean hasRun() {
+        return this.hasRunDecl;
+    }
+
+    @Override
+    public boolean hasDesign() {
+        return this.hasDesignDecl;
+    }
+
+    @Override
+    public boolean isActive() {
+        return this.hasRunDecl;
+    }
+
+    @Override
+    public boolean hasActiveAncestor() {
+        // TODO
+        return false;
+    }
+
     public void addExecutable(ExecutableElement e) {
         if (PaniniModelInfo.isProcedure(e)) {
             this.procedures.add(new ProcedureElement(e));
+        } else if (e.getSimpleName().toString().equals("init")) {
+            this.hasInitDecl = true;
+        } else if (e.getSimpleName().toString().equals("run")) {
+            this.hasRunDecl = true;
+        } else if (e.getSimpleName().toString().equals("design")) {
+            this.hasDesignDecl = true;
         }
     }
 
     public void setTypeElement(TypeElement e) {
         if (this.element == null) {
             this.element = e;
-            // TODO drop "Template"
-            this.simpleName = e.getSimpleName().toString();
-            this.qualifiedName = e.getQualifiedName().toString();
+            this.imports = TypeCollector.collect(this.element);
+            this.simpleName = PaniniModelInfo.simpleCapsuleName(e);
+            this.qualifiedName = PaniniModelInfo.qualifiedCapsuleName(e);
         }
     }
 }
