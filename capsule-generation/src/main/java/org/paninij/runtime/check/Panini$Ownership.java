@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import me.dwtj.objectgraph.Explorer;
 import me.dwtj.objectgraph.GreedyNavigator;
 import me.dwtj.objectgraph.Navigator;
+import me.dwtj.objectgraph.Visitor;
 
 import org.paninij.lang.Capsule;
 import org.paninij.runtime.util.IdentitySet;
@@ -95,11 +96,16 @@ public class Panini$Ownership
                                                       && clazz != java.lang.String.class);
     
             final Navigator navigator = new GreedyNavigator(nav_from, nav_to);
+            final Visitor visitor = new Visitor() {
+                public void visit(Object obj) {
+                    assert obj.getClass().getAnnotation(Capsule.class) == null;
+                }
+            };
             
-            Explorer local_explorer = new Explorer(navigator);
+            Explorer local_explorer = new Explorer(visitor, navigator);
             local_explorer.explore(local);
             
-            Explorer msg_explorer = new Explorer(navigator);
+            Explorer msg_explorer = new Explorer(visitor, navigator);
             msg_explorer.explore(msg);
             
             // Filter out those which are known to be safe to transfer.
