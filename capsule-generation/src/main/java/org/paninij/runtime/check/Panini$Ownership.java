@@ -143,7 +143,6 @@ public class Panini$Ownership
          * Thread-local storage used to as a temporary in the exploration of an object graph. It is
          * used across all calls to `findUnsafeFrom()`.
          */
-        //private final static IdentitySetStore safe_store = new IdentitySetStore();
         private final static IdentitySetStore worklist_store = new IdentitySetStore();
 
 
@@ -153,8 +152,7 @@ public class Panini$Ownership
          */
         public static boolean isSafeTransfer(Object msg, Object local)
         {
-            return areDisjoint(findUnsafe(msg, msg_store),
-                               findUnsafe(local, local_store));
+            return areDisjoint(findUnsafe(msg, msg_store), findUnsafe(local, local_store));
         }
         
         
@@ -185,11 +183,9 @@ public class Panini$Ownership
             // be `unsafe` (i.e. anything in `worklist` is already in `unsafe` objects).
 
             IdentitySet unsafe = unsafe_store.get();      // The set of unsafe discovered objects.
-            //IdentitySet safe = safe_store.get();          // The set of safe discovered objects.
             IdentitySet worklist = worklist_store.get();  // The set of objects yet to be explored.
 
             unsafe.clear();
-            //safe.clear();
             worklist.clear();
             
             if (isSafeRoot(root_obj) == false)
