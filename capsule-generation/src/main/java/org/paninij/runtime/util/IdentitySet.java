@@ -1,106 +1,97 @@
 package org.paninij.runtime.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-public class IdentitySet implements Set<Object>
+/**
+ * Implements a monotonically-increasing set (i.e. identities cannot be removed except by clearing
+ * the whole set).
+ */
+public class IdentitySet implements Iterable<Object>
 {
-    ArrayList<Object> data = new ArrayList<Object>();
+    private static final int DEFAULT_INIT_CAPACITY = 8;
+
+    private Object[] data;
+    private int size;
+    private int capacity;
     
-    /**
-     * @return Removes and returns an arbitrary object from set, or `null` if no such object exists.
-     */
-    public Object remove()
+
+    public IdentitySet()
     {
-        int size = data.size();
-        return (size == 0) ? null : data.remove(size - 1);
+        data = new Object[DEFAULT_INIT_CAPACITY];
+        size = 0;
+        capacity = DEFAULT_INIT_CAPACITY;
     }
     
-    @Override
-    public int size()
+
+    public boolean add(Object obj)
     {
-        return data.size();
+        if (contains(obj)) {
+            return false;
+        }
+
+        if (size == capacity) {
+            growArray();
+        }
+        data[size] = obj;
+        size++;
+        return true;
+    }
+    
+
+    public boolean contains(Object obj)
+    {
+        for (int idx = 0; idx < size; idx++) {
+            if (obj == data[idx])
+                return true;
+        }
+        return false;
     }
 
-    @Override
-    public boolean isEmpty()
-    {
-        return data.isEmpty();
-    }
 
-    @Override
-    public boolean contains(Object o)
+    public void clear()
     {
-        return data.contains(o);
+        // TODO: Shrink capacity if appropriate.
+        size = 0;
+        Arrays.fill(data, null);
     }
-
+    
+    
     @Override
     public Iterator<Object> iterator()
     {
-        return data.iterator();
+        return new Iter();
     }
 
-    @Override
-    public Object[] toArray()
-    {
-        return data.toArray();
-    }
 
-    @Override
-    public <T> T[] toArray(T[] a)
+    private void growArray()
     {
-        return data.toArray(a);
-    }
+        capacity = capacity << 1;
+        assert capacity >= DEFAULT_INIT_CAPACITY;
 
-    @Override
-    public boolean add(Object e)
-    {
-        if (data.contains(e))
-        {
-            return false;
+        Object[] new_data = new Object[capacity];
+        for (int idx = 0; idx < size; idx++) {
+            new_data[idx] = data[idx];
         }
-        else
-        {
-            data.add(e);
-            return true;
+        data = new_data;
+    }
+
+
+    private class Iter implements Iterator<Object>
+    {
+        private int cur;
+        
+        @Override
+        public boolean hasNext() {
+            return cur < size;
         }
-    }
 
-    @Override
-    public boolean remove(Object o)
-    {
-        return data.remove(o);
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c)
-    {
-        return data.containsAll(c);
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends Object> c)
-    {
-        return c.stream().anyMatch(obj -> add(obj));
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c)
-    {
-        return data.retainAll(c);
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c)
-    {
-        return data.removeAll(c);
-    }
-
-    @Override
-    public void clear()
-    {
-        data.clear();
+        @Override
+        public Object next() {
+            return data[cur++];
+        }
     }
 }

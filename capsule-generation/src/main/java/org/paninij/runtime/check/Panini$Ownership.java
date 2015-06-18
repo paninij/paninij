@@ -16,6 +16,8 @@ import me.dwtj.objectgraph.Visitor;
 import org.paninij.lang.Capsule;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.runtime.util.IdentitySetStore;
+import org.paninij.runtime.util.IdentityStack;
+import org.paninij.runtime.util.IdentityStackStore;
 
 
 public class Panini$Ownership
@@ -145,7 +147,7 @@ public class Panini$Ownership
          * Thread-local storage used to as a temporary in the exploration of an object graph. It is
          * used across all calls to `findUnsafeFrom()`.
          */
-        private final static IdentitySetStore worklist_store = new IdentitySetStore();
+        private final static IdentityStackStore workstack_store = new IdentityStackStore();
 
 
         /**
@@ -179,34 +181,34 @@ public class Panini$Ownership
          *  - A `Point` (with mutable fields) is unsafe.
          *  - A `Point` (with immutable fields) is safe.
          */
-        private static Set<Object> findUnsafe(Object root_obj, IdentitySetStore unsafe_store)
+        private static IdentitySet findUnsafe(Object root_obj, IdentitySetStore unsafe_store)
         {
             // Invariant: `worklist` only contains objects which have been discovered and found to
             // be `unsafe` (i.e. anything in `worklist` is already in `unsafe` objects).
 
             IdentitySet unsafe = unsafe_store.get();      // The set of unsafe discovered objects.
-            IdentitySet worklist = worklist_store.get();  // The set of objects yet to be explored.
+            IdentityStack workstack = workstack_store.get();  // The set of objects yet to be explored.
 
             unsafe.clear();
-            worklist.clear();
+            workstack.clear();
             
             if (isSafeRoot(root_obj) == false)
             {
                 unsafe.add(root_obj);
-                worklist.add(root_obj);
+                workstack.add(root_obj);
             }
             
             Object obj;
-            while ((obj = worklist.remove()) != null)
+            while ((obj = workstack.pop()) != null)
             {
                 Class<? extends Object> cls = obj.getClass();
                 assert isAlwaysUnsafe(cls) == false:
                     "An object of class " + cls + " is always unsafe to transfer.";
 
                 if (cls.isArray()) {
-                    findUnsafe$addComponents(obj, cls, unsafe, worklist);
+                    findUnsafe$addComponents(obj, cls, unsafe, workstack);
                 } else {
-                    findUnsafe$addFields(obj, cls, unsafe, worklist);
+                    findUnsafe$addFields(obj, cls, unsafe, workstack);
                 }
             }
 
@@ -218,13 +220,13 @@ public class Panini$Ownership
          * A helper method just for `findUnsafe()` for adding unsafe components of an array `obj`.
          */
         private static void findUnsafe$addComponents(Object obj, Class<? extends Object> cls,
-                                                     IdentitySet unsafe, IdentitySet worklist)
+                                                     IdentitySet unsafe, IdentityStack workstack)
         {
             if (obj instanceof Object[] && isAlwaysSafe(cls.getComponentType()) == false)
             {
                 for (Object found : (Object[]) obj) {
                     if (found != null && unsafe.add(found) == true) {
-                        worklist.add(found);
+                        workstack.push(found);
                     }
                 }
             }            
@@ -235,13 +237,13 @@ public class Panini$Ownership
          * A helper method just for `findUnsafe()` for adding unsafe fields of an object.
          */
         private static void findUnsafe$addFields(Object obj, Class<? extends Object> cls,
-                                                 IdentitySet unsafe, IdentitySet worklist)
+                                                 IdentitySet unsafe, IdentityStack workstack)
         {
             for (Field f : findUnsafe$getAllFields(cls))
             {
                 Object found = getFieldValueIfUnsafe(obj, f);
                 if (found != null && unsafe.add(found) == true) {
-                    worklist.add(found);
+                    workstack.add(found);
                 }
             } 
         }
@@ -318,10 +320,10 @@ public class Panini$Ownership
         }
         
 
-        private static boolean areDisjoint(Set<Object> fst, Set<Object> snd)
+        private static boolean areDisjoint(IdentitySet msg_refs, IdentitySet local_refs)
         {
-            for (Object obj : fst) {
-                if (snd.contains(obj)) {
+            for (Object obj : msg_refs) {
+                if (local_refs.contains(obj)) {
                     return false;
                 }
             }
