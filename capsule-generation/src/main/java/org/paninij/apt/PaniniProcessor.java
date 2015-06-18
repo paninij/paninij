@@ -63,16 +63,17 @@ import org.paninij.model.SignatureElement;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
-    RoundEnvironment roundEnv;
-    Panini$Ownership.CheckMethod ownershipCheckMethod;
+    // Annotation processor options (i.e. `-A` arguments):
+    public static Panini$Ownership.CheckMethod ownershipCheckMethod;
     
+    RoundEnvironment roundEnv;
+
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
         super.init(procEnv);
         initOptions(procEnv.getOptions());
     }
-    
 
     protected void initOptions(Map<String, String> options)
     {
@@ -100,58 +101,84 @@ public class PaniniProcessor extends AbstractProcessor
     {
         this.roundEnv = roundEnv;
 
+        // sets which contain models
+        Set<org.paninij.model.Capsule> capsules = new HashSet<org.paninij.model.Capsule>();
+        Set<org.paninij.model.Signature> signatures = new HashSet<org.paninij.model.Signature>();
+        Set<org.paninij.model.Capsule> capsulesTests = new HashSet<org.paninij.model.Capsule>();
+
+        // collect all Signature models
+        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
+            if (SignatureChecker.check(this, elem)) {
+                TypeElement template = (TypeElement) elem;
+                signatures.add(SignatureElement.make(template));
+            }
+        }
+
+        // collect all Capsule models
+        for (Element elem : roundEnv.getElementsAnnotatedWith(Capsule.class)) {
+            if (CapsuleChecker.check(this, elem)) {
+                TypeElement template = (TypeElement) elem;
+                capsules.add(CapsuleElement.make(template));
+            }
+        }
+
+        // collect all CapsuleTest capsule models
+        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class)) {
+            if (CapsuleTestChecker.check(this, elem)) {
+                TypeElement template = (TypeElement) elem;
+                capsules.add(CapsuleElement.make(template));
+                capsulesTests.add(CapsuleElement.make(template));
+            }
+        }
+
+        // artifact factories
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
         CapsuleFactory capsuleFactory = new CapsuleFactory();
+        CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
+        ThreadCapsuleProfileFactory threadCapsuleFactory = new ThreadCapsuleProfileFactory();
 
-        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class))
-        {
-            if (SignatureChecker.check(this, elem)) {
-                TypeElement template = (TypeElement) elem;
-                org.paninij.model.Signature signature = SignatureElement.make(template);
-                SourceFile source = signatureFactory.make(signature);
-                this.createJavaFile(source);
+        // generate artifacts from signature model
+        for (org.paninij.model.Signature signature : signatures) {
+            // generate Messages
+            for (Procedure procedure : signature.getProcedures()) {
+                this.createJavaFile(messageFactory.make(procedure));
             }
+
+            // generate signature
+            this.createJavaFile(signatureFactory.make(signature));
         }
 
-        @SuppressWarnings("unchecked")
-        Set<Element> toCapsule = (Set<Element>) roundEnv.getElementsAnnotatedWith(Capsule.class);
-        toCapsule.addAll(roundEnv.getElementsAnnotatedWith(CapsuleTest.class));
-
-        for (Element elem : toCapsule)
-        {
-            if (CapsuleChecker.check(this, elem)) {
-
-                TypeElement template = (TypeElement) elem;
-
-                org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                MakeCapsule.make(this, template, capsule).makeSourceFile();
-                MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
-
-                // this could be a part of CapsuleGenerator
-                for (Procedure procedure : capsule.getProcedures()) {
-                    SourceFile source = messageFactory.make(procedure);
-                    this.createJavaFile(source);
-                }
+        // generate capsule artifacts
+        for (org.paninij.model.Capsule capsule : capsules) {
+            // generate Messages
+            for (Procedure procedure : capsule.getProcedures()) {
+                this.createJavaFile(messageFactory.make(procedure));
             }
+
+            // generate capsule interface
+            this.createJavaFile(capsuleFactory.make(capsule));
+
+            // generate capsule thread profile
+            this.createJavaFile(threadCapsuleFactory.make(capsule));
+
+            // TODO generate other capsule profiles
         }
-        
-        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class))
-        {
-            if (CapsuleTestChecker.check(this, elem))
-            {
-                TypeElement template = (TypeElement) elem;
-                org.paninij.model.Capsule capsule = CapsuleElement.make(template);
-                MakeCapsuleTest.make(this, template).makeSourceFile();
 
-                for (Procedure procedure : capsule.getProcedures()) {
-                    SourceFile source = messageFactory.make(procedure);
-                    this.createJavaFile(source);
-                }
+        // generate capsule test artifacts
+        for (org.paninij.model.Capsule capsule : capsulesTests) {
+            // generate Messages
+            for (Procedure procedure : capsule.getProcedures()) {
+                this.createJavaFile(messageFactory.make(procedure));
             }
+
+            // generate capsule test artifact
+            this.createJavaFile(capsuleTestFactory.make(capsule));
         }
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
+        note("Finished a round of processing.");
+
         return false;
     }
 

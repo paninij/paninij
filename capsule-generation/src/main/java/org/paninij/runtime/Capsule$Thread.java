@@ -297,7 +297,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      *
      * Should be called *before* `panini$initChildren()` or `panini$initState() are called.
      */
-    protected void panini$checkRequired() {
+    protected void panini$checkRequiredFields() {
         // Do nothing.
     }
 
@@ -326,8 +326,6 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         return null;
     }
     
-    public abstract Object panini$getEncapsulated();
-
     @Override
     public void panini$start()
     {

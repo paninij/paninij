@@ -18,19 +18,122 @@
  */
 package org.paninij.apt;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.paninij.apt.util.MessageShape;
+import org.paninij.apt.util.Source;
+import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Capsule;
+import org.paninij.model.Procedure;
+import org.paninij.model.Variable;
 
 public class CapsuleFactory {
 
-    public static void generate(PaniniProcessor context, Capsule capsule) {
-        CapsuleFactory generator = new CapsuleFactory();
-        generator.generateCapsule(capsule);
+    private Capsule context;
+
+    public SourceFile make(Capsule capsule) {
+        this.context = capsule;
+
+        String name = this.context.getQualifiedName();
+        String content = this.generateContent();
+
+        return new SourceFile(name, content);
     }
 
-    private void generateCapsule(Capsule capsule) {
-        System.out.println("# " + capsule.getQualifiedName());
-        // TODO
-        // delegate to classes designated by Execution profile
+    private String generateContent() {
+        String src = Source.cat(
+                "package #0;",
+                "",
+                "##",
+                "",
+                "@CapsuleInterface",
+                "public interface #1 extends #2",
+                "{",
+                "    #3",
+                "    ##",
+                "}");
+
+        src = Source.format(src,
+                this.context.getPackage(),
+                this.context.getSimpleName(),
+                this.generateInterfaces(),
+                this.generateWiredDecl());
+
+        src = Source.formatAligned(src, this.generateImports());
+        src = Source.formatAligned(src, this.generateFacades());
+
+        return src;
     }
 
+    protected String generateInterfaces() {
+        List<String> interfaces = this.context.getSignatures();
+        interfaces.add("Panini$Capsule");
+        return String.join(", ", interfaces);
+    }
+
+    protected String generateWiredDecl() {
+        List<String> decls = new ArrayList<String>();
+
+        for (Variable v : this.context.getWired()) {
+            decls.add(v.toString());
+        }
+
+        return decls.isEmpty() ? "" : Source.format("public void wire(#0);", String.join(", ", decls));
+    }
+
+    protected List<String> generateImports() {
+        Set<String> imports = new HashSet<String>();
+
+        for (Procedure p : this.context.getProcedures()) {
+            MessageShape shape = new MessageShape(p);
+            imports.add(shape.getPackage() + "." + shape.encoded);
+        }
+
+        imports.addAll(this.context.getImports());
+
+        imports.add("java.util.concurrent.Future");
+        imports.add("org.paninij.lang.CapsuleInterface");
+        imports.add("org.paninij.runtime.Panini$Capsule");
+
+        List<String> prefixedImports = new ArrayList<String>();
+
+        for (String i : imports) {
+            prefixedImports.add("import " + i + ";");
+        }
+
+        return prefixedImports;
+    }
+
+    protected List<String> generateFacades() {
+        List<String> facades =  new ArrayList<String>();
+
+        for (Procedure p : this.context.getProcedures()) {
+            facades.add(this.generateFacade(p));
+            facades.add("");
+        }
+
+        return facades;
+    }
+
+    protected String generateFacade(Procedure p) {
+        MessageShape shape = new MessageShape(p);
+
+        List<String> argDecls = new ArrayList<String>();
+
+        for (Variable v : p.getParameters()) {
+            argDecls.add(v.toString());
+        }
+
+        String argDeclString = String.join(", ", argDecls);
+
+        String declaration = Source.format("public #0 #1(#2);",
+                shape.realReturn,
+                p.getName(),
+                argDeclString);
+
+        return declaration;
+    }
 }
