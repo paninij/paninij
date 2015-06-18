@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -20,11 +21,12 @@ import org.paninij.model.Capsule;
 import org.paninij.model.Procedure;
 import org.paninij.model.Type;
 import org.paninij.model.Variable;
+import org.paninij.runtime.ActiveCapsule;
 
 public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 {
 
-    public static final String CAPSULE_PROFILE_THREAD_SUFFIX = "$Thread$Temp";
+    public static final String CAPSULE_PROFILE_THREAD_SUFFIX = "$Thread";
 
     private Capsule context;
 
@@ -82,6 +84,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
+        imports.add("org.paninij.runtime.ActiveCapsule");
         imports.add(this.context.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -181,9 +184,34 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
             if (child.isArray()) {
                 List<String> lines = Source.lines(
                         "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
+                        "    panini$encapsulated.#0[i] = new #1#2();",
+                        "}",
+                        "");
+                source.addAll(Source.formatAll(
+                        lines,
+                        child.getIdentifier(),
+                        child.getEncapsulatedType(),
+                        this.CAPSULE_PROFILE_THREAD_SUFFIX));
+            } else {
+                source.add(Source.format(
+                        "panini$encapsulated.#0 = new #1#2();",
+                        child.getIdentifier(),
+                        child.raw(),
+                        this.CAPSULE_PROFILE_THREAD_SUFFIX));
+            }
+        }
+
+        if (this.context.hasDesign()) {
+            source.add("panini$encapsulated.design(this);");
+        }
+
+        for (Variable child : children) {
+            if (child.isArray()) {
+                List<String> src = Source.lines(
+                        "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
                         "    panini$encapsulated.#0[i].panini$start();",
                         "}");
-                source.addAll(Source.formatAll(lines,  child.getIdentifier()));
+                source.addAll(Source.formatAll(src, child.getIdentifier()));
             } else {
                 source.add(Source.format(
                         "panini$encapsulated.#0.panini$start();",
@@ -202,21 +230,16 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
     }
 
     private List<String> generateInitState() {
-        if (this.context.hasInit()) {
-            return Source.lines(
-                    "@Override",
-                    "protected void panini$initState() {",
-                    "    panini$encapsulated.init();",
-                    "}",
-                    "");
-        } else {
-            return new ArrayList<String>();
-        }
+        if (!this.context.hasInit()) return new ArrayList<String>();
+        return Source.lines(
+                "@Override",
+                "protected void panini$initState() {",
+                "    panini$encapsulated.init();",
+                "}",
+                "");
     }
 
     private List<String> generateRun() {
-        List<String> source = new ArrayList<String>();
-
         if (this.context.isActive()) {
             return Source.lines(
                     "@Override",
@@ -249,8 +272,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "        }",
                 "    }",
                 "    catch (Exception ex) { /* do nothing for now */ }",
-                "}"
-            );
+                "}");
+
         return Source.formatAlignedFirst(src, buildRunSwitch());
     }
 
@@ -258,11 +281,12 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         List<String> lines = new ArrayList<String>();
         lines.add("switch(msg.panini$msgID()) {");
 
-        // Add a case statement for each procedure wrapper.
+        // add a case statement for each procedure wrapper.
         for (Procedure p : this.context.getProcedures()) {
             lines.addAll(this.buildRunSwitchCase(p));
         }
 
+        // add case statements for when a capsule shuts down and for EXIT command
         lines.addAll(Source.lines(
                 "case PANINI$SHUTDOWN:",
                 "    if (panini$isEmpty() == false) {",
@@ -348,6 +372,41 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 String.join(", ", args));
     }
 
+    private boolean deservesMain() {
+        // if the capsule has external dependencies, it does
+        // not deserve a main
+        if (!this.context.getWired().isEmpty()) return false;
+
+        if (this.context.isActive()) {
+            // if the capsule is active and has no external deps,
+            // it deserves a main
+            return true;
+        } else {
+            // if the capsule has no children, it does not need a main
+            // (this is a bogus/dull scenario)
+            if (this.context.getChildren().isEmpty()) return false;
+
+            // check if any ancestor capsules are active
+            if (this.context.hasActiveAncestor()) return true;
+
+            // if no child is active, this does not deserve a main
+            return false;
+        }
+    }
+
+    private List<String> generateMain() {
+        if (this.deservesMain()) {
+            List<String> src = Source.lines("public static void main(String[] args)",
+                    "{",
+                    "    #0 root = new #0();",
+                    "    root.run();",
+                    "}");
+            return Source.formatAll(src, this.generateClassName());
+        }
+
+        return new ArrayList<String>();
+    }
+
     private List<String> generateCapsuleBody() {
         List<String> src = new ArrayList<String>();
 
@@ -359,6 +418,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         src.addAll(this.generateInitChildren());
         src.addAll(this.generateInitState());
         src.addAll(this.generateRun());
+        src.addAll(this.generateMain());
 
         return src;
     }

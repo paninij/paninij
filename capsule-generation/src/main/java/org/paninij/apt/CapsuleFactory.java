@@ -96,6 +96,8 @@ public class CapsuleFactory {
 
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.lang.CapsuleInterface");
+        imports.add("org.paninij.runtime.ActiveCapsule");
+        imports.add("org.paninij.runtime.ActiveAncestorCapsule");
         imports.add("org.paninij.runtime.Panini$Capsule");
 
         List<String> prefixedImports = new ArrayList<String>();

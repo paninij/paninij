@@ -16,24 +16,12 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.model;
+package org.paninij.runtime;
 
-import java.util.List;
-import java.util.Set;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public interface Capsule
-{
-    public List<Variable> getChildren();
-    public List<Variable> getWired();
-    public String getSimpleName();
-    public String getQualifiedName();
-    public String getPackage();
-    public Set<String> getImports();
-    public List<Procedure> getProcedures();
-    public List<String> getSignatures();
-    public boolean hasInit();
-    public boolean hasRun();
-    public boolean hasDesign();
-    public boolean isActive();
-    public boolean hasActiveAncestor();
-}
+/*
+ * This annotation acts as a flag for generated capsules which have an active ancestor
+ */
+public @interface ActiveAncestorCapsule { }

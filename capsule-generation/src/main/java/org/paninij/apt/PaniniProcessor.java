@@ -19,7 +19,6 @@
 package org.paninij.apt;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -54,9 +53,12 @@ public class PaniniProcessor extends AbstractProcessor
 {
     RoundEnvironment roundEnv;
 
+    public static Types typeUtils;
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         this.roundEnv = roundEnv;
+        typeUtils = this.getTypeUtils();
 
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
@@ -75,8 +77,6 @@ public class PaniniProcessor extends AbstractProcessor
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(Capsule.class);
 
-
-
         for (Element elem : annotated) {
             if (CapsuleChecker.check(this, elem)) {
 
@@ -87,7 +87,7 @@ public class PaniniProcessor extends AbstractProcessor
                 SourceFile src = capsuleFactory.make(capsule);
                 this.createJavaFile(src);
 
-                MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
+//                MakeCapsule$Thread.make(this, template, capsule).makeSourceFile();
                 src = threadCapsuleFactory.make(capsule);
                 this.createJavaFile(src);
 
@@ -100,7 +100,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         this.roundEnv = null;
-        return false;
+        return true;
     }
 
 

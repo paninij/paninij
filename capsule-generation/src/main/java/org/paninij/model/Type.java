@@ -176,7 +176,7 @@ public class Type
     }
 
     public String packed() {
-        if (this.kind == TypeKind.ARRAY) {
+        if (this.isArray()) {
             ArrayType t = (ArrayType) this.mirror;
             Type comp = new Type(t.getComponentType());
             return comp.packed();
@@ -186,6 +186,15 @@ public class Type
 
     public String raw() {
         return this.mirror.toString();
+    }
+
+    public Type getEncapsulatedType() {
+        if (this.isArray()) {
+            ArrayType t = (ArrayType) this.mirror;
+            Type comp = new Type(t.getComponentType());
+            return comp.getEncapsulatedType();
+        }
+        return this;
     }
 
     public String slot() {

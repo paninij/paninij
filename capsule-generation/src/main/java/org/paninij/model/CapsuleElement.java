@@ -23,14 +23,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.CapsuleTemplateVisitor;
+import org.paninij.apt.PaniniProcessor;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.TypeCollector;
+import org.paninij.runtime.ActiveAncestorCapsule;
+import org.paninij.runtime.ActiveCapsule;
 
 public class CapsuleElement implements Capsule
 {
@@ -46,6 +54,7 @@ public class CapsuleElement implements Capsule
 
     private boolean hasInitDecl;
     private boolean hasRunDecl;
+    private boolean hasDesignDecl;
 
     /*
      * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
@@ -69,6 +78,7 @@ public class CapsuleElement implements Capsule
         this.imports = new HashSet<String>();
         this.hasInitDecl = false;
         this.hasRunDecl = false;
+        this.hasDesignDecl = false;
     }
 
     @Override
@@ -139,17 +149,30 @@ public class CapsuleElement implements Capsule
     }
 
     @Override
+    public boolean hasDesign() {
+        return this.hasDesignDecl;
+    }
+
+    @Override
     public boolean isActive() {
         return this.hasRunDecl;
+    }
+
+    @Override
+    public boolean hasActiveAncestor() {
+        // TODO
+        return false;
     }
 
     public void addExecutable(ExecutableElement e) {
         if (PaniniModelInfo.isProcedure(e)) {
             this.procedures.add(new ProcedureElement(e));
-        } else if (e.getSimpleName().equals("init")) {
+        } else if (e.getSimpleName().toString().equals("init")) {
             this.hasInitDecl = true;
-        } else if (e.getSimpleName().equals("run")) {
+        } else if (e.getSimpleName().toString().equals("run")) {
             this.hasRunDecl = true;
+        } else if (e.getSimpleName().toString().equals("design")) {
+            this.hasDesignDecl = true;
         }
     }
 
