@@ -93,7 +93,6 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
-        imports.add("org.paninij.runtime.ActiveCapsule");
         imports.add(this.context.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();

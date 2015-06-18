@@ -90,8 +90,6 @@ public class PaniniProcessor extends AbstractProcessor
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
                 capsulesTests.add(CapsuleElement.make(template));
-                // TODO switch this to use a TestCapsuleFactory later down
-                MakeCapsuleTest.make(this, template).makeSourceFile();
             }
         }
 
@@ -99,6 +97,7 @@ public class PaniniProcessor extends AbstractProcessor
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
         CapsuleFactory capsuleFactory = new CapsuleFactory();
+        CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
         ThreadCapsuleProfileFactory threadCapsuleFactory = new ThreadCapsuleProfileFactory();
 
         // generate artifacts from signature model
@@ -134,7 +133,9 @@ public class PaniniProcessor extends AbstractProcessor
             for (Procedure procedure : capsule.getProcedures()) {
                 this.createJavaFile(messageFactory.make(procedure));
             }
-            // TODO generate capsule test artifacts here
+
+            // generate capsule test artifact
+            this.createJavaFile(capsuleTestFactory.make(capsule));
         }
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can be GC'd.
