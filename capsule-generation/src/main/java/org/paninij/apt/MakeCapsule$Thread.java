@@ -470,10 +470,10 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
     
     String buildAssertSafeInvocationTransfer()
     {
-        return Source.format("assert Panini$Ownership.isSafeTransfer(#0, #1, #2) : #3",
+        return Source.format("assert Panini$Ownership.#0.isSafeTransfer(#1, #2) : #3",
+                             context.ownershipCheckMethod,
                              "panini$message",
                              "caller.panini$getAllState()",
-                             "Panini$Ownership.CheckMethod." + context.ownershipCheckMethod,
                              "\"Procedure invocation performed unsafe ownership transfer.\"");
     }
 
@@ -785,11 +785,11 @@ class MakeCapsule$Thread extends MakeCapsule$ExecProfile
 
     String buildAssertSafeResultTransfer()
     {
-        return Source.format("assert Panini$Ownership.isSafeTransfer(#0, #1, #2) : #3",
-                "result",
-                "panini$getAllState()",
-                "Panini$Ownership.CheckMethod." + context.ownershipCheckMethod,
-                "\"Procedure return attempted unsafe ownership transfer.\"");
+        return Source.format("assert Panini$Ownership.#0.isSafeTransfer(#1, #2) : #3",
+                             context.ownershipCheckMethod,
+                             "result",
+                             "panini$getAllState()",
+                             "\"Procedure return attempted unsafe ownership transfer.\"");
     }
 
 
