@@ -10,6 +10,7 @@ import me.dwtj.objectgraph.Explorer;
 import me.dwtj.objectgraph.GreedyNavigator;
 import me.dwtj.objectgraph.Navigator;
 
+import org.paninij.lang.Capsule;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.runtime.util.IdentitySetStore;
 
@@ -195,6 +196,8 @@ public class Panini$Ownership
             while ((obj = worklist.remove()) != null)
             {
                 Class<? extends Object> cls = obj.getClass();
+                assert isAlwaysUnsafe(cls) == false:
+                    "An object of class " + cls + " is always unsafe to transfer.";
 
                 if (cls.isArray()) {
                     findUnsafe$addComponents(obj, cls, unsafe, worklist);
@@ -213,7 +216,7 @@ public class Panini$Ownership
         private static void findUnsafe$addComponents(Object obj, Class<? extends Object> cls,
                                                      IdentitySet unsafe, IdentitySet worklist)
         {
-            if (obj instanceof Object[] && isSafe(cls.getComponentType()) == false)
+            if (obj instanceof Object[] && isAlwaysSafe(cls.getComponentType()) == false)
             {
                 for (Object found : (Object[]) obj) {
                     if (found != null && unsafe.add(found) == true) {
@@ -245,7 +248,7 @@ public class Panini$Ownership
             // TODO: I suspect that the semantics of checking "safe" on a root object is slightly
             // different than when we are in the `while` loop. So, be conservative and assume always
             // `false` for now.
-            return isSafe(obj.getClass());
+            return isAlwaysSafe(obj.getClass());
         }
         
         
@@ -259,7 +262,7 @@ public class Panini$Ownership
          */
         private static Object getFieldValueIfUnsafe(Object obj, Field f)
         {
-            if (isSafe(f.getDeclaringClass()))
+            if (isAlwaysSafe(f.getDeclaringClass()))
             {
                 return null;
             }
@@ -274,7 +277,7 @@ public class Panini$Ownership
         }
         
        
-        private static boolean isSafe(Class<? extends Object> cls)
+        private static boolean isAlwaysSafe(Class<? extends Object> cls)
         {
             return cls.isPrimitive()
                 // Known safe java classes (including the eight primitive wrapper types).
@@ -292,6 +295,13 @@ public class Panini$Ownership
                 || cls == org.paninij.lang.String.class;
 
                 // TODO: Void?
+        }
+        
+        
+        private static boolean isAlwaysUnsafe(Class<? extends Object> cls)
+        {
+            Capsule anno = (Capsule) cls.getAnnotation(Capsule.class);
+            return anno != null;
         }
         
 
