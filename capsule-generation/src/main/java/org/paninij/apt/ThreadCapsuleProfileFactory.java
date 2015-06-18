@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Panini project at Iowa State University.
+ *
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * For more details and the latest version of this code please see
+ * http://paninij.org
+ *
+ * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
+ */
 package org.paninij.apt;
 
 import java.util.ArrayList;
@@ -5,14 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-
-import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
@@ -21,7 +31,6 @@ import org.paninij.model.Capsule;
 import org.paninij.model.Procedure;
 import org.paninij.model.Type;
 import org.paninij.model.Variable;
-import org.paninij.runtime.ActiveCapsule;
 
 public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 {
@@ -249,6 +258,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                     "        panini$initChildren();",
                     "        panini$initState();",
                     "        panini$encapsulated.run();",
+                    "    } catch (Throwable thrown) {",
+                    "         panini$errors.add(thrown);",
                     "    } finally {",
                     "        // TODO",
                     "    }",
@@ -270,8 +281,9 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "            Panini$Message msg = panini$nextMessage();",
                 "            ##",
                 "        }",
+                "    } catch (Throwable thrown) {",
+                "        panini$errors.add(thrown);",
                 "    }",
-                "    catch (Exception ex) { /* do nothing for now */ }",
                 "}");
 
         return Source.formatAlignedFirst(src, buildRunSwitch());

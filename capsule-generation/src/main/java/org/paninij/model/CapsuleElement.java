@@ -23,22 +23,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.CapsuleTemplateVisitor;
-import org.paninij.apt.PaniniProcessor;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.TypeCollector;
-import org.paninij.runtime.ActiveAncestorCapsule;
-import org.paninij.runtime.ActiveCapsule;
 
 public class CapsuleElement implements Capsule
 {
