@@ -22,7 +22,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.6.1</version>
         <configuration>
           <filesets>
             <fileset>
@@ -40,10 +39,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
           <generatedSourcesDirectory>${generated.src.dir}</generatedSourcesDirectory>
           <compilerArgs>
             <!-- <arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg> -->
