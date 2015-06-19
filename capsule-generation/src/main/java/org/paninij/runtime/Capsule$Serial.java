@@ -26,11 +26,6 @@ public interface Capsule$Serial extends Panini$Capsule
     }
 
     @Override
-    default void panini$shutdown() {
-        // TODO
-    }
-
-    @Override
     default void panini$push(Object o) {
         // TODO
     }
@@ -41,7 +36,12 @@ public interface Capsule$Serial extends Panini$Capsule
     }
 
     @Override
-    default void panini$exit() {
+    default void panini$closeLink() {
+        // TODO
+    }
+
+    @Override
+    default void panini$openLink() {
         // TODO
     }
 }
