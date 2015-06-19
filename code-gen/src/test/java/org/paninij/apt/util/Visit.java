@@ -16,6 +16,6 @@
  *
  * Contributor(s): David Johnston
  */
-package org.paninij.apt.test;
+package org.paninij.apt.util;
 
 public @interface Visit { /* No arguments */ }

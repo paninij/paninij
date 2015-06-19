@@ -1,6 +1,6 @@
-package org.paninij.apt.capsuletest;
+package org.paninij.apt.util;
 
-import org.paninij.apt.test.Visit;
+import org.paninij.apt.util.Visit;
 
 
 @Visit
