@@ -23,25 +23,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Types;
 
 import org.paninij.apt.PaniniProcessor;
-import org.paninij.lang.Capsule;
-import org.paninij.lang.CapsuleInterface;
-import org.paninij.lang.Signature;
-import org.paninij.model.AnnotationKind;
-import org.paninij.model.Procedure;
-import org.paninij.model.Type;
-import org.paninij.model.Variable;
+
 
 public class PaniniModelInfo
 {
@@ -308,7 +299,32 @@ public class PaniniModelInfo
         }
         return wired;
     }
+    
+    public static boolean isStateFieldDecl(PaniniProcessor context, Element elem)
+    {
+        return elem.getKind() == ElementKind.FIELD
+            && isWiredFieldDecl(context, elem) == false
+            && isChildFieldDecl(context, elem) == false;
+        
+    }
+    
+    public static boolean hasStateFieldDecl(PaniniProcessor context, TypeElement template)
+    {
+        return getStateFieldDecls(context, template).isEmpty() == false;
+    }
 
+    public static List<VariableElement> getStateFieldDecls(PaniniProcessor context, TypeElement template)
+    {
+        List<VariableElement> state_decls = new ArrayList<VariableElement>();
+        for (Element elem : template.getEnclosedElements())
+        {
+            if (isStateFieldDecl(context, elem)) {
+                state_decls.add((VariableElement) elem);
+            }
+            
+        }
+        return state_decls;
+    }
 
     /**
      * A capsule is a "root" capsule if and only if it is active and has no `@Wired` fields.

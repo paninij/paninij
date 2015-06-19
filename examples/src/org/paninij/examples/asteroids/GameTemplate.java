@@ -23,11 +23,12 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class GameTemplate {
-    private short[] asteroidPositions;
-    private int asteroidPos;
-    private int lastFired;
-    private Random prng;
+public class GameTemplate
+{
+    short[] asteroidPositions;
+    int asteroidPos;
+    int lastFired;
+    Random prng;
 
     protected void init() {
         this.asteroidPositions = new short[Constants.WIDTH];

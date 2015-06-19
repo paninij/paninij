@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.lang.model.type.TypeKind;
 
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
@@ -98,6 +101,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
+        imports.add("org.paninij.runtime.Panini$System");
+        imports.add("org.paninij.runtime.check.Panini$Ownership");
         imports.add(this.context.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -139,7 +144,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private List<String> generateRequiredFields()
+    private List<String> generateCheckRequiredFields()
     {
         // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
         List<Variable> required = this.context.getWired();
@@ -159,7 +164,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
         List<String> lines = Source.lines(
                 "@Override",
-                "public void panini$checkRequired() {",
+                "public void panini$checkRequiredFields() {",
                 "    ##",
                 "}",
                 "");
@@ -258,15 +263,35 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "}",
                 "");
     }
+    
+    List<String> generateGetAllState()
+    {
+        List<String> states = context.getState()
+                                     .stream()
+                                     .filter(s -> s.getKind() == TypeKind.ARRAY
+                                               || s.getKind() == TypeKind.DECLARED)
+                                     .map(s -> "panini$encapsulated." + s.getIdentifier())
+                                     .collect(Collectors.toList());
 
+        List<String> src = Source.lines("@Override",
+                                        "public Object panini$getAllState()",
+                                        "{",
+                                        "    Object[] state = {#0};",
+                                        "    return state;",
+                                        "}");
+
+        return Source.formatAll(src, String.join(", ", states));
+    }
+    
     private List<String> generateRun()
     {
         if (this.context.isActive()) {
             return Source.lines(
                     "@Override",
                     "public void run() {",
+                    "    Panini$System.self.set(this);",
                     "    try {",
-                    "        panini$checkRequired();",
+                    "        panini$checkRequiredFields();",
                     "        panini$initChildren();",
                     "        panini$initState();",
                     "        panini$encapsulated.run();",
@@ -283,8 +308,9 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "@Override",
                 "@SuppressWarnings(\"unchecked\")",
                 "public void run() {",
+                "    Panini$System.self.set(this);",
                 "    try {",
-                "        panini$checkRequired();",
+                "        panini$checkRequiredFields();",
                 "        panini$initChildren();",
                 "        panini$initState();",
                 "",
@@ -359,13 +385,17 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                     procedure.getReturnType().wrapped());
         } else {
             // Call the template instance's method and resolve the duck using the result.
-            List<String> src = Source.lines("case #0:",
-                                            "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
-                                            "    break;");
+            List<String> src = Source.lines("case #0: {",
+                                            "    #1 result = #2;",
+                                            "    #3;",
+                                            "    ((Panini$Future<#1>) msg).panini$resolve(result);",
+                                            "    break;",
+                                            "}");
             return Source.formatAll(src,
                     this.generateProcedureID(procedure),
                     procedure.getReturnType().wrapped(),
-                    this.generateEncapsulatedMethodCall(shape));
+                    this.generateEncapsulatedMethodCall(shape),
+                    this.generateAssertSafeResultTransfer());
         }
     }
 
@@ -397,6 +427,16 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "panini$encapsulated.#0(#1)",
                 shape.procedure.getName(),
                 String.join(", ", args));
+    }
+    
+    private String generateAssertSafeResultTransfer()
+    {
+        return Source.format(
+                "assert Panini$Ownership.#0.isSafeTransfer(#1, #2) : #3",
+                PaniniProcessor.ownershipCheckMethod,
+                "result",
+                "panini$getAllState()",
+                "\"Procedure return attempted unsafe ownership transfer.\"");
     }
 
     private boolean deservesMain()
@@ -443,10 +483,11 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         src.add(this.generateEncapsulatedDecl());
         src.addAll(this.generateProcedureIDs());
         src.addAll(this.generateProcedures());
-        src.addAll(this.generateRequiredFields());
+        src.addAll(this.generateCheckRequiredFields());
         src.addAll(this.generateWire());
         src.addAll(this.generateInitChildren());
         src.addAll(this.generateInitState());
+        src.addAll(this.generateGetAllState());
         src.addAll(this.generateRun());
         src.addAll(this.generateMain());
 
