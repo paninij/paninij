@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.lang.model.type.TypeKind;
 
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
@@ -40,7 +43,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
     private Capsule context;
 
     @Override
-    public SourceFile make(Capsule capsule) {
+    public SourceFile make(Capsule capsule)
+    {
         this.context = capsule;
 
         String name = this.generateFileName();
@@ -49,11 +53,13 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return new SourceFile(name, content);
     }
 
-    private String generateFileName() {
+    private String generateFileName()
+    {
         return this.context.getQualifiedName() + CAPSULE_PROFILE_THREAD_SUFFIX;
     }
 
-    private String generateContent() {
+    private String generateContent()
+    {
         String src = Source.cat(
                 "package #0;",
                 "",
@@ -75,11 +81,13 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private String generateClassName() {
+    private String generateClassName()
+    {
         return this.context.getSimpleName() + CAPSULE_PROFILE_THREAD_SUFFIX;
     }
 
-    private List<String> generateImports() {
+    private List<String> generateImports()
+    {
         Set<String> imports = new HashSet<String>();
 
         for (Procedure p : this.context.getProcedures()) {
@@ -94,6 +102,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
+        imports.add("org.paninij.runtime.Panini$System");
+        imports.add("org.paninij.runtime.check.Panini$Ownership");
         imports.add(this.context.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -105,13 +115,15 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return prefixedImports;
     }
 
-    private String generateEncapsulatedDecl() {
+    private String generateEncapsulatedDecl()
+    {
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
                 this.context.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
     }
 
-    private List<String> generateProcedureIDs() {
+    private List<String> generateProcedureIDs()
+    {
         ArrayList<String> decls = new ArrayList<String>();
         int currID = 0;
 
@@ -126,7 +138,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return decls;
     }
 
-    private List<String> generateProcedures() {
+    private List<String> generateProcedures()
+    {
         ArrayList<String> src = new ArrayList<String>();
         for (Procedure p : this.context.getProcedures()) {
             src.addAll(this.generateProcedure(p));
@@ -134,7 +147,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private List<String> generateRequiredFields() {
+    private List<String> generateCheckRequiredFields()
+    {
         // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
         List<Variable> required = this.context.getWired();
 
@@ -153,14 +167,15 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
         List<String> lines = Source.lines(
                 "@Override",
-                "public void panini$checkRequired() {",
+                "public void panini$checkRequiredFields() {",
                 "    ##",
                 "}",
                 "");
         return Source.formatAlignedFirst(lines, assertions);
     }
 
-    private List<String> generateWire() {
+    private List<String> generateWire()
+    {
         List<Variable> wired = this.context.getWired();
         List<String> refs = new ArrayList<String>();
         List<String> decls = new ArrayList<String>();
@@ -198,7 +213,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private List<String> generateInitChildren() {
+    private List<String> generateInitChildren()
+    {
         List<Variable> children = this.context.getChildren();
         List<String> source = new ArrayList<String>();
 
@@ -270,7 +286,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return Source.formatAlignedFirst(decl, source);
     }
 
-    private List<String> generateInitState() {
+    private List<String> generateInitState()
+    {
         if (!this.context.hasInit()) return new ArrayList<String>();
         return Source.lines(
                 "@Override",
@@ -280,13 +297,34 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "");
     }
 
-    private List<String> generateRun() {
+    List<String> generateGetAllState()
+    {
+        List<String> states = context.getState()
+                                     .stream()
+                                     .filter(s -> s.getKind() == TypeKind.ARRAY
+                                               || s.getKind() == TypeKind.DECLARED)
+                                     .map(s -> "panini$encapsulated." + s.getIdentifier())
+                                     .collect(Collectors.toList());
+
+        List<String> src = Source.lines("@Override",
+                                        "public Object panini$getAllState()",
+                                        "{",
+                                        "    Object[] state = {#0};",
+                                        "    return state;",
+                                        "}");
+
+        return Source.formatAll(src, String.join(", ", states));
+    }
+
+    private List<String> generateRun()
+    {
         if (this.context.isActive()) {
             return Source.lines(
                     "@Override",
                     "public void run() {",
+                    "    Panini$System.self.set(this);",
                     "    try {",
-                    "        panini$checkRequired();",
+                    "        panini$checkRequiredFields();",
                     "        panini$initChildren();",
                     "        panini$initState();",
                     "        panini$encapsulated.run();",
@@ -304,8 +342,9 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "@Override",
                 "@SuppressWarnings(\"unchecked\")",
                 "public void run() {",
+                "    Panini$System.self.set(this);",
                 "    try {",
-                "        panini$checkRequired();",
+                "        panini$checkRequiredFields();",
                 "        panini$initChildren();",
                 "        panini$initState();",
                 "",
@@ -320,16 +359,17 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "    }",
                 "}");
 
-        return Source.formatAlignedFirst(src, generageRunSwitch());
+        return Source.formatAlignedFirst(src, generateRunSwitch());
     }
 
-    private List<String> generageRunSwitch() {
+    private List<String> generateRunSwitch()
+    {
         List<String> lines = new ArrayList<String>();
         lines.add("switch(msg.panini$msgID()) {");
 
         // add a case statement for each procedure wrapper.
         for (Procedure p : this.context.getProcedures()) {
-            lines.addAll(this.buildRunSwitchCase(p));
+            lines.addAll(this.generateRunSwitchCase(p));
         }
 
         // add case statements for when a capsule shuts down and for EXIT command
@@ -377,7 +417,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return Source.formatAlignedFirst(src, shutdowns);
     }
 
-    private List<String> buildRunSwitchCase(Procedure procedure) {
+    private List<String> generateRunSwitchCase(Procedure procedure)
+    {
         MessageShape shape = new MessageShape(procedure);
 
         // `duck` will need to be resolved if and only if `procedure` has a return value.
@@ -407,17 +448,22 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                     procedure.getReturnType().wrapped());
         } else {
             // Call the template instance's method and resolve the duck using the result.
-            List<String> src = Source.lines("case #0:",
-                                            "    ((Panini$Future<#1>) msg).panini$resolve(#2);",
-                                            "    break;");
+            List<String> src = Source.lines("case #0: {",
+                                            "    #1 result = #2;",
+                                            "    #3;",
+                                            "    ((Panini$Future<#1>) msg).panini$resolve(result);",
+                                            "    break;",
+                                            "}");
             return Source.formatAll(src,
                     this.generateProcedureID(procedure),
                     procedure.getReturnType().wrapped(),
-                    this.generateEncapsulatedMethodCall(shape));
+                    this.generateEncapsulatedMethodCall(shape),
+                    this.generateAssertSafeResultTransfer());
         }
     }
 
-    private String generateEncapsulatedMethodCall(MessageShape shape) {
+    private String generateEncapsulatedMethodCall(MessageShape shape)
+    {
         List<String> args = new ArrayList<String>();
 
         // Generate the list of types defined on the `method`. The `null` value is used to
@@ -446,7 +492,18 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 String.join(", ", args));
     }
 
-    private boolean deservesMain() {
+    private String generateAssertSafeResultTransfer()
+    {
+        return Source.format(
+                "assert Panini$Ownership.#0.isSafeTransfer(#1, #2) : #3",
+                PaniniProcessor.ownershipCheckMethod,
+                "result",
+                "panini$getAllState()",
+                "\"Procedure return attempted unsafe ownership transfer.\"");
+    }
+
+    private boolean deservesMain()
+    {
         // if the capsule has external dependencies, it does
         // not deserve a main
         if (!this.context.getWired().isEmpty()) return false;
@@ -468,7 +525,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         }
     }
 
-    private List<String> generateMain() {
+    private List<String> generateMain()
+    {
         if (!this.deservesMain()) return new ArrayList<String>();
 
         List<String> src = Source.lines(
@@ -480,17 +538,19 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return Source.formatAll(src, this.generateClassName());
     }
 
-    private List<String> generateCapsuleBody() {
+    private List<String> generateCapsuleBody()
+    {
         List<String> src = new ArrayList<String>();
 
         src.add(this.generateEncapsulatedDecl());
         src.addAll(this.generateProcedureIDs());
         src.addAll(this.generateProcedures());
-        src.addAll(this.generateRequiredFields());
+        src.addAll(this.generateCheckRequiredFields());
         src.addAll(this.generateWire());
         src.addAll(this.generateInitChildren());
         src.addAll(this.generateInitState());
         src.addAll(this.generateTerminate());
+        src.addAll(this.generateGetAllState());
         src.addAll(this.generateRun());
         src.addAll(this.generateMain());
 

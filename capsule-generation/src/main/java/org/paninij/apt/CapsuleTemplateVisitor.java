@@ -36,7 +36,6 @@ import org.paninij.model.Variable;
  */
 public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement, CapsuleElement>
 {
-
     @Override
     public CapsuleElement visitType(TypeElement e, CapsuleElement capsule) {
         capsule.setTypeElement(e);
@@ -54,12 +53,14 @@ public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement
 
     @Override
     public CapsuleElement visitVariable(VariableElement e, CapsuleElement capsule) {
+        Variable variable = new Variable(e.asType(), e.getSimpleName().toString());
         if (e.getAnnotation(Child.class) != null) {
-            capsule.addChild(new Variable(e.asType(), e.getSimpleName().toString()));
+            capsule.addChild(variable);
         } else if (e.getAnnotation(Wired.class) != null) {
-            capsule.addWired(new Variable(e.asType(), e.getSimpleName().toString()));
+            capsule.addWired(variable);
+        } else {
+            capsule.addState(variable);
         }
         return capsule;
     }
-
 }

@@ -281,7 +281,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      *
      * Should be called *before* `panini$initChildren()` or `panini$initState() are called.
      */
-    protected void panini$checkRequired() {
+    protected void panini$checkRequiredFields() {
         // Do nothing.
     }
 
@@ -307,6 +307,15 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      */
     protected void panini$terminate() {
         // Do nothing.
+    }
+
+
+    /**
+     * Returns an Object which can be explored to find all the state contained within the capsule.
+     */
+    public Object panini$getAllState() {
+        // Do nothing.
+        return null;
     }
 
     @Override

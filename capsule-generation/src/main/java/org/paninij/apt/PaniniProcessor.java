@@ -20,11 +20,14 @@ package org.paninij.apt;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -45,6 +48,7 @@ import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
+import org.paninij.runtime.check.Panini$Ownership;
 import org.paninij.model.SignatureElement;
 
 
@@ -52,11 +56,45 @@ import org.paninij.model.SignatureElement;
  * Used as a service during compilation to make automatically-generated `.java` files from classes
  * annotated with one of the annotations in `org.paninij.lang`.
  */
-@SupportedAnnotationTypes({ "org.paninij.lang.Capsule", "org.paninij.lang.Signature" })
+@SupportedAnnotationTypes({"org.paninij.lang.Capsule",
+                           "org.paninij.lang.Signature",
+                           "org.paninij.lang.CapsuleTester"})
+@SupportedOptions({"ownership.check.method", "foo"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
+    // Annotation processor options (i.e. `-A` arguments):
+    public static Panini$Ownership.CheckMethod ownershipCheckMethod;
+    
     RoundEnvironment roundEnv;
+
+    @Override
+    public void init(ProcessingEnvironment procEnv)
+    {
+        super.init(procEnv);
+        initOptions(procEnv.getOptions());
+    }
+
+    protected void initOptions(Map<String, String> options)
+    {
+        note("Annotation Processor Options: " + options);
+        initOwnershipCheckMethod(options);
+    }
+    
+    protected void initOwnershipCheckMethod(Map<String, String> options)
+    {
+        String opt = options.get(Panini$Ownership.CheckMethod.getArgumentKey());
+        if (opt == null)
+        {
+            ownershipCheckMethod = Panini$Ownership.CheckMethod.getDefault();
+            note("No `ownership.check.method` annotation processor argument given. Using default.");
+        } else {
+            // Throws exception if `opt` is invalid:
+            ownershipCheckMethod = Panini$Ownership.CheckMethod.fromString(opt);
+        }
+        note("Using ownership.check.method = " + ownershipCheckMethod);
+    }
+
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
@@ -138,7 +176,9 @@ public class PaniniProcessor extends AbstractProcessor
             this.createJavaFile(capsuleTestFactory.make(capsule));
         }
 
-        this.roundEnv = null;  // Release reference, so that the `roundEnv` can be GC'd.
+        this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
+        note("Finished a round of processing.");
+
         return false;
     }
 

@@ -21,9 +21,7 @@ package org.paninij.apt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.MessageShape;
-import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Procedure;
@@ -55,6 +53,7 @@ public class FutureMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "@SuppressWarnings(\"all\")",  // Suppress unused imports.
                 "public class #1 implements Panini$Message, Panini$Future<#2>, Future<#2>", //TODO drop the panini$future
                 "{",
                 "    public final int panini$procID;",

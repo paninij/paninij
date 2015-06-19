@@ -10,6 +10,7 @@ import org.paninij.model.Capsule;
 import org.paninij.model.Procedure;
 import org.paninij.model.Variable;
 
+
 public abstract class CapsuleProfileFactory
 {
     public abstract SourceFile make(Capsule capsule);
@@ -67,14 +68,16 @@ public abstract class CapsuleProfileFactory
                 "{",
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
+                "    #3;",
                 "    panini$push(panini$message);",
-                "    #3",
+                "    #4",
                 "}",
                 "");
         return Source.formatAll(source,
                 this.generateProcedureDecl(shape),
                 shape.encoded,
                 this.generateProcedureArguments(shape),
+                this.generateAssertSafeInvocationTransfer(),
                 this.generateProcedureReturn(shape));
     }
 
@@ -104,5 +107,14 @@ public abstract class CapsuleProfileFactory
         List<String> thrown = shape.procedure.getThrown();
         declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
         return declaration;
+    }
+    
+    String generateAssertSafeInvocationTransfer()
+    {
+        return Source.format("assert Panini$Ownership.#0.isSafeTransfer(#1, #2): #3",
+                             PaniniProcessor.ownershipCheckMethod,
+                             "panini$message",
+                             "Panini$System.self.get().panini$getAllState()",
+                             "\"Procedure invocation performed unsafe ownership transfer.\"");
     }
 }

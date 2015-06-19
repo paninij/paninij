@@ -41,6 +41,7 @@ public class CapsuleElement implements Capsule
     private ArrayList<Procedure> procedures;
     private ArrayList<Variable> children;
     private ArrayList<Variable> wired;
+    private ArrayList<Variable> state;
 
     private Set<String> imports;
 
@@ -67,6 +68,7 @@ public class CapsuleElement implements Capsule
         this.procedures = new ArrayList<Procedure>();
         this.children = new ArrayList<Variable>();
         this.wired = new ArrayList<Variable>();
+        this.state = new ArrayList<Variable>();
         this.imports = new HashSet<String>();
         this.hasInitDecl = false;
         this.hasRunDecl = false;
@@ -82,6 +84,11 @@ public class CapsuleElement implements Capsule
     public List<Variable> getWired() {
         return this.wired;
     }
+    
+    @Override
+    public List<Variable> getState() {
+        return this.state;
+    }
 
     public void addChild(Variable v) {
         this.children.add(v);
@@ -89,6 +96,10 @@ public class CapsuleElement implements Capsule
 
     public void addWired(Variable v) {
         this.wired.add(v);
+    }
+    
+    public void addState(Variable v) {
+        this.state.add(v);
     }
 
     @Override

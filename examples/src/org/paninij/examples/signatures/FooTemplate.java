@@ -6,7 +6,7 @@ import org.paninij.lang.Future;
 @Capsule
 public class FooTemplate implements FooSignatureTemplate
 {
-    private String greeting;
+    String greeting;
 
     @Override
     @Future

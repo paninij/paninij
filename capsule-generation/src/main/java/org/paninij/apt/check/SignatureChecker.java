@@ -22,6 +22,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 
 import org.paninij.apt.PaniniProcessor;
+import org.paninij.apt.util.Source;
+import org.paninij.lang.Signature;
 
 public class SignatureChecker {
     /**
@@ -31,16 +33,19 @@ public class SignatureChecker {
      */
     public static boolean check(PaniniProcessor context, Element template)
     {
+        if (template.getAnnotation(Signature.class) == null)
+        {
+            String msg = "Tried to run signature checks on #0, but that element doesn't have `@Signature`.";
+            throw new IllegalArgumentException(Source.format(msg, template));
+        }
+        
         // TODO: check that the interface does not include defaults
 
-        if (template.getKind() == ElementKind.FIELD)
+        if (template.getKind() != ElementKind.INTERFACE)
         {
-            // Ignore any fields annotated with `@Signature`.
-            return false;
-        }
-
-        if (template.getKind() != ElementKind.INTERFACE) {
-            context.error("\"" + template.getKind().toString() + "\" @Signature cannot be a Signature because it is not an interface.");
+            String msg = Source.format("`#0` has `@Signature`, but it's `#1`, not an interface.",
+                                       template, template.getKind());
+            context.error(msg);
             return false;
         }
         return true;
