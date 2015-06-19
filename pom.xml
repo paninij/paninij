@@ -35,6 +35,7 @@
 
   <dependencyManagement>
     <dependencies>
+
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>code-gen</artifactId>
@@ -67,4 +68,5 @@
 
     </dependencies>
   </dependencyManagement>
+
 </project>

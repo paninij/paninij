@@ -29,4 +29,12 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>runtime</artifactId>
+    </dependency>
+  </dependencies>
+
 </project>
