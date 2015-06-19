@@ -3,12 +3,12 @@
 
   <parent>
     <groupId>org.paninij</groupId>
-    <artifactId>paninij</artifactId>
+    <artifactId>at-paninij</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>capsule-generation</artifactId>
-  <name>PaniniJ Capsule Generation</name>
+  <artifactId>code-gen</artifactId>
+  <name>@PaniniJ Code Generation</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,10 +29,4 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>me.dwtj</groupId>
-      <artifactId>object-graph-explorer</artifactId>
-    </dependency>
-  </dependencies>
 </project>

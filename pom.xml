@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.paninij</groupId>
-  <artifactId>paninij</artifactId>
+  <artifactId>at-paninij</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>PaniniJ</name>
+  <name>@PaniniJ</name>
 
   <build>
     <plugins>
@@ -28,7 +28,8 @@
   </properties>
 
   <modules>
-    <module>capsule-generation</module>
+    <module>code-gen</module>
+    <module>runtime</module>
     <module>examples</module>
   </modules>
 
@@ -36,19 +37,34 @@
     <dependencies>
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>capsule-generation</artifactId>
+        <artifactId>code-gen</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>runtime</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>examples</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
+
       <dependency>
         <groupId>me.dwtj</groupId>
         <artifactId>object-graph-explorer</artifactId>
         <version>0.2-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 </project>
