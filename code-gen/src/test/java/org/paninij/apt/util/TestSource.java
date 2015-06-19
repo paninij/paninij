@@ -16,22 +16,24 @@
  *
  * Contributor(s): David Johnston
  */
-package org.paninij.apt.test;
+package org.paninij.apt.util;
 
-import org.paninij.apt.util.Source;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-public class SourceHelperTester
+public class TestSource
 {
-
-    public static void main(String[] args)
+    @Test
+    public void formatAlignedBasic()
     {
-        String testFmt = "    ## ";
+        final String EXPECTED = "    line1\n"
+                              + "    line2\n"
+                              + "    line3";
 
-        String aligned = Source.formatAligned(testFmt, "line1", "line2", "line3");
+        String fmt = "    ##";
+        String actual = Source.formatAligned(fmt, "line1", "line2", "line3");
 
-
-        System.out.println(aligned);
-
+        assertEquals(EXPECTED, actual);
     }
 
 }
