@@ -14,33 +14,18 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <generated.src.dir>generated-src/actual/</generated.src.dir>
   </properties>
 
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${generated.src.dir}</directory>
-              <includes>
-                <include>**</include>
-              </includes>
-              <excludes>
-                <exclude>.gitignore</exclude>
-              </excludes>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <generatedSourcesDirectory>${generated.src.dir}</generatedSourcesDirectory>
+          <generatedSourcesDirectory>
+            ${project.build.directory}/generated-sources
+          </generatedSourcesDirectory>
           <compilerArgs>
             <!-- <arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg> -->
             <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg>
