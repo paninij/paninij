@@ -31,6 +31,7 @@
     <module>code-gen</module>
     <module>runtime</module>
     <module>examples</module>
+    <module>benchmarks</module>
   </modules>
 
   <dependencyManagement>
