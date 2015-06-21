@@ -1,7 +1,5 @@
 package org.paninij.runtime;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 public class Panini$System
 {
     /**

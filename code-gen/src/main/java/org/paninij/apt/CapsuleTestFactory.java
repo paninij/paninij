@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.paninij.apt.util.MessageShape;
-import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Capsule;

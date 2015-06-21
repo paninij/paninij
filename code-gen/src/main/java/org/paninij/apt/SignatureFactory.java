@@ -49,6 +49,7 @@ public class SignatureFactory
                 "",
                 "##",
                 "",
+                "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "public interface #1",
                 "{",
                 "    ##",

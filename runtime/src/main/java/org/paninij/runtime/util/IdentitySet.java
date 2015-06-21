@@ -1,10 +1,7 @@
 package org.paninij.runtime.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Implements a monotonically-increasing set (i.e. identities cannot be removed except by clearing

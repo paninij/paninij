@@ -64,7 +64,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "package #0;",
                 "",
                 "##",
-                "",
+                "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "public class #1 extends Capsule$Thread implements #2",
                 "{",
                 "    ##",
@@ -231,13 +231,13 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                         lines,
                         child.getIdentifier(),
                         child.getEncapsulatedType(),
-                        this.CAPSULE_PROFILE_THREAD_SUFFIX));
+                        CAPSULE_PROFILE_THREAD_SUFFIX));
             } else {
                 source.add(Source.format(
                         "panini$encapsulated.#0 = new #1#2();",
                         child.getIdentifier(),
                         child.raw(),
-                        this.CAPSULE_PROFILE_THREAD_SUFFIX));
+                        CAPSULE_PROFILE_THREAD_SUFFIX));
             }
         }
 

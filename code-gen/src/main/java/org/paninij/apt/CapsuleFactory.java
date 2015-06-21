@@ -49,6 +49,7 @@ public class CapsuleFactory {
                 "",
                 "##",
                 "",
+                "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "@CapsuleInterface",
                 "public interface #1 extends #2",
                 "{",
