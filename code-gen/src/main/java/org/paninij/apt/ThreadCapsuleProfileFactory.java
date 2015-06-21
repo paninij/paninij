@@ -331,8 +331,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                     "    } catch (Throwable thrown) {",
                     "        panini$errors.add(thrown);",
                     "    } finally {",
-                    "        panini$terminate();",
-                    "        System.out.println(\"Terminating: " + this.context.getSimpleName() + "\");",
+                    "        panini$onTerminate();",
                     "    }",
                     "}",
                     "");
@@ -348,12 +347,11 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "        panini$initChildren();",
                 "        panini$initState();",
                 "",
-                "        boolean terminate = false;",
-                "        while (!terminate) {",
+                "        boolean terminated = false;",
+                "        while (!terminated) {",
                 "            Panini$Message msg = panini$nextMessage();",
                 "            ##",
                 "        }",
-                "        System.out.println(\"Terminating: " + this.context.getSimpleName() + "\");",
                 "    } catch (Throwable thrown) {",
                 "        panini$errors.add(thrown);",
                 "    }",
@@ -379,8 +377,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "    break;",
                 "",
                 "case PANINI$TERMINATE:",
-                "    panini$terminate();",
-                "    terminate = true;",
+                "    panini$onTerminate();",
+                "    terminated = true;",
                 "    break;",
                 "}"));
         return lines;
@@ -409,7 +407,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
         List<String> src = Source.lines(
                 "@Override",
-                "protected void panini$terminate() {",
+                "protected void panini$onTerminate() {",
                 "    ##",
                 "}",
                 "");

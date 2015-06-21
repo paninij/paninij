@@ -305,7 +305,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     /**
      * Send a PANINI$CLOSE_LINK message to all reference capsules
      */
-    protected void panini$terminate() {
+    protected void panini$onTerminate() {
         // Do nothing.
     }
 
