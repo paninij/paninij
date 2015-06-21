@@ -118,7 +118,7 @@ public class CapsuleTestFactory
                 "@Test",
                 "public void panini$test#0() throws Throwable {",
                 "    Panini$Message test_msg = new SimpleMessage(#0);",
-                "    Panini$Message exit_msg = new SimpleMessage(Capsule$Thread.PANINI$SHUTDOWN);",
+                "    Panini$Message exit_msg = new SimpleMessage(Capsule$Thread.PANINI$TERMINATE);",
                 "",
                 "    #1$Thread capsule = new #1$Thread();",
                 "    capsule.panini$push(test_msg);",

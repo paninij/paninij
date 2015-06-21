@@ -26,14 +26,14 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     protected Thread panini$thread;
     protected volatile Object[] panini$queue;
     protected volatile int panini$head, panini$tail, panini$size;
-    public volatile int panini$refCount;
+    protected volatile int panini$links;
 
     protected final ReentrantLock panini$queueLock;
-    
+
     protected final Panini$ErrorQueue panini$errors;
 
-    public static final int PANINI$SHUTDOWN = -1;
-    public static final int PANINI$EXIT = -2;
+    public static final int PANINI$CLOSE_LINK = -1;
+    public static final int PANINI$TERMINATE = -2;
 
 
     protected Capsule$Thread()
@@ -42,7 +42,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         panini$head = 0;
         panini$tail = 0;
         panini$size = 0;
-        panini$refCount = 0;
+        panini$links = 0;
         panini$queueLock = new ReentrantLock();
         panini$errors = new Panini$ErrorQueue();
     }
@@ -154,22 +154,6 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         }
     }
 
-
-    /**
-     * Causes the current capsule to disconnect from its parent. On disconnecting from all its
-     * parents, a terminate call is made to shutdown the capsule running thread. This is part of
-     * automatic garbage collection of capsules.
-     */
-    @Override
-    public final synchronized void panini$shutdown()
-    {
-        panini$refCount--;
-        if (panini$refCount == 0) {
-            panini$push(new SimpleMessage(PANINI$SHUTDOWN));
-        }
-    }
-
-
     /**
      * Causes the current capsule to immediately cease execution.
      *
@@ -180,13 +164,13 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      *
      * @throws SecurityException if the client capsule is not allowed to access this capsule.
      */
-    @Override
-    public final void panini$exit()
-    {
-        panini$thread.checkAccess();
-        Panini$Message msg = new SimpleMessage(PANINI$EXIT);
-        panini$push(msg);
-    }
+//    @Override
+//    public final void panini$exit()
+//    {
+//        panini$thread.checkAccess();
+//        Panini$Message msg = new SimpleMessage(PANINI$TERMINATE);
+//        panini$push(msg);
+//    }
 
     /**
      * Pushes a single object on this capsule's queue.
@@ -317,7 +301,15 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     protected void panini$initState() {
         // Do nothing.
     }
-    
+
+    /**
+     * Send a PANINI$CLOSE_LINK message to all reference capsules
+     */
+    protected void panini$terminate() {
+        // Do nothing.
+    }
+
+
     /**
      * Returns an Object which can be explored to find all the state contained within the capsule.
      */
@@ -325,7 +317,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         // Do nothing.
         return null;
     }
-    
+
     @Override
     public void panini$start()
     {
@@ -343,11 +335,26 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
             } catch (InterruptedException e) { /* Do nothing: try again to join indefinitely. */ }
         }
     }
-   
+
+    @Override
+    public void panini$openLink() {
+        panini$links++;
+    }
+
+    @Override
+    public void panini$closeLink() {
+        panini$push(new SimpleMessage(PANINI$CLOSE_LINK));
+    }
+
+    protected void panini$onCloseLink() {
+        panini$links--;
+        if (panini$links == 0) panini$push(new SimpleMessage(PANINI$TERMINATE));
+    }
+
     public Throwable panini$pollErrors() {
         return panini$errors.poll();
     }
-    
+
     public Throwable panini$pollErrors(long timeout, TimeUnit unit)
     {
         try {
