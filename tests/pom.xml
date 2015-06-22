@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -8,28 +8,24 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>examples</artifactId>
+  <artifactId>tests</artifactId>
   <packaging>jar</packaging>
-  <name>@PaniniJ Examples</name>
+
+  <name>@PaniniJ Tests</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <generatedSourcesDirectory>
-            ${project.build.directory}/generated-sources
-          </generatedSourcesDirectory>
-          <compilerArgs>
-            <!-- <arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg> -->
-            <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg>
-          </compilerArgs>
+          <generatedTestSourcesDirectory>
+            ${project.build.directory}/generated-test-sources
+          </generatedTestSourcesDirectory>
         </configuration>
       </plugin>
     </plugins>
@@ -39,11 +35,17 @@
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>code-gen</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>runtime</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>

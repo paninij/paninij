@@ -4,23 +4,38 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.paninij</groupId>
-  <artifactId>paninij</artifactId>
+  <artifactId>at-paninij</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>PaniniJ</name>
+  <name>@PaniniJ</name>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.3</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.6.1</version>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
   </build>
 
   <properties>
@@ -28,27 +43,53 @@
   </properties>
 
   <modules>
-    <module>capsule-generation</module>
+    <module>code-gen</module>
+    <module>runtime</module>
+    <module>tests</module>
     <module>examples</module>
+    <module>benchmarks</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
+
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>capsule-generation</artifactId>
+        <artifactId>code-gen</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>runtime</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>tests</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>examples</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
+
       <dependency>
         <groupId>me.dwtj</groupId>
         <artifactId>object-graph-explorer</artifactId>
         <version>0.2-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
+
 </project>
