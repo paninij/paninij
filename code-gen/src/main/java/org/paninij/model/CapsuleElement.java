@@ -77,14 +77,14 @@ public class CapsuleElement implements Capsule
 
     @Override
     public List<Variable> getChildren() {
-        return this.children;
+        return new ArrayList<Variable>(this.children);
     }
 
     @Override
     public List<Variable> getWired() {
-        return this.wired;
+        return new ArrayList<Variable>(this.wired);
     }
-    
+
     @Override
     public List<Variable> getState() {
         return this.state;
@@ -97,7 +97,7 @@ public class CapsuleElement implements Capsule
     public void addWired(Variable v) {
         this.wired.add(v);
     }
-    
+
     public void addState(Variable v) {
         this.state.add(v);
     }
