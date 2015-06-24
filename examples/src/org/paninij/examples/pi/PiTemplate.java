@@ -40,8 +40,6 @@ public class PiTemplate
     @Child Worker[] workers = new Worker[WORKER_COUNT];
 
     public void run() {
-        double start = System.currentTimeMillis();
-
         Number[] results = new Number[WORKER_COUNT];
 
         double total = 0;
@@ -56,9 +54,5 @@ public class PiTemplate
 
 
         double pi = 4.0 * total / SAMPLE_SIZE;
-        double end = System.currentTimeMillis();
-
-        System.out.println("Pi : " + pi);
-        System.out.println("(at-paninij) Time to compute Pi using " + SAMPLE_SIZE + " samples was: " + (end - start) + "ms.");
     }
 }
