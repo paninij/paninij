@@ -65,7 +65,7 @@ public class PaniniProcessor extends AbstractProcessor
 {
     // Annotation processor options (i.e. `-A` arguments):
     public static Panini$Ownership.CheckMethod ownershipCheckMethod;
-    
+
     RoundEnvironment roundEnv;
 
     @Override
@@ -80,7 +80,7 @@ public class PaniniProcessor extends AbstractProcessor
         note("Annotation Processor Options: " + options);
         initOwnershipCheckMethod(options);
     }
-    
+
     protected void initOwnershipCheckMethod(Map<String, String> options)
     {
         String opt = options.get(Panini$Ownership.CheckMethod.getArgumentKey());

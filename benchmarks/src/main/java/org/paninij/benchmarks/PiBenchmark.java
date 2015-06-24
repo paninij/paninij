@@ -32,13 +32,13 @@
 package org.paninij.benchmarks;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.paninij.examples.pi.Pi$Thread;
 
-public class MyBenchmark {
+public class PiBenchmark {
 
     @Benchmark
-    public void testMethod() {
-        // This is a demo/sample template for building your JMH benchmarks. Edit as needed.
-        // Put your benchmark code here.
+    public void runAtPi() {
+        Pi$Thread.main(null);
     }
 
 }
