@@ -87,7 +87,7 @@ public class CapsuleElement implements Capsule
 
     @Override
     public List<Variable> getState() {
-        return this.state;
+        return new ArrayList<Variable>(this.state);
     }
 
     public void addChild(Variable v) {
@@ -170,12 +170,17 @@ public class CapsuleElement implements Capsule
     public void addExecutable(ExecutableElement e) {
         if (PaniniModelInfo.isProcedure(e)) {
             this.procedures.add(new ProcedureElement(e));
-        } else if (e.getSimpleName().toString().equals("init")) {
-            this.hasInitDecl = true;
-        } else if (e.getSimpleName().toString().equals("run")) {
-            this.hasRunDecl = true;
-        } else if (e.getSimpleName().toString().equals("design")) {
-            this.hasDesignDecl = true;
+        } else {
+            String name = e.getSimpleName().toString();
+
+            if (name.equals("init")) {
+                this.hasInitDecl = true;
+            } else if (name.equals("run")) {
+                this.hasRunDecl = true;
+            } else if (name.equals("design")) {
+                this.hasDesignDecl = true;
+            }
+
         }
     }
 
