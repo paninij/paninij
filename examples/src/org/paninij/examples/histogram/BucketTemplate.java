@@ -21,6 +21,10 @@ package org.paninij.examples.histogram;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
+/**
+ * Each Bucket holds the count for an ascii character.
+ * Buckets also require a Printer capsule.
+ */
 @Capsule public class BucketTemplate
 {
     @Wired Printer p;
