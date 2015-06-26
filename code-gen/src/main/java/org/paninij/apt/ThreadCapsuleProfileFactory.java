@@ -64,6 +64,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "package #0;",
                 "",
                 "##",
+                "",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "public class #1 extends Capsule$Thread implements #2",
                 "{",
@@ -311,7 +312,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                                         "{",
                                         "    Object[] state = {#0};",
                                         "    return state;",
-                                        "}");
+                                        "}",
+                                        "");
 
         return Source.formatAll(src, String.join(", ", states));
     }
@@ -355,7 +357,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "    } catch (Throwable thrown) {",
                 "        panini$errors.add(thrown);",
                 "    }",
-                "}");
+                "}",
+                "");
 
         return Source.formatAlignedFirst(src, generateRunSwitch());
     }

@@ -108,7 +108,7 @@ public abstract class CapsuleProfileFactory
         declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
         return declaration;
     }
-    
+
     String generateAssertSafeInvocationTransfer()
     {
         return Source.format("assert Panini$Ownership.#0.isSafeTransfer(#1, #2): #3",
