@@ -155,24 +155,6 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     }
 
     /**
-     * Causes the current capsule to immediately cease execution.
-     *
-     * Shutdown is allowed only if the client capsule has permission to modify this capsule.
-     *
-     * If there is a security manager, its checkAccess method is called with this capsule as its
-     * argument. This may result in throwing a SecurityException.
-     *
-     * @throws SecurityException if the client capsule is not allowed to access this capsule.
-     */
-//    @Override
-//    public final void panini$exit()
-//    {
-//        panini$thread.checkAccess();
-//        Panini$Message msg = new SimpleMessage(PANINI$TERMINATE);
-//        panini$push(msg);
-//    }
-
-    /**
      * Pushes a single object on this capsule's queue.
      *
      * @param o Object to be stored.

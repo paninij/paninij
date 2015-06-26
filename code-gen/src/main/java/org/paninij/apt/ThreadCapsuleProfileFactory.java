@@ -387,7 +387,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         return lines;
     }
 
-    private List<String> generateTerminate() {
+    private List<String> generateOnTerminate() {
         List<String> shutdowns = new ArrayList<String>();
         List<Variable> references = new ArrayList<Variable>();
 
@@ -550,7 +550,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         src.addAll(this.generateWire());
         src.addAll(this.generateInitChildren());
         src.addAll(this.generateInitState());
-        src.addAll(this.generateTerminate());
+        src.addAll(this.generateOnTerminate());
         src.addAll(this.generateGetAllState());
         src.addAll(this.generateRun());
         src.addAll(this.generateMain());
