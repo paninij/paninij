@@ -7,7 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>code-gen</artifactId>
+  <artifactId>at-paninij-code-gen</artifactId>
   <name>@PaniniJ Code Generation</name>
 
   <properties>
@@ -29,7 +29,7 @@
   <dependencies>
     <dependency>
       <groupId>org.paninij</groupId>
-      <artifactId>runtime</artifactId>
+      <artifactId>at-paninij-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>runtime</artifactId>
+  <artifactId>at-paninij-runtime</artifactId>
   <packaging>jar</packaging>
 
   <name>@PaniniJ Runtime</name>
