@@ -9,7 +9,7 @@
   
   <modules>
     <module>at-paninij-benchmarks-savina</module>
-    <module>at-paninij-benchmarks-harness</module>
+    <module>at-paninij-benchmarks-jmh-harness</module>
     <module>at-paninij-benchmarks-savina-harness</module>
   </modules>
   

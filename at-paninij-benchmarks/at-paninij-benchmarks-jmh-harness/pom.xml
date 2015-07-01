@@ -39,7 +39,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
       <version>0.0.1-SNAPSHOT</version>
     </parent>
     
-    <artifactId>at-paninij-benchmarks-harness</artifactId>
+    <artifactId>at-paninij-benchmarks-jmh-harness</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
