@@ -43,11 +43,9 @@
   </properties>
 
   <modules>
-    <module>code-gen</module>
-    <module>runtime</module>
-    <module>tests</module>
-    <module>examples</module>
-    <module>benchmarks</module>
+    <module>at-paninij-code-gen</module>
+    <module>at-paninij-runtime</module>
+    <module>at-paninij-tests</module>
   </modules>
 
   <dependencyManagement>
@@ -55,25 +53,19 @@
 
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>code-gen</artifactId>
+        <artifactId>at-paninij-code-gen</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>runtime</artifactId>
+        <artifactId>at-paninij-runtime</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>tests</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.paninij</groupId>
-        <artifactId>examples</artifactId>
+        <artifactId>at-paninij-tests</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
 
