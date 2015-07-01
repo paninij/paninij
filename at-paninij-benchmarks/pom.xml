@@ -5,7 +5,7 @@
   <artifactId>at-paninij-benchmarks</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Benchmarks for @PaniniJ</name>
+  <name>@PaniniJ Benchmarks and Benchmark Harnesses</name>
   
   <modules>
     <module>at-paninij-benchmarks-savina</module>
