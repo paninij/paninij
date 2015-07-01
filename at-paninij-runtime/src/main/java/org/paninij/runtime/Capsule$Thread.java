@@ -139,7 +139,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      * @throws IllegalArgumentException If the value of millis is negative
      *
      */
-    public void panini$yield(long millis)
+    public void yield(long millis)
     {
         if (millis < 0) {
             throw new IllegalArgumentException();
@@ -152,6 +152,12 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
             e.printStackTrace();
             // TODO: What should be the semantics here?
         }
+    }
+
+    @Override
+    public void exit() {
+        // TODO ???
+        this.panini$closeLink();
     }
 
     /**
