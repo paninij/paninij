@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>org.paninij</groupId>
+  <artifactId>at-paninij-benchmarks</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Benchmarks for @PaniniJ</name>
+  
+  <modules>
+    <module>at-paninij-benchmarks-savina</module>
+    <module>at-paninij-benchmarks-harness</module>
+    <module>at-paninij-benchmarks-savina-harness</module>
+  </modules>
+  
+  <dependencyManagement>
+    <dependencies>
+    
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>at-paninij-code-gen</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>at-paninij-runtime</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>edu.rice.habanero</groupId>
+        <artifactId>savina</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      
+    </dependencies>
+  </dependencyManagement>
+  
+</project>
