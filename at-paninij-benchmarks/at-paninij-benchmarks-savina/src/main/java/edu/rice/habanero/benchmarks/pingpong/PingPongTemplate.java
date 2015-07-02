@@ -7,20 +7,22 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
 @Capsule
-public class DriverTemplate
+public class PingPongTemplate
 {
     @Child Ping ping;
     @Child Pong pong;
 
-    public void design(Driver self) {
+    public void design(PingPong self) {
         ping.wire(pong);
         pong.wire(ping);
     }
 
     public void run() {
         FlagFuture f = ping.start();
-        while (!f.isDone()) {
-            // wait
+        try {
+            f.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
     }
 }

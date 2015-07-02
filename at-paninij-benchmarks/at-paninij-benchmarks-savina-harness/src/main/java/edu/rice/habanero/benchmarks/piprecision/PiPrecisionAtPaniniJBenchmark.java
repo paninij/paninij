@@ -1,13 +1,13 @@
-package edu.rice.habanero.benchmarks.pingpong;
+package edu.rice.habanero.benchmarks.piprecision;
 
 import java.io.IOException;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
-public class PingPongAtPaniniJBenchmark
+public class PiPrecisionAtPaniniJBenchmark
 {
-    static class PingPongAtPaniniJ extends Benchmark {
+    static class PiPrecisionAtPaniniJ extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -21,16 +21,16 @@ public class PingPongAtPaniniJBenchmark
 
         @Override
         public void printArgInfo() {
-            // TODO Auto-generated method stub
+            PiPrecisionConfig.printArgs();
         }
 
         @Override
         public void runIteration() {
-            PingPong$Thread.main(null);
+            PiPrecision$Thread.main(null);
         }
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new PingPongAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new PiPrecisionAtPaniniJ());
     }
 }

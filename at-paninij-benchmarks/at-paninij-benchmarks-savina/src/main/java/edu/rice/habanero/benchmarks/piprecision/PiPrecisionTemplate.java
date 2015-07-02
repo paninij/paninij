@@ -1,23 +1,27 @@
 package edu.rice.habanero.benchmarks.piprecision;
 
+import java.util.concurrent.ExecutionException;
+
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
 import edu.rice.habanero.benchmarks.pingpong.FlagFuture;
 
-@Capsule public class MasterTemplate {
+@Capsule public class PiPrecisionTemplate {
     @Child Delegator d;
     @Child Worker[] workers = new Worker[PiPrecisionConfig.NUM_WORKERS];
 
-    public void design(Master self) {
+    public void design(PiPrecision self) {
         d.wire(workers);
         for (Worker w : workers) w.wire(d);
     }
 
     public void run() {
         FlagFuture f = d.start();
-        while (!f.isDone()) {
-            // wait
+        try {
+            f.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
     }
 
