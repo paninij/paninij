@@ -39,15 +39,15 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
     @Override
     protected void setupIgnoredFields()
     {
-        // TODO Auto-generated method stub
-        
+        // TODO: Everything
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     protected boolean isIgnoredField(IField field)
     {
-        // TODO Auto-generated method stub
-        return false;
+        // TODO: Everything
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -74,26 +74,42 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
         }
     }
 
+    /**
+     * This returns true if the given call graph node may invoke procedures on another capsule.
+     */
     @Override
     protected boolean isNodeConsideredForMessageInvocations(CGNode cgNode)
     {
-        // TODO Auto-generated method stub
-        return false;
+        // Consider only those call graph nodes which are methods of the template being analyzed.
+        IClass declaringClass = cgNode.getMethod().getDeclaringClass();
+        return declaringClass.equals(templateClass);
     }
 
+    /**
+     * This method returns the number of arguments in the method given method if `methodReference`
+     * is an invocation of a remote procedure when called from the template being analyzed.
+     * Otherwise, whenever `methodReference` wouldn't be called as a remote procedure, -1 is
+     * returned.
+     */
     @Override
     protected int getMessageArgumentsIndex(MethodReference methodReference)
     {
-        // TODO Auto-generated method stub
-        return 0;
+        IMethod resolved = classHierarchy.resolveMethod(methodReference);
+
+        if (isRemoteProcedure(templateClass, resolved)) {
+            return resolved.getNumberOfParameters();
+        } else {
+            return -1;
+        }
     }
 
     @Override
     protected void addMessageInvocationArguments(MessageInvocation messageInvocation,
-            int messagePassingIndex, int passedPointerValueNumber)
+                                                 int messagePassingIndex,
+                                                 int passedPointerValueNumber)
     {
-        // TODO Auto-generated method stub
-        
+        // TODO: Everything
+        throw new UnsupportedOperationException("TODO");
     }
      
     protected TypeReference getTemplateTypeReference()
