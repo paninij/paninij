@@ -89,8 +89,8 @@ public class Main
                 logger.info(results);
             }
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        catch (Throwable ex) {
+            logger.severe(ex.toString());
             throw ex;
         }
     }

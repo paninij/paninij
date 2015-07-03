@@ -14,6 +14,7 @@ import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
+import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
@@ -56,19 +57,20 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
         if (templateIsActive(getTemplateClass()))
         {
             // If active, then the only entrypoint is `run()`.
-            IMethod runDecl = getRelevantTemplateMethods().stream()
-                                                          .filter(m -> isRunDecl(m))
-                                                          .findFirst()
-                                                          .get();
-            throw new UnsupportedOperationException("TODO");
+            IMethod runDecl = getRelevantTemplateMethods()
+                                .stream()
+                                .filter(m -> isRunDecl(m))
+                                .findFirst()
+                                .get();
+            entrypoints.add(new DefaultEntrypoint(runDecl, classHierarchy));
         }
         else
         {
             // If passive, then every procedure is an entrypoint.
-            List<IMethod> procedures = getRelevantTemplateMethods().stream()
-                                                                   .filter(m -> isProcedure(m))
-                                                                   .collect(toList());
-            throw new UnsupportedOperationException("TODO");
+            getRelevantTemplateMethods()
+                .stream()
+                .filter(m -> isProcedure(m))
+                .forEach(p -> entrypoints.add(new DefaultEntrypoint(p, classHierarchy)));
         }
     }
 
