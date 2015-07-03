@@ -19,7 +19,6 @@ import com.ibm.wala.types.TypeReference;
 
 import edu.illinois.soter.analysis.OwnershipTransferAnalysis;
 import edu.illinois.soter.messagedata.MessageInvocation;
-
 import static org.paninij.soter.PaniniModel.*;
 
 public class PaniniAnalysis extends OwnershipTransferAnalysis
@@ -56,12 +55,19 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
         // How `entrypoints` is populated depends upon whether the capsule is active or passive.
         if (templateIsActive(getTemplateClass()))
         {
-            // If active, then the only entrypoint is `run()`
+            // If active, then the only entrypoint is `run()`.
+            IMethod runDecl = getRelevantTemplateMethods().stream()
+                                                          .filter(m -> isRunDecl(m))
+                                                          .findFirst()
+                                                          .get();
             throw new UnsupportedOperationException("TODO");
         }
         else
         {
             // If passive, then every procedure is an entrypoint.
+            List<IMethod> procedures = getRelevantTemplateMethods().stream()
+                                                                   .filter(m -> isProcedure(m))
+                                                                   .collect(toList());
             throw new UnsupportedOperationException("TODO");
         }
     }

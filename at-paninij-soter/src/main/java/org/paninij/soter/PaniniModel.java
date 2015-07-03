@@ -18,7 +18,7 @@ public class PaniniModel
         return clazz.getAllMethods()
                     .stream()
                     .filter(m ->isRelevantTemplateMethod(m))
-                    .anyMatch(m -> isRunMethod(m));
+                    .anyMatch(m -> isRunDecl(m));
     }
     
     public static boolean isRelevantTemplateMethod(IMethod method)
@@ -29,13 +29,14 @@ public class PaniniModel
     
     public static boolean isProcedure(IMethod method)
     {
-        return isCapsuleDecl(method) == false;
+        return method.isPrivate() == false     // A capsule's private methods are not procedures.
+            && isCapsuleDecl(method) == false;
     }
     
     public static boolean isCapsuleDecl(IMethod method) {
         return isInitDecl(method)
             || isDesignDecl(method)
-            || isRunMethod(method);
+            || isRunDecl(method);
     }
     
     public static boolean isInitDecl(IMethod method)
@@ -48,7 +49,7 @@ public class PaniniModel
         return isNamed(method, "design");
     }
 
-    public static boolean isRunMethod(IMethod method)
+    public static boolean isRunDecl(IMethod method)
     {
         return isNamed(method, "run")
             && method.getReturnType().equals(TypeReference.Void)
