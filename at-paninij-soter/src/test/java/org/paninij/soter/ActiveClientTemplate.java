@@ -10,6 +10,7 @@ public class ActiveClientTemplate
 
     public void run()
     {
+        @SuppressWarnings("unused")
         Secret s = server.getSecret();
     }
 }

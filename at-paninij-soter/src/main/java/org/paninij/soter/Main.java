@@ -1,25 +1,13 @@
 package org.paninij.soter;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
-import edu.illinois.soter.messagedata.MessageArgument;
-import edu.illinois.soter.messagedata.MessageInvocation;
 
-import com.ibm.wala.classLoader.CallSiteReference;
-import com.ibm.wala.classLoader.IClass;
-import com.ibm.wala.classLoader.IField;
-import com.ibm.wala.classLoader.IMethod;
-import com.ibm.wala.ipa.callgraph.CGNode;
-import com.ibm.wala.util.CancelException;
-import com.ibm.wala.util.WalaException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
