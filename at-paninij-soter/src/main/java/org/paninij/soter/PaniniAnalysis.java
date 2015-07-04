@@ -14,11 +14,11 @@ import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
-import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
 import edu.illinois.soter.analysis.OwnershipTransferAnalysis;
+import edu.illinois.soter.analysis.actorfoundry.SingleInstanceEntrypoint;
 import edu.illinois.soter.messagedata.MessageInvocation;
 import static org.paninij.soter.PaniniModel.*;
 
@@ -62,7 +62,7 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
                                 .filter(m -> isRunDecl(m))
                                 .findFirst()
                                 .get();
-            entrypoints.add(new DefaultEntrypoint(runDecl, classHierarchy));
+            entrypoints.add(new SingleInstanceEntrypoint(templateClass, runDecl, classHierarchy));
         }
         else
         {
@@ -70,7 +70,8 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
             getRelevantTemplateMethods()
                 .stream()
                 .filter(m -> isProcedure(m))
-                .forEach(p -> entrypoints.add(new DefaultEntrypoint(p, classHierarchy)));
+                .forEach(p -> entrypoints.add(new SingleInstanceEntrypoint(templateClass, p,
+                                                                           classHierarchy)));
         }
     }
 
