@@ -71,7 +71,9 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
     }
 
     /**
-     * This returns true if the given call graph node may invoke procedures on another capsule.
+     * This returns true if the given call graph node might invoke procedures on another capsule
+     * (i.e. `cgNode` represents a method on `templateClass` which might invoke a procedure on some
+     * remote capsule).
      */
     @Override
     protected boolean isNodeConsideredForMessageInvocations(CGNode cgNode)
