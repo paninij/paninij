@@ -15,6 +15,10 @@ public class LeakyServerTemplate
         // Nothing to do.
     }
     
+    public void giveSecret(Secret s) {
+        // Nothing to do.
+    }
+ 
     public Secret getSecret() {
         return serverSecret;
     }

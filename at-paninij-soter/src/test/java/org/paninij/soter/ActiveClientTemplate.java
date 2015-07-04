@@ -7,10 +7,14 @@ import org.paninij.lang.Child;
 public class ActiveClientTemplate
 {
     @Child LeakyServer server;
+    Secret secret;
+    Integer integer;
 
     public void run()
     {
         @SuppressWarnings("unused")
-        Secret s = server.getSecret();
+        Secret s = server.getSecret();  // Unsafe
+        server.giveInteger(integer);    // Safe
+        server.giveSecret(secret);      // Unsafe
     }
 }

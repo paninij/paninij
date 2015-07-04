@@ -3,13 +3,19 @@ package org.paninij.soter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.ibm.wala.classLoader.CallSiteReference;
+import com.ibm.wala.ipa.callgraph.CGNode;
+
+import edu.illinois.soter.messagedata.MessageInvocation;
 
 /**
  * 
@@ -82,11 +88,7 @@ public class Main
         try
         {
             for (PaniniAnalysis a : analyses) {
-                a.perform();
-            }
-            List<String> resultsList = analyses.stream().map(a -> a.getResultString()).collect(toList());
-            for (String results : resultsList) {
-                logger.info(results);
+                showAnalysisResults(a.perform());
             }
         }
         catch (Throwable ex) {
@@ -94,4 +96,14 @@ public class Main
             throw ex;
         }
     }
+    
+    private static void showAnalysisResults(Map<CGNode, Map<CallSiteReference, MessageInvocation>> messageInvocations)
+    {
+        for (Entry<CGNode, Map<CallSiteReference, MessageInvocation>> mapEntry : messageInvocations.entrySet()) {
+            for (MessageInvocation messageInvocation : mapEntry.getValue().values()) {
+                logger.info(messageInvocation.toString());
+            }
+        }
+    }
+
 }
