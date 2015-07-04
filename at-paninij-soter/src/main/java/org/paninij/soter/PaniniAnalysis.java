@@ -39,15 +39,14 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
     @Override
     protected void setupIgnoredFields()
     {
-        // TODO: Everything
-        throw new UnsupportedOperationException("TODO");
+        // Nothing to do, since no template fields (i.e. states) should be ignored.
     }
 
     @Override
     protected boolean isIgnoredField(IField field)
     {
-        // TODO: Everything
-        throw new UnsupportedOperationException("TODO");
+        // Never ignore, since no template fields (i.e. states) should be ignored.
+        return false;
     }
 
     @Override
@@ -97,7 +96,8 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
     {
         IMethod resolved = classHierarchy.resolveMethod(methodReference);
 
-        if (isRemoteProcedure(templateClass, resolved)) {
+        // TODO: What does it mean for `resolved` to return `null`?
+        if (resolved != null && isRemoteProcedure(templateClass, resolved)) {
             return resolved.getNumberOfParameters();
         } else {
             return -1;
