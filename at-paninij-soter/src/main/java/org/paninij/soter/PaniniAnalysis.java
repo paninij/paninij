@@ -1,12 +1,10 @@
 package org.paninij.soter;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
-
-import static java.util.stream.Collectors.toList;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
@@ -32,6 +30,10 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
     
     public PaniniAnalysis(String templateName, String classpath)
     {
+        // Note: Ideally, the `templateClass` would be initialized in the constructor, but this
+        // is not possible, since at construction time, the WALA classloader is not yet available.
+        // The order-dependent lazy evaluation in `OwnershipTransferAnalysis` seems like a design
+        // bug.
         super("Lorg/paninij/runtime/Panini$Capsule", classpath);
         this.templateName = templateName;
     }
@@ -52,25 +54,19 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
     @Override
     protected void populateEntrypoints(Set<Entrypoint> entrypoints)
     {
-        // How `entrypoints` is populated depends upon whether the capsule is active or passive.
-        if (templateIsActive(getTemplateClass()))
-        {
-            // If active, then the only entrypoint is `run()`.
-            IMethod runDecl = getRelevantTemplateMethods()
-                                .stream()
-                                .filter(m -> isRunDecl(m))
-                                .findFirst()
-                                .get();
-            entrypoints.add(new SingleInstanceEntrypoint(templateClass, runDecl, classHierarchy));
-        }
-        else
-        {
-            // If passive, then every procedure is an entrypoint.
-            getRelevantTemplateMethods()
-                .stream()
-                .filter(m -> isProcedure(m))
-                .forEach(p -> entrypoints.add(new SingleInstanceEntrypoint(templateClass, p,
-                                                                           classHierarchy)));
+        initTemplateClass();  // Note: The first point at which `templateClass` can be initialized.
+
+        IMethod runDecl = getRunDecl(templateClass);
+        Consumer<IMethod> addEntrypoint =
+            (m -> entrypoints.add(new SingleInstanceEntrypoint(templateClass, m, classHierarchy)));
+
+        // The way in which `entrypoints` is populated depends on whether the capsule template 
+        // defines an active or passive capsule. If active, then the only entrypoint is `run()`.
+        // If passive, then every procedure is an entrypoint.
+        if (runDecl != null) {
+            addEntrypoint.accept(runDecl); }
+        else {
+            getTemplateProcedures(templateClass).forEach(addEntrypoint);
         }
     }
 
@@ -86,19 +82,22 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
     }
 
     /**
-     * This method returns the number of arguments in the method given method if `methodReference`
-     * is an invocation of a remote procedure when called from the template being analyzed.
-     * Otherwise, whenever `methodReference` wouldn't be called as a remote procedure, -1 is
-     * returned.
+     * This method returns the number of arguments in the given method *if* `methodReference` is an
+     * invocation of a remote procedure when called from the template being analyzed. Otherwise,
+     * when `methodReference` wouldn't be called as a remote procedure, -1 is returned.
      */
     @Override
     protected int getMessageArgumentsIndex(MethodReference methodReference)
     {
-        IMethod resolved = classHierarchy.resolveMethod(methodReference);
+        // A method reference is assumed to be a remote procedure call whenever the reference to
+        // the receiver is a capsule interface.
+        // TODO: Is this too brittle?
 
-        // TODO: What does it mean for `resolved` to return `null`?
-        if (resolved != null && isRemoteProcedure(templateClass, resolved)) {
-            return resolved.getNumberOfParameters();
+        TypeReference receiverReference = methodReference.getDeclaringClass();
+        IClass receiverClass = classHierarchy.lookupClass(receiverReference);
+
+        if (isCapsuleInterface(receiverClass)) {
+            return methodReference.getNumberOfParameters();
         } else {
             return -1;
         }
@@ -121,7 +120,11 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
         return templateTypeReference;
     }
     
-    protected IClass getTemplateClass()
+    /**
+     * Expects that the analysis has already been initialized (or at least that `classHierarchy` is
+     * non-null).
+     */
+    protected void initTemplateClass()
     {
         if (templateClass == null)
         {
@@ -131,19 +134,8 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
                 throw new IllegalArgumentException(msg);
             }
         }
-        return templateClass;
     }
     
-   
-    protected List<IMethod> getRelevantTemplateMethods()
-    {
-        return getTemplateClass()
-                 .getAllMethods()
-                 .stream()
-                 .filter(m -> isRelevantTemplateMethod(m))
-                 .collect(toList());
-    }
-   
    
     public String getResultString()
     {
