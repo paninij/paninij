@@ -159,6 +159,10 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
                 {
                     PointerKey ptr = heapModel.getPointerKeyForLocal(cgNode, passedPointerValueNumber);
                     Set<Object> reaching = computeTransitiveClosureOfPointedItems(ptr);
+                    // TODO: Why doesn't the transitive closure work at all. It doesn't even include
+                    // `ptr` itself!
+                    // WARNING: Here's an attempted workaround for debugging, add `ptr` manually:
+                    reaching.add(basicHeapGraph.getNode(basicHeapGraph.getNumber(ptr)));
                     messageInvocation.addFirstArgument(idx, reaching);
                     return;
                 }
