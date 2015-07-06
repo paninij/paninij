@@ -110,6 +110,10 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
 
         TypeReference receiverReference = methodReference.getDeclaringClass();
         IClass receiverClass = classHierarchy.lookupClass(receiverReference);
+        if (receiverClass == null) {
+            String msg = "Failed to lookup class of given `MethodReference`: " + methodReference;
+            throw new IllegalArgumentException(msg);
+        }
 
         if (isCapsuleInterface(receiverClass))
         {
@@ -154,7 +158,8 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
                 if (instruction.getDef() == passedPointerValueNumber)
                 {
                     PointerKey ptr = heapModel.getPointerKeyForLocal(cgNode, passedPointerValueNumber);
-                    messageInvocation.addFirstArgument(idx, computeTransitiveClosureOfPointedItems(ptr));
+                    Set<Object> reaching = computeTransitiveClosureOfPointedItems(ptr);
+                    messageInvocation.addFirstArgument(idx, reaching);
                     return;
                 }
             }
