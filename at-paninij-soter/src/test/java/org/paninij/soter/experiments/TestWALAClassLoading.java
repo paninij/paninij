@@ -16,7 +16,7 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 
 public class TestWALAClassLoading
 {
-    private static final String CLASSPATH = "target/test-classes";
+    private static final String CLASSPATH = "target/classes:target/test-classes";
     private static final String NORMAL_PATH = "Lorg/paninij/soter/Secret";
     private static final String CAPSULE_TEMPLATE_PATH = "Lorg/paninij/soter/LeakyServerTemplate";
     private static final String CAPSULE_INTERFACE_PATH = "Lorg/paninij/soter/LeakyServer";

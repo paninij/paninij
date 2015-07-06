@@ -7,7 +7,7 @@ public class TestMain
     @Test
     public void testMainWithLeakyServer() throws Exception
     {
-        String[] args = {"-classpath", "target/test-classes",
+        String[] args = {"-classpath", "target/classes:target/test-classes",
                          "Lorg/paninij/soter/LeakyServerTemplate"};
         Main.main(args);
     }
@@ -15,7 +15,7 @@ public class TestMain
     @Test
     public void testMainWithActiveClient() throws Exception
     {
-        String[] args = {"-classpath", "target/test-classes",
+        String[] args = {"-classpath", "target/classes:target/test-classes",
                          "Lorg/paninij/soter/ActiveClientTemplate"};
         Main.main(args);
     }
