@@ -13,8 +13,9 @@ public class ActiveClientTemplate
     public void run()
     {
         @SuppressWarnings("unused")
-        Secret s = server.getSecret();  // Unsafe
-        server.giveInteger(integer);    // Safe
-        server.giveSecret(secret);      // Unsafe
+        Secret s = server.getSecret();      // Unsafe
+        server.giveInteger(integer);        // Safe
+        server.giveInteger(new Integer(7)); // Safe
+        server.giveSecret(secret);          // Unsafe
     }
 }
