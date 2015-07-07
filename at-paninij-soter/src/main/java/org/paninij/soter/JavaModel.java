@@ -1,7 +1,12 @@
 package org.paninij.soter;
 
+import java.util.Iterator;
+
 import com.ibm.wala.classLoader.IClass;
+import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.ipa.cha.ClassHierarchy;
+import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.annotations.Annotation;
 
 public class JavaModel
@@ -36,5 +41,11 @@ public class JavaModel
                                       .toString();
 
         return name.equals(actualName);
+    }
+    
+    public static Iterator<IClass> iterateAllApplicationClasses(ClassHierarchy cha)
+    {
+        IClassLoader appLoader = cha.getLoader(ClassLoaderReference.Application);
+        return appLoader.iterateAllClasses();
     }
 }
