@@ -36,18 +36,9 @@ public class NoisyPaniniZeroOneCFA extends PaniniZeroOneCFA
         super.init(classPath);
 
         logger.info("analysisScope: " + analysisScope);
-        logger.info("iterateAllApplicationClasses(classHierarchy):\n" + allApplicationClasses());
+        logger.info("allApplicationClasses(classHierarchy):\n"
+                      + JavaModel.allApplicationClasses(classHierarchy));
         logger.info("iClass: " + iClass);
         logger.info("entrypoints: " + entrypoints);
-    }
-    
-    private String allApplicationClasses()
-    {
-        StringBuilder appClasses = new StringBuilder();
-        Iterator<IClass> classIter = JavaModel.iterateAllApplicationClasses(classHierarchy);
-        while (classIter.hasNext()) {
-            appClasses.append(" " + classIter.next() + "\n");
-        }
-        return appClasses.toString();
     }
 }

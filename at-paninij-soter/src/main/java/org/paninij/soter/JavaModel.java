@@ -48,4 +48,14 @@ public class JavaModel
         IClassLoader appLoader = cha.getLoader(ClassLoaderReference.Application);
         return appLoader.iterateAllClasses();
     }
+    
+    public static String allApplicationClasses(ClassHierarchy cha)
+    {
+        StringBuilder appClasses = new StringBuilder();
+        Iterator<IClass> classIter = iterateAllApplicationClasses(cha);
+        while (classIter.hasNext()) {
+            appClasses.append(" " + classIter.next() + "\n");
+        }
+        return appClasses.toString();
+    }
 }
