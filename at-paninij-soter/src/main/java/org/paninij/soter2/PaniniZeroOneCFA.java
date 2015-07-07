@@ -33,7 +33,7 @@ import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.config.AnalysisScopeReader;
 
 
-public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
+public class PaniniZeroOneCFA extends ZeroOneCFA<InstanceKey>
 {
     public static final String DEFAULT_EXCLUSIONS_FILENAME = "Exclusions.txt";
     
@@ -44,9 +44,9 @@ public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
     protected Set<Entrypoint> entrypoints;
     
 
-    public static PaniniTemplateZeroOneCFA make(String name, String classPath) throws WalaException
+    public static PaniniZeroOneCFA make(String name, String classPath) throws WalaException
     {
-        PaniniTemplateZeroOneCFA analysis = new PaniniTemplateZeroOneCFA(name);
+        PaniniZeroOneCFA analysis = new PaniniZeroOneCFA(name);
         analysis.init(classPath);
         analysis.perform();
         return analysis;
@@ -57,7 +57,7 @@ public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
      * @param template The name of the template to be analyzed. Should be something of the form
      *                 `-Lorg/paninij/soter/FooTemplate`.
      */
-    public PaniniTemplateZeroOneCFA(String template) {
+    public PaniniZeroOneCFA(String template) {
         this.template = template;
     }
  
