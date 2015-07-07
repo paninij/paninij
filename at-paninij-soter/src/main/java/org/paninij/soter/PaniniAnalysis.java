@@ -11,6 +11,7 @@ import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ssa.SSAInstruction;
@@ -210,5 +211,10 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
             }
         }
         return buf.toString();
+    }
+    
+    
+    public CallGraph getCallGraph() {
+        return callGraph;
     }
 }
