@@ -37,7 +37,7 @@ public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
 {
     public static final String DEFAULT_EXCLUSIONS_FILENAME = "Exclusions.txt";
     
-    protected String name;
+    protected String template;
     protected AnalysisScope analysisScope;
     protected ClassHierarchy classHierarchy;
     protected IClass iClass;
@@ -53,12 +53,16 @@ public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
     }
     
 
-    public PaniniTemplateZeroOneCFA(String name) {
-        this.name = name;
+    /**
+     * @param template The name of the template to be analyzed. Should be something of the form
+     *                 `-Lorg/paninij/soter/FooTemplate`.
+     */
+    public PaniniTemplateZeroOneCFA(String template) {
+        this.template = template;
     }
  
 
-    protected void init(String classPath) throws WalaException
+    public void init(String classPath) throws WalaException
     {
         initAnalysisScope(classPath, DEFAULT_EXCLUSIONS_FILENAME);
         initClassHierarchy();
@@ -92,11 +96,11 @@ public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
     protected void initIClass()
     {
         ClassLoaderReference appLoaderRef = analysisScope.getApplicationLoader();
-		TypeReference typeRef = TypeReference.findOrCreate(appLoaderRef, name);
+		TypeReference typeRef = TypeReference.findOrCreate(appLoaderRef, template);
         this.iClass = classHierarchy.lookupClass(typeRef);
         if (this.iClass == null)
         {
-            String msg = "Initialization of a template's `IClass` failed: " + name;
+            String msg = "Initialization of a template's `IClass` failed: " + template;
             throw new IllegalArgumentException(msg);
         }
     }
@@ -104,22 +108,11 @@ public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
 
     protected void initEntrypoints()
     {
-        Consumer<IMethod> add = (m -> entrypoints.add(new DefaultEntrypoint(m, classHierarchy)));
         entrypoints = HashSetFactory.make();
-
-        // The way in which `entrypoints` is populated depends on whether the capsule template 
-        // defines an active or passive capsule. If active, then the only entrypoint is `run()`.
-        // If passive, then every procedure is an entrypoint.
-        IMethod runDecl = getRunDecl(iClass);
-        if (runDecl != null) {
-            add.accept(runDecl);
-        } else {
-            getTemplateProcedures(iClass).forEach(add);
-        }
+        addEntrypointsFromTemplate(iClass);
     }
     
     
-
     @Override
     @SuppressWarnings("unchecked")
     public void perform()
@@ -140,10 +133,24 @@ public class PaniniTemplateZeroOneCFA extends ZeroOneCFA<InstanceKey>
         }
         catch (CallGraphBuilderCancelException ex)
         {
-            String msg = "Call graph construction was unexpectedly cancelled: " + name;
+            String msg = "Call graph construction was unexpectedly cancelled: " + template;
             throw new IllegalArgumentException(msg);
         }
     }
     
 
+    private void addEntrypointsFromTemplate(IClass template)
+    {
+        final Consumer<IMethod> add = (m -> entrypoints.add(new DefaultEntrypoint(m, classHierarchy)));
+
+        // The way in which `entrypoints` is populated depends on whether the capsule template 
+        // defines an active or passive capsule. If active, then the only entrypoint is `run()`.
+        // If passive, then every procedure is an entrypoint.
+        IMethod runDecl = getRunDecl(iClass);
+        if (runDecl != null) {
+            add.accept(runDecl);
+        } else {
+            getTemplateProcedures(iClass).forEach(add);
+        }
+    }
 }
