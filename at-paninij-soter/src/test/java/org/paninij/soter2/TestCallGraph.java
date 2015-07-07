@@ -29,7 +29,7 @@ public class TestCallGraph
     private void makeCallGraph(String template, String classPath,
                                String callGraphPDF, String heapGraphPDF) throws Throwable
     {
-        PaniniZeroOneCFA cfa = PaniniZeroOneCFA.make(template, classPath);
+        PaniniZeroOneCFA cfa = NoisyPaniniZeroOneCFA.make(template, classPath);
         cfa.perform();
 
         Consumer<CallGraph> makeCallGraph = (cg -> WalaDebug.makeGraphFile(cg, callGraphPDF));
