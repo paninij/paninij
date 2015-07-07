@@ -1,12 +1,9 @@
 package edu.rice.habanero.benchmarks.fjcreate;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Future;
 
-@Capsule public class WorkerTemplate {
-
-    @Future
-    public void process() {
+@Capsule public class ForkJoinTemplate {
+    public void run() {
         ForkJoinConfig.performComputation(37.2);
     }
 }

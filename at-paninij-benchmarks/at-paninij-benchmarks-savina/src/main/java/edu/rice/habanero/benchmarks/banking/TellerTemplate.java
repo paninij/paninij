@@ -20,15 +20,11 @@ import org.paninij.lang.Wired;
         return flag;
     }
 
-    public void creditTransactionComplete(Transaction t) {
-        accounts[t.getDest()].debit(t);
-    }
-
-    public void debitTransactionComplete() {
+    public void transactionComplete() {
         numCompletedBankings++;
         if (numCompletedBankings == numBankings) {
+            for (Account a : accounts) a.done();
             flag.resolve();
-            for (Account a : accounts) a.exit();
         }
     }
 
@@ -44,7 +40,7 @@ import org.paninij.lang.Wired;
 
         double amount = Math.abs(randomGen.nextDouble() * 1000);
 
-        srcAccount.credit(new Transaction(srcAccountId, destAccountId, amount));
+        srcAccount.credit(amount, destAccountId);
     }
 
 }
