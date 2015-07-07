@@ -3,6 +3,7 @@ package edu.rice.habanero.benchmarks.pingpong;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 

@@ -1,4 +1,4 @@
-package edu.rice.habanero.benchmarks.pingpong;
+package org.paninij.benchmarks.savina.util;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

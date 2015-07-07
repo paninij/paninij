@@ -10,18 +10,19 @@ import org.paninij.lang.Child;
 
 @Capsule public class FjCreateTemplate {
 
-    @Child Worker[] workers = new Worker[ForkJoinConfig.N];
-
-    public void run() {
-        List<Future<Void>> tasks = new ArrayList<Future<Void>>();
-
-        for (Worker w : workers) tasks.add(w.process());
-
-        try {
-            for (Future<Void> f : tasks) f.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
+    // THIS BENCHMARK CREATES TOO MANY THREADS
+//    @Child Worker[] workers = new Worker[ForkJoinConfig.N];
+//
+//    public void run() {
+//        List<Future<Void>> tasks = new ArrayList<Future<Void>>();
+//
+//        for (Worker w : workers) tasks.add(w.process());
+//
+//        try {
+//            for (Future<Void> f : tasks) f.get();
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
