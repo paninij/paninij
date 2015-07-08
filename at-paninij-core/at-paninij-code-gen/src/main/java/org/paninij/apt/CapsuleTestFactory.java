@@ -115,7 +115,7 @@ public class CapsuleTestFactory
                 "    Panini$Message test_msg = new SimpleMessage(#1);",
                 "    Panini$Message exit_msg = new SimpleMessage(Capsule$Thread.PANINI$TERMINATE);",
                 "",
-                "    #2$Thread capsule = new #2$Thread();",
+                "    #2#3 capsule = new #2#3();",
                 "    capsule.panini$push(test_msg);",
                 "    capsule.panini$push(exit_msg);",
                 "    capsule.run();",
@@ -126,7 +126,10 @@ public class CapsuleTestFactory
                 "        throw thrown;",
                 "    }",
                 "}");
-        return Source.formatAll(src, procedure.getName(), testId, this.context.getSimpleName());
+        return Source.formatAll(src, procedure.getName(),
+                                     testId,
+                                     this.context.getSimpleName(),
+                                     ThreadCapsuleProfileFactory.CAPSULE_PROFILE_THREAD_SUFFIX);
     }
 
 }
