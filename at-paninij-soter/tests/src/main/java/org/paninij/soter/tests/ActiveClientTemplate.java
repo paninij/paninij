@@ -6,10 +6,10 @@ import org.paninij.lang.Child;
 @Capsule
 public class ActiveClientTemplate
 {
-    @Child LeakyServer server;
+    @Child LeakyServer server = new LeakyServer$Dummy();
     Secret secret;
     Integer integer;
-
+    
     public void run()
     {
         // Try sending message via procedure invocation:
