@@ -19,7 +19,7 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 
 public class TestWalaClassLoading
 {
-    private static final String CLASSPATH = "lib/at-paninij-soter-tests.jar";
+    private static final String CLASSPATH = "lib/at-paninij-soter-tests.jar:lib/at-paninij-runtime.jar";
 
     private static final String NORMAL_TYPE = "Lorg/paninij/soter/tests/Secret";
     private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/soter/tests/LeakyServerTemplate";
