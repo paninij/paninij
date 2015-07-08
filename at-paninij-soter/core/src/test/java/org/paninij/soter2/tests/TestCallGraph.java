@@ -14,18 +14,18 @@ import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 
 public class TestCallGraph
 {
-    private static final String CLASSPATH = "target/classes:target/test-classes"; 
+    private static final String CLASSPATH = "lib/at-paninij-soter-tests.jar:lib/at-paninij-runtime.jar"; 
     
     @Test
     public void testCallGraphWithLeakyServer() throws Throwable {
-        makeCallGraph("Lorg/paninij/soter/LeakyServerTemplate", CLASSPATH,
-                      "LeakyServerCallGraph.pdf", "LeakyServerHeapGraph.pdf");
+        makeCallGraph("Lorg/paninij/soter/tests/LeakyServerTemplate", CLASSPATH,
+                      "logs/LeakyServerCallGraph.pdf", "logs/LeakyServerHeapGraph.pdf");
     }
     
     @Test
     public void testCallGraphWithActiveClient() throws Throwable {
-        makeCallGraph("Lorg/paninij/soter/ActiveClientTemplate", CLASSPATH,
-                      "ActiveClientCallGraph.pdf", "ActiveClientHeapGraph.pdf");
+        makeCallGraph("Lorg/paninij/soter/tests/ActiveClientTemplate", CLASSPATH,
+                      "logs/ActiveClientCallGraph.pdf", "logs/ActiveClientHeapGraph.pdf");
     }
 
     private void makeCallGraph(String template, String classPath,
