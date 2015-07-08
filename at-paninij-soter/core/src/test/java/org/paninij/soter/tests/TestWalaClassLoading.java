@@ -61,36 +61,6 @@ public class TestWalaClassLoading
         loadTest(CAPSULE_IMPLEMENTATION_TYPE);
     }
     
-    /*
-    @Test
-    public void addCapsuleImplementationClassFile() throws Throwable
-    {
-        File implFile = new File(CAPSULE_IMPLEMENTATION_CLASS_FILE);
-        assertTrue(implFile.canRead());
-        analysisScope.addClassFileToScope(ClassLoaderReference.Application, implFile);
-
-        // Load the class using the updated class hierarchy from the updated `analysisScope`:
-        classHierarchy = ClassHierarchy.make(analysisScope);
-        @SuppressWarnings("unused") String appClasses = JavaModel.allApplicationClasses(classHierarchy);
-        loadTest(CAPSULE_IMPLEMENTATION_TYPE);
-    }
-    */
-    
-    /*
-    @Test
-    public void addCapsuleImplementationSourceFile() throws Throwable
-    {
-        File implFile = new File(CAPSULE_IMPLEMENTATION_SOURCE_FILE);
-        assertTrue(implFile.canRead());
-        analysisScope.addSourceFileToScope(ClassLoaderReference.Application, implFile, "LeakyServer$Thread.java");
-        
-        // Load the class using the updated class hierarchy from the updated `analysisScope`:
-        classHierarchy = ClassHierarchy.make(analysisScope);
-        @SuppressWarnings("unused") String appClasses = JavaModel.allApplicationClasses(classHierarchy);
-        loadTest(CAPSULE_IMPLEMENTATION_TYPE);
-    }
-    */
-
     private void loadTest(String path)
     {
         @SuppressWarnings("unused") String appClasses = JavaModel.allApplicationClasses(classHierarchy);
