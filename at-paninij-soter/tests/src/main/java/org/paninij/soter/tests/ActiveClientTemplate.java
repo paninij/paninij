@@ -12,13 +12,12 @@ public class ActiveClientTemplate
     
     public void run()
     {
-        // Try sending message via procedure invocation:
         server.giveSecret(secret);          // Unsafe
-        server.giveInteger(integer);        // Safe
+        server.giveSecret(new Secret());    // Safe
+
+        server.giveInteger(integer);        // Safe (because Integer is transitively immutable)
         server.giveInteger(new Integer(7)); // Safe
 
-        // Try making server sent messages via duck resolution:
-        @SuppressWarnings("unused")
-        Secret s = server.getSecret();      // Unsafe
+        Secret s = server.getSecret();
     }
 }
