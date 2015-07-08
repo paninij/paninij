@@ -8,17 +8,16 @@ public class TestMain
     @Test
     public void testMainWithLeakyServer() throws Exception
     {
-        String[] args = {"-classpath", "target/classes:target/test-classes",
-                         "Lorg/paninij/soter/LeakyServerTemplate"};
+        String[] args = {"-classpath", "lib/at-paninij-soter-tests.jar:lib/at-paninij-runtime.jar",
+                         "Lorg/paninij/soter/tests/LeakyServerTemplate"};
         Main.main(args);
     }
     
     @Test
     public void testMainWithActiveClient() throws Exception
     {
-        String[] args = {"-classpath", "target/classes:target/test-classes",
-                         "Lorg/paninij/soter/ActiveClientTemplate"};
+        String[] args = {"-classpath", "lib/at-paninij-soter-tests.jar:lib/at-paninij-runtime.jar",
+                         "Lorg/paninij/soter/tests/ActiveClientTemplate"};
         Main.main(args);
     }
-
 }
