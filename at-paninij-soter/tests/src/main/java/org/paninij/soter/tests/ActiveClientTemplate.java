@@ -7,8 +7,8 @@ import org.paninij.lang.Child;
 public class ActiveClientTemplate
 {
     @Child LeakyServer server = new LeakyServer$Dummy();
-    Secret secret;
-    Integer integer;
+    Secret secret = new Secret();
+    Integer integer = new Integer(42);
     
     public void run()
     {
