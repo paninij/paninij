@@ -11,10 +11,8 @@ import org.paninij.model.Procedure;
 import org.paninij.model.Variable;
 
 
-public abstract class CapsuleProfileFactory
+public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 {
-    public abstract SourceFile make(Capsule capsule);
-
     protected String generateProcedureID(Procedure p) {
         String base = "panini$proc$";
         List<String> params = new ArrayList<String>();

@@ -24,17 +24,17 @@ package org.paninij.apt.util;
  */
 public class SourceFile
 {
-    public final String filename;
+    public final String qualifiedName;
     public final String content;
 
-    public SourceFile(String filename, String content) {
-        this.filename = filename;
+    public SourceFile(String qualifiedName, String content) {
+        this.qualifiedName = qualifiedName;
         this.content = content;
     }
 
     @Override
     public String toString() {
-        return "FILENAME: " + this.filename + "\n CONTENT: \n" + this.content;
+        return "FILENAME: " + this.qualifiedName + "\n CONTENT: \n" + this.content;
     }
 
 }

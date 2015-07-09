@@ -101,29 +101,32 @@ public class PaniniProcessor extends AbstractProcessor
     {
         this.roundEnv = roundEnv;
 
-        // sets which contain models
+        // Sets which contain models
         Set<org.paninij.model.Capsule> capsules = new HashSet<org.paninij.model.Capsule>();
         Set<org.paninij.model.Signature> signatures = new HashSet<org.paninij.model.Signature>();
         Set<org.paninij.model.Capsule> capsulesTests = new HashSet<org.paninij.model.Capsule>();
 
-        // collect all Signature models
-        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class)) {
+        // Collect all Signature models
+        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class))
+        {
             if (SignatureChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
             }
         }
 
-        // collect all Capsule models
-        for (Element elem : roundEnv.getElementsAnnotatedWith(Capsule.class)) {
+        // Collect all Capsule models
+        for (Element elem : roundEnv.getElementsAnnotatedWith(Capsule.class))
+        {
             if (CapsuleChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
             }
         }
 
-        // collect all CapsuleTest capsule models
-        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class)) {
+        // Collect all CapsuleTest capsule models
+        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class))
+        {
             if (CapsuleTestChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
@@ -131,48 +134,55 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
 
-        // artifact factories
+        // Artifact factories
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
-        CapsuleFactory capsuleFactory = new CapsuleFactory();
+        CapsuleInterfaceFactory capsuleInterfaceFactory = new CapsuleInterfaceFactory();
+        CapsuleDummyFactory capsuleDummyFactory = new CapsuleDummyFactory();
         CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
-        ThreadCapsuleProfileFactory threadCapsuleFactory = new ThreadCapsuleProfileFactory();
+        CapsuleThreadFactory threadCapsuleFactory = new CapsuleThreadFactory();
 
-        // generate artifacts from signature model
-        for (org.paninij.model.Signature signature : signatures) {
-            // generate Messages
+        // Generate artifacts from signature model
+        for (org.paninij.model.Signature signature : signatures)
+        {
+            // Generate Messages
             for (Procedure procedure : signature.getProcedures()) {
                 this.createJavaFile(messageFactory.make(procedure));
             }
 
-            // generate signature
+            // Generate signature
             this.createJavaFile(signatureFactory.make(signature));
         }
 
-        // generate capsule artifacts
-        for (org.paninij.model.Capsule capsule : capsules) {
-            // generate Messages
+        // Generate capsule artifacts
+        for (org.paninij.model.Capsule capsule : capsules)
+        {
+            // Generate Messages
             for (Procedure procedure : capsule.getProcedures()) {
                 this.createJavaFile(messageFactory.make(procedure));
             }
 
-            // generate capsule interface
-            this.createJavaFile(capsuleFactory.make(capsule));
+            // Generate capsule interface
+            this.createJavaFile(capsuleInterfaceFactory.make(capsule));
+            
+            // Generate dummy capsule
+            this.createJavaFile(capsuleDummyFactory.make(capsule));
 
-            // generate capsule thread profile
+            // Generate capsule thread profile
             this.createJavaFile(threadCapsuleFactory.make(capsule));
 
-            // TODO generate other capsule profiles
+            // TODO Generate other capsule profiles
         }
 
-        // generate capsule test artifacts
-        for (org.paninij.model.Capsule capsule : capsulesTests) {
-            // generate Messages
+        // Generate capsule test artifacts
+        for (org.paninij.model.Capsule capsule : capsulesTests)
+        {
+            // Generate Messages
             for (Procedure procedure : capsule.getProcedures()) {
                 this.createJavaFile(messageFactory.make(procedure));
             }
 
-            // generate capsule test artifact
+            // Generate capsule test artifact
             this.createJavaFile(capsuleTestFactory.make(capsule));
         }
 
@@ -183,9 +193,10 @@ public class PaniniProcessor extends AbstractProcessor
     }
 
 
-    void createJavaFile(SourceFile source) {
+    void createJavaFile(SourceFile source)
+    {
         if (source != null) {
-            this.createJavaFile(source.filename, source.content);
+            this.createJavaFile(source.qualifiedName, source.content);
         }
     }
 
@@ -193,7 +204,8 @@ public class PaniniProcessor extends AbstractProcessor
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
      */
-    void createJavaFile(String cls, String src) {
+    void createJavaFile(String cls, String src)
+    {
         try {
             JavaFileObject file = processingEnv.getFiler().createSourceFile(cls);
             file.openWriter().append(src).close();
