@@ -71,7 +71,7 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
         if (runDecl != null) {
             addEntrypoint.accept(runDecl); }
         else {
-            getTemplateProcedures(templateClass).forEach(addEntrypoint);
+            getProceduresList(templateClass).forEach(addEntrypoint);
         }
     }
 

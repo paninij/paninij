@@ -1,9 +1,15 @@
 package org.paninij.soter.util;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IClassLoader;
+import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
 import com.ibm.wala.types.ClassLoaderReference;
@@ -16,6 +22,7 @@ public class JavaModel
         return method.getName().toString().equals(name);
     }
     
+
     /**
      * TODO: This procedure should be deprecated in favor of some sort of check which uses fully
      * qualified annotation names, or even better, WALA resolved annotations.
@@ -30,6 +37,22 @@ public class JavaModel
                     .anyMatch(a -> isNamed(a, name));
     }
     
+
+    /**
+     * TODO: This procedure should be deprecated in favor of some sort of check which uses fully
+     * qualified annotation names, or even better, WALA resolved annotations.
+     * 
+     * @param field
+     * @param name The simple (i.e. short, unqualified) name of an annotation.
+     */
+    public static boolean hasAnnotationNamed(IField field, String name)
+    {
+        return field.getAnnotations()
+                    .stream()
+                    .anyMatch(a -> isNamed(a, name));
+    }
+
+
     /**
      * @param name The simple (i.e. short, unqualified) name of an annotation.
      */
@@ -43,19 +66,52 @@ public class JavaModel
         return name.equals(actualName);
     }
     
-    public static Iterator<IClass> iterateAllApplicationClasses(ClassHierarchy cha)
+
+    public static boolean isApplicationMethod(IMethod method)
+    {
+        // TODO: Make this less brittle.
+        return method.toString().startsWith("< Application,");
+    }
+
+    
+    public static Iterator<IClass> getApplicationClassesIterator(ClassHierarchy cha)
     {
         IClassLoader appLoader = cha.getLoader(ClassLoaderReference.Application);
         return appLoader.iterateAllClasses();
     }
     
-    public static String allApplicationClasses(ClassHierarchy cha)
+
+    public static String getApplicationClassesString(ClassHierarchy cha)
     {
         StringBuilder appClasses = new StringBuilder();
-        Iterator<IClass> classIter = iterateAllApplicationClasses(cha);
+        Iterator<IClass> classIter = getApplicationClassesIterator(cha);
         while (classIter.hasNext()) {
             appClasses.append(" " + classIter.next() + "\n");
         }
         return appClasses.toString();
+    }
+
+
+    /**
+     * @param clazz
+     * @return A list of all of the "application" (i.e. not "primordial") methods on the template.
+     */
+    public static Stream<IMethod> getApplicationMethods(IClass clazz)
+    {
+        return clazz.getAllMethods()
+                    .stream()
+                    .filter(m -> isApplicationMethod(m));
+    }
+
+
+    /**
+     * TODO: Should be deprecated in favor of using `getApplicationMethods()` directly.
+     * 
+     * @param clazz
+     * @return A list of all of the "application" (i.e. not "primordial") methods on the template.
+     */
+    public static List<IMethod> getApplicationMethodsList(IClass clazz)
+    {
+        return getApplicationMethods(clazz).collect(toList());
     }
 }

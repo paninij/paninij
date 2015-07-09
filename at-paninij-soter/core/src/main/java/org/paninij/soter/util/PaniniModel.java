@@ -1,11 +1,12 @@
 package org.paninij.soter.util;
 
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 import com.ibm.wala.classLoader.IClass;
+import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 
 import static org.paninij.soter.util.JavaModel.*;
@@ -42,10 +43,11 @@ public class PaniniModel
     
     
     /**
-     * @param method An arbitrary method on a template class annotated with @Capsule.
+     * @param method An arbitrary method on a template class annotated with `@Capsule`.
      */
     public static boolean isSpecialCapsuleDecl(IMethod method)
     {
+        assert isCapsuleTemplate(method.getDeclaringClass());
         return isNamed(method, "init")
             || isNamed(method, "design")
             || isNamed(method, "run");
@@ -53,64 +55,101 @@ public class PaniniModel
     
 
     /**
-     * @param method An arbitrary method on a capsule interface annotated with @CapsuleInterface.
+     * @param method An arbitrary method on a capsule interface annotated with `@CapsuleInterface`.
      */
     public static boolean isCapsuleProcedure(IMethod method)
     {
+        assert isCapsuleInterface(method.getDeclaringClass());
         // TODO: Everything
         throw new UnsupportedOperationException("TODO");
     }
     
 
     /**
-     * @param method An arbitrary method on a template class annotated with @Capsule.
+     * @param method An arbitrary method on a template class annotated with `@Capsule`.
      */
     public static boolean isTemplateProcedure(IMethod method)
     {
+        assert isCapsuleTemplate(method.getDeclaringClass());
         return method.isPublic() == true  // A only a capsule's public methods are procedures.
             && isSpecialCapsuleDecl(method) == false;  // Don't count special decls as procedures.
     }
     
     
     /**
-     * @param template A capsule template class annotated with @Capsule.
+     * @param template A capsule template class annotated with `@Capsule`.
      * @return The template's run declaration, if it defines an active capsule. Otherwise `null`.
      */
     public static IMethod getRunDecl(IClass template)
     {
-        return getApplicationMethods(template)
+        assert isCapsuleTemplate(template);
+        return JavaModel.getApplicationMethodsList(template)
                  .stream()
                  .filter(m -> isNamed(m, "run"))
                  .findFirst()
                  .orElse(null);
     }
- 
-
+    
+    
     /**
-     * @param template A capsule template class annotated with @Capsule.
+     * @param template A capsule template class annotated with `@Capsule`.
+     * @return Stream of the template's fields which are annotated with `@Child`.
      */
-    public static List<IMethod> getTemplateProcedures(IClass template)
+    public static Stream<IField> getChildCapsuleDecls(IClass template)
     {
-        return getApplicationMethods(template)
-                 .stream()
-                 .filter(m -> isTemplateProcedure(m))
-                 .collect(toList());
+        assert isCapsuleTemplate(template);
+        return template.getAllFields()
+                       .stream()
+                       .filter(a -> hasAnnotationNamed(a, "Child"));
     }
     
-   
-    /**
-     * @param template A capsule template class annotated with @Capsule.
-     * @return A list of all of the "application" (i.e. not "primordial") methods on the template.
-     */
-    private static List<IMethod> getApplicationMethods(IClass template)
-    {
-        // TODO: Make this less brittle.
-        String prefix = "< Application,";
-        Predicate<IMethod> isRelevant = (m -> m.toString().startsWith(prefix));
 
-        return template.getAllMethods()
+    /**
+     * @param template A capsule template class annotated with `@Capsule`.
+     * @return Stream of the template's fields which are annotated with `@Wired`.
+     */
+    public static Stream<IField> getWiredCapsuleDecls(IClass template)
+    {
+        assert isCapsuleTemplate(template);
+        return template.getAllFields()
                        .stream()
-                       .filter(isRelevant)
-                       .collect(toList());
+                       .filter(a -> hasAnnotationNamed(a, "Wired"));
+    }
+    
+    
+    /**
+     * @param template A capsule template class annotated with `@Capsule`.
+     * @return Stream of the template's fields which are states (i.e. neither `@Child` or `@Wired`).
+     */
+    public static Stream<IField> getStateDecls(IClass template)
+    {
+        assert isCapsuleTemplate(template);
+        return template.getAllFields()
+                       .stream()
+                       .filter(a -> hasAnnotationNamed(a, "Child") == false
+                                 && hasAnnotationNamed(a, "Wired") == false);
+    }
+ 
+    
+    /**
+     * @param template A capsule template class annotated with `@Capsule`.
+     */
+    public static Stream<IMethod> getProcedures(IClass template)
+    {
+        assert isCapsuleTemplate(template);
+        return JavaModel.getApplicationMethodsList(template)
+                 .stream()
+                 .filter(m -> isTemplateProcedure(m));
+    }
+
+    /**
+     * TODO: Should be deprecated in favor of using `getProcedures()` directly.
+     * 
+     * @param template A capsule template class annotated with `@Capsule`.
+     */
+    public static List<IMethod> getProceduresList(IClass template)
+    {
+        assert isCapsuleTemplate(template);
+        return getProcedures(template).collect(toList());
     }
 }

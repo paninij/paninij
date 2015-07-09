@@ -1,7 +1,7 @@
 package org.paninij.soter2;
 
 import static org.paninij.soter.util.PaniniModel.getRunDecl;
-import static org.paninij.soter.util.PaniniModel.getTemplateProcedures;
+import static org.paninij.soter.util.PaniniModel.getProceduresList;
 
 import java.io.File;
 import java.io.IOException;
@@ -150,7 +150,7 @@ public class PaniniZeroOneCFA extends ZeroOneCFA<InstanceKey>
         if (runDecl != null) {
             add.accept(runDecl);
         } else {
-            getTemplateProcedures(iClass).forEach(add);
+            getProceduresList(iClass).forEach(add);
         }
     }
 }

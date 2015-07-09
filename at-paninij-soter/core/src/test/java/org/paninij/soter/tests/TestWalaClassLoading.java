@@ -63,7 +63,7 @@ public class TestWalaClassLoading
     
     private void loadTest(String path)
     {
-        @SuppressWarnings("unused") String appClasses = JavaModel.allApplicationClasses(classHierarchy);
+        @SuppressWarnings("unused") String appClasses = JavaModel.getApplicationClassesString(classHierarchy);
 
         TypeReference ref = getTypeReference(path);
         assertNotNull(ref);
