@@ -134,9 +134,9 @@ public class PaniniProcessor extends AbstractProcessor
         // artifact factories
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
-        CapsuleFactory capsuleFactory = new CapsuleFactory();
+        CapsuleInterfaceFactory capsuleFactory = new CapsuleInterfaceFactory();
         CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
-        ThreadCapsuleProfileFactory threadCapsuleFactory = new ThreadCapsuleProfileFactory();
+        CapsuleThreadFactory threadCapsuleFactory = new CapsuleThreadFactory();
 
         // generate artifacts from signature model
         for (org.paninij.model.Signature signature : signatures) {
@@ -185,7 +185,7 @@ public class PaniniProcessor extends AbstractProcessor
 
     void createJavaFile(SourceFile source) {
         if (source != null) {
-            this.createJavaFile(source.filename, source.content);
+            this.createJavaFile(source.qualifiedName, source.content);
         }
     }
 

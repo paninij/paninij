@@ -29,26 +29,17 @@ import org.paninij.apt.util.SourceFile;
 import org.paninij.model.Capsule;
 import org.paninij.model.Procedure;
 
-public class CapsuleTestFactory
+public class CapsuleTestFactory extends CapsuleArtifactFactory
 {
-    public static final String CAPSULE_TEST_SUFFIX = "Test";
+    public static final String CAPSULE_TEST_SUFFIX = "$Test";
 
-    private Capsule context;
-
-    public SourceFile make(Capsule capsule) {
-        this.context = capsule;
-
-        String name = this.generateFileName();
-        String content = this.generateContent();
-
-        return new SourceFile(name, content);
+    protected String getQualifiedName()
+    {
+        return this.capsule.getQualifiedName() + CAPSULE_TEST_SUFFIX;
     }
 
-    private String generateFileName() {
-        return this.context.getQualifiedName() + CAPSULE_TEST_SUFFIX;
-    }
-
-    private String generateContent() {
+    protected String generateContent()
+    {
         String src = Source.cat(
                 "package #0;",
                 "",
@@ -60,7 +51,7 @@ public class CapsuleTestFactory
                 "}");
 
         src = Source.format(src,
-                this.context.getPackage(),
+                this.capsule.getPackage(),
                 this.generateClassName());
         src = Source.formatAligned(src, generateImports());
         src = Source.formatAligned(src, generateTests());
@@ -68,26 +59,28 @@ public class CapsuleTestFactory
         return src;
     }
 
-    private String generateClassName() {
-        return this.context.getSimpleName() + CAPSULE_TEST_SUFFIX;
+    private String generateClassName() 
+    {
+        return this.capsule.getSimpleName() + CAPSULE_TEST_SUFFIX;
     }
 
-    private List<String> generateImports() {
+    private List<String> generateImports()
+    {
         Set<String> imports = new HashSet<String>();
 
-        for (Procedure p : this.context.getProcedures()) {
+        for (Procedure p : this.capsule.getProcedures()) {
             MessageShape shape = new MessageShape(p);
             imports.add(shape.getPackage() + "." +shape.encoded);
         }
 
-        imports.addAll(this.context.getImports());
+        imports.addAll(this.capsule.getImports());
 
         imports.add("java.util.concurrent.TimeUnit");
         imports.add("org.junit.Test");
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.SimpleMessage");
         imports.add("org.paninij.runtime.Panini$Message");
-        imports.add(this.context.getQualifiedName());
+        imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
 
@@ -98,17 +91,19 @@ public class CapsuleTestFactory
         return prefixedImports;
     }
 
-    private List<String> generateTests() {
+    private List<String> generateTests()
+    {
         List<String> src = Source.lines();
         int testId = 0;
-        for (Procedure procedure : this.context.getProcedures()) {
+        for (Procedure procedure : this.capsule.getProcedures()) {
             src.addAll(this.generateTest(procedure, testId++));
             src.add("");
         }
         return src;
     }
 
-    private List<String> generateTest(Procedure procedure, int testId) {
+    private List<String> generateTest(Procedure procedure, int testId)
+    {
         List<String> src = Source.lines(
                 "@Test",
                 "public void #0() throws Throwable {",
@@ -128,8 +123,7 @@ public class CapsuleTestFactory
                 "}");
         return Source.formatAll(src, procedure.getName(),
                                      testId,
-                                     this.context.getSimpleName(),
-                                     ThreadCapsuleProfileFactory.CAPSULE_PROFILE_THREAD_SUFFIX);
+                                     this.capsule.getSimpleName(),
+                                     CapsuleThreadFactory.CAPSULE_PROFILE_THREAD_SUFFIX);
     }
-
 }
