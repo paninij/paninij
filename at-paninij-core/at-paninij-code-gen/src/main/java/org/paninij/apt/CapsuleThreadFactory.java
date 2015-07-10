@@ -35,30 +35,18 @@ import org.paninij.model.Procedure;
 import org.paninij.model.Type;
 import org.paninij.model.Variable;
 
-public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
+public class CapsuleThreadFactory extends CapsuleProfileFactory
 {
-
     public static final String CAPSULE_PROFILE_THREAD_SUFFIX = "$Thread";
 
-    private Capsule context;
+    @Override
+    protected String getQualifiedName()
+    {
+        return this.capsule.getQualifiedName() + CAPSULE_PROFILE_THREAD_SUFFIX;
+    }
 
     @Override
-    public SourceFile make(Capsule capsule)
-    {
-        this.context = capsule;
-
-        String name = this.generateFileName();
-        String content = this.generateContent();
-
-        return new SourceFile(name, content);
-    }
-
-    private String generateFileName()
-    {
-        return this.context.getQualifiedName() + CAPSULE_PROFILE_THREAD_SUFFIX;
-    }
-
-    private String generateContent()
+    protected String generateContent()
     {
         String src = Source.cat(
                 "package #0;",
@@ -72,9 +60,9 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
                 "}");
 
         src = Source.format(src,
-                this.context.getPackage(),
+                this.capsule.getPackage(),
                 this.generateClassName(),
-                this.context.getSimpleName());
+                this.capsule.getSimpleName());
 
         src = Source.formatAligned(src, generateImports());
         src = Source.formatAligned(src, generateCapsuleBody());
@@ -84,19 +72,19 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
     private String generateClassName()
     {
-        return this.context.getSimpleName() + CAPSULE_PROFILE_THREAD_SUFFIX;
+        return this.capsule.getSimpleName() + CAPSULE_PROFILE_THREAD_SUFFIX;
     }
 
     private List<String> generateImports()
     {
         Set<String> imports = new HashSet<String>();
 
-        for (Procedure p : this.context.getProcedures()) {
+        for (Procedure p : this.capsule.getProcedures()) {
             MessageShape shape = new MessageShape(p);
             imports.add(shape.getPackage() + "." +shape.encoded);
         }
 
-        imports.addAll(this.context.getImports());
+        imports.addAll(this.capsule.getImports());
 
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.runtime.Capsule$Thread");
@@ -105,7 +93,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
         imports.add("org.paninij.runtime.check.Panini$Ownership");
-        imports.add(this.context.getQualifiedName());
+        imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
 
@@ -120,7 +108,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
     {
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
-                this.context.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
+                this.capsule.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
     }
 
     private List<String> generateProcedureIDs()
@@ -128,7 +116,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         ArrayList<String> decls = new ArrayList<String>();
         int currID = 0;
 
-        for (Procedure p : this.context.getProcedures()) {
+        for (Procedure p : this.capsule.getProcedures()) {
             decls.add(Source.format("public static final int #0 = #1;",
                     generateProcedureID(p),
                     currID++));
@@ -142,7 +130,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
     private List<String> generateProcedures()
     {
         ArrayList<String> src = new ArrayList<String>();
-        for (Procedure p : this.context.getProcedures()) {
+        for (Procedure p : this.capsule.getProcedures()) {
             src.addAll(this.generateProcedure(p));
         }
         return src;
@@ -151,9 +139,9 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
     private List<String> generateCheckRequiredFields()
     {
         // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
-        List<Variable> required = this.context.getWired();
+        List<Variable> required = this.capsule.getWired();
 
-        for (Variable child : this.context.getChildren()) {
+        for (Variable child : this.capsule.getChildren()) {
             if (child.isArray()) required.add(child);
         }
 
@@ -177,7 +165,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
     private List<String> generateWire()
     {
-        List<Variable> wired = this.context.getWired();
+        List<Variable> wired = this.capsule.getWired();
         List<String> refs = new ArrayList<String>();
         List<String> decls = new ArrayList<String>();
 
@@ -216,7 +204,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
     private List<String> generateInitChildren()
     {
-        List<Variable> children = this.context.getChildren();
+        List<Variable> children = this.capsule.getChildren();
         List<String> source = new ArrayList<String>();
 
         if (children.size() == 0) return source;
@@ -259,7 +247,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
             }
         }
 
-        if (this.context.hasDesign()) {
+        if (this.capsule.hasDesign()) {
             source.add("panini$encapsulated.design(this);");
         }
 
@@ -289,7 +277,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
     private List<String> generateInitState()
     {
-        if (!this.context.hasInit()) return new ArrayList<String>();
+        if (!this.capsule.hasInit()) return new ArrayList<String>();
         return Source.lines(
                 "@Override",
                 "protected void panini$initState() {",
@@ -300,7 +288,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
     List<String> generateGetAllState()
     {
-        List<String> states = context.getState()
+        List<String> states = capsule.getState()
                                      .stream()
                                      .filter(s -> s.getKind() == TypeKind.ARRAY
                                                || s.getKind() == TypeKind.DECLARED)
@@ -320,7 +308,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
 
     private List<String> generateRun()
     {
-        if (this.context.isActive()) {
+        if (this.capsule.isActive()) {
             return Source.lines(
                     "@Override",
                     "public void run() {",
@@ -369,7 +357,7 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         lines.add("switch(msg.panini$msgID()) {");
 
         // add a case statement for each procedure wrapper.
-        for (Procedure p : this.context.getProcedures()) {
+        for (Procedure p : this.capsule.getProcedures()) {
             lines.addAll(this.generateRunSwitchCase(p));
         }
 
@@ -391,8 +379,8 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
         List<String> shutdowns = new ArrayList<String>();
         List<Variable> references = new ArrayList<Variable>();
 
-        references.addAll(this.context.getWired());
-        references.addAll(this.context.getChildren());
+        references.addAll(this.capsule.getWired());
+        references.addAll(this.capsule.getChildren());
 
         if (references.isEmpty()) return shutdowns;
 
@@ -507,19 +495,19 @@ public class ThreadCapsuleProfileFactory extends CapsuleProfileFactory
     {
         // if the capsule has external dependencies, it does
         // not deserve a main
-        if (!this.context.getWired().isEmpty()) return false;
+        if (!this.capsule.getWired().isEmpty()) return false;
 
-        if (this.context.isActive()) {
+        if (this.capsule.isActive()) {
             // if the capsule is active and has no external deps,
             // it deserves a main
             return true;
         } else {
             // if the capsule has no children, it does not need a main
             // (this is a bogus/dull scenario)
-            if (this.context.getChildren().isEmpty()) return false;
+            if (this.capsule.getChildren().isEmpty()) return false;
 
             // check if any ancestor capsules are active
-            if (this.context.hasActiveAncestor()) return true;
+            if (this.capsule.hasActiveAncestor()) return true;
 
             // if no child is active, this does not deserve a main
             return false;
