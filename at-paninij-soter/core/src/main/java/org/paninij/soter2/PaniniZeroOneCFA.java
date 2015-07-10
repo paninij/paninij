@@ -2,23 +2,32 @@ package org.paninij.soter2;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 import com.ibm.wala.analysis.pointers.BasicHeapGraph;
 import com.ibm.wala.classLoader.IClass;
+import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.AnalysisScope;
 import com.ibm.wala.ipa.callgraph.CallGraphBuilderCancelException;
+import com.ibm.wala.ipa.callgraph.ClassTargetSelector;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
+import com.ibm.wala.ipa.callgraph.MethodTargetSelector;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PropagationCallGraphBuilder;
 import com.ibm.wala.ipa.callgraph.impl.Util;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
+import com.ibm.wala.ipa.summaries.BypassClassTargetSelector;
+import com.ibm.wala.ipa.summaries.BypassMethodTargetSelector;
+import com.ibm.wala.ipa.summaries.XMLMethodSummaryReader;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.WalaException;
 import com.ibm.wala.util.config.AnalysisScopeReader;
+import com.ibm.wala.util.strings.Atom;
 
 
 public class PaniniZeroOneCFA extends ZeroOneCFA<InstanceKey>
@@ -27,9 +36,10 @@ public class PaniniZeroOneCFA extends ZeroOneCFA<InstanceKey>
     
     protected String templateName;
     protected AnalysisScope analysisScope;
-    protected ClassHierarchy classHierarchy;
+    protected IClassHierarchy classHierarchy;
     protected IClass templateClass;
     protected Set<Entrypoint> entrypoints;
+    protected AnalysisOptions analysisOptions;
     
 
     public static PaniniZeroOneCFA make(String name, String classPath) throws WalaException
@@ -56,6 +66,7 @@ public class PaniniZeroOneCFA extends ZeroOneCFA<InstanceKey>
         initClassHierarchy();
         initTemplateClass();
         initEntrypoints();
+        initAnalysisOptions();
     }
     
 
@@ -100,20 +111,34 @@ public class PaniniZeroOneCFA extends ZeroOneCFA<InstanceKey>
     }
     
     
+    protected void initAnalysisOptions()
+    {
+        analysisOptions = new AnalysisOptions(analysisScope, entrypoints);
+        ClassLoader classLoader = Util.class.getClassLoader();
+        InputStream nativesSpecInput = classLoader.getResourceAsStream("natives.xml");
+        XMLMethodSummaryReader nativeSpecSummary = new XMLMethodSummaryReader(nativesSpecInput,
+                                                                              analysisScope);
+
+        // Add default selectors then custom ones. The defaults will serve as the parents of the
+        // custom children. The children delegate to their parents when they do not definitively
+        // target a class/method.
+        Util.addDefaultSelectors(analysisOptions, classHierarchy);
+        setToSynthesizeNativeMethods(nativeSpecSummary);
+        setToSynthesizeNativeClasses(nativeSpecSummary);
+    }
+    
+    
     @Override
     @SuppressWarnings("unchecked")
     public void perform()
     {
-        AnalysisOptions options = new AnalysisOptions(analysisScope, entrypoints);
-        Util.addDefaultSelectors(options, classHierarchy);
-
-        PropagationCallGraphBuilder builder = Util.makeZeroOneCFABuilder(options,
+        PropagationCallGraphBuilder builder = Util.makeZeroOneCFABuilder(analysisOptions,
                                                                          new AnalysisCache(),
                                                                          classHierarchy,
                                                                          analysisScope);
         try
         {
-            callGraph = builder.makeCallGraph(options, null);
+            callGraph = builder.makeCallGraph(analysisOptions, null);
             pointerAnalysis = builder.getPointerAnalysis();
             heapModel = pointerAnalysis.getHeapModel();
             heapGraph = new BasicHeapGraph(pointerAnalysis, callGraph);
@@ -125,4 +150,34 @@ public class PaniniZeroOneCFA extends ZeroOneCFA<InstanceKey>
         }
     }
 
+    
+    /**
+     * TODO: Is this method name an accurate description of what this bypass logic is doing?
+     */
+    private void setToSynthesizeNativeMethods(XMLMethodSummaryReader natives)
+    {
+        MethodTargetSelector parent = analysisOptions.getMethodTargetSelector();
+        MethodTargetSelector child = new BypassMethodTargetSelector(parent,
+                                                                    natives.getSummaries(),
+                                                                    natives.getIgnoredPackages(),
+                                                                    classHierarchy);
+        analysisOptions.setSelector(child);
+    }
+
+
+    /**
+     * TODO: Is this method name an accurate description of what this bypass logic is doing?
+     */
+    private void setToSynthesizeNativeClasses(XMLMethodSummaryReader natives)
+    {
+        Atom synthetic = Atom.findOrCreateUnicodeAtom("Synthetic");
+        IClassLoader syntheticLoader = classHierarchy.getLoader(analysisScope.getLoader(synthetic));
+
+        ClassTargetSelector parent = analysisOptions.getClassTargetSelector();
+        ClassTargetSelector child = new BypassClassTargetSelector(parent,
+                                                                  natives.getAllocatableClasses(),
+                                                                  classHierarchy,
+                                                                  syntheticLoader);
+        analysisOptions.setSelector(child);
+    }
 }

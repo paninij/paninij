@@ -5,14 +5,13 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
-import com.ibm.wala.ipa.cha.ClassHierarchy;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.annotations.Annotation;
 
@@ -77,17 +76,17 @@ public class JavaModel
     }
 
     
-    public static Iterator<IClass> getApplicationClassesIterator(ClassHierarchy cha)
+    public static Iterator<IClass> getApplicationClassesIterator(IClassHierarchy classHierarchy)
     {
-        IClassLoader appLoader = cha.getLoader(ClassLoaderReference.Application);
+        IClassLoader appLoader = classHierarchy.getLoader(ClassLoaderReference.Application);
         return appLoader.iterateAllClasses();
     }
     
 
-    public static String getApplicationClassesString(ClassHierarchy cha)
+    public static String getApplicationClassesString(IClassHierarchy classHierarchy)
     {
         StringBuilder appClasses = new StringBuilder();
-        Iterator<IClass> classIter = getApplicationClassesIterator(cha);
+        Iterator<IClass> classIter = getApplicationClassesIterator(classHierarchy);
         while (classIter.hasNext()) {
             appClasses.append(" " + classIter.next() + "\n");
         }
