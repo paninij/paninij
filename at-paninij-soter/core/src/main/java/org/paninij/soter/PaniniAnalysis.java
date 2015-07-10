@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
-import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -16,14 +15,16 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ssa.SSAInstruction;
-import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
 import edu.illinois.soter.analysis.OwnershipTransferAnalysis;
-import edu.illinois.soter.analysis.actorfoundry.SingleInstanceEntrypoint;
 import edu.illinois.soter.messagedata.MessageInvocation;
+
+import org.paninij.soter2.CapsuleTemplateEntrypoint;
+
 import static org.paninij.soter.util.PaniniModel.*;
+
 
 public class PaniniAnalysis extends OwnershipTransferAnalysis
 {
@@ -63,7 +64,7 @@ public class PaniniAnalysis extends OwnershipTransferAnalysis
 
         IMethod runDecl = getRunDecl(templateClass);
         Consumer<IMethod> addEntrypoint =
-            (m -> entrypoints.add(new SingleInstanceEntrypoint(templateClass, m, classHierarchy)));
+            (m -> entrypoints.add(new CapsuleTemplateEntrypoint(m)));
 
         // The way in which `entrypoints` is populated depends on whether the capsule template 
         // defines an active or passive capsule. If active, then the only entrypoint is `run()`.

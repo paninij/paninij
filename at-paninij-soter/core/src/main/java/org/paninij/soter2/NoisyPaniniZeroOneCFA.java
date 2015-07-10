@@ -38,7 +38,7 @@ public class NoisyPaniniZeroOneCFA extends PaniniZeroOneCFA
         logger.info("analysisScope: " + analysisScope);
         logger.info("allApplicationClasses(classHierarchy):\n"
                       + JavaModel.getApplicationClassesString(classHierarchy));
-        logger.info("iClass: " + iClass);
+        logger.info("iClass: " + templateClass);
         logger.info("entrypoints: " + entrypoints);
     }
 }

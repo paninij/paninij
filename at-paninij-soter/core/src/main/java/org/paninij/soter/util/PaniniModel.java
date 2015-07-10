@@ -6,9 +6,14 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 import com.ibm.wala.classLoader.IClass;
+import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.TypeName;
+import com.ibm.wala.types.TypeReference;
 
+import static org.paninij.apt.CapsuleDummyFactory.CAPSULE_DUMMY_SUFFIX;
 import static org.paninij.soter.util.JavaModel.*;
 
 /**
@@ -55,20 +60,9 @@ public class PaniniModel
     
 
     /**
-     * @param method An arbitrary method on a capsule interface annotated with `@CapsuleInterface`.
-     */
-    public static boolean isCapsuleProcedure(IMethod method)
-    {
-        assert isCapsuleInterface(method.getDeclaringClass());
-        // TODO: Everything
-        throw new UnsupportedOperationException("TODO");
-    }
-    
-
-    /**
      * @param method An arbitrary method on a template class annotated with `@Capsule`.
      */
-    public static boolean isTemplateProcedure(IMethod method)
+    public static boolean isProcedure(IMethod method)
     {
         assert isCapsuleTemplate(method.getDeclaringClass());
         return method.isPublic() == true  // A only a capsule's public methods are procedures.
@@ -139,8 +133,9 @@ public class PaniniModel
         assert isCapsuleTemplate(template);
         return JavaModel.getApplicationMethodsList(template)
                  .stream()
-                 .filter(m -> isTemplateProcedure(m));
+                 .filter(m -> isProcedure(m));
     }
+
 
     /**
      * TODO: Should be deprecated in favor of using `getProcedures()` directly.
@@ -151,5 +146,17 @@ public class PaniniModel
     {
         assert isCapsuleTemplate(template);
         return getProcedures(template).collect(toList());
+    }
+    
+    
+    public static TypeReference getDummyCapsuleClassReference(TypeReference capsuleInterface)
+    {
+        ClassLoaderReference loader = capsuleInterface.getClassLoader();
+
+        TypeName interfaceName = capsuleInterface.getName();
+        String pkg = interfaceName.getPackage().toString();
+        String name = interfaceName.getClassName().toString() + CAPSULE_DUMMY_SUFFIX;
+
+        return TypeReference.findOrCreateClass(loader, pkg, name);
     }
 }

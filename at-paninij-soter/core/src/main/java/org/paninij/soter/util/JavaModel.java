@@ -2,6 +2,7 @@ package org.paninij.soter.util;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -47,9 +48,11 @@ public class JavaModel
      */
     public static boolean hasAnnotationNamed(IField field, String name)
     {
-        return field.getAnnotations()
-                    .stream()
-                    .anyMatch(a -> isNamed(a, name));
+        Collection<Annotation> annotations = field.getAnnotations();
+        if (annotations == null) {
+            return false;
+        }
+        return annotations.stream().anyMatch(a -> isNamed(a, name));
     }
 
 
