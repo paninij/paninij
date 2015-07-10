@@ -1,8 +1,5 @@
 package edu.rice.habanero.benchmarks.pingpong;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
@@ -19,11 +16,7 @@ public class PingPongTemplate
     }
 
     public void run() {
-        FlagFuture f = ping.start();
-        try {
-            f.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+        FlagFuture wait = ping.start();
+        wait.block();
     }
 }

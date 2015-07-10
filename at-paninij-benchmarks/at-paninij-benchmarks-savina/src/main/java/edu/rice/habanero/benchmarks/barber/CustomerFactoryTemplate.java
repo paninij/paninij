@@ -45,6 +45,7 @@ import org.paninij.lang.Wired;
     public void done() {
         numHaircutsSoFar++;
         if (numHaircutsSoFar == haircuts) {
+            waitingRoom.exit();
             flag.resolve();
             System.out.println("Total attempts: " + idGenerator.get());
         }
