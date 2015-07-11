@@ -16,6 +16,7 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.CallGraphBuilder;
 import com.ibm.wala.ipa.callgraph.CallGraphBuilderCancelException;
 import com.ibm.wala.ipa.callgraph.ClassTargetSelector;
+import com.ibm.wala.ipa.callgraph.ContextSelector;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.MethodTargetSelector;
 import com.ibm.wala.ipa.callgraph.propagation.HeapModel;
@@ -36,6 +37,10 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 import com.ibm.wala.util.strings.Atom;
 
 
+/**
+ * Builds Zero-One CFA call graph using flow insensitive Andersen style points-to analysis with
+ * entrypoints stemming from the procedures of a single template class.
+ */
 public class PaniniCallGraphBuilder implements CallGraphBuilder
 {
     public static final String DEFAULT_EXCLUSIONS_FILENAME = "Exclusions.txt";
@@ -56,9 +61,10 @@ public class PaniniCallGraphBuilder implements CallGraphBuilder
     protected HeapGraph<InstanceKey> heapGraph;
 
 
-    public static PaniniCallGraphBuilder make(String name, String classPath) throws WalaException
+    public static PaniniCallGraphBuilder make(String templateName, String classPath)
+                                                                   throws WalaException
     {
-        PaniniCallGraphBuilder analysis = new PaniniCallGraphBuilder(name);
+        PaniniCallGraphBuilder analysis = new PaniniCallGraphBuilder(templateName);
         analysis.init(classPath);
         analysis.perform();
         return analysis;
@@ -162,10 +168,13 @@ public class PaniniCallGraphBuilder implements CallGraphBuilder
     @SuppressWarnings("unchecked")
     protected void perform()
     {
+        ContextSelector contextSelector = new ReceiverInstanceContextSelector();
         PropagationCallGraphBuilder builder = Util.makeZeroOneCFABuilder(analysisOptions,
                                                                          analysisCache,
                                                                          classHierarchy,
-                                                                         analysisScope);
+                                                                         analysisScope,
+                                                                         contextSelector,
+                                                                         null);
         try
         {
             callGraph = builder.makeCallGraph(analysisOptions, null);
