@@ -14,19 +14,19 @@ import com.ibm.wala.util.WalaException;
 /**
  * A PaniniZeroOneCFA that logs information about the analysis's initialized state.
  */
-public class NoisyPaniniZeroOneCFA extends PaniniZeroOneCFA
+public class NoisyPaniniCallGraphBuilder extends PaniniCallGraphBuilder
 {
-    private static final Logger logger = Logger.getLogger(NoisyPaniniZeroOneCFA.class.getName());
+    private static final Logger logger = Logger.getLogger(NoisyPaniniCallGraphBuilder.class.getName());
 
-    public static PaniniZeroOneCFA make(String name, String classPath) throws WalaException
+    public static PaniniCallGraphBuilder make(String name, String classPath) throws WalaException
     {
-        PaniniZeroOneCFA analysis = new NoisyPaniniZeroOneCFA(name);
+        PaniniCallGraphBuilder analysis = new NoisyPaniniCallGraphBuilder(name);
         analysis.init(classPath);
         analysis.perform();
         return analysis;
     }
 
-    public NoisyPaniniZeroOneCFA(String template)
+    public NoisyPaniniCallGraphBuilder(String template)
     {
         super(template);
     }

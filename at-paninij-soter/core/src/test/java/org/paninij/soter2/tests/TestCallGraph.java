@@ -1,11 +1,9 @@
 package org.paninij.soter2.tests;
 
-import java.util.function.Consumer;
-
 import org.junit.Test;
 import org.paninij.soter.util.WalaDebug;
-import org.paninij.soter2.NoisyPaniniZeroOneCFA;
-import org.paninij.soter2.PaniniZeroOneCFA;
+import org.paninij.soter2.NoisyPaniniCallGraphBuilder;
+import org.paninij.soter2.PaniniCallGraphBuilder;
 
 import com.ibm.wala.analysis.pointers.HeapGraph;
 import com.ibm.wala.ipa.callgraph.CallGraph;
@@ -31,13 +29,12 @@ public class TestCallGraph
     private void makeCallGraph(String template, String classPath,
                                String callGraphPDF, String heapGraphPDF) throws Throwable
     {
-        PaniniZeroOneCFA cfa = NoisyPaniniZeroOneCFA.make(template, classPath);
-        cfa.perform();
+        PaniniCallGraphBuilder cfaBuilder = NoisyPaniniCallGraphBuilder.make(template, classPath);
 
-        Consumer<CallGraph> makeCallGraph = (cg -> WalaDebug.makeGraphFile(cg, callGraphPDF));
-        Consumer<HeapGraph<InstanceKey>> makeHeapGraph = (hg -> WalaDebug.makeGraphFile(hg, heapGraphPDF));
+        CallGraph cg = cfaBuilder.makeCallGraph();
+        HeapGraph<InstanceKey> hg = cfaBuilder.getHeapGraph();
 
-        cfa.acceptUponCallGraph(makeCallGraph);
-        cfa.acceptUponHeapGraph(makeHeapGraph);
+        WalaDebug.makeGraphFile(cg, callGraphPDF);
+        WalaDebug.makeGraphFile(hg, heapGraphPDF);
     }
 }
