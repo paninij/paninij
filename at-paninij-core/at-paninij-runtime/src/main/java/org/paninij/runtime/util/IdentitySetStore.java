@@ -1,9 +1,9 @@
 package org.paninij.runtime.util;
 
-public class IdentitySetStore extends ThreadLocal<IdentitySet>
+public class IdentitySetStore<T> extends ThreadLocal<IdentitySet<T>>
 {
-    protected IdentitySet initialValue()
+    protected IdentitySet<T> initialValue()
     {
-        return new IdentitySet();
+        return new IdentitySet<T>();
     }
 }

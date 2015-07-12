@@ -132,21 +132,21 @@ public class Panini$Ownership
          * Thread-local storage used to explore the object graph of messages. It is used across all
          * calls to `isSafeTransfer()`.
          */
-        private final static IdentitySetStore msg_store = new IdentitySetStore();
+        private final static IdentitySetStore<Object> msg_store = new IdentitySetStore<Object>();
 
 
         /**
          * Thread-local storage used to explore the object graph of a capsule's local state. It is
          * used across all calls to `isSafeTransfer()`.
          */
-        private final static IdentitySetStore local_store = new IdentitySetStore();
+        private final static IdentitySetStore<Object> local_store = new IdentitySetStore<Object>();
 
 
         /**
          * Thread-local storage used to as a temporary in the exploration of an object graph. It is
          * used across all calls to `findUnsafeFrom()`.
          */
-        private final static IdentityStackStore workstack_store = new IdentityStackStore();
+        private final static IdentityStackStore<Object> workstack_store = new IdentityStackStore<Object>();
 
 
         /**
@@ -180,13 +180,16 @@ public class Panini$Ownership
          *  - A `Point` (with mutable fields) is unsafe.
          *  - A `Point` (with immutable fields) is safe.
          */
-        private static IdentitySet findUnsafe(Object root_obj, IdentitySetStore unsafe_store)
+        private static IdentitySet<Object> findUnsafe(Object root_obj, IdentitySetStore<Object> unsafe_store)
         {
             // Invariant: `worklist` only contains objects which have been discovered and found to
             // be `unsafe` (i.e. anything in `worklist` is already in `unsafe` objects).
 
-            IdentitySet unsafe = unsafe_store.get();      // The set of unsafe discovered objects.
-            IdentityStack workstack = workstack_store.get();  // The set of objects yet to be explored.
+            // The set of unsafe discovered objects.
+            IdentitySet<Object> unsafe = unsafe_store.get();
+
+            // The set of objects yet to be explored.
+            IdentityStack<Object> workstack = workstack_store.get();
 
             unsafe.clear();
             workstack.clear();
@@ -219,7 +222,8 @@ public class Panini$Ownership
          * A helper method just for `findUnsafe()` for adding unsafe components of an array `obj`.
          */
         private static void findUnsafe$addComponents(Object obj, Class<? extends Object> cls,
-                                                     IdentitySet unsafe, IdentityStack workstack)
+                                                     IdentitySet<Object> unsafe,
+                                                     IdentityStack<Object> workstack)
         {
             if (obj instanceof Object[] && isAlwaysSafe(cls.getComponentType()) == false)
             {
@@ -236,7 +240,8 @@ public class Panini$Ownership
          * A helper method just for `findUnsafe()` for adding unsafe fields of an object.
          */
         private static void findUnsafe$addFields(Object obj, Class<? extends Object> cls,
-                                                 IdentitySet unsafe, IdentityStack workstack)
+                                                 IdentitySet<Object> unsafe,
+                                                 IdentityStack<Object> workstack)
         {
             for (Field f : findUnsafe$getAllFields(cls))
             {
@@ -319,7 +324,7 @@ public class Panini$Ownership
         }
         
 
-        private static boolean areDisjoint(IdentitySet msg_refs, IdentitySet local_refs)
+private static boolean areDisjoint(IdentitySet<Object> msg_refs, IdentitySet<Object> local_refs)
         {
             for (Object obj : msg_refs) {
                 if (local_refs.contains(obj)) {

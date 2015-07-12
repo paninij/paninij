@@ -7,24 +7,28 @@ import java.util.Iterator;
  * Implements a monotonically-increasing set (i.e. identities cannot be removed except by clearing
  * the whole set).
  */
-public class IdentitySet implements Iterable<Object>
+public class IdentitySet<T> implements Iterable<T>
 {
     private static final int DEFAULT_INIT_CAPACITY = 8;
 
-    private Object[] data;
+    private T[] data;
     private int size;
     private int capacity;
     
 
+    @SuppressWarnings("unchecked")
     public IdentitySet()
     {
-        data = new Object[DEFAULT_INIT_CAPACITY];
+        data = (T[]) new Object[DEFAULT_INIT_CAPACITY];
         size = 0;
         capacity = DEFAULT_INIT_CAPACITY;
     }
     
 
-    public boolean add(Object obj)
+    /**
+     * @return True iff the added object is new to the set.
+     */
+    public boolean add(T obj)
     {
         if (contains(obj)) {
             return false;
@@ -39,7 +43,7 @@ public class IdentitySet implements Iterable<Object>
     }
     
 
-    public boolean contains(Object obj)
+    public boolean contains(T obj)
     {
         for (int idx = 0; idx < size; idx++) {
             if (obj == data[idx])
@@ -58,7 +62,7 @@ public class IdentitySet implements Iterable<Object>
     
     
     @Override
-    public Iterator<Object> iterator()
+    public Iterator<T> iterator()
     {
         return new Iter();
     }
@@ -69,7 +73,8 @@ public class IdentitySet implements Iterable<Object>
         capacity = capacity << 1;
         assert capacity >= DEFAULT_INIT_CAPACITY;
 
-        Object[] new_data = new Object[capacity];
+        @SuppressWarnings("unchecked")
+        T[] new_data = (T[]) new Object[capacity];
         for (int idx = 0; idx < size; idx++) {
             new_data[idx] = data[idx];
         }
@@ -77,7 +82,7 @@ public class IdentitySet implements Iterable<Object>
     }
 
 
-    private class Iter implements Iterator<Object>
+    private class Iter implements Iterator<T>
     {
         private int cur;
         
@@ -87,7 +92,7 @@ public class IdentitySet implements Iterable<Object>
         }
 
         @Override
-        public Object next() {
+        public T next() {
             return data[cur++];
         }
     }
