@@ -1,8 +1,7 @@
 package org.paninij.soter2.tests;
 
 import org.junit.Test;
-import org.paninij.soter.util.WalaDebug;
-import org.paninij.soter2.NoisyPaniniCallGraphBuilder;
+import org.paninij.soter.util.WalaUtil;
 import org.paninij.soter2.PaniniCallGraphBuilder;
 
 import com.ibm.wala.analysis.pointers.HeapGraph;
@@ -16,25 +15,25 @@ public class TestCallGraph
     
     @Test
     public void testCallGraphWithLeakyServer() throws Throwable {
-        makeCallGraph("Lorg/paninij/soter/tests/LeakyServerTemplate", CLASSPATH,
-                      "logs/LeakyServerCallGraph.pdf", "logs/LeakyServerHeapGraph.pdf");
+        logCallGraph("Lorg/paninij/soter/tests/LeakyServerTemplate", CLASSPATH,
+                     "logs/LeakyServerCallGraph.pdf", "logs/LeakyServerHeapGraph.pdf");
     }
     
     @Test
     public void testCallGraphWithActiveClient() throws Throwable {
-        makeCallGraph("Lorg/paninij/soter/tests/ActiveClientTemplate", CLASSPATH,
-                      "logs/ActiveClientCallGraph.pdf", "logs/ActiveClientHeapGraph.pdf");
+        logCallGraph("Lorg/paninij/soter/tests/ActiveClientTemplate", CLASSPATH,
+                     "logs/ActiveClientCallGraph.pdf", "logs/ActiveClientHeapGraph.pdf");
     }
 
-    private void makeCallGraph(String template, String classPath,
+    private void logCallGraph(String template, String classPath,
                                String callGraphPDF, String heapGraphPDF) throws Throwable
     {
-        PaniniCallGraphBuilder cfaBuilder = NoisyPaniniCallGraphBuilder.make(template, classPath);
+        PaniniCallGraphBuilder cfaBuilder = PaniniCallGraphBuilder.build(template, classPath);
 
-        CallGraph cg = cfaBuilder.makeCallGraph();
+        CallGraph cg = cfaBuilder.getCallGraph();
         HeapGraph<InstanceKey> hg = cfaBuilder.getHeapGraph();
 
-        WalaDebug.makeGraphFile(cg, callGraphPDF);
-        WalaDebug.makeGraphFile(hg, heapGraphPDF);
+        WalaUtil.makeGraphFile(cg, callGraphPDF);
+        WalaUtil.makeGraphFile(hg, heapGraphPDF);
     }
 }

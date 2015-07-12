@@ -2,7 +2,7 @@ package org.paninij.soter.tests;
 
 import org.junit.Test;
 import org.paninij.soter.PaniniAnalysis;
-import org.paninij.soter.util.WalaDebug;
+import org.paninij.soter.util.WalaUtil;
 
 
 public class TestCallGraph
@@ -27,6 +27,6 @@ public class TestCallGraph
     {
         PaniniAnalysis analysis = new PaniniAnalysis(template, classPath);
         analysis.perform();
-        WalaDebug.makeGraphFile(analysis.getCallGraph(), pdfName);
+        WalaUtil.makeGraphFile(analysis.getCallGraph(), pdfName);
     }
 }
