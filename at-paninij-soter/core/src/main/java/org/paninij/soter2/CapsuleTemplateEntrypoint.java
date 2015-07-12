@@ -86,7 +86,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     protected int makeProcedureArgument(AbstractRootMethod root, int i)
     {
         // This should not be used to make a capsule template receiver object.
-        assert i > 1;
+        assert i > 0;
 
         // Note that if this is called `method` cannot be a run decl and must be a procedure, since
         // run decls have exactly one argument: the capsule template reciever object.
