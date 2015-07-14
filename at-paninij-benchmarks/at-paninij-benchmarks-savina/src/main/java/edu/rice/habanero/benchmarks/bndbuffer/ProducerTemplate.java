@@ -8,13 +8,24 @@ import org.paninij.lang.Wired;
     @Wired Manager manager;
 
     double prodItem = 0;
+    int numItemsToProduce = ProdConsBoundedBufferConfig.numItemsPerProducer;
     int itemsProduced = 0;
+    int id;
+    boolean done = false;
 
-    public Data produce(int id, int indx) {
+    public void produce() {
+        if (itemsProduced == numItemsToProduce && !done) {
+            manager.producerFinished();
+            done = true;
+            return;
+        }
         prodItem = ProdConsBoundedBufferConfig.processItem(prodItem, ProdConsBoundedBufferConfig.prodCost);
         itemsProduced++;
-        manager.dataProduced(indx);
-        return new Data(prodItem, id, indx);
+        manager.dataProduced(id, prodItem);
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
 }

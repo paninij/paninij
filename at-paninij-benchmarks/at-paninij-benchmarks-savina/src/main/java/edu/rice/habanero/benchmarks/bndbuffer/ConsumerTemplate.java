@@ -8,9 +8,15 @@ import org.paninij.lang.Wired;
     @Wired Manager manager;
 
     double consItem = 0;
+    int id;
 
     public void consume(Double data) {
         consItem = ProdConsBoundedBufferConfig.processItem(consItem + data, ProdConsBoundedBufferConfig.consCost);
+        manager.dataConsumed(id);
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
 }
