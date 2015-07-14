@@ -35,9 +35,8 @@ import org.paninij.lang.Wired;
         notifyNeighbors();
     }
 
-    public void iteration(int k, int myBlockId, long[][] initData) {
-        boolean haveAllData = storeIterationData(k, myBlockId, initData);
-
+    public void iteration(int otherK, int otherId, long[][] initData) {
+        boolean haveAllData = storeIterationData(otherK, otherId, initData);
         if (haveAllData) {
             k++;
 
@@ -46,6 +45,8 @@ import org.paninij.lang.Wired;
             neighborDataPerIteration.clear();
 
             if (k == (graphSize - 1)) {
+                master.exit();
+                for (Worker n : neighbors) n.exit();
                 master.workerFinished();
             }
         }
@@ -64,7 +65,6 @@ import org.paninij.lang.Wired;
             for (int j = 0; j < blockSize; j++) {
                 int gi = rowOffset + i;
                 int gj = colOffset + j;
-
                 long newIterData = elementAt(gi, k, k - 1, prevIterData) + elementAt(k, gj, k - 1, prevIterData);
                 currentIterData[i][j] = Math.min(prevIterData[i][j], newIterData);
             }

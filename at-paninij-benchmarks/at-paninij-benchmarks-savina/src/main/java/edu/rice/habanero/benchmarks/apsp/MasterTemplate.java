@@ -28,12 +28,12 @@ import org.paninij.lang.Child;
 
                 // add neighbors in same column
                 for (int r = 0; r < numBlocksInSingleDim; r++) {
-                    if (r != bi) neighbors.add(workers[r * bj]);
+                    if (r != bi) neighbors.add(workers[(r * numBlocksInSingleDim) + bj]);
                 }
 
                 // add neighbors in same row
                 for (int c = 0; c < numBlocksInSingleDim; c++) {
-                    if (c != bj) neighbors.add(workers[bi * c]);
+                    if (c != bj) neighbors.add(workers[(bi * numBlocksInSingleDim) + c]);
                 }
 
                 Worker[] n = new Worker[neighbors.size()];
@@ -41,7 +41,7 @@ import org.paninij.lang.Child;
                     n[i] = neighbors.get(i);
                 }
 
-                workers[bi * bj].wire(self, n);
+                workers[(numBlocksInSingleDim * bi) + bj].wire(self, n);
             }
         }
     }
@@ -49,7 +49,7 @@ import org.paninij.lang.Child;
     public FlagFuture start() {
         for (int i = 0; i < numBlocksInSingleDim; i++) {
             for (int j = 0; j < numBlocksInSingleDim; j++) {
-                workers[i * j].initialize(i * numBlocksInSingleDim + j, graphData);
+                workers[(numBlocksInSingleDim * i) + j].initialize((i * numBlocksInSingleDim) + j, graphData);
             }
         }
 
@@ -58,7 +58,6 @@ import org.paninij.lang.Child;
     }
 
     public void workerFinished() {
-        System.out.println("worker finished");
         numWorkersFinished++;
         if (numWorkersFinished == numWorkers) {
             for (Worker w : workers) w.exit();
