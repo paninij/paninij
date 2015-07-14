@@ -11,7 +11,8 @@ import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 
 public class TestCallGraph
 {
-    private static final String CLASSPATH = "lib/at-paninij-soter-tests.jar:lib/at-paninij-runtime.jar"; 
+    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/classes:target/test-classes";
+; 
     
     @Test
     public void testCallGraphWithLeakyServer() throws Throwable {

@@ -16,6 +16,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <at.paninij.version>0.0.1-SNAPSHOT</at.paninij.version>
     <java.version>1.8</java.version>
     <wala.version>1.3.7</wala.version>
     <soter.version>0.0.1-SNAPSHOT</soter.version>
@@ -50,8 +51,13 @@
 
     <dependency>
       <groupId>org.paninij</groupId>
-      <artifactId>at-paninij-soter-tests</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <artifactId>at-paninij-code-gen</artifactId>
+      <version>${at.paninij.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-runtime</artifactId>
+      <version>${at.paninij.version}</version>
     </dependency>
 
     <dependency>

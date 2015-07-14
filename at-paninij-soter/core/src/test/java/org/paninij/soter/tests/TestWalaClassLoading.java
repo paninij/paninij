@@ -19,15 +19,12 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 
 public class TestWalaClassLoading
 {
-    private static final String CLASSPATH = "lib/at-paninij-soter-tests.jar:lib/at-paninij-runtime.jar";
+    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/classes:target/test-classes";
 
     private static final String NORMAL_TYPE = "Lorg/paninij/soter/tests/Secret";
     private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/soter/tests/LeakyServerTemplate";
     private static final String CAPSULE_INTERFACE_TYPE = "Lorg/paninij/soter/tests/LeakyServer";
     private static final String CAPSULE_IMPLEMENTATION_TYPE = "Lorg/paninij/soter/tests/LeakyServer$Thread";
-    
-    //private static final String CAPSULE_IMPLEMENTATION_CLASS_FILE = "";
-    //private static final String CAPSULE_IMPLEMENTATION_SOURCE_FILE = "";
     
     private AnalysisScope analysisScope;
     private ClassHierarchy classHierarchy;
