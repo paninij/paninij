@@ -26,10 +26,6 @@ import org.paninij.lang.Child;
         return flag;
     }
 
-    public void result(Work work) {
-        generateWork(work);
-    }
-
     public void workFinished() {
         numWorkCompleted++;
         if (numWorkCompleted == numWorkSent) {
@@ -38,7 +34,7 @@ import org.paninij.lang.Child;
         }
     }
 
-    private void generateWork(Work work) {
+    public void generateWork(Work work) {
         int indx = (work.srC + work.scC) % numWorkers;
         workers[indx].doWork(work);
         numWorkSent++;

@@ -27,14 +27,14 @@ import org.paninij.lang.Wired;
             int newDim = dim / 2;
             int newNumBlocks = numBlocks / 4;
 
-            master.result(new Work(newPriority, srA + zerDim, scA + zerDim, srB + zerDim, scB + zerDim, srC + zerDim, scC + zerDim, newNumBlocks, newDim));
-            master.result(new Work(newPriority, srA + zerDim, scA + newDim, srB + newDim, scB + zerDim, srC + zerDim, scC + zerDim, newNumBlocks, newDim));
-            master.result(new Work(newPriority, srA + zerDim, scA + zerDim, srB + zerDim, scB + newDim, srC + zerDim, scC + newDim, newNumBlocks, newDim));
-            master.result(new Work(newPriority, srA + zerDim, scA + newDim, srB + newDim, scB + newDim, srC + zerDim, scC + newDim, newNumBlocks, newDim));
-            master.result(new Work(newPriority, srA + newDim, scA + zerDim, srB + zerDim, scB + zerDim, srC + newDim, scC + zerDim, newNumBlocks, newDim));
-            master.result(new Work(newPriority, srA + newDim, scA + newDim, srB + newDim, scB + zerDim, srC + newDim, scC + zerDim, newNumBlocks, newDim));
-            master.result(new Work(newPriority, srA + newDim, scA + zerDim, srB + zerDim, scB + newDim, srC + newDim, scC + newDim, newNumBlocks, newDim));
-            master.result(new Work(newPriority, srA + newDim, scA + newDim, srB + newDim, scB + newDim, srC + newDim, scC + newDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + zerDim, scA + zerDim, srB + zerDim, scB + zerDim, srC + zerDim, scC + zerDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + zerDim, scA + newDim, srB + newDim, scB + zerDim, srC + zerDim, scC + zerDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + zerDim, scA + zerDim, srB + zerDim, scB + newDim, srC + zerDim, scC + newDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + zerDim, scA + newDim, srB + newDim, scB + newDim, srC + zerDim, scC + newDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + newDim, scA + zerDim, srB + zerDim, scB + zerDim, srC + newDim, scC + zerDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + newDim, scA + newDim, srB + newDim, scB + zerDim, srC + newDim, scC + zerDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + newDim, scA + zerDim, srB + zerDim, scB + newDim, srC + newDim, scC + newDim, newNumBlocks, newDim));
+            master.generateWork(new Work(newPriority, srA + newDim, scA + newDim, srB + newDim, scB + newDim, srC + newDim, scC + newDim, newNumBlocks, newDim));
 
         } else {
 
@@ -44,8 +44,8 @@ import org.paninij.lang.Wired;
             int endR = srC + dim;
             int endC = scC + dim;
 
-            for (int i = 0; i < endR; i++) {
-                for (int j = 0; j < endC; j++) {
+            for (int i = srC; i < endR; i++) {
+                for (int j = scC; j < endC; j++) {
                     for (int k = 0; k < dim; k++) {
                         MatMulConfig.C[i][j] += A[i][scA + k] * B[srB + k][j];
                     }
