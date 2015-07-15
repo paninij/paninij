@@ -71,7 +71,7 @@ public class PaniniProcessor extends AbstractProcessor
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
-        note("PaniniProcessor.init()");
+        note("init()");
         super.init(procEnv);
         initOptions(procEnv.getOptions());
     }
@@ -100,6 +100,7 @@ public class PaniniProcessor extends AbstractProcessor
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
+        note("Starting a round of processing for annotations: " + annotations.toString());
         this.roundEnv = roundEnv;
 
         // Sets which contain models
@@ -191,7 +192,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
-        note("`PaniniProcessor` finished a round of processing.");
+        note("Finished a round of processing.");
 
         return false;
     }
@@ -230,17 +231,15 @@ public class PaniniProcessor extends AbstractProcessor
     }
 
     public void note(String msg) {
-        //processingEnv.getMessager().printMessage(Kind.NOTE, "--- " + msg);
-        System.out.println("--- " + msg);
+        System.out.println("--- PaniniProcessor: " + msg);
     }
 
     public void warning(String msg) {
-        //processingEnv.getMessager().printMessage(Kind.WARNING, "~~~ " + msg);
-        System.out.println("~~~ " + msg);
+        System.out.println("~~~ PaniniProcessor: " + msg);
     }
 
     public void error(String msg) {
-        processingEnv.getMessager().printMessage(Kind.ERROR, "!!! " + msg);
+        processingEnv.getMessager().printMessage(Kind.ERROR, "!!! PaniniProcessor: " + msg);
     }
 
     public Types getTypeUtils() {

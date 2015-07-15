@@ -37,7 +37,7 @@ public class SoterProcessor extends AbstractProcessor
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
-        note("SoterProcessor.init()");
+        note("init()");
         super.init(procEnv);
         initOptions(procEnv.getOptions());
     }
@@ -64,22 +64,23 @@ public class SoterProcessor extends AbstractProcessor
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
         if (isEnabled) {
-            note("`SoterProcessor` is starting a round of processing.");
+            note("Starting a round of processing for annotations: " + annotations.toString());
+            note("Finished a round of processing.");
         }
-        note("`SoterProcessor` finished a round of processing.");
+
         return false;
     }
     
     
     public void note(String msg) {
-        System.out.println("--- " + msg);
+        System.out.println("--- SoterProcessor: " + msg);
     }
 
     public void warning(String msg) {
-        System.out.println("~~~ " + msg);
+        System.out.println("~~~ SoterProcessor: " + msg);
     }
 
     public void error(String msg) {
-        processingEnv.getMessager().printMessage(Kind.ERROR, "!!! " + msg);
+        processingEnv.getMessager().printMessage(Kind.ERROR, "!!! SoterProcessor: " + msg);
     }
 }
