@@ -44,6 +44,7 @@ public class CapsuleDummyFactory extends CapsuleArtifactFactory
                 "##",
                 "",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
+                "@CapsuleDummy",
                 "public class #1 extends Capsule$Dummy implements #2",
                 "{",
                 "    ##",
@@ -67,6 +68,7 @@ public class CapsuleDummyFactory extends CapsuleArtifactFactory
     {
         Set<String> imports = this.capsule.getImports();
         imports.add("org.paninij.runtime.Capsule$Dummy");
+        imports.add("org.paninij.lang.CapsuleDummy");
         return imports.stream()
                       .map(i -> "import " + i + ";")
                       .collect(toList());
