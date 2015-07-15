@@ -59,7 +59,7 @@ import org.paninij.model.SignatureElement;
 @SupportedAnnotationTypes({"org.paninij.lang.Capsule",
                            "org.paninij.lang.Signature",
                            "org.paninij.lang.CapsuleTester"})
-@SupportedOptions({"ownership.check.method", "foo"})
+@SupportedOptions({"ownership.check.method"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
@@ -71,6 +71,7 @@ public class PaniniProcessor extends AbstractProcessor
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
+        note("PaniniProcessor.init()");
         super.init(procEnv);
         initOptions(procEnv.getOptions());
     }
@@ -109,7 +110,10 @@ public class PaniniProcessor extends AbstractProcessor
         // Collect all Signature models
         for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class))
         {
-            if (SignatureChecker.check(this, elem)) {
+            // Note: `getElementsAnnotatedWith()` even returns elements which inherit `@Signature`.
+            //       This includes capsule artifacts generated in a prior round which implement a
+            //       user-defined signature.
+            if (elem.getAnnotation(Signature.class) != null && SignatureChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
             }
@@ -187,7 +191,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
-        note("Finished a round of processing.");
+        note("`PaniniProcessor` finished a round of processing.");
 
         return false;
     }
