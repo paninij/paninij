@@ -1,5 +1,6 @@
 package org.paninij.soter;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,8 +11,16 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
+
+import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.lang.CapsuleInterface;
+import org.paninij.soter.util.WalaUtil;
+
+import com.ibm.wala.util.CancelException;
+import com.ibm.wala.util.WalaException;
 
 /**
  * This annotation processor is triggered by the presence of capsule artifacts created by
@@ -63,14 +72,32 @@ public class SoterProcessor extends AbstractProcessor
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
-        if (isEnabled) {
+        if (isEnabled)
+        {
             note("Starting a round of processing for annotations: " + annotations.toString());
+            for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleInterface.class))
+            {
+                // If there is a capsule interface, assume that there is a corresponding template.
+                String name = elem.toString();
+                note("Analyzing "+ name);
+                String path = WalaUtil.fromQualifiedNameToWalaPath(name)
+                            + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX;
+                PaniniAnalysis analysis = new PaniniAnalysis(path, paniniClasspath);
+
+                try {
+                    analysis.perform();
+                } catch (IllegalArgumentException | WalaException | CancelException | IOException e) {
+                    e.printStackTrace();
+                    throw new IllegalStateException("Failed to perform the panini analysis.");
+                }
+
+                note(analysis.getResultString());
+            }
             note("Finished a round of processing.");
         }
 
         return false;
     }
-    
     
     public void note(String msg) {
         System.out.println("--- SoterProcessor: " + msg);

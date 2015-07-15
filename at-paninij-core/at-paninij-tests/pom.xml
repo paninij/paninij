@@ -15,6 +15,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <at.paninij.runtime>${project.basedir}/lib/at-paninij-runtime.jar</at.paninij.runtime>
   </properties>
 
   <build>
@@ -26,6 +27,11 @@
           <generatedTestSourcesDirectory>
             ${project.build.directory}/generated-test-sources
           </generatedTestSourcesDirectory>
+          <compilerArgs>
+            <!--<arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg>-->
+            <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg>
+            <arg>-Apanini.classpath=${at.paninij.runtime}:${project.build.directory}/test-classes</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

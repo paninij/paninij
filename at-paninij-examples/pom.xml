@@ -30,8 +30,8 @@
           </generatedTestSourcesDirectory>
           -->
           <compilerArgs>
-            <arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg>
-           <!-- <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg> -->
+            <!--<arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg>-->
+            <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg>
           </compilerArgs>
         </configuration>
       </plugin>

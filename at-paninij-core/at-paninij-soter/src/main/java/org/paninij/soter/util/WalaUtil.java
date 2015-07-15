@@ -161,4 +161,9 @@ public class WalaUtil
         }
         return templateClass;
     }
+    
+    public static String fromQualifiedNameToWalaPath(String name)
+    {
+        return "L" + name.replace('.', '/');
+    }
 }
