@@ -1,22 +1,13 @@
 package org.paninij.soter.util;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import org.paninij.runtime.util.IdentitySet;
 
 import static java.util.stream.Collectors.toList;
 
-import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
-import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
-import com.ibm.wala.ipa.callgraph.CGNode;
-import com.ibm.wala.ipa.callgraph.CallGraph;
-import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.TypeName;
 import com.ibm.wala.types.TypeReference;

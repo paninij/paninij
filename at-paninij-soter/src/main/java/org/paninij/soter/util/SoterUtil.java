@@ -4,7 +4,6 @@ import static org.paninij.soter.util.PaniniModel.isCapsuleInterface;
 
 import java.util.Iterator;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.paninij.runtime.util.IdentitySet;
@@ -18,7 +17,6 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.MethodReference;
-import com.ibm.wala.types.TypeReference;
 
 public class SoterUtil
 {
