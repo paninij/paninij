@@ -54,6 +54,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "##",
                 "",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
+                "@CapsuleThread",
                 "public class #1 extends Capsule$Thread implements #2",
                 "{",
                 "    ##",
@@ -87,6 +88,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         imports.addAll(this.capsule.getImports());
 
         imports.add("java.util.concurrent.Future");
+        imports.add("org.paninij.lang.CapsuleThread");
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
