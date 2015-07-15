@@ -46,6 +46,7 @@
     <module>at-paninij-code-gen</module>
     <module>at-paninij-runtime</module>
     <module>at-paninij-tests</module>
+    <module>at-paninij-soter</module>
   </modules>
 
   <dependencyManagement>
