@@ -12,7 +12,6 @@ import org.paninij.lang.Wired;
 
     public void done() {
         for (Account a : accounts) a.exit();
-        teller.exit();
     }
 
     public void debit(double amount) {

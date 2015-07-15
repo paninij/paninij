@@ -6,12 +6,12 @@ import org.paninij.lang.Capsule;
 
     double rate;
 
-    public void initialize(double rate) {
-        this.rate = rate;
+    public void initialize(int id) {
+        this.rate = LogisticMapConfig.startRate + (id * LogisticMapConfig.increment);
     }
 
-    public Result compute(double term, int id) {
-        return new Result(LogisticMapConfig.computeNextTerm(term, rate), id);
+    public Result compute(double term) {
+        return new Result(LogisticMapConfig.computeNextTerm(term, rate));
     }
 
 }
