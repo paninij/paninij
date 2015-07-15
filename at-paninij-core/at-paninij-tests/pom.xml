@@ -35,12 +35,14 @@
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-code-gen</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-runtime</artifactId>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-soter</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

@@ -9,7 +9,7 @@ public class TestMain
     @Test
     public void testMainWithLeakyServer() throws Exception
     {
-        String[] args = {"-classpath", "lib/at-paninij-runtime.jar:target/classes:target/test-classes",
+        String[] args = {"-classpath", "lib/at-paninij-runtime.jar:target/test-classes",
                          "Lorg/paninij/soter/tests/LeakyServerTemplate"};
         Main.main(args);
     }
@@ -17,7 +17,7 @@ public class TestMain
     @Test
     public void testMainWithActiveClient() throws Exception
     {
-        String[] args = {"-classpath", "lib/at-paninij-runtime.jar:target/classes:target/test-classes",
+        String[] args = {"-classpath", "lib/at-paninij-runtime.jar:target/test-classes",
                          "Lorg/paninij/soter/tests/ActiveClientTemplate"};
         Main.main(args);
     }

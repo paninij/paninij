@@ -11,7 +11,7 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 
 public class Scratch
 {
-    private static final String CLASSPATH = "lib/at-paninij-soter-tests.jar:lib/at-paninij-runtime.jar"; 
+    private static final String CLASSPATH = "lib/at-paninij-runtime.jar"; 
     private static final String ACTIVE_CLIENT_NAME = "Lorg/paninij/soter/tests/ActiveClientTemplate";
     
     @Test

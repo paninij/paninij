@@ -7,7 +7,7 @@ import org.paninij.soter.util.WalaUtil;
 
 public class TestCallGraph
 {
-    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/classes:target/test-classes"; 
+    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/test-classes"; 
     
     @Test
     public void testCallGraphWithLeakyServer() throws Throwable

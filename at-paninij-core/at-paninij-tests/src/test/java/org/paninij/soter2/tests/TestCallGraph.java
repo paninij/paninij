@@ -11,7 +11,7 @@ import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 
 public class TestCallGraph
 {
-    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/classes:target/test-classes";
+    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/test-classes";
 ; 
     
     @Test
