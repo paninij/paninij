@@ -3,18 +3,18 @@ package edu.rice.habanero.benchmarks.banking;
 public class BankingBenchmark
 {
     public static void main(String[] args) {
-//        BankingScalaActorBenchmark.main(args);
-//        BankingScalaManualStashActorBenchmark.main(args);
-//
-//        BankingScalazActorBenchmark.main(args);
+        BankingScalaActorBenchmark.main(args);
+        BankingScalaManualStashActorBenchmark.main(args);
+
+        BankingScalazActorBenchmark.main(args);
 //        BankingScalazManualStashActorBenchmark.main(args); -- throws error
 
-//        BankingAkkaAwaitActorBenchmark.main(args);
-//        BankingAkkaBecomeActorBenchmark.main(args);
-//        BankingAkkaBecomeExtActorBenchmark.main(args);
-//        BankingAkkaManualStashActorBenchmark.main(args);
-//
-//        BankingFuncJavaActorBenchmark.main(args);
+        BankingAkkaAwaitActorBenchmark.main(args);
+        BankingAkkaBecomeActorBenchmark.main(args);
+        BankingAkkaBecomeExtActorBenchmark.main(args);
+        BankingAkkaManualStashActorBenchmark.main(args);
+
+        BankingFuncJavaActorBenchmark.main(args);
 //        BankingFuncJavaManualStashActorBenchmark.main(args); -- throws error
 
         BankingGparsManualStashActorBenchmark.main(args);
