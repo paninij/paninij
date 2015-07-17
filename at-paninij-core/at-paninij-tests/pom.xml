@@ -21,12 +21,23 @@
     <generated.test.sources.directory>
       ${project.build.directory}/generated-test-sources
     </generated.test.sources.directory>
-    <maven.class.path.file>
-      ${project.build.directory}/maven_class_path.txt
-    </maven.class.path.file>
+    <maven.generated.resources.directory>
+      ${project.build.directory}/generated-resources/maven
+    </maven.generated.resources.directory>
+    <maven.generated.class.path.file>
+      ${maven.generated.resources.directory}/panini_processor_classpath.txt
+    </maven.generated.class.path.file>
   </properties>
 
+
   <build>
+
+    <resources>
+      <resource>
+        <directory>${maven.generated.resources.directory}</directory>
+      </resource>
+    </resources>
+
     <plugins>
 
       <plugin>
@@ -41,7 +52,7 @@
               <goal>build-classpath</goal>
             </goals>
             <configuration>
-              <outputFile>${maven.class.path.file}</outputFile>
+              <outputFile>${maven.generated.class.path.file}</outputFile>
             </configuration>
           </execution>
         </executions>
@@ -60,7 +71,6 @@
             <!-- Panini Compilation Settings -->
             <arg>-Apanini.soter</arg>
             <arg>-Apanini.class.path=${project.build.testOutputDirectory}</arg>
-            <arg>-Apanini.class.path.file=${maven.class.path.file}</arg>
             <arg>-Apanini.source.path=${project.build.sourceDirectory}:${project.build.testSourceDirectory}:${generated.sources.directory}:${generated.test.sources.directory}</arg>
             <arg>-Apanini.class.output=${project.build.testOutputDirectory}</arg>
             <arg>-Apanini.source.output=${generated.test.sources.directory}</arg>

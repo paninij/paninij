@@ -23,7 +23,6 @@ import static java.io.File.pathSeparator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +57,7 @@ import javax.tools.ToolProvider;
 import org.paninij.apt.check.CapsuleChecker;
 import org.paninij.apt.check.CapsuleTestChecker;
 import org.paninij.apt.check.SignatureChecker;
+import org.paninij.apt.util.PaniniArtifactCompiler;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.lang.Capsule;
@@ -91,14 +91,7 @@ public class PaniniProcessor extends AbstractProcessor
 
     // Annotation processor options (i.e. `-A` arguments):
     protected boolean soterEnabled;
-    protected String classPath;
-    protected String classPathFile;
-    protected String sourcePath;
-    protected String classOutput;
-    protected String sourceOutput;
-
-    protected JavaCompiler javaCompiler;
-    protected StandardJavaFileManager fileManager;
+    protected PaniniArtifactCompiler artifactCompiler;
 
     RoundEnvironment roundEnv;
 
@@ -115,12 +108,18 @@ public class PaniniProcessor extends AbstractProcessor
         soterEnabled = options.containsKey("panini.soter") ? true : false;
         if (soterEnabled)
         {
-            initCompileOptions(options);
-            initJavaCompiler();
-            initFileManager();
+            try
+            {
+                artifactCompiler = PaniniArtifactCompiler.makeFromProcessorOptions(options);
+            }
+            catch (IOException e)
+            {
+                warning("Failed to make the panini processor's artifact compiler. Disabling SOTER.");
+                soterEnabled = false;
+            }
         }
     }
-
+    
     protected void initOwnershipOptions(Map<String, String> options)
     {
         note("Annotation Processor Options: " + options);
@@ -140,120 +139,6 @@ public class PaniniProcessor extends AbstractProcessor
         }
         note("Using ownership.check.method = " + ownershipCheckMethod);
     }
-
-
-    protected void initCompileOptions(Map<String, String> options)
-    {
-        // TODO: Add another option to use maven default locations for compile options.
-        initClassPath(options);
-
-        final String[] REMAINING_COMPILE_OPTIONS = {
-            "panini.source.path",
-            "panini.class.output",
-            "panini.source.output"
-        };
-
-        // Check that all required options exist.
-        for (String opt : REMAINING_COMPILE_OPTIONS)
-        {
-            String optValue = options.get(opt);
-            note(opt + " = " + optValue);
-        }
-
-        // If all checks were passed, initialize the remaining compile options.
-        sourcePath    = options.get("panini.source.path");
-        classOutput   = options.get("panini.class.output");
-        sourceOutput  = options.get("panini.source.output");
-    }
-    
-    
-    /**
-     * Initializes `classPath` using the `panini.class.path` option's value appended with the
-     * contents of `panini.class.path.file`.
-     */
-    private void initClassPath(Map<String, String> options)
-    {
-        classPath = options.get("panini.class.path");
-        String fileOptVal = options.get("panini.class.path.file");
-        if (fileOptVal != null)
-        {
-            try
-            {
-                Path path = Paths.get(fileOptVal);
-                String contents = new String(Files.readAllBytes(path));
-                if (classPath == null) {
-                    classPath = contents;
-                } else {
-                    classPath += pathSeparator + contents;
-                }
-            }
-            catch (IOException ex)
-            {
-                // If the class path file could not be read, then just log it and ignore it.
-                String msg ="The given `panini.class.path.file` could not be read: " + fileOptVal;
-                throw new IllegalArgumentException(msg);
-            }
-        }
-    }
-
-    protected void initJavaCompiler()
-    {
-        javaCompiler = ToolProvider.getSystemJavaCompiler();
-        if (javaCompiler == null) {
-            throw new IllegalStateException("Could not get the system java compiler.");
-        }
-    }
-    
-    protected void initFileManager()
-    {
-        fileManager = javaCompiler.getStandardFileManager(null, null, null);
-        if (fileManager == null) {
-            throw new IllegalStateException("Could not get the standard file manager.");
-        }
-
-        try {
-            setFileManagerLocation(fileManager, StandardLocation.CLASS_PATH, classPath);
-            setFileManagerLocation(fileManager, StandardLocation.SOURCE_PATH, sourcePath);
-            setFileManagerLocation(fileManager, StandardLocation.CLASS_OUTPUT, classOutput);
-            setFileManagerLocation(fileManager, StandardLocation.SOURCE_OUTPUT, sourceOutput);
-        }
-        catch (IOException ex) {
-            throw new IllegalStateException("Could not initialize the file manager.");
-        }
-    }
-    
-    protected void closeFileManager()
-    {
-        try {
-            fileManager.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param fm     The file manager on which this location is set.
-     * @param loc    The location with which the file paths are being associated.
-     * @param path  A list of file paths separated by `File.pathSeparator` (i.e. ":" or ";").
-     * 
-     * @return The number files found on the path.
-     * @throws IOException If the given path was somehow invalid.
-     */
-    private int setFileManagerLocation(StandardJavaFileManager fm, Location loc, String path)
-                                                                            throws IOException
-    {
-        String[] strArr = path.split(File.pathSeparator);
-        File[] fileArr = new File[strArr.length];
-        for (int idx = 0; idx < strArr.length; idx++)
-        {
-            File f = new File(strArr[idx]);
-            fileArr[idx] = f;
-        }
-        fm.setLocation(loc, Arrays.asList(fileArr));
-        return fileArr.length;
-    }
-
 
 
     @Override
@@ -356,32 +241,10 @@ public class PaniniProcessor extends AbstractProcessor
         if (soterEnabled)
         {
             try {
-                compile(toBeCompiled);
+                artifactCompiler.compileAll(toBeCompiled);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new IllegalStateException("Failed to compile.");
-            }
-            for (org.paninij.model.Capsule capsule : capsules)
-            {
-                try
-                {
-                    //String artifactName = capsule.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX;
-                    String artifactName = capsule.getQualifiedName();
-                    JavaFileObject javaClassFile = fileManager.getJavaFileForInput(
-                        StandardLocation.CLASS_PATH,
-                        artifactName,
-                        Kind.CLASS
-                    );
-                    if (javaClassFile == null) {
-                        throw new NullPointerException("The `fileManager` failed to load " + artifactName);
-                    } else {
-                        note("Compiled class: " + javaClassFile);
-                    }
-                } catch (IOException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
             }
         }
         
@@ -409,25 +272,6 @@ public class PaniniProcessor extends AbstractProcessor
         note("Finished a round of processing.");
 
         return false;
-    }
-
-    protected void compile(Set<String> sourceClasses) throws IOException
-    {
-        note("compile(): " + sourceClasses);
-        if (sourceClasses.isEmpty()) {
-            return;
-        }
-
-        List<JavaFileObject> sourceFiles = new ArrayList<JavaFileObject>(sourceClasses.size());
-        for (String sourceClass : sourceClasses)
-        {
-            sourceFiles.add(fileManager.getJavaFileForInput(StandardLocation.SOURCE_PATH,
-                                                            sourceClass,
-                                                            Kind.SOURCE));
-        }
-        CompilationTask task = javaCompiler.getTask(null, fileManager, null, null, null, sourceFiles);
-        task.setProcessors(new ArrayList<Processor>(0));
-        task.call();
     }
 
     void createJavaFile(SourceFile source)

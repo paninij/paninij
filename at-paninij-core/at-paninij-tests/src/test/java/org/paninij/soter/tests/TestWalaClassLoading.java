@@ -1,5 +1,7 @@
 package org.paninij.soter.tests;
 
+import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
+
 import java.io.File;
 
 import org.junit.Before;
@@ -7,10 +9,8 @@ import org.junit.Test;
 import org.paninij.soter.util.JavaModel;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.ibm.wala.classLoader.IClass;
-import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.ipa.callgraph.AnalysisScope;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
 import com.ibm.wala.types.ClassLoaderReference;
@@ -19,7 +19,8 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 
 public class TestWalaClassLoading
 {
-    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/test-classes";
+    private static final String CLASSPATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
+    private static final String CLASSPATH = buildEffectiveClassPath("target/test-classes", CLASSPATH_FILE);
 
     private static final String NORMAL_TYPE = "Lorg/paninij/soter/tests/Secret";
     private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/soter/tests/LeakyServerTemplate";

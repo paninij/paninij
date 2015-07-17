@@ -27,14 +27,17 @@
   </build>
 
   <dependencies>
+
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-runtime</artifactId>
     </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+
   </dependencies>
 
 </project>

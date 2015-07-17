@@ -1,5 +1,7 @@
 package org.paninij.soter2.tests;
 
+import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
+
 import org.junit.Test;
 import org.paninij.soter.util.WalaUtil;
 import org.paninij.soter2.PaniniCallGraphBuilder;
@@ -11,8 +13,8 @@ import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 
 public class TestCallGraph
 {
-    private static final String CLASSPATH = "lib/at-paninij-runtime.jar:target/test-classes";
-; 
+    private static final String CLASSPATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
+    private static final String CLASSPATH = buildEffectiveClassPath("target/test-classes", CLASSPATH_FILE);
     
     @Test
     public void testCallGraphWithLeakyServer() throws Throwable {
