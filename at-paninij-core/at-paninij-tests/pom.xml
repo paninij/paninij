@@ -15,22 +15,55 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <at.paninij.runtime>${project.basedir}/lib/at-paninij-runtime.jar</at.paninij.runtime>
+    <generated.sources.directory>
+      ${project.build.directory}/generated-sources
+    </generated.sources.directory>
+    <generated.test.sources.directory>
+      ${project.build.directory}/generated-test-sources
+    </generated.test.sources.directory>
+    <maven.class.path.file>
+      ${project.build.directory}/maven_class_path.txt
+    </maven.class.path.file>
   </properties>
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.10</version>
+        <executions>
+          <execution>
+            <id>build-classpath</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>build-classpath</goal>
+            </goals>
+            <configuration>
+              <outputFile>${maven.class.path.file}</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <generatedTestSourcesDirectory>
-            ${project.build.directory}/generated-test-sources
-          </generatedTestSourcesDirectory>
+          <generatedSourcesDirectory>${generated.sources.directory}</generatedSourcesDirectory>
+          <generatedTestSourcesDirectory>${generated.test.sources.directory}</generatedTestSourcesDirectory>
           <compilerArgs>
             <!--<arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg>-->
             <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg>
-            <arg>-Apanini.classpath=${at.paninij.runtime}:${project.build.directory}/test-classes</arg>
+
+            <!-- Panini Compilation Settings -->
+            <arg>-Apanini.soter</arg>
+            <arg>-Apanini.class.path=${project.build.testOutputDirectory}</arg>
+            <arg>-Apanini.class.path.file=${maven.class.path.file}</arg>
+            <arg>-Apanini.source.path=${project.build.sourceDirectory}:${project.build.testSourceDirectory}:${generated.sources.directory}:${generated.test.sources.directory}</arg>
+            <arg>-Apanini.class.output=${project.build.testOutputDirectory}</arg>
+            <arg>-Apanini.source.output=${generated.test.sources.directory}</arg>
           </compilerArgs>
         </configuration>
       </plugin>
