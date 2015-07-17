@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.processing.Processor;
 import javax.tools.JavaCompiler;
@@ -42,6 +41,14 @@ public class PaniniArtifactCompiler
             throw new IllegalStateException("Could not get the standard file manager.");
         }
 
+        initFileManagerLocations(fileManager, classPath, sourcePath, classOutput, sourceOutput);
+    }
+    
+    
+    public static void initFileManagerLocations(StandardJavaFileManager fileManager,
+                                                String classPath, String sourcePath,
+                                                String classOutput, String sourceOutput)
+    {
         try {
             setFileManagerLocation(fileManager, StandardLocation.CLASS_PATH, classPath);
             setFileManagerLocation(fileManager, StandardLocation.SOURCE_PATH, sourcePath);
@@ -62,8 +69,8 @@ public class PaniniArtifactCompiler
      * 
      * @throws IOException If the given path was somehow invalid.
      */
-    private void setFileManagerLocation(StandardJavaFileManager fm, Location loc, String path)
-                                                                            throws IOException
+    private static void setFileManagerLocation(StandardJavaFileManager fm, Location loc,
+                                               String path) throws IOException
     {
         String[] strArr = path.split(File.pathSeparator);
         if (path.equals("") || strArr.length == 0)
@@ -140,7 +147,7 @@ public class PaniniArtifactCompiler
         }
 
         CompilationTask task = javaCompiler.getTask(null, fileManager, null, null, null, sourceFiles);
-        task.setProcessors(new ArrayList<Processor>(0));
+        //task.setProcessors(new ArrayList<Processor>(0));
         task.call();       
     }
 }

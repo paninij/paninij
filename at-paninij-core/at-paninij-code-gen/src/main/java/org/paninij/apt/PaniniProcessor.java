@@ -18,22 +18,13 @@
  */
 package org.paninij.apt;
 
-import static java.io.File.pathSeparator;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -45,14 +36,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaCompiler.CompilationTask;
-import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject;
-import javax.tools.JavaFileObject.Kind;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
 
 import org.paninij.apt.check.CapsuleChecker;
 import org.paninij.apt.check.CapsuleTestChecker;
@@ -90,6 +74,7 @@ public class PaniniProcessor extends AbstractProcessor
     public static Panini$Ownership.CheckMethod ownershipCheckMethod;
 
     // Annotation processor options (i.e. `-A` arguments):
+    protected boolean initializedWithOptions = false;
     protected boolean soterEnabled;
     protected PaniniArtifactCompiler artifactCompiler;
 
@@ -102,6 +87,15 @@ public class PaniniProcessor extends AbstractProcessor
         super.init(procEnv);
 
         Map<String, String> options = procEnv.getOptions();
+        initWithOptions(options);
+    }
+    
+    public void initWithOptions(Map<String, String> options)
+    {
+        // If this already been initialized, then ignore this attempt with these options.
+        if (initializedWithOptions)
+            return;
+
         initOwnershipOptions(options);
         note("Annotation Processor Options: " + options);
 
@@ -118,6 +112,9 @@ public class PaniniProcessor extends AbstractProcessor
                 soterEnabled = false;
             }
         }
+
+        // Consider this processor initialized.
+        initializedWithOptions = true;
     }
     
     protected void initOwnershipOptions(Map<String, String> options)
@@ -146,8 +143,6 @@ public class PaniniProcessor extends AbstractProcessor
     {
         note("Starting a round of processing for annotations: " + annotations.toString());
         this.roundEnv = roundEnv;
-
-        // compileTest();
 
         // Sets which contain models
         Set<org.paninij.model.Capsule> capsules = new HashSet<org.paninij.model.Capsule>();

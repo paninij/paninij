@@ -32,12 +32,6 @@
 
   <build>
 
-    <resources>
-      <resource>
-        <directory>${maven.generated.resources.directory}</directory>
-      </resource>
-    </resources>
-
     <plugins>
 
       <plugin>

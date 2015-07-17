@@ -4,7 +4,6 @@ import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPat
 
 import org.junit.Test;
 import org.paninij.runtime.util.IdentitySet;
-import org.paninij.soter.util.PaniniModel;
 import org.paninij.soter.util.SoterUtil;
 import org.paninij.soter2.PaniniCallGraphBuilder;
 
