@@ -1,5 +1,6 @@
 package edu.rice.habanero.benchmarks.pingpong;
 
+import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
