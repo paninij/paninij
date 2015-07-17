@@ -149,9 +149,11 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
         List<String> assertions = new ArrayList<String>(required.size());
         for (int idx = 0; idx < required.size(); idx++) {
-            assertions.add(Source.format(
-                    "assert(panini$encapsulated.#0 != null);",
-                    required.get(idx).getIdentifier()));
+            if (required.get(idx).isCapsule()) {
+                assertions.add(Source.format(
+                        "assert(panini$encapsulated.#0 != null);",
+                        required.get(idx).getIdentifier()));
+            }
         }
 
         List<String> lines = Source.lines(
@@ -176,15 +178,19 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
             refs.add(instantiation);
 
             if (var.isArray()) {
-                List<String> lines = Source.lines(
-                        "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
-                        "    ((Panini$Capsule) panini$encapsulated.#0[i]).panini$openLink();",
-                        "}");
-                refs.addAll(Source.formatAll(
-                        lines,
-                        var.getIdentifier()));
+                if (var.getEncapsulatedType().isCapsule()) {
+                    List<String> lines = Source.lines(
+                            "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
+                            "    ((Panini$Capsule) panini$encapsulated.#0[i]).panini$openLink();",
+                            "}");
+                    refs.addAll(Source.formatAll(
+                            lines,
+                            var.getIdentifier()));
+                }
             } else {
-                refs.add(Source.format("((Panini$Capsule) panini$encapsulated.#0).panini$openLink();", var.getIdentifier()));
+                if (var.isCapsule()) {
+                    refs.add(Source.format("((Panini$Capsule) panini$encapsulated.#0).panini$openLink();", var.getIdentifier()));
+                }
             }
 
             decls.add(var.toString());
@@ -386,13 +392,17 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
         for (Variable reference : references) {
             if (reference.isArray()) {
-                List<String> src = Source.lines(
-                        "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
-                        "    ((Panini$Capsule) panini$encapsulated.#0[i]).panini$closeLink();",
-                        "}");
-                shutdowns.addAll(Source.formatAll(src, reference.getIdentifier()));
+                if (reference.getEncapsulatedType().isCapsule()) {
+                    List<String> src = Source.lines(
+                            "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
+                            "    ((Panini$Capsule) panini$encapsulated.#0[i]).panini$closeLink();",
+                            "}");
+                    shutdowns.addAll(Source.formatAll(src, reference.getIdentifier()));
+                }
             } else {
-                shutdowns.add(Source.format("((Panini$Capsule) panini$encapsulated.#0).panini$closeLink();", reference.getIdentifier()));
+                if (reference.isCapsule()) {
+                    shutdowns.add(Source.format("((Panini$Capsule) panini$encapsulated.#0).panini$closeLink();", reference.getIdentifier()));
+                }
             }
         }
 
