@@ -1,0 +1,36 @@
+package edu.rice.habanero.benchmarks.threadring;
+
+import java.io.IOException;
+
+import edu.rice.habanero.benchmarks.Benchmark;
+import edu.rice.habanero.benchmarks.BenchmarkRunner;
+
+public class ThreadRingAtPaniniJBenchmark
+{
+    static class ThreadRingAtPaniniJ extends Benchmark {
+
+        @Override
+        public void cleanupIteration(boolean arg0, double arg1) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void initialize(String[] arg0) throws IOException {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void printArgInfo() {
+            ThreadRingConfig.printArgs();
+        }
+
+        @Override
+        public void runIteration() {
+            ThreadRing$Thread.main(null);
+        }
+    }
+
+    public static void main(String[] args) {
+        BenchmarkRunner.runBenchmark(args, new ThreadRingAtPaniniJ());
+    }
+}
