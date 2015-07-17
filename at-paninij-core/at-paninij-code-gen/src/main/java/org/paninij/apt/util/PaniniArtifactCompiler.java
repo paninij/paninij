@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.processing.Processor;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileManager.Location;
@@ -134,20 +133,25 @@ public class PaniniArtifactCompiler
 
     public void compileAll(Iterable<String> qualifiedJavaClasses) throws IOException
     {
-        List<JavaFileObject> sourceFiles = new ArrayList<JavaFileObject>();
+        List<JavaFileObject> javaFiles = new ArrayList<JavaFileObject>();
         for (String sourceClass : qualifiedJavaClasses)
         {
-            sourceFiles.add(fileManager.getJavaFileForInput(StandardLocation.SOURCE_PATH,
-                                                            sourceClass,
-                                                            Kind.SOURCE));
+            JavaFileObject javaFile = fileManager.getJavaFileForInput(StandardLocation.SOURCE_PATH,
+                                                                      sourceClass, Kind.SOURCE);
+            if (javaFile == null) {
+                String msg = "Could not find a source file to compile: " + sourceClass;
+                throw new IllegalArgumentException(msg);
+            } else {
+                javaFiles.add(javaFile);
+            }
         }
 
-        if (sourceFiles.isEmpty()) {
+        if (javaFiles.isEmpty()) {
             return;
         }
 
-        CompilationTask task = javaCompiler.getTask(null, fileManager, null, null, null, sourceFiles);
-        //task.setProcessors(new ArrayList<Processor>(0));
+        List<String> options = Arrays.asList(new String[] {"-proc:none"});
+        CompilationTask task = javaCompiler.getTask(null, fileManager, null, options, null, javaFiles);
         task.call();       
     }
 }

@@ -25,9 +25,9 @@ public class TestPaniniProcessor
 {
     private static final String CLASS_PATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
     private static final String CLASS_PATH = buildEffectiveClassPath("target/test-classes", CLASS_PATH_FILE);
-    private static final String SOURCE_PATH = "src/test/java";
-    private static final String CLASS_OUTPUT = "target/test-processor/test-classes";
-    private static final String SOURCE_OUTPUT = "target/test-processor/generated-test-sources";
+    private static final String SOURCE_PATH = "src/test/java:target/generated-test-sources";
+    private static final String CLASS_OUTPUT = "target/test-classes";
+    private static final String SOURCE_OUTPUT = "target/generated-test-sources";
     
     private static final String HELLO_WORLD_TEMPLATE = "org.paninij.apt.HelloWorldTemplate";
     
