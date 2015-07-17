@@ -2,10 +2,9 @@ package edu.rice.habanero.benchmarks.piprecision;
 
 import java.math.BigDecimal;
 
+import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
-
-import edu.rice.habanero.benchmarks.pingpong.FlagFuture;
 
 @Capsule public class DelegatorTemplate
 {
