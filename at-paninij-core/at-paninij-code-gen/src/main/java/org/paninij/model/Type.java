@@ -256,6 +256,12 @@ public class Type
         return false;
     }
 
+    public boolean isCapsule() {
+        // TODO checking if the type is actually a capsule.
+        // If a capsule has already been compiled, this method will fail!
+        return this.kind == TypeKind.ERROR;
+    }
+
     @Override
     public String toString() {
         return this.raw();
