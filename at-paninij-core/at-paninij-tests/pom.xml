@@ -64,6 +64,7 @@
 
             <!-- Panini Compilation Settings -->
             <arg>-Apanini.soter</arg>
+            <arg>-Apanini.class.path.file=${maven.generated.class.path.file}</arg>
             <arg>-Apanini.class.path=${project.build.testOutputDirectory}</arg>
             <arg>-Apanini.source.path=${project.build.sourceDirectory}:${project.build.testSourceDirectory}:${generated.sources.directory}:${generated.test.sources.directory}</arg>
             <arg>-Apanini.class.output=${project.build.testOutputDirectory}</arg>
