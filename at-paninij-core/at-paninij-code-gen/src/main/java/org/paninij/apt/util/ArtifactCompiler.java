@@ -25,13 +25,13 @@ import javax.tools.ToolProvider;
  * Uses an appropriately configured `JavaCompiler` and `StandardJavaFileManager` to compile
  * `@PaniniJ` source artifacts to Java class files.
  */
-public class PaniniArtifactCompiler
+public class ArtifactCompiler
 {
     JavaCompiler javaCompiler;
     StandardJavaFileManager fileManager;
     String classPath;
     
-    public PaniniArtifactCompiler(String classPath, String sourcePath,
+    public ArtifactCompiler(String classPath, String sourcePath,
                                   String classOutput, String sourceOutput)
     {
         this.classPath = classPath;
@@ -90,7 +90,7 @@ public class PaniniArtifactCompiler
     }
     
     
-    public static PaniniArtifactCompiler makeFromProcessorOptions(Map<String, String> options)
+    public static ArtifactCompiler makeFromProcessorOptions(Map<String, String> options)
                                                                       throws IOException
     {
         String classPath = buildEffectiveClassPath(options.get("panini.classPath"),
@@ -99,7 +99,7 @@ public class PaniniArtifactCompiler
         String classOutput = options.get("panini.classOutput");
         String sourceOutput = options.get("panini.sourceOutput");
 
-        return new PaniniArtifactCompiler(classPath, sourcePath, classOutput, sourceOutput);
+        return new ArtifactCompiler(classPath, sourcePath, classOutput, sourceOutput);
     }
     
 

@@ -1,10 +1,10 @@
 package org.paninij.apt.soter;
 
-import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
+import static org.paninij.apt.util.ArtifactCompiler.buildEffectiveClassPath;
 
 import org.junit.Test;
 import org.paninij.runtime.util.IdentitySet;
-import org.paninij.soter.PaniniCallGraphBuilder;
+import org.paninij.soter.CallGraphBuilder;
 import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -23,7 +23,7 @@ public class Scratch
     @Test
     public void scratch()
     {
-        PaniniCallGraphBuilder built = PaniniCallGraphBuilder.build(ACTIVE_CLIENT_NAME, CLASSPATH);
+        CallGraphBuilder built = CallGraphBuilder.build(ACTIVE_CLIENT_NAME, CLASSPATH);
         CallGraph cg = built.getCallGraph();
         IdentitySet<CGNode> init = SoterUtil.getInitialCallNodes(cg);
         IdentitySet<CGNode> reachable = SoterUtil.makeCalledByClosure(init, cg);

@@ -1,6 +1,6 @@
 package org.paninij.apt.soter;
 
-import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
+import static org.paninij.apt.util.ArtifactCompiler.buildEffectiveClassPath;
 
 import java.io.File;
 

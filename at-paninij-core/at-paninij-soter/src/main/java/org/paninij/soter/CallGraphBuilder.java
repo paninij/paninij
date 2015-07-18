@@ -22,7 +22,7 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  * Builds Zero-One CFA call graph using flow insensitive Andersen style points-to analysis with
  * entrypoints stemming from the procedures of a single template class.
  */
-public class PaniniCallGraphBuilder
+public class CallGraphBuilder
 {
     protected AnalysisCache analysisCache;
     
@@ -33,12 +33,12 @@ public class PaniniCallGraphBuilder
     protected HeapGraph<InstanceKey> heapGraph;
 
 
-    public PaniniCallGraphBuilder() {
+    public CallGraphBuilder() {
         this(new AnalysisCache());
     }
     
     
-    public PaniniCallGraphBuilder(AnalysisCache analysisCache) {
+    public CallGraphBuilder(AnalysisCache analysisCache) {
         this.analysisCache = analysisCache;
     }
  
@@ -124,12 +124,12 @@ public class PaniniCallGraphBuilder
      * @param classPath     A colon-separated list of file system locations in which WALA should
      *                      look for application classes.
      */
-    public static PaniniCallGraphBuilder build(String templateName, String classPath)
+    public static CallGraphBuilder build(String templateName, String classPath)
     {
         IClassHierarchy cha = WalaUtil.makeClassHierarchy(classPath);
         AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
 
-        PaniniCallGraphBuilder builder = new PaniniCallGraphBuilder();
+        CallGraphBuilder builder = new CallGraphBuilder();
         builder.buildCallGraph(templateName, cha, options);
         return builder;
     }

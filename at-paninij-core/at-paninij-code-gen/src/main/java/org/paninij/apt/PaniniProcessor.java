@@ -50,10 +50,12 @@ import org.paninij.apt.model.CapsuleElement;
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Signature;
 import org.paninij.apt.model.SignatureElement;
-import org.paninij.apt.util.PaniniArtifactCompiler;
+import org.paninij.apt.util.ArtifactCompiler;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
-import org.paninij.soter.PaniniCallGraphBuilder;
+import org.paninij.soter.AnalysisFactory;
+import org.paninij.soter.CallGraphBuilder;
+import org.paninij.soter.model.Analysis;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
@@ -81,8 +83,8 @@ public class PaniniProcessor extends AbstractProcessor
     protected RoundEnvironment roundEnv;
     protected boolean initializedWithOptions = false;
     protected boolean midpointCompile = false;
-    protected PaniniArtifactCompiler artifactCompiler;
-
+    protected ArtifactCompiler artifactCompiler;
+    protected AnalysisFactory analysisFactory;
 
     // Annotation processor options (i.e. `-A` arguments):
     // TODO: Make these not static.
@@ -121,7 +123,8 @@ public class PaniniProcessor extends AbstractProcessor
             try
             {
                 initSoterOptions(options);
-                artifactCompiler = PaniniArtifactCompiler.makeFromProcessorOptions(options);
+                artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(options);
+                analysisFactory = new AnalysisFactory(artifactCompiler.getClassPath());
                 midpointCompile = true;
             }
             catch (IOException e)
@@ -264,21 +267,13 @@ public class PaniniProcessor extends AbstractProcessor
         
         if (callGraphPDFs != null)
         {
-            String classPath = artifactCompiler.getClassPath();
-            IClassHierarchy cha = WalaUtil.makeClassHierarchy(classPath);
-            AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
-
-            PaniniCallGraphBuilder builder = new PaniniCallGraphBuilder();
-
             for (Capsule capsule : capsules)
             {
-                String templateName = capsule.getQualifiedName();
-                String walaPath = WalaUtil.fromQualifiedNameToWalaPath(templateName);
-                walaPath += CAPSULE_TEMPLATE_SUFFIX;
+                String name = capsule.getQualifiedName();
+                Analysis analysis = analysisFactory.analyze(new org.paninij.soter.model.Capsule(name));
 
-                String callGraphPDF = callGraphPDFs + File.separator + templateName + ".pdf";
-                builder.buildCallGraph(walaPath, cha, options);
-                WalaUtil.makeGraphFile(builder.getCallGraph(), callGraphPDF);
+                String callGraphPDF = callGraphPDFs + File.separator + name + ".pdf";
+                WalaUtil.makeGraphFile(analysis.getCallGraph(), callGraphPDF);
             }
         }
         
