@@ -1,4 +1,4 @@
-package org.paninij.apt;
+package org.paninij.apt.soter;
 
 import static javax.tools.JavaFileObject.Kind.SOURCE;
 import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
@@ -21,7 +21,13 @@ import javax.tools.ToolProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.paninij.apt.PaniniProcessor;
+import org.paninij.apt.check.StaticOwnershipTransfer;
+import org.paninij.runtime.check.DynamicOwnershipTransfer;
 
+/**
+ * Includes tests which perform a Java compilation task with a `PaniniProcessor` instance configured
+ * to use `-Apanini.staticOwnership=SOTER`.
+ */
 public class TestPaniniProcessor
 {
     private static final String CLASS_PATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
@@ -29,8 +35,6 @@ public class TestPaniniProcessor
     private static final String SOURCE_PATH = "src/test/java:target/generated-test-sources";
     private static final String CLASS_OUTPUT = "target/test-classes";
     private static final String SOURCE_OUTPUT = "target/generated-test-sources";
-    
-    private static final String HELLO_WORLD_TEMPLATE = "org.paninij.apt.HelloWorldTemplate";
     
     private JavaCompiler javaCompiler;
     private StandardJavaFileManager fileManager;
@@ -55,20 +59,37 @@ public class TestPaniniProcessor
     private Map<String, String> makeOptions()
     {
         Map<String, String> options = new HashMap<String, String>();
-        options.put("panini.dynamicOwnership", "NONE");
-        options.put("panini.staticOwnership", "SOTER");
-        options.put("panini.classPath",    CLASS_PATH);
-        options.put("panini.sourcePath",   SOURCE_PATH);
-        options.put("panini.classOutput",  CLASS_OUTPUT);
+        options.put(DynamicOwnershipTransfer.ARGUMENT_KEY, "NONE");
+        options.put(StaticOwnershipTransfer.ARGUMENT_KEY, "SOTER");
+        options.put("panini.soter.callGraph", null);
+        options.put("panini.classPath", CLASS_PATH);
+        options.put("panini.sourcePath", SOURCE_PATH);
+        options.put("panini.classOutput", CLASS_OUTPUT);
         options.put("panini.sourceOutput", SOURCE_OUTPUT);
         return options;
     }
 
     @Test
-    public void processHelloWorldTemplate() throws IOException
+    public void processActiveClientTemplate() throws IOException
+    {
+        processTemplate("org.paninij.apt.soter.ActiveClientTemplate");
+    }
+    
+    @Test
+    public void processLeakyServerTemplate() throws IOException
+    {
+        processTemplate("org.paninij.apt.soter.LeakyServerTemplate");
+    }
+
+    private void processTemplate(String templateName) throws IOException
     {
         JavaFileObject template = fileManager.getJavaFileForInput(StandardLocation.SOURCE_PATH,
-                                                                  HELLO_WORLD_TEMPLATE, SOURCE);
+                                                                  templateName, SOURCE);
+        if (template == null) {
+            String msg = "Could not load the template source file object: " + templateName;
+            throw new IllegalArgumentException(msg);
+        }
+
         compilationUnits.add(template);
 
         CompilationTask task = javaCompiler.getTask(null, fileManager, null, null, null,

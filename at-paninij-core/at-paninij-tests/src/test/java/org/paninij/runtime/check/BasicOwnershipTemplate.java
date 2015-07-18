@@ -1,9 +1,8 @@
-package org.paninij.runtime.ownership;
+package org.paninij.runtime.check;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
-import org.paninij.runtime.ownership.LeakyServer;
 import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Child;
 import org.paninij.lang.Test;

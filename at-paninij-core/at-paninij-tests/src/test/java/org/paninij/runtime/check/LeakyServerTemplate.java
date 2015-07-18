@@ -1,4 +1,4 @@
-package org.paninij.runtime.ownership;
+package org.paninij.runtime.check;
 
 import org.paninij.lang.Capsule;
 

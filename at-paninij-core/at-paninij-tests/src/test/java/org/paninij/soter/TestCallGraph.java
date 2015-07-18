@@ -1,4 +1,4 @@
-package org.paninij.soter2.tests;
+package org.paninij.soter;
 
 import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
 
@@ -18,13 +18,13 @@ public class TestCallGraph
     
     @Test
     public void testCallGraphWithLeakyServer() throws Throwable {
-        logCallGraph("Lorg/paninij/soter/tests/LeakyServerTemplate", CLASSPATH,
+        logCallGraph("Lorg/paninij/apt/soter/LeakyServerTemplate", CLASSPATH,
                      "logs/LeakyServerCallGraph.pdf", "logs/LeakyServerHeapGraph.pdf");
     }
     
     @Test
     public void testCallGraphWithActiveClient() throws Throwable {
-        logCallGraph("Lorg/paninij/soter/tests/ActiveClientTemplate", CLASSPATH,
+        logCallGraph("Lorg/paninij/apt/soter/ActiveClientTemplate", CLASSPATH,
                      "logs/ActiveClientCallGraph.pdf", "logs/ActiveClientHeapGraph.pdf");
     }
 

@@ -1,4 +1,4 @@
-package org.paninij.soter.tests;
+package org.paninij.soter;
 
 import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
 
@@ -22,10 +22,10 @@ public class TestWalaClassLoading
     private static final String CLASSPATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
     private static final String CLASSPATH = buildEffectiveClassPath("target/test-classes", CLASSPATH_FILE);
 
-    private static final String NORMAL_TYPE = "Lorg/paninij/soter/tests/Secret";
-    private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/soter/tests/LeakyServerTemplate";
-    private static final String CAPSULE_INTERFACE_TYPE = "Lorg/paninij/soter/tests/LeakyServer";
-    private static final String CAPSULE_IMPLEMENTATION_TYPE = "Lorg/paninij/soter/tests/LeakyServer$Thread";
+    private static final String NORMAL_TYPE = "Lorg/paninij/apt/soter/Secret";
+    private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/apt/soter/LeakyServerTemplate";
+    private static final String CAPSULE_INTERFACE_TYPE = "Lorg/paninij/apt/soter/LeakyServer";
+    private static final String CAPSULE_IMPLEMENTATION_TYPE = "Lorg/paninij/apt/soter/LeakyServer$Thread";
     
     private AnalysisScope analysisScope;
     private ClassHierarchy classHierarchy;

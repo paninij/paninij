@@ -1,4 +1,4 @@
-package org.paninij.soter.tests;
+package org.paninij.apt.soter;
 
 import org.paninij.lang.Capsule;
 
