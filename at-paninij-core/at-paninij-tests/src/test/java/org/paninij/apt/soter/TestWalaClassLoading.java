@@ -1,4 +1,4 @@
-package org.paninij.soter;
+package org.paninij.apt.soter;
 
 import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
 

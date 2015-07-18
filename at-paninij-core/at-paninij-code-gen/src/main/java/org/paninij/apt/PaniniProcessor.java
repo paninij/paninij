@@ -18,6 +18,9 @@
  */
 package org.paninij.apt;
 
+import static org.paninij.apt.util.PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,15 +46,18 @@ import org.paninij.apt.check.CapsuleTestChecker;
 import org.paninij.apt.check.SignatureChecker;
 import org.paninij.apt.check.StaticOwnershipTransfer;
 import org.paninij.apt.util.PaniniArtifactCompiler;
-import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.SourceFile;
-import org.paninij.lang.Capsule;
-import org.paninij.lang.CapsuleTest;
-import org.paninij.lang.Signature;
+import org.paninij.model.Signature;
+import org.paninij.model.Capsule;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
-import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.model.SignatureElement;
+import org.paninij.runtime.check.DynamicOwnershipTransfer;
+import org.paninij.soter.PaniniCallGraphBuilder;
+import org.paninij.soter.util.WalaUtil;
+
+import com.ibm.wala.ipa.callgraph.AnalysisOptions;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
 
 
 /**
@@ -68,19 +74,28 @@ import org.paninij.model.SignatureElement;
                    "panini.sourceOutput",
                    DynamicOwnershipTransfer.ARGUMENT_KEY,
                    StaticOwnershipTransfer.ARGUMENT_KEY,
-                   "panini.soter.logCallGraph"})
+                   "panini.soter.callGraphPDFs"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
-    // Annotation processor options (i.e. `-A` arguments):
-    public static DynamicOwnershipTransfer.Kind dynamicOwnershipTransferKind;
-    public static StaticOwnershipTransfer.Kind staticOwnershipTransferKind;
+    protected RoundEnvironment roundEnv;
     protected boolean initializedWithOptions = false;
-
     protected boolean midpointCompile = false;
     protected PaniniArtifactCompiler artifactCompiler;
-    protected RoundEnvironment roundEnv;
 
+
+    // Annotation processor options (i.e. `-A` arguments):
+    // TODO: Make these not static.
+    protected static DynamicOwnershipTransfer.Kind dynamicOwnershipTransferKind;
+    protected static StaticOwnershipTransfer.Kind staticOwnershipTransferKind;
+    
+    /**
+     * If null, then no call graph PDFs are generated. Otherwise, this is a path to a directory in
+     * which the PDFs will be placed.
+     */
+    protected String callGraphPDFs;
+
+    
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
@@ -93,9 +108,10 @@ public class PaniniProcessor extends AbstractProcessor
     
     public void initWithOptions(Map<String, String> options)
     {
-        // If this already been initialized, then ignore this attempt with these options.
-        if (initializedWithOptions)
+        // If this already been initialized, then ignore this attempt with these options:
+        if (initializedWithOptions) {
             return;
+        }
 
         initOwnershipOptions(options);
         note("Annotation Processor Options: " + options);
@@ -104,6 +120,7 @@ public class PaniniProcessor extends AbstractProcessor
         {
             try
             {
+                initSoterOptions(options);
                 artifactCompiler = PaniniArtifactCompiler.makeFromProcessorOptions(options);
                 midpointCompile = true;
             }
@@ -114,7 +131,7 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
 
-        // Consider this processor initialized.
+        // Consider this processor initialized:
         initializedWithOptions = true;
     }
     
@@ -130,6 +147,13 @@ public class PaniniProcessor extends AbstractProcessor
         staticOwnershipTransferKind = StaticOwnershipTransfer.Kind.fromString(opt);
         note(StaticOwnershipTransfer.ARGUMENT_KEY + " = " + staticOwnershipTransferKind);
     }
+    
+    
+    protected void initSoterOptions(Map<String, String> options)
+    {
+        assert staticOwnershipTransferKind == StaticOwnershipTransfer.Kind.SOTER;
+        callGraphPDFs = options.get("panini.soter.callGraphPDFs");
+    }
 
 
     @Override
@@ -139,24 +163,24 @@ public class PaniniProcessor extends AbstractProcessor
         this.roundEnv = roundEnv;
 
         // Sets which contain models
-        Set<org.paninij.model.Capsule> capsules = new HashSet<org.paninij.model.Capsule>();
-        Set<org.paninij.model.Signature> signatures = new HashSet<org.paninij.model.Signature>();
-        Set<org.paninij.model.Capsule> capsuleTests = new HashSet<org.paninij.model.Capsule>();
+        Set<Capsule> capsules = new HashSet<Capsule>();
+        Set<Signature> signatures = new HashSet<Signature>();
+        Set<Capsule> capsuleTests = new HashSet<Capsule>();
 
         // Collect all Signature models
-        for (Element elem : roundEnv.getElementsAnnotatedWith(Signature.class))
+        for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Signature.class))
         {
             // Note: `getElementsAnnotatedWith()` even returns elements which inherit `@Signature`.
             //       This includes capsule artifacts generated in a prior round which implement a
             //       user-defined signature.
-            if (elem.getAnnotation(Signature.class) != null && SignatureChecker.check(this, elem)) {
+            if (elem.getAnnotation(org.paninij.lang.Signature.class) != null && SignatureChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
             }
         }
 
         // Collect all Capsule models
-        for (Element elem : roundEnv.getElementsAnnotatedWith(Capsule.class))
+        for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
             if (CapsuleChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
@@ -165,7 +189,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         // Collect all CapsuleTest capsule models
-        for (Element elem : roundEnv.getElementsAnnotatedWith(CapsuleTest.class))
+        for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.CapsuleTest.class))
         {
             if (CapsuleTestChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
@@ -187,7 +211,7 @@ public class PaniniProcessor extends AbstractProcessor
         
 
         // Generate artifacts from signature model
-        for (org.paninij.model.Signature signature : signatures)
+        for (Signature signature : signatures)
         {
             // The original signature needs to be compiled.
             toBeCompiled.add(signature.getQualifiedName());
@@ -204,11 +228,11 @@ public class PaniniProcessor extends AbstractProcessor
         }
         
         // Generate capsule artifacts
-        for (org.paninij.model.Capsule capsule : capsules)
+        for (Capsule capsule : capsules)
         {
             // Add the capsule template itself:
             if (capsuleTests.contains(capsule) == false) {
-                toBeCompiled.add(capsule.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
+                toBeCompiled.add(capsule.getQualifiedName() + CAPSULE_TEMPLATE_SUFFIX);
             }
             
             // Generate Messages
@@ -238,7 +262,27 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
         
-        for (org.paninij.model.Capsule capsule : capsules)
+        if (callGraphPDFs != null)
+        {
+            String classPath = artifactCompiler.getClassPath();
+            IClassHierarchy cha = WalaUtil.makeClassHierarchy(classPath);
+            AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
+
+            PaniniCallGraphBuilder builder = new PaniniCallGraphBuilder();
+
+            for (Capsule capsule : capsules)
+            {
+                String templateName = capsule.getQualifiedName();
+                String walaPath = WalaUtil.fromQualifiedNameToWalaPath(templateName);
+                walaPath += CAPSULE_TEMPLATE_SUFFIX;
+
+                String callGraphPDF = callGraphPDFs + File.separator + templateName + ".pdf";
+                builder.buildCallGraph(walaPath, cha, options);
+                WalaUtil.makeGraphFile(builder.getCallGraph(), callGraphPDF);
+            }
+        }
+        
+        for (Capsule capsule : capsules)
         {
             // Generate capsule thread profile
             this.createJavaFile(threadCapsuleFactory.make(capsule));
@@ -247,7 +291,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         // Generate capsule test artifacts
-        for (org.paninij.model.Capsule capsule : capsuleTests)
+        for (Capsule capsule : capsuleTests)
         {
             // Generate Messages
             for (Procedure procedure : capsule.getProcedures()) {

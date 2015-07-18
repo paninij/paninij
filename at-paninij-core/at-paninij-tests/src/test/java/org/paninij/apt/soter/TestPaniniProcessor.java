@@ -61,7 +61,7 @@ public class TestPaniniProcessor
         Map<String, String> options = new HashMap<String, String>();
         options.put(DynamicOwnershipTransfer.ARGUMENT_KEY, "NONE");
         options.put(StaticOwnershipTransfer.ARGUMENT_KEY, "SOTER");
-        options.put("panini.soter.callGraph", null);
+        options.put("panini.soter.callGraphPDFs", "logs");
         options.put("panini.classPath", CLASS_PATH);
         options.put("panini.sourcePath", SOURCE_PATH);
         options.put("panini.classOutput", CLASS_OUTPUT);

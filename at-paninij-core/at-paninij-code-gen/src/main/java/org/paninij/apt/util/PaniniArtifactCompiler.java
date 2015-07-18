@@ -29,10 +29,12 @@ public class PaniniArtifactCompiler
 {
     JavaCompiler javaCompiler;
     StandardJavaFileManager fileManager;
+    String classPath;
     
     public PaniniArtifactCompiler(String classPath, String sourcePath,
                                   String classOutput, String sourceOutput)
     {
+        this.classPath = classPath;
         javaCompiler = ToolProvider.getSystemJavaCompiler();
 
         fileManager = javaCompiler.getStandardFileManager(null, null, null);
@@ -153,5 +155,11 @@ public class PaniniArtifactCompiler
         List<String> options = Arrays.asList(new String[] {"-proc:none"});
         CompilationTask task = javaCompiler.getTask(null, fileManager, null, options, null, javaFiles);
         task.call();       
+    }
+
+
+    public String getClassPath()
+    {
+        return classPath;
     }
 }

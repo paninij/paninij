@@ -12,7 +12,6 @@ import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.TypeName;
 import com.ibm.wala.types.TypeReference;
 
-import static org.paninij.apt.CapsuleDummyFactory.CAPSULE_DUMMY_SUFFIX;
 import static org.paninij.soter.util.JavaModel.*;
 
 /**
@@ -26,6 +25,7 @@ public class PaniniModel
     // TODO: Do annotation checking in a more robust way.
     private static final String CAPSULE_ANNOTATION_NAME = "Capsule";
     private static final String CAPSULE_INTERFACE_ANNOTATION_NAME = "CapsuleInterface";
+    private static final String CAPSULE_DUMMY_SUFFIX = "$Dummy";
 
 
     /**

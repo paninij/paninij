@@ -16,7 +16,6 @@ import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
 import org.paninij.model.AnnotationKind;
 import org.paninij.model.Procedure;
-import org.paninij.model.Type;
 import org.paninij.model.Variable;
 
 public class CapsuleDummyFactory extends CapsuleArtifactFactory
