@@ -3,6 +3,8 @@ package org.paninij.soter.util;
 import static org.paninij.soter.util.PaniniModel.isCapsuleInterface;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -17,6 +19,8 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.MethodReference;
+
+import edu.illinois.soter.messagedata.MessageInvocation;
 
 public class SoterUtil
 {

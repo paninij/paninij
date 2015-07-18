@@ -3,8 +3,8 @@ package org.paninij.soter2.tests;
 import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
 
 import org.junit.Test;
+import org.paninij.soter.PaniniCallGraphBuilder;
 import org.paninij.soter.util.WalaUtil;
-import org.paninij.soter2.PaniniCallGraphBuilder;
 
 import com.ibm.wala.analysis.pointers.HeapGraph;
 import com.ibm.wala.ipa.callgraph.CallGraph;

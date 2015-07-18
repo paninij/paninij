@@ -91,11 +91,11 @@ public class PaniniArtifactCompiler
     public static PaniniArtifactCompiler makeFromProcessorOptions(Map<String, String> options)
                                                                       throws IOException
     {
-        String classPath = buildEffectiveClassPath(options.get("panini.class.path"),
-                                                   options.get("panini.class.path.file"));
-        String sourcePath = options.get("panini.source.path");
-        String classOutput = options.get("panini.class.output");
-        String sourceOutput = options.get("panini.source.output");
+        String classPath = buildEffectiveClassPath(options.get("panini.classPath"),
+                                                   options.get("panini.classPathFile"));
+        String sourcePath = options.get("panini.sourcePath");
+        String classOutput = options.get("panini.classOutput");
+        String sourceOutput = options.get("panini.sourceOutput");
 
         return new PaniniArtifactCompiler(classPath, sourcePath, classOutput, sourceOutput);
     }

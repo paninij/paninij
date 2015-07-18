@@ -1,4 +1,4 @@
-package org.paninij.soter2;
+package org.paninij.soter;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IMethod;

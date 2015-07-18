@@ -19,47 +19,51 @@ import org.paninij.runtime.util.IdentityStack;
 import org.paninij.runtime.util.IdentityStackStore;
 
 
-public class Panini$Ownership
+public class DynamicOwnershipTransfer
 {
-    public static boolean isSafeTransfer(Object msg, Object local, CheckMethod method)
+    public static final String ARGUMENT_KEY = "panini.ownershipTransfer.dynamic";
+    
+    public static boolean isSafeTransfer(Object msg, Object local, Kind method)
     {
         switch (method) {
-        case RUNTIME_REFLECTION_NAIVE:
-            return RUNTIME_REFLECTION_NAIVE.isSafeTransfer(msg, local);
-        case RUNTIME_REFLECTION_OPTIMIZED:
-            return RUNTIME_REFLECTION_OPTIMIZED.isSafeTransfer(msg, local);
-        case RUNTIME_NATIVE:
-            return RUNTIME_NATIVE.isSafeTransfer(msg, local);
+        case NONE:
+            return true;
+        case REFLECTION_NAIVE:
+            return REFLECTION_NAIVE.isSafeTransfer(msg, local);
+        case REFLECTION_OPTIMIZED:
+            return REFLECTION_OPTIMIZED.isSafeTransfer(msg, local);
+        case NATIVE:
+            return NATIVE.isSafeTransfer(msg, local);
         default:
             throw new IllegalArgumentException("Unknown `OwnershipCheckMethod`: " + method);
         }
     }
     
-    
-    
-    public static enum CheckMethod
+    public static enum Kind
     {
-        RUNTIME_REFLECTION_NAIVE,
-        RUNTIME_REFLECTION_OPTIMIZED,
-        RUNTIME_NATIVE;
+        NONE,
+        REFLECTION_NAIVE,
+        REFLECTION_OPTIMIZED,
+        NATIVE;
         
         /**
-         * Converts the given string `s` to the matching enum value.
+         * Converts the given string `s` to the matching enum value. Note that if either `null` or
+         * the empty string are interpreted given, then the default `Kind` is returned.
          * 
          * @throws IllegalArgumentException If there is no enum value matching the given string.
          */
-        public static CheckMethod fromString(String s)
+        public static Kind fromString(String s)
         {
-            if (s == null) {
-                throw new IllegalArgumentException("Not a known `OwnershipCheckMethod`: <null>");
-            }
-            
+            if (s == null || s.isEmpty())
+                return getDefault();
+            if (s.equals("NONE"))
+                return NONE;
             if (s.equals("RUNTIME_REFLECTION_NAIVE"))
-                return RUNTIME_REFLECTION_NAIVE;
+                return REFLECTION_NAIVE;
             if (s.equals("RUNTIME_REFLECTION_OPTIMIZED"))
-                return RUNTIME_REFLECTION_OPTIMIZED;
+                return REFLECTION_OPTIMIZED;
             if (s.equals("RUNTIME_NATIVE"))
-                return RUNTIME_NATIVE;
+                return NATIVE;
             
             throw new IllegalArgumentException("Not a known `OwnershipCheckMethod`: " + s);
         }
@@ -77,18 +81,24 @@ public class Panini$Ownership
             }
         }
         
-        public static CheckMethod getDefault() {
-            return RUNTIME_REFLECTION_NAIVE;
-        }
-        
-        public static String getArgumentKey() {
-            return "ownership.check.method";
+        public static Kind getDefault() {
+            return NONE;
         }
     }
 
 
 
-    public static class RUNTIME_REFLECTION_NAIVE
+    public static class NONE
+    {
+        public static boolean isSafeTransfer(Object msg, Object local)
+        {
+            return true;
+        }
+    }
+    
+    
+
+    public static class REFLECTION_NAIVE
     {
         public static boolean isSafeTransfer(Object msg, Object local)
         {
@@ -126,7 +136,7 @@ public class Panini$Ownership
 
     
     
-    public static class RUNTIME_REFLECTION_OPTIMIZED
+    public static class REFLECTION_OPTIMIZED
     {
         /**
          * Thread-local storage used to explore the object graph of messages. It is used across all
@@ -324,7 +334,8 @@ public class Panini$Ownership
         }
         
 
-private static boolean areDisjoint(IdentitySet<Object> msg_refs, IdentitySet<Object> local_refs)
+        private static boolean areDisjoint(IdentitySet<Object> msg_refs,
+                                           IdentitySet<Object> local_refs)
         {
             for (Object obj : msg_refs) {
                 if (local_refs.contains(obj)) {
@@ -336,12 +347,12 @@ private static boolean areDisjoint(IdentitySet<Object> msg_refs, IdentitySet<Obj
     }
     
     
-    public static class RUNTIME_NATIVE
+    public static class NATIVE
     {
         public static boolean isSafeTransfer(Object msg, Object local)
         {
-            // TODO: Everything!
-            return false;
+            String err = "The `NATIVE` dynamic ownership transfer check has not been implemented.";
+            throw new UnsupportedOperationException(err);
         }
     }
 }

@@ -59,16 +59,22 @@
           <generatedSourcesDirectory>${generated.sources.directory}</generatedSourcesDirectory>
           <generatedTestSourcesDirectory>${generated.test.sources.directory}</generatedTestSourcesDirectory>
           <compilerArgs>
-            <!--<arg>-Aownership.check.method=RUNTIME_REFLECTION_NAIVE</arg>-->
-            <arg>-Aownership.check.method=RUNTIME_REFLECTION_OPTIMIZED</arg>
+            <!-- Dynamic ownership transfer methods: -->
+            <arg>-Apanini.ownershipTransfer.dynamic=NONE</arg>
+            <!--<arg>-Apanini.ownershipTransfer.dynamic=REFLECTION_NAIVE</arg>-->
+            <!--<arg>-Apanini.ownershipTransfer.dynamic=REFLECTION_OPTIMIZED</arg>-->
+            <!--<arg>-Apanini.ownershipTransfer.dynamic=NATIVE</arg>-->
 
-            <!-- Panini Compilation Settings -->
-            <arg>-Apanini.soter</arg>
-            <arg>-Apanini.class.path.file=${maven.generated.class.path.file}</arg>
-            <arg>-Apanini.class.path=${project.build.testOutputDirectory}</arg>
-            <arg>-Apanini.source.path=${project.build.sourceDirectory}:${project.build.testSourceDirectory}:${generated.sources.directory}:${generated.test.sources.directory}</arg>
-            <arg>-Apanini.class.output=${project.build.testOutputDirectory}</arg>
-            <arg>-Apanini.source.output=${generated.test.sources.directory}</arg>
+            <!-- Static ownership transfer methods: -->
+            <!--<arg>-Apanini.ownershipTransfer.static=NONE</arg>-->
+            <arg>-Apanini.ownershipTransfer.static=SOTER</arg>
+
+            <!-- Panini compilation settings: -->
+            <arg>-Apanini.classPathFile=${maven.generated.class.path.file}</arg>
+            <arg>-Apanini.classPath=${project.build.testOutputDirectory}</arg>
+            <arg>-Apanini.sourcePath=${project.build.sourceDirectory}:${project.build.testSourceDirectory}:${generated.sources.directory}:${generated.test.sources.directory}</arg>
+            <arg>-Apanini.classOutput=${project.build.testOutputDirectory}</arg>
+            <arg>-Apanini.sourceOutput=${generated.test.sources.directory}</arg>
           </compilerArgs>
         </configuration>
       </plugin>

@@ -1,6 +1,5 @@
 package org.paninij.apt.capsuletest;
 
-import org.paninij.apt.capsuletest.Bar;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 

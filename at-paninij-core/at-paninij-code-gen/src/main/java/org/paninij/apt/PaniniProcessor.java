@@ -41,6 +41,7 @@ import javax.tools.JavaFileObject;
 import org.paninij.apt.check.CapsuleChecker;
 import org.paninij.apt.check.CapsuleTestChecker;
 import org.paninij.apt.check.SignatureChecker;
+import org.paninij.apt.check.StaticOwnershipTransfer;
 import org.paninij.apt.util.PaniniArtifactCompiler;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.SourceFile;
@@ -49,7 +50,7 @@ import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Signature;
 import org.paninij.model.CapsuleElement;
 import org.paninij.model.Procedure;
-import org.paninij.runtime.check.Panini$Ownership;
+import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.model.SignatureElement;
 
 
@@ -60,25 +61,25 @@ import org.paninij.model.SignatureElement;
 @SupportedAnnotationTypes({"org.paninij.lang.Capsule",
                            "org.paninij.lang.Signature",
                            "org.paninij.lang.CapsuleTester"})
-@SupportedOptions({"ownership.check.method",
-                   "panini.soter",
-                   "panini.class.path",
-                   "panini.class.path.file",
-                   "panini.source.path",
-                   "panini.class.output",
-                   "panini.source.output"})
+@SupportedOptions({"panini.classPath",
+                   "panini.classPathFile",
+                   "panini.sourcePath",
+                   "panini.classOutput",
+                   "panini.sourceOutput",
+                   DynamicOwnershipTransfer.ARGUMENT_KEY,
+                   StaticOwnershipTransfer.ARGUMENT_KEY,
+                   "panini.soter.logCallGraph"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
     // Annotation processor options (i.e. `-A` arguments):
-    public static Panini$Ownership.CheckMethod ownershipCheckMethod;
-
-    // Annotation processor options (i.e. `-A` arguments):
+    public static DynamicOwnershipTransfer.Kind dynamicOwnershipTransferKind;
+    public static StaticOwnershipTransfer.Kind staticOwnershipTransferKind;
     protected boolean initializedWithOptions = false;
-    protected boolean soterEnabled;
-    protected PaniniArtifactCompiler artifactCompiler;
 
-    RoundEnvironment roundEnv;
+    protected boolean midpointCompile = false;
+    protected PaniniArtifactCompiler artifactCompiler;
+    protected RoundEnvironment roundEnv;
 
     @Override
     public void init(ProcessingEnvironment procEnv)
@@ -99,17 +100,17 @@ public class PaniniProcessor extends AbstractProcessor
         initOwnershipOptions(options);
         note("Annotation Processor Options: " + options);
 
-        soterEnabled = options.containsKey("panini.soter") ? true : false;
-        if (soterEnabled)
+        if (staticOwnershipTransferKind == StaticOwnershipTransfer.Kind.SOTER)
         {
             try
             {
                 artifactCompiler = PaniniArtifactCompiler.makeFromProcessorOptions(options);
+                midpointCompile = true;
             }
             catch (IOException e)
             {
                 warning("Failed to make the panini processor's artifact compiler. Disabling SOTER.");
-                soterEnabled = false;
+                midpointCompile = false;
             }
         }
 
@@ -119,22 +120,15 @@ public class PaniniProcessor extends AbstractProcessor
     
     protected void initOwnershipOptions(Map<String, String> options)
     {
-        note("Annotation Processor Options: " + options);
-        initOwnershipCheckMethod(options);
-    }
+        String opt;
 
-    protected void initOwnershipCheckMethod(Map<String, String> options)
-    {
-        String opt = options.get(Panini$Ownership.CheckMethod.getArgumentKey());
-        if (opt == null)
-        {
-            ownershipCheckMethod = Panini$Ownership.CheckMethod.getDefault();
-            note("No `ownership.check.method` annotation processor argument given. Using default.");
-        } else {
-            // Throws exception if `opt` is invalid:
-            ownershipCheckMethod = Panini$Ownership.CheckMethod.fromString(opt);
-        }
-        note("Using ownership.check.method = " + ownershipCheckMethod);
+        opt = options.get(DynamicOwnershipTransfer.ARGUMENT_KEY);
+        dynamicOwnershipTransferKind = DynamicOwnershipTransfer.Kind.fromString(opt);
+        note(DynamicOwnershipTransfer.ARGUMENT_KEY + " = " + dynamicOwnershipTransferKind);
+
+        opt = options.get(StaticOwnershipTransfer.ARGUMENT_KEY);
+        staticOwnershipTransferKind = StaticOwnershipTransfer.Kind.fromString(opt);
+        note(StaticOwnershipTransfer.ARGUMENT_KEY + " = " + staticOwnershipTransferKind);
     }
 
 
@@ -233,10 +227,11 @@ public class PaniniProcessor extends AbstractProcessor
             toBeCompiled.add(sourceFile.qualifiedName);
         }
         
-        if (soterEnabled)
+        if (midpointCompile)
         {
             try {
                 artifactCompiler.compileAll(toBeCompiled);
+                note("Compiled the following classes at the processor's midpoint: " + toBeCompiled);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new IllegalStateException("Failed to compile.");

@@ -94,7 +94,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
-        imports.add("org.paninij.runtime.check.Panini$Ownership");
+        imports.add("org.paninij.runtime.check.DynamicOwnershipTransfer");
         imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -486,8 +486,8 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
     private String generateAssertSafeResultTransfer()
     {
         return Source.format(
-                "assert Panini$Ownership.#0.isSafeTransfer(#1, #2) : #3",
-                PaniniProcessor.ownershipCheckMethod,
+                "assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2) : #3",
+                PaniniProcessor.dynamicOwnershipTransferKind,
                 "result",
                 "panini$getAllState()",
                 "\"Procedure return attempted unsafe ownership transfer.\"");

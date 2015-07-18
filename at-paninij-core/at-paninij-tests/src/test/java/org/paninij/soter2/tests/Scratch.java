@@ -4,12 +4,15 @@ import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPat
 
 import org.junit.Test;
 import org.paninij.runtime.util.IdentitySet;
+import org.paninij.soter.PaniniCallGraphBuilder;
 import org.paninij.soter.util.SoterUtil;
-import org.paninij.soter2.PaniniCallGraphBuilder;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 
+/**
+ * This includes tests used to drive experiments related to WALA and the SOTER analysis.
+ */
 public class Scratch
 {
     private static final String CLASSPATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";

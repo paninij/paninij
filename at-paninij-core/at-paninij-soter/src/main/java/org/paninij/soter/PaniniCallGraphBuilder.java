@@ -1,4 +1,4 @@
-package org.paninij.soter2;
+package org.paninij.soter;
 
 import org.paninij.soter.util.WalaUtil;
 

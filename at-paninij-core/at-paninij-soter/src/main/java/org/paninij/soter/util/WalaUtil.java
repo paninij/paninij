@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.MissingResourceException;
 import java.util.Set;
 
 import com.ibm.wala.classLoader.IClass;
@@ -35,6 +36,29 @@ public class WalaUtil
 
     public static final String DOT_EXECUTABLE = "/usr/local/bin/dot";
     public static final String DOT_TEMPORARY_FILE = "callgraph_temp_file.dot"; 
+    
+    private static final String[] REQUIRED_RESOURCES = {
+        "wala.properties",
+        "Exclusions.txt",
+        "primordial.txt",
+        "primordial.jar.model",
+        "natives.xml"
+    };
+    
+    
+    public static void checkRequiredResourcesExist()
+    {
+        for (String res : REQUIRED_RESOURCES)
+        {
+            if (WalaUtil.class.getClassLoader().getResource(res) == null)
+            {
+                String msg = "A required resource does not exist.";
+                throw new MissingResourceException(msg, "WalaUtil", res);
+            }
+        }
+    }
+
+ 
     
     /**
      * Note that the resulting `AnalysisOptions` object does not have any entrypoints.

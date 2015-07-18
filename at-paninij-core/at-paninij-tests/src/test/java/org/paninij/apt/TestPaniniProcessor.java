@@ -20,6 +20,7 @@ import javax.tools.ToolProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.paninij.apt.PaniniProcessor;
 
 public class TestPaniniProcessor
 {
@@ -54,11 +55,12 @@ public class TestPaniniProcessor
     private Map<String, String> makeOptions()
     {
         Map<String, String> options = new HashMap<String, String>();
-        options.put("panini.soter",         null);
-        options.put("panini.class.path",    CLASS_PATH);
-        options.put("panini.source.path",   SOURCE_PATH);
-        options.put("panini.class.output",  CLASS_OUTPUT);
-        options.put("panini.source.output", SOURCE_OUTPUT);
+        options.put("panini.dynamicOwnership", "NONE");
+        options.put("panini.staticOwnership", "SOTER");
+        options.put("panini.classPath",    CLASS_PATH);
+        options.put("panini.sourcePath",   SOURCE_PATH);
+        options.put("panini.classOutput",  CLASS_OUTPUT);
+        options.put("panini.sourceOutput", SOURCE_OUTPUT);
         return options;
     }
 

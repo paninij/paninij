@@ -3,7 +3,7 @@ package org.paninij.soter.tests;
 import static org.paninij.apt.util.PaniniArtifactCompiler.buildEffectiveClassPath;
 
 import org.junit.Test;
-import org.paninij.soter.PaniniAnalysis;
+import org.paninij.soter.PaniniAnalysisPrototype;
 import org.paninij.soter.util.WalaUtil;
 
 
@@ -28,7 +28,7 @@ public class TestCallGraph
 
     private void makeCallGraph(String template, String classPath, String pdfName) throws Throwable
     {
-        PaniniAnalysis analysis = new PaniniAnalysis(template, classPath);
+        PaniniAnalysisPrototype analysis = new PaniniAnalysisPrototype(template, classPath);
         analysis.perform();
         WalaUtil.makeGraphFile(analysis.getCallGraph(), pdfName);
     }

@@ -20,21 +20,18 @@ import com.ibm.wala.types.TypeReference;
 
 import edu.illinois.soter.analysis.OwnershipTransferAnalysis;
 import edu.illinois.soter.messagedata.MessageInvocation;
-
-import org.paninij.soter2.CapsuleTemplateEntrypoint;
-
 import static org.paninij.soter.util.PaniniModel.*;
 
 
-public class PaniniAnalysis extends OwnershipTransferAnalysis
+public class PaniniAnalysisPrototype extends OwnershipTransferAnalysis
 {
-    private static final Logger logger = Logger.getLogger(PaniniAnalysis.class.getName());
+    private static final Logger logger = Logger.getLogger(PaniniAnalysisPrototype.class.getName());
     
     protected String templateName;
     protected TypeReference templateTypeReference;
     protected IClass templateClass;
     
-    public PaniniAnalysis(String templateName, String classpath)
+    public PaniniAnalysisPrototype(String templateName, String classpath)
     {
         // Note: Ideally, the `templateClass` would be initialized in the constructor, but this
         // is not possible, since at construction time, the WALA classloader is not yet available.

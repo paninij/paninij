@@ -1,8 +1,5 @@
 package org.paninij.apt.capsuletest;
 
-import org.paninij.apt.capsuletest.Bar;
-import org.paninij.apt.capsuletest.BasicCapsule;
-import org.paninij.apt.capsuletest.Foo;
 import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Child;
 import org.paninij.lang.Test;

@@ -3,7 +3,6 @@ package org.paninij.apt.shapes.interfaces;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.paninij.apt.shapes.interfaces.Tests;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
