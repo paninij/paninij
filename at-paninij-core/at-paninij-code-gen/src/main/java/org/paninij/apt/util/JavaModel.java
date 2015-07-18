@@ -181,18 +181,6 @@ public class JavaModel {
         return isArray(type.asType());
     }
 
-    /*
-    // Commented out to instead use the version `PaniniPress`-based version.
-    public static <A extends Annotation> boolean isAnnotatedBy(Class<A> annotationType, Element elem) {
-        // FIXME
-        return elem.getAnnotation(annotationType) != null;
-//        return !elem.asType().getAnnotationMirrors().isEmpty();
-//        return elem.asType().getAnnotationsByType(annotationType).length > 0;
-//        return !elem.getAnnotationMirrors().isEmpty();
-//        return elem.getAnnotation(annotationType) != null;
-    }
-    */
-
     public static <A extends Annotation> boolean isAnnotatedBy(PaniniProcessor context,
                                                                TypeMirror typeMirror,
                                                                String annotationName)
