@@ -35,7 +35,7 @@ import javax.lang.model.type.TypeMirror;
 import org.paninij.apt.PaniniProcessor;
 
 
-public class JavaModelInfo {
+public class JavaModel {
 
     /**
      * Gives a string representation of the executable element's return type. If the return type is

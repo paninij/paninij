@@ -4,7 +4,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 
 import org.paninij.apt.PaniniProcessor;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.PaniniModel;
 
 public class CapsuleTestChecker
 {
@@ -33,7 +33,7 @@ public class CapsuleTestChecker
         // TODO: Add helpful error messages.
 
         String name = tester.getSimpleName().toString();
-        return (name.length() > PaniniModelInfo.CAPSULE_TEST_TEMPLATE_SUFFIX.length()
-             && name.endsWith(PaniniModelInfo.CAPSULE_TEST_TEMPLATE_SUFFIX));
+        return (name.length() > PaniniModel.CAPSULE_TEST_TEMPLATE_SUFFIX.length()
+             && name.endsWith(PaniniModel.CAPSULE_TEST_TEMPLATE_SUFFIX));
     }
 }

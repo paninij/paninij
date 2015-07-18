@@ -25,8 +25,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import org.paninij.apt.util.JavaModelInfo;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.JavaModel;
+import org.paninij.apt.util.PaniniModel;
 
 public class Type
 {
@@ -98,11 +98,11 @@ public class Type
     }
 
     public Category getCategory() {
-        if (JavaModelInfo.isVoidType(this.mirror)) {
+        if (JavaModel.isVoidType(this.mirror)) {
             return Category.VOID;
         }
 
-        if (JavaModelInfo.isPrimitive(this.mirror)) {
+        if (JavaModel.isPrimitive(this.mirror)) {
             return Category.PRIMITIVE;
         }
 
@@ -113,23 +113,23 @@ public class Type
         // TODO need to fully determine duckability!
         // see https://github.com/hridesh/panini/wiki/Enumerating-Consequences-of-a-Procedure's-Properties-Along-Three-Dimensions
 
-        if (PaniniModelInfo.isPaniniCustom(this.mirror)) {
+        if (PaniniModel.isPaniniCustom(this.mirror)) {
             return Duckability.DUCKED;
         }
 
-        if (JavaModelInfo.isFinalType(this.mirror)) {
+        if (JavaModel.isFinalType(this.mirror)) {
             return Duckability.UNDUCKABLE;
         }
 
-        if (JavaModelInfo.isVoidType(this.mirror)) {
+        if (JavaModel.isVoidType(this.mirror)) {
             return Duckability.UNDUCKABLE;
         }
 
-        if (JavaModelInfo.isPrimitive(this.mirror)) {
+        if (JavaModel.isPrimitive(this.mirror)) {
             return Duckability.UNDUCKABLE;
         }
 
-        if (JavaModelInfo.isArray(this.mirror)) {
+        if (JavaModel.isArray(this.mirror)) {
             return Duckability.UNDUCKABLE;
         }
 
@@ -244,7 +244,7 @@ public class Type
 
     public boolean isPrimitive() {
         // TODO move away from JavaModelInfo
-        return JavaModelInfo.isPrimitive(this.mirror);
+        return JavaModel.isPrimitive(this.mirror);
     }
 
     public boolean isInterface() {

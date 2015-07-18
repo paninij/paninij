@@ -18,7 +18,7 @@
  */
 package org.paninij.apt;
 
-import static org.paninij.apt.util.PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX;
+import static org.paninij.apt.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
 
 import java.io.File;
 import java.io.IOException;

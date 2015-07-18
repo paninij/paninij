@@ -29,7 +29,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.apt.CapsuleTemplateVisitor;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.PaniniModel;
 import org.paninij.apt.util.TypeCollector;
 
 public class CapsuleElement implements Capsule
@@ -134,8 +134,8 @@ public class CapsuleElement implements Capsule
 
         for (TypeMirror i : this.element.getInterfaces()) {
             String name = i.toString();
-            assert(name.endsWith(PaniniModelInfo.SIGNATURE_TEMPLATE_SUFFIX));
-            name = name.substring(0, name.length() - PaniniModelInfo.SIGNATURE_TEMPLATE_SUFFIX.length());
+            assert(name.endsWith(PaniniModel.SIGNATURE_TEMPLATE_SUFFIX));
+            name = name.substring(0, name.length() - PaniniModel.SIGNATURE_TEMPLATE_SUFFIX.length());
             sigs.add(name);
         }
         return sigs;
@@ -168,7 +168,7 @@ public class CapsuleElement implements Capsule
     }
 
     public void addExecutable(ExecutableElement e) {
-        if (PaniniModelInfo.isProcedure(e)) {
+        if (PaniniModel.isProcedure(e)) {
             this.procedures.add(new ProcedureElement(e));
         } else {
             String name = e.getSimpleName().toString();
@@ -188,8 +188,8 @@ public class CapsuleElement implements Capsule
         if (this.element == null) {
             this.element = e;
             this.imports = TypeCollector.collect(this.element);
-            this.simpleName = PaniniModelInfo.simpleCapsuleName(e);
-            this.qualifiedName = PaniniModelInfo.qualifiedCapsuleName(e);
+            this.simpleName = PaniniModel.simpleCapsuleName(e);
+            this.qualifiedName = PaniniModel.qualifiedCapsuleName(e);
         }
     }
 }

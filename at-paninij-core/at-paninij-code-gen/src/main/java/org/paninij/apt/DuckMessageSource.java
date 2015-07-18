@@ -31,7 +31,7 @@ import javax.lang.model.type.TypeMirror;
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Variable;
 import org.paninij.apt.model.Type.Category;
-import org.paninij.apt.util.JavaModelInfo;
+import org.paninij.apt.util.JavaModel;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
@@ -240,7 +240,7 @@ public class DuckMessageSource extends MessageSource
 
     private String buildFacadeBody(ExecutableElement method) {
         String fmt;
-        if (JavaModelInfo.hasVoidReturnType(method)) {
+        if (JavaModel.hasVoidReturnType(method)) {
             fmt = "panini$get().#0(#1);";
         } else {
             fmt = "return panini$get().#0(#1);";

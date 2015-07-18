@@ -22,7 +22,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 
 import org.paninij.apt.PaniniProcessor;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.PaniniModel;
 import org.paninij.apt.util.Source;
 
 
@@ -65,15 +65,15 @@ public class CapsuleChecker
     private static boolean checkTemplateName(PaniniProcessor context, Element template)
     {
         String templateName = template.getSimpleName().toString();
-        if (! templateName.endsWith(PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX))
+        if (! templateName.endsWith(PaniniModel.CAPSULE_TEMPLATE_SUFFIX))
         {
             String msg = Source.cat("Invalid template name: `#0`",
                                     "Every capsule template name must be suffixed with `#1`");
-            msg = Source.format(msg, templateName, PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
+            msg = Source.format(msg, templateName, PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
             context.error(msg);
             return false;
         }
-        else if (templateName.length() == PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX.length())
+        else if (templateName.length() == PaniniModel.CAPSULE_TEMPLATE_SUFFIX.length())
         {
             String msg = Source.cat("Invalid template name: `#0`",
                                     "Template name can't be the same as the expected suffix");

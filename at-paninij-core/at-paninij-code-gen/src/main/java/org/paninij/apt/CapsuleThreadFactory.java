@@ -30,7 +30,7 @@ import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Type;
 import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.PaniniModel;
 import org.paninij.apt.util.Source;
 
 public class CapsuleThreadFactory extends CapsuleProfileFactory
@@ -108,7 +108,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
     {
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
-                this.capsule.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
+                this.capsule.getQualifiedName() + PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
     }
 
     private List<String> generateProcedureIDs()

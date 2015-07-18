@@ -33,7 +33,7 @@ import javax.lang.model.type.TypeMirror;
 import org.paninij.apt.PaniniProcessor;
 
 
-public class PaniniModelInfo
+public class PaniniModel
 {
     public static final String DEFAULT_MESSAGE_PACKAGE = "org.paninij.runtime.messages";
     public static final String DEFAULT_FUTURE_PACKAGE = "org.paninij.runtime.futures";
@@ -114,7 +114,7 @@ public class PaniniModelInfo
      */
     public static boolean hasRunDeclaration(TypeElement template)
     {
-        List<ExecutableElement> methods = JavaModelInfo.getMethodsNamed(template, "run");
+        List<ExecutableElement> methods = JavaModel.getMethodsNamed(template, "run");
         return methods.size() > 0;
     }
 
@@ -126,7 +126,7 @@ public class PaniniModelInfo
      */
     public static boolean hasInitDeclaration(TypeElement template)
     {
-        List<ExecutableElement> methods = JavaModelInfo.getMethodsNamed(template, "init");
+        List<ExecutableElement> methods = JavaModel.getMethodsNamed(template, "init");
         return methods.size() > 0;
     }
 
@@ -253,7 +253,7 @@ public class PaniniModelInfo
     public static boolean isChildFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
-            && JavaModelInfo.isAnnotatedBy(context, elem, "org.paninij.lang.Child");
+            && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Child");
     }
 
 
@@ -279,7 +279,7 @@ public class PaniniModelInfo
     public static boolean isWiredFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
-            && JavaModelInfo.isAnnotatedBy(context, elem, "org.paninij.lang.Wired");
+            && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Wired");
     }
 
 
@@ -352,7 +352,7 @@ public class PaniniModelInfo
      */
     public static ExecutableElement getCapsuleDesignDecl(TypeElement template)
     {
-        List<ExecutableElement> decls = JavaModelInfo.getMethodsNamed(template, "design");
+        List<ExecutableElement> decls = JavaModel.getMethodsNamed(template, "design");
         if (decls.isEmpty()) {
             return null;
         } else {

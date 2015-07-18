@@ -8,7 +8,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.apt.SignatureTemplateVisitor;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.PaniniModel;
 import org.paninij.apt.util.TypeCollector;
 
 //TODO
@@ -62,13 +62,13 @@ public class SignatureElement implements Signature
     public void setTypeElement(TypeElement e) {
         if (this.element == null) {
             this.element = e;
-            this.simpleName = PaniniModelInfo.simpleSignatureName(e);
-            this.qualifiedName = PaniniModelInfo.qualifiedSignatureName(e);
+            this.simpleName = PaniniModel.simpleSignatureName(e);
+            this.qualifiedName = PaniniModel.qualifiedSignatureName(e);
         }
     }
 
     public void addExecutable(ExecutableElement e) {
-        if (PaniniModelInfo.isProcedure(e)) {
+        if (PaniniModel.isProcedure(e)) {
             this.procedures.add(new ProcedureElement(e));
         }
     }
