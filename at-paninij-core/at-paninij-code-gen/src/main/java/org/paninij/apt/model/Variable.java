@@ -16,16 +16,25 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.model;
+package org.paninij.apt.model;
 
-import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
-public interface Procedure
+public class Variable extends Type
 {
-    public abstract String getName();
-    public abstract AnnotationKind getAnnotationKind();
-    public abstract Type getReturnType();
-    public abstract List<Variable> getParameters();
-    public abstract List<String> getModifiers();
-    public abstract List<String> getThrown();
+    private String identifier;
+
+    public Variable(TypeMirror mirror, String identifier) {
+        super(mirror);
+        this.identifier = identifier;
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + this.identifier;
+    }
 }

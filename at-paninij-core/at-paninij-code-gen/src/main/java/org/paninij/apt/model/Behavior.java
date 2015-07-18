@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.model;
+package org.paninij.apt.model;
 
 /*
  * All enumerated message behaviors

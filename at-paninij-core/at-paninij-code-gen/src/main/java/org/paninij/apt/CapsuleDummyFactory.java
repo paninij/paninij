@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.apt.model.AnnotationKind;
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
-import org.paninij.model.AnnotationKind;
-import org.paninij.model.Procedure;
-import org.paninij.model.Variable;
 
 public class CapsuleDummyFactory extends CapsuleArtifactFactory
 {

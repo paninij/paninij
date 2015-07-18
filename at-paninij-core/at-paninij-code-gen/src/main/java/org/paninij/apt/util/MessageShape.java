@@ -21,10 +21,10 @@ package org.paninij.apt.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.paninij.model.Behavior;
-import org.paninij.model.Procedure;
-import org.paninij.model.Type;
-import org.paninij.model.Variable;
+import org.paninij.apt.model.Behavior;
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Type;
+import org.paninij.apt.model.Variable;
 
 public class MessageShape
 {

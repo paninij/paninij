@@ -16,25 +16,12 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.model;
+package org.paninij.apt.model;
 
-import java.util.List;
-import java.util.Set;
-
-public interface Capsule
+public enum AnnotationKind
 {
-    public List<Variable> getChildren();
-    public List<Variable> getWired();
-    public List<Variable> getState();
-    public String getSimpleName();
-    public String getQualifiedName();
-    public String getPackage();
-    public Set<String> getImports();
-    public List<Procedure> getProcedures();
-    public List<String> getSignatures();
-    public boolean hasInit();
-    public boolean hasRun();
-    public boolean hasDesign();
-    public boolean isActive();
-    public boolean hasActiveAncestor();
+    NONE,
+    FUTURE,
+    BLOCK,
+    DUCKFUTURE
 }

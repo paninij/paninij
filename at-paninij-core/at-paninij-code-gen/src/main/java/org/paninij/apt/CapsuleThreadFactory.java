@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 
 import javax.lang.model.type.TypeKind;
 
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Type;
+import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
-import org.paninij.model.Procedure;
-import org.paninij.model.Type;
-import org.paninij.model.Variable;
 
 public class CapsuleThreadFactory extends CapsuleProfileFactory
 {

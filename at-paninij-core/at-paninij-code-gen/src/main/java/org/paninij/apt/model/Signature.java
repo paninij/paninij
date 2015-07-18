@@ -16,25 +16,20 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.model;
+package org.paninij.apt.model;
 
-import javax.lang.model.type.TypeMirror;
+import java.util.List;
+import java.util.Set;
 
-public class Variable extends Type
+public interface Signature
 {
-    private String identifier;
+    public String getSimpleName();
 
-    public Variable(TypeMirror mirror, String identifier) {
-        super(mirror);
-        this.identifier = identifier;
-    }
+    public String getQualifiedName();
 
-    public String getIdentifier() {
-        return this.identifier;
-    }
+    public String getPackage();
 
-    @Override
-    public String toString() {
-        return super.toString() + " " + this.identifier;
-    }
+    public Set<String> getImports();
+
+    public List<Procedure> getProcedures();
 }

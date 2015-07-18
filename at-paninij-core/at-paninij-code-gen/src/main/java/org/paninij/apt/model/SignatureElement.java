@@ -1,4 +1,4 @@
-package org.paninij.model;
+package org.paninij.apt.model;
 
 import java.util.ArrayList;
 import java.util.Set;

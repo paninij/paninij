@@ -28,13 +28,13 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Variable;
+import org.paninij.apt.model.Type.Category;
 import org.paninij.apt.util.JavaModelInfo;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
-import org.paninij.model.Procedure;
-import org.paninij.model.Variable;
-import org.paninij.model.Type.Category;
 
 public class DuckMessageSource extends MessageSource
 {

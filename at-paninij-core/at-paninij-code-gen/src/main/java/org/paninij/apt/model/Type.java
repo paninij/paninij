@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.model;
+package org.paninij.apt.model;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;

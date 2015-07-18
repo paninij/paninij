@@ -18,9 +18,9 @@
  */
 package org.paninij.apt;
 
+import org.paninij.apt.model.Procedure;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.SourceFile;
-import org.paninij.model.Procedure;
 
 import java.util.HashSet;
 

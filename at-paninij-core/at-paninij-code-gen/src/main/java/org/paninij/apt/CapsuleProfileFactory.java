@@ -3,10 +3,10 @@ package org.paninij.apt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
-import org.paninij.model.Procedure;
-import org.paninij.model.Variable;
 
 
 public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
