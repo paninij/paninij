@@ -1,10 +1,12 @@
-package org.paninij.soter;
+package org.paninij.soter.prototype;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
+
+import org.paninij.soter.CapsuleTemplateEntrypoint;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
@@ -23,15 +25,15 @@ import edu.illinois.soter.messagedata.MessageInvocation;
 import static org.paninij.soter.util.PaniniModel.*;
 
 
-public class PaniniAnalysisPrototype extends OwnershipTransferAnalysis
+public class SoterAnalysisPrototype extends OwnershipTransferAnalysis
 {
-    private static final Logger logger = Logger.getLogger(PaniniAnalysisPrototype.class.getName());
+    private static final Logger logger = Logger.getLogger(SoterAnalysisPrototype.class.getName());
     
     protected String templateName;
     protected TypeReference templateTypeReference;
     protected IClass templateClass;
     
-    public PaniniAnalysisPrototype(String templateName, String classpath)
+    public SoterAnalysisPrototype(String templateName, String classpath)
     {
         // Note: Ideally, the `templateClass` would be initialized in the constructor, but this
         // is not possible, since at construction time, the WALA classloader is not yet available.
