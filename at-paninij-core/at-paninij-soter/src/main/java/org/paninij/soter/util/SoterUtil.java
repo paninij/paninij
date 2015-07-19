@@ -32,16 +32,10 @@ public class SoterUtil
      * This means that a node `n` in `cg` will be in the returned set iff `cg` includes
      * a finite sequence of (forward) call edges from `n` to some node in `init`.
      * 
-     * Note that the result never includes the fake root node.
-     * TODO: Is this correct to not include the fake root? Should it be included?
+     * Note: The returned set does potentially include the fake root node.
      */
     public static IdentitySet<CGNode> makeCalledByClosure(IdentitySet<CGNode> init, CallGraph cg)
     {
-        IClass fakeRootClass = cg.getFakeRootNode().getMethod().getDeclaringClass();
-        Predicate<CGNode> ignore = (n -> n.getMethod()
-                                          .getDeclaringClass()
-                                          .equals(fakeRootClass));
-        
         IdentitySet<CGNode> closure = new IdentitySet<CGNode>();
         IdentityStack<CGNode> workstack = new IdentityStack<CGNode>();
 
@@ -61,7 +55,7 @@ public class SoterUtil
                 // If `n` should not be ignored and has not yet been added to `closure`, add it to
                 // both `closure` and `workstack`.
                 n = preds.next();
-                if (ignore.test(n) == false && closure.add(n)) {
+                if (closure.add(n)) {
                     workstack.push(n);
                 }
             }
