@@ -57,11 +57,11 @@ public class Analysis
 
             // Ignore any node whose method is not directly defined as part of the capsule template,
             // because a capsule's transfer points can only be defined within the capsule template.
-            if (! capsule.template.equals(method.getDeclaringClass())) {
+            if (! capsule.getTemplate().equals(method.getDeclaringClass())) {
                 continue;
             }
             
-            if (mightHaveReturnTransfers(method))
+            if (isProcedure(method) && !isKnownSafeTypeForTransfer(method.getReturnType()))
             {
                 for (SSAInstruction instr : node.getIR().getInstructions())
                 {
@@ -85,21 +85,19 @@ public class Analysis
         }
     }
     
-    private boolean mightHaveReturnTransfers(IMethod method)
-    {
-        TypeReference returnType = method.getReturnType();
-        return isProcedure(method) && (returnType.isArrayType() || returnType.isReferenceType());
-    }
-    
     protected void addTransferSite(CGNode node, SSAReturnInstruction returnInstr)
     {
-        // There is always only one transfer.
+        // A return instruction always has one transfer.
         MutableIntSet transfers = new BitVectorIntSet();
         int returnValueNumber = returnInstr.getUse(0);
         transfers.add(returnValueNumber);
         addTransferSite(node, new TransferSite(node, returnInstr, transfers));
     }
     
+    /**
+     * Adds a transfer site with every transfer which is not known to be safe. If all of the
+     * transfers at a transfer site are known to be safe, then no transfer point is added.
+     */
     protected void maybeAddTransferSite(CGNode node, SSAAbstractInvokeInstruction invokeInstr)
     {
         // Return static methods and dispatch methods with only the receiver argument.
@@ -121,8 +119,7 @@ public class Analysis
             }
         }
         
-        if (! transfers.isEmpty())
-        {
+        if (! transfers.isEmpty()) {
             addTransferSite(node, new TransferSite(node, invokeInstr, transfers));
         }
     }

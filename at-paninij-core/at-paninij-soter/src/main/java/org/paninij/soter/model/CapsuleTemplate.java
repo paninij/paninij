@@ -65,7 +65,7 @@ public class CapsuleTemplate
         }        
     }
 
-    public IClass getTemplateClass()
+    public IClass getTemplate()
     {
         return template;
     }
