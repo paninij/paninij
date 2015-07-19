@@ -3,8 +3,6 @@ package org.paninij.soter.util;
 import static org.paninij.soter.util.PaniniModel.isCapsuleInterface;
 
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -20,17 +18,15 @@ import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.MethodReference;
 
-import edu.illinois.soter.messagedata.MessageInvocation;
-
 public class SoterUtil
 {
     /**
      * Makes and returns the called-by closure of the given set of initial nodes w.r.t. the given
      * call graph, `cg`. For two nodes in `cg`, `m` and `n`, the called-by relation (for this `cg`)
      * 
-     *      m CB n
+     *     m CB n
      *      
-     *  is satisfied iff `m` is called by `n` (i.e. `n` is a successor of `m`).
+     * is satisfied iff `m` is called by `n` (i.e. `n` is a successor of `m`).
      * 
      * This means that a node `n` in `cg` will be in the returned set iff `cg` includes
      * a finite sequence of (forward) call edges from `n` to some node in `init`.
@@ -74,9 +70,9 @@ public class SoterUtil
      * Makes and returns the points-to closure of the given `PointerKey` w.r.t. the given heap
      * graph, `hg`. For two nodes in `hg`, `p` and `q`, the points-to relation (for this `hg`)
      * 
-     *      p PT q
+     *     p PT q
      *      
-     *  is satisfied iff `p` points to `q`.
+     * is satisfied iff `p` points to `q`.
      * 
      * This means that a node `q` in `cg` will be in the returned set iff `cg` includes
      * a finite sequence of call edges between any node `m` in `init` and `n`.

@@ -32,9 +32,13 @@ public class JavaModel
      */
     public static boolean hasAnnotationNamed(IClass clazz, String name)
     {
-        return clazz.getAnnotations()
-                    .stream()
-                    .anyMatch(a -> isNamed(a, name));
+        for (Annotation a : clazz.getAnnotations())
+        {
+            if (isNamed(a, name)) {
+                return true;
+            }
+        }
+        return false;
     }
     
 

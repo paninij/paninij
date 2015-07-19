@@ -8,7 +8,9 @@ import static java.util.stream.Collectors.toList;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeName;
 import com.ibm.wala.types.TypeReference;
 
@@ -59,12 +61,12 @@ public class PaniniModel
     
 
     /**
-     * @param method An arbitrary method on a template class annotated with `@Capsule`.
+     * @param method An arbitrary method declared on a template class annotated with `@Capsule`.
      */
     public static boolean isProcedure(IMethod method)
     {
         assert isCapsuleTemplate(method.getDeclaringClass());
-        return method.isPublic() == true  // A only a capsule's public methods are procedures.
+        return method.isPublic() == true  // Only a capsule's public methods are procedures.
             && isSpecialCapsuleDecl(method) == false;  // Don't count special decls as procedures.
     }
     
@@ -158,5 +160,21 @@ public class PaniniModel
         String name = interfaceName.getClassName().toString() + CAPSULE_DUMMY_SUFFIX;
 
         return TypeReference.findOrCreateClass(loader, pkg, name);
+    }
+    
+    public static boolean isRemoteProcedure(MethodReference method, IClassHierarchy cha)
+    {
+        return isCapsuleInterface(cha.lookupClass(method.getDeclaringClass()));
+    }
+
+    public static boolean isRemoteProcedure(IMethod method)
+    {
+        return isCapsuleInterface(method.getDeclaringClass());
+    }
+    
+    public static boolean isKnownSafeTypeForTransfer(TypeReference typeRef)
+    {
+        // TODO: Add String and primitive box types (e.g. Integer).
+        return typeRef.isPrimitiveType();
     }
 }

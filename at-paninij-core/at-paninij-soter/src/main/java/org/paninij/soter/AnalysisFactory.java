@@ -1,11 +1,15 @@
 package org.paninij.soter;
 
-import org.paninij.soter.model.Analysis;
-import org.paninij.soter.model.Capsule;
+import static com.ibm.wala.types.ClassLoaderReference.Application;
+
+import org.paninij.soter.cfa.PaniniCallGraphAnalysis;
+import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.util.WalaUtil;
 
+import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
+import com.ibm.wala.types.TypeReference;
 
 /**
  * A factory for creating and performing `@PaniniJ` SOTER analyses. It caches resources that can be
@@ -13,7 +17,6 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  */
 public class AnalysisFactory
 {
-    CallGraphBuilder builder;
     IClassHierarchy cha;
     AnalysisOptions options;
 
@@ -21,17 +24,23 @@ public class AnalysisFactory
     {
         cha = WalaUtil.makeClassHierarchy(classPath);
         options = WalaUtil.makeAnalysisOptions(cha);
-        builder = new CallGraphBuilder();
         
         WalaUtil.checkRequiredResourcesExist();
     }
     
-    public Analysis analyze(Capsule capsule)
+    /**
+     * @param capsule A fully qualified name of a capsule (e.g. "org.paninij.examples.pi.Pi").
+     */
+    public Analysis make(String capsuleName)
     {
-        String templatePath = capsule.getWalaPath() + "Template";
-        builder.buildCallGraph(templatePath, cha, options);
-        Analysis analysis = new Analysis(capsule, builder.getCallGraph(), builder.getHeapGraph(),
-                                         builder.getPointerAnalysis(), cha);
+        String templatePath = WalaUtil.fromQualifiedNameToWalaPath(capsuleName) + "Template";
+        IClass templateClass = cha.lookupClass(TypeReference.find(Application, templatePath));
+        CapsuleTemplate capsule = new CapsuleTemplate(templateClass);
+
+        PaniniCallGraphAnalysis cfa = new PaniniCallGraphAnalysis();
+        cfa.perform(templateClass, cha, options);
+        Analysis analysis = new Analysis(capsule, cfa, cha);
+
         return analysis;
     }
 }

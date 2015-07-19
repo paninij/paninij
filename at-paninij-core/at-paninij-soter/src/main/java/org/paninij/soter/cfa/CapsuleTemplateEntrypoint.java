@@ -1,4 +1,4 @@
-package org.paninij.soter;
+package org.paninij.soter.cfa;
 
 import static org.paninij.soter.util.PaniniModel.getChildCapsuleDecls;
 import static org.paninij.soter.util.PaniniModel.getDummyCapsuleClassReference;

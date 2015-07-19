@@ -53,9 +53,9 @@ import org.paninij.apt.model.SignatureElement;
 import org.paninij.apt.util.ArtifactCompiler;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
+import org.paninij.soter.Analysis;
 import org.paninij.soter.AnalysisFactory;
-import org.paninij.soter.CallGraphBuilder;
-import org.paninij.soter.model.Analysis;
+import org.paninij.soter.cfa.PaniniCallGraphAnalysis;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
@@ -270,7 +270,8 @@ public class PaniniProcessor extends AbstractProcessor
             for (Capsule capsule : capsules)
             {
                 String name = capsule.getQualifiedName();
-                Analysis analysis = analysisFactory.analyze(new org.paninij.soter.model.Capsule(name));
+                Analysis analysis = analysisFactory.make(name);
+                analysis.perform();
 
                 String callGraphPDF = callGraphPDFs + File.separator + name + ".pdf";
                 WalaUtil.makeGraphFile(analysis.getCallGraph(), callGraphPDF);

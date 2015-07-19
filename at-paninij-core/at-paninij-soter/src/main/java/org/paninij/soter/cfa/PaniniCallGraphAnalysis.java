@@ -1,4 +1,4 @@
-package org.paninij.soter;
+package org.paninij.soter.cfa;
 
 import org.paninij.soter.util.WalaUtil;
 
@@ -22,7 +22,7 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  * Builds Zero-One CFA call graph using flow insensitive Andersen style points-to analysis with
  * entrypoints stemming from the procedures of a single template class.
  */
-public class CallGraphBuilder
+public class PaniniCallGraphAnalysis implements CallGraphAnalysis
 {
     protected AnalysisCache analysisCache;
     
@@ -32,32 +32,22 @@ public class CallGraphBuilder
     protected HeapModel heapModel;
     protected HeapGraph<InstanceKey> heapGraph;
 
-
-    public CallGraphBuilder() {
+    public PaniniCallGraphAnalysis() {
         this(new AnalysisCache());
     }
     
-    
-    public CallGraphBuilder(AnalysisCache analysisCache) {
+    public PaniniCallGraphAnalysis(AnalysisCache analysisCache) {
         this.analysisCache = analysisCache;
     }
- 
 
     /**
      * This performs a zero-one CFA algorithm which simultaneously builds the call graph and
-     * performs the pointer analysis. It initializes all of the following fields:
-     * 
-     *  - callGraph
-     *  - pointerAnalysis
-     *  - heapModel
-     *  - heapGraph
-     *  
-     * Note that by calling this function, the entrypoints stored in `options` will be overridden.
+     * performs the pointer analysis. Note that by calling this function, any entrypoints stored in
+     * `options` will be overridden with new entrypoints.
      */
     @SuppressWarnings("unchecked")
-    public void buildCallGraph(String templateName, IClassHierarchy cha, AnalysisOptions options)
+    public void perform(IClass template, IClassHierarchy cha, AnalysisOptions options)
     {
-        IClass template = WalaUtil.loadTemplateClass(templateName, cha);
         options.setEntrypoints(CapsuleTemplateEntrypoint.makeAll(template));
 
         ContextSelector contextSelector = new ReceiverInstanceContextSelector();
@@ -73,24 +63,24 @@ public class CallGraphBuilder
         }
         catch (CallGraphBuilderCancelException ex)
         {
-            String msg = "Call graph construction for was unexpectedly cancelled: " + templateName;
-            throw new IllegalArgumentException(msg);
+            String msg = "Call graph construction was unexpectedly cancelled: ";
+            throw new IllegalArgumentException(msg + template.toString());
         }
     }
-
     
+    @Override
     public CallGraph getCallGraph()
     {
         if (callGraph == null)
         {
-            String msg = "Must call `perform()` before `getCallGraph()`.";
+            String msg = "Must call `buildCallGraph()` before `getCallGraph()`.";
             throw new IllegalStateException(msg);
         }
 
         return callGraph;
     }
 
-
+    @Override
     public PointerAnalysis<InstanceKey> getPointerAnalysis()
     {
         if (pointerAnalysis == null)
@@ -101,7 +91,7 @@ public class CallGraphBuilder
         return pointerAnalysis;
     }
     
-    
+    @Override
     public HeapGraph<InstanceKey> getHeapGraph()
     {
         if (heapGraph == null)
@@ -112,25 +102,26 @@ public class CallGraphBuilder
         return heapGraph;
     }
     
-    
     /**
-     * A helper method for making a call graph builder and performing the build in the default way.
+     * A helper method for making a call graph analysis and performing the build in the default way.
      * This is useful for building a single call for a template. However, if call graphs for
-     * multiple templates are needed, it is recommended (for performance reasons) to instantiate
-     * a `PaniniCallGraphBuilder` and then call `buildCallGraph()` separately for each template.
+     * multiple templates are needed, it is recommended (for performance reasons) separate
+     * `CallGraphAnalyses` and to call perform on each with resources shared across all of the
+     * call graph analyses (e.g. the class * hierarchy analysis).
      * 
      * @param templateName  The name of the template to be analyzed. Should be something of the form
      *                      `-Lorg/paninij/soter/FooTemplate`.
      * @param classPath     A colon-separated list of file system locations in which WALA should
      *                      look for application classes.
      */
-    public static CallGraphBuilder build(String templateName, String classPath)
+    public static PaniniCallGraphAnalysis build(String templateName, String classPath)
     {
         IClassHierarchy cha = WalaUtil.makeClassHierarchy(classPath);
+        IClass template = WalaUtil.loadTemplateClass(templateName, cha);
         AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
 
-        CallGraphBuilder builder = new CallGraphBuilder();
-        builder.buildCallGraph(templateName, cha, options);
+        PaniniCallGraphAnalysis builder = new PaniniCallGraphAnalysis();
+        builder.perform(template, cha, options);
         return builder;
     }
 }

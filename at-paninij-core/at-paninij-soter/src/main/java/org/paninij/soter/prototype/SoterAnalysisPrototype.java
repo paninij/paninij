@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import org.paninij.soter.CapsuleTemplateEntrypoint;
+import org.paninij.soter.cfa.CapsuleTemplateEntrypoint;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
