@@ -86,16 +86,16 @@ public class TransferSitesMapBuilder
             return;
 
         // Ignore any method which is not a procedure invocation on a remote capsule instance.
-        IMethod method = cha.resolveMethod(invokeInstr.getDeclaredTarget());
-        if (! isRemoteProcedure(method))
+        IMethod targetMethod = cha.resolveMethod(invokeInstr.getDeclaredTarget());
+        if (! isRemoteProcedure(targetMethod))
             return;
         
         MutableIntSet transfers = new BitVectorIntSet();
         
-        for (int idx = 1; idx < method.getNumberOfParameters(); idx++)
+        for (int idx = 1; idx < targetMethod.getNumberOfParameters(); idx++)
         {
-            TypeReference paramType = method.getParameterType(idx);
-            if (isKnownSafeTypeForTransfer(paramType)) {
+            TypeReference paramType = targetMethod.getParameterType(idx);
+            if (! isKnownSafeTypeForTransfer(paramType)) {
                 transfers.add(invokeInstr.getUse(idx));
             }
         }
