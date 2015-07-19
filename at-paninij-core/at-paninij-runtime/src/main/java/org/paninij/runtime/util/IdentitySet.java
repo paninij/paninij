@@ -2,6 +2,7 @@ package org.paninij.runtime.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Implements a monotonically-increasing set (i.e. identities cannot be removed except by clearing
@@ -95,5 +96,15 @@ public class IdentitySet<T> implements Iterable<T>
         public T next() {
             return data[cur++];
         }
+    }
+
+
+    public static <T> IdentitySet<T> make(Set<T> set)
+    {
+        IdentitySet<T> result = new IdentitySet<T>();
+        for (T elem : set) {
+            result.add(elem);
+        }
+        return result;
     }
 }

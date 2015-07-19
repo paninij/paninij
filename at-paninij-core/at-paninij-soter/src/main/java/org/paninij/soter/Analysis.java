@@ -3,10 +3,12 @@ package org.paninij.soter;
 import java.util.Map;
 import java.util.Set;
 
+import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.cfa.TransferSitesMapBuilder;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
+import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
@@ -30,6 +32,12 @@ public class Analysis
     public void perform()
     {
         buildTransferSitesMap();
+        
+        Set<CGNode> transferringNodes = getTransferringNodes();
+        
+        // Get the set of nodes which can reach a transferring node.
+        IdentitySet<CGNode> reachingNodes = SoterUtil.makeCalledByClosure(transferringNodes,
+                                                                          cfa.getCallGraph());
     }
 
     /**

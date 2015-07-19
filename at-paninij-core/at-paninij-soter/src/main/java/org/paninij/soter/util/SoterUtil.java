@@ -3,6 +3,7 @@ package org.paninij.soter.util;
 import static org.paninij.soter.util.PaniniModel.isCapsuleInterface;
 
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -30,6 +31,9 @@ public class SoterUtil
      * 
      * This means that a node `n` in `cg` will be in the returned set iff `cg` includes
      * a finite sequence of (forward) call edges from `n` to some node in `init`.
+     * 
+     * Note that the result never includes the fake root node.
+     * TODO: Is this correct to not include the fake root? Should it be included?
      */
     public static IdentitySet<CGNode> makeCalledByClosure(IdentitySet<CGNode> init, CallGraph cg)
     {
@@ -64,6 +68,11 @@ public class SoterUtil
         }
         return closure;
     }
+    
+    public static IdentitySet<CGNode> makeCalledByClosure(Set<CGNode> init, CallGraph cg)
+    {
+        return makeCalledByClosure(IdentitySet.make(init), cg);
+    }
 
 
     /**
@@ -79,6 +88,7 @@ public class SoterUtil
      */
     public static IdentitySet<Object> makePointsToClosure(PointerKey ptr, HeapGraph hg)
     {
+        // TODO: Everything!
         IdentitySet<CGNode> closure = new IdentitySet<CGNode>();
         throw new UnsupportedOperationException();
     }
