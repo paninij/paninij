@@ -1,28 +1,16 @@
 package org.paninij.soter;
 
-import static org.paninij.soter.util.PaniniModel.isProcedure;
-import static org.paninij.soter.util.PaniniModel.isRemoteProcedure;
-import static org.paninij.soter.util.PaniniModel.isKnownSafeTypeForTransfer;
-
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cfa.TransferSitesMapBuilder;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
 
-import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
-import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
-import com.ibm.wala.ssa.SSAInstruction;
-import com.ibm.wala.ssa.SSAReturnInstruction;
-import com.ibm.wala.types.TypeReference;
-import com.ibm.wala.util.intset.BitVectorIntSet;
-import com.ibm.wala.util.intset.MutableIntSet;
 
 public class Analysis
 {
@@ -37,104 +25,33 @@ public class Analysis
         this.capsule = capsule;
         this.cfa = cfa;
         this.cha = cha;
-        
-        transferSitesMap = new HashMap<CGNode, Set<TransferSite>>();
     }
     
     public void perform()
     {
-        buildTransferSites();
+        buildTransferSitesMap();
     }
 
     /**
      * Builds `transferSites` and the associated instance variable, `transferingNodes`.
      */
-    protected void buildTransferSites()
+    protected void buildTransferSitesMap()
     {
+        TransferSitesMapBuilder builder = new TransferSitesMapBuilder(cha);
+        
         for (CGNode node : cfa.getCallGraph())
         {
-            IMethod method = node.getMethod();
+            // Only add transfer sites from nodes whose methods are declared directly on the capsule
+            // template. Ignore any others. This is done because transfer points can only be defined
+            // within the capsule template itself.
+            if (capsule.getTemplate().equals(node.getMethod().getDeclaringClass())) {
+                builder.addTransferSitesFrom(node);
+            }
+        }
+        
+        transferSitesMap = builder.getTransferSitesMap();
+    }
 
-            // Ignore any node whose method is not directly defined as part of the capsule template,
-            // because a capsule's transfer points can only be defined within the capsule template.
-            if (! capsule.getTemplate().equals(method.getDeclaringClass())) {
-                continue;
-            }
-            
-            if (isProcedure(method) && !isKnownSafeTypeForTransfer(method.getReturnType()))
-            {
-                for (SSAInstruction instr : node.getIR().getInstructions())
-                {
-                    if (instr instanceof SSAReturnInstruction) {
-                        addTransferSite(node, (SSAReturnInstruction) instr);
-                    }
-                    if (instr instanceof SSAAbstractInvokeInstruction) {
-                        maybeAddTransferSite(node, (SSAAbstractInvokeInstruction) instr);
-                    }
-                }
-            }
-            else
-            {
-                for (SSAInstruction instr : node.getIR().getInstructions())
-                {
-                    if (instr instanceof SSAAbstractInvokeInstruction) {
-                        maybeAddTransferSite(node, (SSAAbstractInvokeInstruction) instr);
-                    }
-                }
-            }
-        }
-    }
-    
-    protected void addTransferSite(CGNode node, SSAReturnInstruction returnInstr)
-    {
-        // A return instruction always has one transfer.
-        MutableIntSet transfers = new BitVectorIntSet();
-        int returnValueNumber = returnInstr.getUse(0);
-        transfers.add(returnValueNumber);
-        addTransferSite(node, new TransferSite(node, returnInstr, transfers));
-    }
-    
-    /**
-     * Adds a transfer site with every transfer which is not known to be safe. If all of the
-     * transfers at a transfer site are known to be safe, then no transfer point is added.
-     */
-    protected void maybeAddTransferSite(CGNode node, SSAAbstractInvokeInstruction invokeInstr)
-    {
-        // Return static methods and dispatch methods with only the receiver argument.
-        if (invokeInstr.isStatic() || invokeInstr.getNumberOfParameters() == 1)
-            return;
-
-        // Ignore any method which is not a procedure invocation on a remote capsule instance.
-        IMethod method = cha.resolveMethod(invokeInstr.getDeclaredTarget());
-        if (! isRemoteProcedure(method))
-            return;
-        
-        MutableIntSet transfers = new BitVectorIntSet();
-        
-        for (int idx = 1; idx < method.getNumberOfParameters(); idx++)
-        {
-            TypeReference paramType = method.getParameterType(idx);
-            if (isKnownSafeTypeForTransfer(paramType)) {
-                transfers.add(invokeInstr.getUse(idx));
-            }
-        }
-        
-        if (! transfers.isEmpty()) {
-            addTransferSite(node, new TransferSite(node, invokeInstr, transfers));
-        }
-    }
-    
-    protected void addTransferSite(CGNode node, TransferSite transferSite)
-    {
-        Set<TransferSite> sites = transferSitesMap.get(node);
-        if (sites == null) {
-            // This is the first transfer site from this `CGNode` to be added to `transferSitesMap`.
-            sites = new HashSet<TransferSite>();
-            transferSitesMap.put(node, sites);
-        }
-        sites.add(transferSite);
-    }
-   
     /**
      * @return The zero-one CFA call graph starting from the capsule being analyzed.
      */
