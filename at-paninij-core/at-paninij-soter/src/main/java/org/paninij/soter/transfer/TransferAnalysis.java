@@ -57,6 +57,8 @@ public class TransferAnalysis implements Analysis
     
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
+    // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
+    // transfer is "transferring" and/or "relevant".
     public TransferAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
                                  IClassHierarchy cha)
     {
