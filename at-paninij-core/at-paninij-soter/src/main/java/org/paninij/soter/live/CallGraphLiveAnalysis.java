@@ -23,8 +23,8 @@ public class CallGraphLiveAnalysis implements Analysis
     
 
     public CallGraphLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa,
-                            TransferAnalysis tsa, TransferLiveAnalysis tsla,
-                            IClassHierarchy cha)
+                                 TransferAnalysis tsa, TransferLiveAnalysis tsla,
+                                 IClassHierarchy cha)
     {
         this.template = template;
         this.cfa = cfa;

@@ -2,6 +2,8 @@ package org.paninij.soter;
 
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.cfa.CallGraphAnalysisFactory;
+import org.paninij.soter.live.CallGraphLiveAnalysis;
+import org.paninij.soter.live.CallGraphLiveAnalysisFactory;
 import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.live.TransferLiveAnalysisFactory;
 import org.paninij.soter.model.CapsuleTemplate;
@@ -23,8 +25,7 @@ public class SoterAnalysisFactory
     protected final AnalysisOptions options;
     protected final CapsuleTemplateFactory capsuleTemplateFactory;
     protected final CallGraphAnalysisFactory callGraphAnalysisFactory;
-    protected final TransferAnalysisFactory transferSitesAnalysisFactory;
-    protected final TransferLiveAnalysisFactory transferSitesLiveAnalysisFactory;
+    protected final CallGraphLiveAnalysisFactory callGraphLiveAnalysisFactory;
 
     public SoterAnalysisFactory(String classPath)
     {
@@ -35,8 +36,7 @@ public class SoterAnalysisFactory
         
         capsuleTemplateFactory = new CapsuleTemplateFactory(cha);
         callGraphAnalysisFactory = new CallGraphAnalysisFactory(cha, options);
-        transferSitesAnalysisFactory = new TransferAnalysisFactory(cha);
-        transferSitesLiveAnalysisFactory = new TransferLiveAnalysisFactory(cha);
+        callGraphLiveAnalysisFactory = new CallGraphLiveAnalysisFactory(cha);
     }
     
     /**
@@ -46,10 +46,8 @@ public class SoterAnalysisFactory
     {
         CapsuleTemplate template = capsuleTemplateFactory.make(capsuleName);
         CallGraphAnalysis cfa = callGraphAnalysisFactory.make(template);
-        TransferAnalysis tsa = transferSitesAnalysisFactory.make(template, cfa);
-        TransferLiveAnalysis tsla = transferSitesLiveAnalysisFactory.make(template, cfa);
+        CallGraphLiveAnalysis cgla = callGraphLiveAnalysisFactory.make(template, cfa);
 
-        //return new TransferAnalysis(template, cfa, /* TODO */, cha);
-        throw new UnsupportedOperationException("TODO");
+        return new SoterAnalysis(template, cfa, cgla, cha);
     }
 }
