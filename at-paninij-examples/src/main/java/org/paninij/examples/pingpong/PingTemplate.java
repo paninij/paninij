@@ -11,6 +11,7 @@ import org.paninij.lang.Wired;
         if (--count > 0) {
             pong.pong(count);
         } else {
+            System.out.println("exit");
             pong.exit();
         }
     }

@@ -141,6 +141,7 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleDummyFactory capsuleDummyFactory = new CapsuleDummyFactory();
         CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
         CapsuleThreadFactory threadCapsuleFactory = new CapsuleThreadFactory();
+        CapsuleSerialFactory serialCapsuleFactory = new CapsuleSerialFactory();
 
         // Generate artifacts from signature model
         for (org.paninij.model.Signature signature : signatures)
@@ -164,12 +165,15 @@ public class PaniniProcessor extends AbstractProcessor
 
             // Generate capsule interface
             this.createJavaFile(capsuleInterfaceFactory.make(capsule));
-            
+
             // Generate dummy capsule
             this.createJavaFile(capsuleDummyFactory.make(capsule));
 
             // Generate capsule thread profile
             this.createJavaFile(threadCapsuleFactory.make(capsule));
+
+            // Generate capsule serial profile
+            this.createJavaFile(serialCapsuleFactory.make(capsule));
 
             // TODO Generate other capsule profiles
         }
