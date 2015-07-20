@@ -1,31 +1,23 @@
 package org.paninij.soter.live;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
-import org.paninij.soter.util.SoterUtil;
 
-import com.ibm.wala.classLoader.CallSiteReference;
-import com.ibm.wala.dataflow.graph.BitVectorSolver;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.ISSABasicBlock;
-import com.ibm.wala.util.intset.IntIterator;
-import com.ibm.wala.util.intset.IntSet;
 
 /**
  * When performed, the analysis analyzes the capsule template and the call graph analysis to
- * generate information about the variables which are alive at the capsule's transfer sites and
- * call sites.
+ * generate information about the variables which are alive at the capsule's "relevant" transfer
+ * sites and call sites.
  * 
  * See Figure 8 of Negara, 2011.
  */
@@ -60,35 +52,25 @@ public class TransferSitesLiveAnalysis
         }
     }
 
-    
-
     /**
      * @param transferSite A transfer site defined w.r.t. the factory's call graph analysis.
      * @return The set of pointer keys into the heap model of the factory's call graph analysis
      *         which the analysis found to be live at the "in" program point of the given transfer
      *         site.
      */
-    protected Set<PointerKey> getLivePointerKeys(TransferSite transferSite)
+    protected Set<PointerKey> getPointerKeysAfter(TransferSite transferSite)
     {
         CGNode node = transferSite.getNode();
         assert cfa.getCallGraph().containsNode(node);
 
-        Set<PointerKey> pointerKeys = new HashSet<PointerKey>();
-        LocalLiveAnalysis localAnalysis = localLiveAnalysisFactory.lookupOrMake(node);
-        BitVectorSolver<ISSABasicBlock> bitVectorSolver = localAnalysis.perform();
-        IR nodeIR = node.getIR();
+        LocalLiveAnalysis localLiveAnalysis = localLiveAnalysisFactory.lookupOrMake(node);
+        localLiveAnalysis.perform();
 
+        IR nodeIR = node.getIR();
         ISSABasicBlock block = nodeIR.getBasicBlockForInstruction(transferSite.getInstruction());
-        IntSet solutionValues = bitVectorSolver.getIn(block).getValue();
-        if (solutionValues != null)
-        {
-            IntIterator iter = solutionValues.intIterator();
-            while (iter.hasNext()) {
-                pointerKeys.add(localAnalysis.getPointerKey(iter.next()));
-            }
-        }
-        return pointerKeys;
+        return localLiveAnalysis.getPointerKeysAfter(block);
     }
+
     
     /**
      * @return The zero-one CFA call graph starting from the capsule being analyzed.
