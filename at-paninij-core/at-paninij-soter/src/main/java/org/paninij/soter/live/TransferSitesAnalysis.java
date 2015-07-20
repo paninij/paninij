@@ -37,7 +37,7 @@ public class TransferSitesAnalysis
      * A map from some call graph node to the set of the node's transfer sites which were found to
      * include some potentially unsafe transfers.
      */
-    protected final Map<CGNode, Set<TransferSite>> transferringSitesMap;
+    protected Map<CGNode, Set<TransferSite>> transferringSitesMap;
     
     /**
      * The set of nodes which, by some finite sequence of calls in the `cfa`, reach a transferring
@@ -51,7 +51,7 @@ public class TransferSitesAnalysis
      * "relevant" means that the transfer is an invocation which includes a call graph target to a
      * "reachable" node.
      */
-    protected final Map<CGNode, Set<TransferSite>> otherRelevantSitesMap;
+    protected Map<CGNode, Set<TransferSite>> otherRelevantSitesMap;
     
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
@@ -62,8 +62,7 @@ public class TransferSitesAnalysis
         this.cfa = cfa;
         this.cha = cha;
 
-        transferringSitesMap = new HashMap<CGNode, Set<TransferSite>>();
-        otherRelevantSitesMap = new HashMap<CGNode, Set<TransferSite>>();
+        resetAnalysis();
     }
     
     public void perform()
@@ -87,11 +86,6 @@ public class TransferSitesAnalysis
                 findOtherRelevantSites(node);
             }
         }
-    }
-
-    public Set<TransferSite> getTransferSites(CGNode node)
-    {
-        return transferringSitesMap.get(node);
     }
 
     public void findTransferSites(CGNode node)
@@ -225,9 +219,30 @@ public class TransferSitesAnalysis
         sites.add(transferSite);
     }
 
+    public Set<TransferSite> getTransferringSites(CGNode node)
+    {
+        return transferringSitesMap.get(node);
+    }
+
     public Set<CGNode> getTransferringNodes()
     {
         return transferringSitesMap.keySet();
+    }
+    
+    public Set<CGNode> getRelevantNodes()
+    {
+        Set<CGNode> relevantNodes = new HashSet<CGNode>();
+        relevantNodes.addAll(transferringSitesMap.keySet());
+        relevantNodes.addAll(otherRelevantSitesMap.keySet());
+        return relevantNodes;
+    }
+    
+    public Set<TransferSite> getRelevantSites(CGNode node)
+    {
+        Set<TransferSite> relevantSites = new HashSet<TransferSite>();
+        relevantSites.addAll(transferringSitesMap.get(node));
+        relevantSites.addAll(otherRelevantSitesMap.get(node));
+        return relevantSites;
     }
     
     /**
@@ -237,5 +252,14 @@ public class TransferSitesAnalysis
     public IdentitySet<CGNode> getReachingNodes()
     {
         return reachingNodes;
+    }
+
+    public void resetAnalysis()
+    {
+        // TODO Auto-generated method stub
+        
+        transferringSitesMap = new HashMap<CGNode, Set<TransferSite>>();
+        reachingNodes = null;
+        otherRelevantSitesMap = new HashMap<CGNode, Set<TransferSite>>();
     }
 }

@@ -78,7 +78,7 @@ public class LocalLiveAnalysis
      * @return The set of pointer keys representing the variables which the analysis found to be
      *         live after the given basic block.
      */
-    protected Set<PointerKey> getPointerKeysAfter(ISSABasicBlock basicBlock)
+    public Set<PointerKey> getPointerKeysAfter(ISSABasicBlock basicBlock)
     {
         // TODO: Add assertion which checks for the parameter's precondition.
 

@@ -19,7 +19,7 @@ public class LocalLiveAnalysisFactory
     public LocalLiveAnalysisFactory(CallGraphAnalysis cfa)
     {
         this.cfa = cfa;
-        cachedAnalyses = new HashMap<CGNode, LocalLiveAnalysis>();
+        resetAnalysisCache();
     }
     
     public LocalLiveAnalysis lookupOrMake(CGNode node)
@@ -30,5 +30,10 @@ public class LocalLiveAnalysisFactory
             cachedAnalyses.put(node, analysis);
         }
         return analysis;
+    }
+
+    public void resetAnalysisCache()
+    {
+        cachedAnalyses = new HashMap<CGNode, LocalLiveAnalysis>();
     }
 }

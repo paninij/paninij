@@ -1,5 +1,6 @@
 package org.paninij.soter.live;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.paninij.runtime.util.IdentitySet;
@@ -8,7 +9,6 @@ import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
-import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
@@ -29,6 +29,10 @@ public class TransferSitesLiveAnalysis
 
     final protected LocalLiveAnalysisFactory localLiveAnalysisFactory;
     final protected TransferSitesAnalysis transferSitesAnalysis;
+    
+    protected Set<CGNode> relevantNodes;
+    protected IdentitySet<CGNode> reachingNodes;
+    protected Map<TransferSite, Set<PointerKey>> liveVariables;
 
     public TransferSitesLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa, IClassHierarchy cha)
     {
@@ -42,14 +46,23 @@ public class TransferSitesLiveAnalysis
     
     public void perform()
     {
-        Set<CGNode> transferringNodes = transferSitesAnalysis.getTransferringNodes();
-        IdentitySet<CGNode> reachingNodes = transferSitesAnalysis.getReachingNodes();        
+        transferSitesAnalysis.perform();
+        reachingNodes = transferSitesAnalysis.getReachingNodes();        
+        relevantNodes = transferSitesAnalysis.getRelevantNodes();
+
         for (CGNode node : reachingNodes)
         {
-            LocalLiveAnalysis OUT = localLiveAnalysisFactory.lookupOrMake(node);
-            // TODO: Everything
-            throw new UnsupportedOperationException("TODO");
+            Set<TransferSite> relevantSites = transferSitesAnalysis.getRelevantSites(node);
+            LocalLiveAnalysis localAnalysis = localLiveAnalysisFactory.lookupOrMake(node);
+            localAnalysis.perform();
+            for (TransferSite site : relevantSites) {
+                liveVariables.put(site, getPointerKeysAfter(site));
+            }
         }
+        
+        // Free all sub-analyses, because all relevant information from them has already been saved.
+        transferSitesAnalysis.resetAnalysis();
+        localLiveAnalysisFactory.resetAnalysisCache();
     }
 
     /**
@@ -69,22 +82,5 @@ public class TransferSitesLiveAnalysis
         IR nodeIR = node.getIR();
         ISSABasicBlock block = nodeIR.getBasicBlockForInstruction(transferSite.getInstruction());
         return localLiveAnalysis.getPointerKeysAfter(block);
-    }
-
-    
-    /**
-     * @return The zero-one CFA call graph starting from the capsule being analyzed.
-     */
-    public CallGraph getCallGraph()
-    {
-        return cfa.getCallGraph();
-    }
-    
-    /**
-     * @return The capsule being analyzed.
-     */
-    public CapsuleTemplate getCapsuleTemplate()
-    {
-        return capsuleTemplate;
     }
 }
