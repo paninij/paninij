@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import org.junit.Test;
 import org.paninij.runtime.util.IdentitySet;
-import org.paninij.soter.cfa.PaniniCallGraphAnalysis;
+import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -25,7 +25,7 @@ public class Scratch
     @Test
     public void scratch()
     {
-        PaniniCallGraphAnalysis built = PaniniCallGraphAnalysis.build(ACTIVE_CLIENT_NAME, CLASSPATH);
+        CallGraphAnalysis built = CallGraphAnalysis.build(ACTIVE_CLIENT_NAME, CLASSPATH);
         CallGraph cg = built.getCallGraph();
         IdentitySet<CGNode> init = SoterUtil.getInitialCallNodes(cg);
         IdentitySet<CGNode> reachable = SoterUtil.makeCalledByClosure(init, cg);

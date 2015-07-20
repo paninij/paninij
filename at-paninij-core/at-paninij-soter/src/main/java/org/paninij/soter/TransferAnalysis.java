@@ -21,7 +21,11 @@ public class TransferAnalysis
     
     public void perform()
     {
-        // Get the set of nodes which can reach a transferring node.
         // TODO: Use site live analysis factory
+    }
+    
+    public CallGraph getCallGraph()
+    {
+        return cfa.getCallGraph();
     }
  }
