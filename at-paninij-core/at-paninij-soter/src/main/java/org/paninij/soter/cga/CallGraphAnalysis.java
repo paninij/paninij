@@ -1,4 +1,4 @@
-package org.paninij.soter.cfa;
+package org.paninij.soter.cga;
 
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.util.Analysis;
@@ -24,6 +24,7 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  */
 public class CallGraphAnalysis implements Analysis
 {
+    // Analysis dependencies:
     protected final CapsuleTemplate template;
     protected final IClassHierarchy cha;
     protected final AnalysisOptions options;

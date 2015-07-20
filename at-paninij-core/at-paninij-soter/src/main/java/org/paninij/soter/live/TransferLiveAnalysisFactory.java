@@ -1,6 +1,6 @@
 package org.paninij.soter.live;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.transfer.TransferAnalysis;
 
@@ -15,10 +15,10 @@ public class TransferLiveAnalysisFactory
         this.cha = cha;
     }
 
-    public TransferLiveAnalysis make(CapsuleTemplate template, CallGraphAnalysis cfa)
+    public TransferLiveAnalysis make(CapsuleTemplate template, CallGraphAnalysis cga,
+                                     TransferAnalysis ta)
     {
-        return new TransferLiveAnalysis(template, new LocalLiveAnalysisFactory(cfa),
-                                             new TransferAnalysis(template, cfa, cha),
-                                             cfa, cha);
+        LocalLiveAnalysisFactory llaFactory = new LocalLiveAnalysisFactory(cga);
+        return new TransferLiveAnalysis(template, llaFactory, ta, cga, cha);
     }
 }

@@ -1,6 +1,6 @@
 package org.paninij.soter.transfer;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 
 import com.ibm.wala.ipa.cha.IClassHierarchy;
@@ -14,8 +14,8 @@ public class TransferAnalysisFactory
         this.cha = cha;
     }
 
-    public TransferAnalysis make(CapsuleTemplate template, CallGraphAnalysis cfa)
+    public TransferAnalysis make(CapsuleTemplate template, CallGraphAnalysis cga)
     {
-        return new TransferAnalysis(template, cfa, cha);
+        return new TransferAnalysis(template, cga, cha);
     }
 }

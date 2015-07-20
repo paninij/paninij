@@ -1,13 +1,13 @@
 package org.paninij.apt.soter;
 
 import static org.paninij.apt.util.ArtifactCompiler.buildEffectiveClassPath;
-import static org.paninij.soter.cfa.CallGraphAnalysisFactory.performStandardAnalysis;
+import static org.paninij.soter.cga.CallGraphAnalysisFactory.performStandardAnalysis;
 
 import java.util.Collection;
 
 import org.junit.Test;
 import org.paninij.runtime.util.IdentitySet;
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.ipa.callgraph.CGNode;

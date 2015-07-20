@@ -1,6 +1,6 @@
 package org.paninij.soter.live;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.util.Analysis;
@@ -14,22 +14,22 @@ public class CallGraphLiveAnalysis implements Analysis
 {
     // Analysis dependencies.
     protected final CapsuleTemplate template;
-    protected final CallGraphAnalysis cfa;
-    protected final TransferAnalysis tsa;
-    protected final TransferLiveAnalysis tsla;
+    protected final CallGraphAnalysis cga;
+    protected final TransferAnalysis ta;
+    protected final TransferLiveAnalysis tla;
     protected final IClassHierarchy cha;
 
     protected boolean hasBeenPerformed;
     
 
-    public CallGraphLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa,
-                                 TransferAnalysis tsa, TransferLiveAnalysis tsla,
+    public CallGraphLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
+                                 TransferAnalysis ta, TransferLiveAnalysis tla,
                                  IClassHierarchy cha)
     {
         this.template = template;
-        this.cfa = cfa;
-        this.tsa = tsa;
-        this.tsla = tsla;
+        this.cga = cga;
+        this.ta = ta;
+        this.tla = tla;
         this.cha = cha;
         
         hasBeenPerformed = false;

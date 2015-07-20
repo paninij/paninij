@@ -3,7 +3,7 @@ package org.paninij.soter.live;
 import java.util.Map;
 import java.util.Set;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.transfer.TransferSite;
@@ -25,10 +25,10 @@ import com.ibm.wala.ssa.ISSABasicBlock;
 public class TransferLiveAnalysis implements Analysis
 {
     // The analysis's dependencies:
-    final protected CapsuleTemplate capsuleTemplate;
-    final protected LocalLiveAnalysisFactory localLiveAnalysisFactory;
-    final protected TransferAnalysis transferSitesAnalysis;
-    final protected CallGraphAnalysis cfa;
+    final protected CapsuleTemplate template;
+    final protected LocalLiveAnalysisFactory llaFactory;
+    final protected TransferAnalysis ta;
+    final protected CallGraphAnalysis cga;
     final protected IClassHierarchy cha;
     
     // The results of the analysis:
@@ -37,15 +37,15 @@ public class TransferLiveAnalysis implements Analysis
     protected boolean hasBeenPerformed;
 
     public TransferLiveAnalysis(CapsuleTemplate template,
-                                     LocalLiveAnalysisFactory localLiveAnalysisFactory,
-                                     TransferAnalysis transferSitesAnalysis,
-                                     CallGraphAnalysis cfa,
-                                     IClassHierarchy cha)
+                                LocalLiveAnalysisFactory llaFactory,
+                                TransferAnalysis ta,
+                                CallGraphAnalysis cga,
+                                IClassHierarchy cha)
     {
-        this.capsuleTemplate = template;
-        this.localLiveAnalysisFactory = localLiveAnalysisFactory;
-        this.transferSitesAnalysis = transferSitesAnalysis;
-        this.cfa = cfa;
+        this.template = template;
+        this.llaFactory = llaFactory;
+        this.ta = ta;
+        this.cga = cga;
         this.cha = cha;
         
         hasBeenPerformed = false;
@@ -59,12 +59,12 @@ public class TransferLiveAnalysis implements Analysis
             return;
         }
 
-        transferSitesAnalysis.perform();
+        ta.perform();
 
-        for (CGNode node : transferSitesAnalysis.getReachingNodes())
+        for (CGNode node : ta.getReachingNodes())
         {
-            Set<TransferSite> relevantSites = transferSitesAnalysis.getRelevantSites(node);
-            LocalLiveAnalysis localAnalysis = localLiveAnalysisFactory.lookupOrMake(node);
+            Set<TransferSite> relevantSites = ta.getRelevantSites(node);
+            LocalLiveAnalysis localAnalysis = llaFactory.lookupOrMake(node);
             localAnalysis.perform();
             for (TransferSite site : relevantSites) {
                 liveVariables.put(site, getPointerKeysAfter(site));
@@ -78,9 +78,9 @@ public class TransferLiveAnalysis implements Analysis
     protected void addPointerKeysAfter(TransferSite transferSite)
     {
         CGNode node = transferSite.getNode();
-        assert cfa.getCallGraph().containsNode(node);
+        assert cga.getCallGraph().containsNode(node);
 
-        LocalLiveAnalysis localLiveAnalysis = localLiveAnalysisFactory.lookupOrMake(node);
+        LocalLiveAnalysis localLiveAnalysis = llaFactory.lookupOrMake(node);
         localLiveAnalysis.perform();
 
         IR nodeIR = node.getIR();

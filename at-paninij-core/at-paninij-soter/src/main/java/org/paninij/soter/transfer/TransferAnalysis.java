@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.paninij.runtime.util.IdentitySet;
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.util.Analysis;
 import org.paninij.soter.util.SoterUtil;
@@ -30,7 +30,7 @@ import com.ibm.wala.util.intset.MutableIntSet;
 public class TransferAnalysis implements Analysis
 {
     protected final CapsuleTemplate template;
-    protected final CallGraphAnalysis cfa;
+    protected final CallGraphAnalysis cga;
     protected final IClassHierarchy cha;
 
     /**
@@ -40,7 +40,7 @@ public class TransferAnalysis implements Analysis
     protected Map<CGNode, Set<TransferSite>> transferringSitesMap;
     
     /**
-     * The set of nodes which, by some finite sequence of calls in the `cfa`, reach a transferring
+     * The set of nodes which, by some finite sequence of calls in the `cga`, reach a transferring
      * call graph node.
      */
     protected IdentitySet<CGNode> reachingNodes;
@@ -57,11 +57,11 @@ public class TransferAnalysis implements Analysis
     
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
-    public TransferAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa,
+    public TransferAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
                                  IClassHierarchy cha)
     {
         this.template = template;
-        this.cfa = cfa;
+        this.cga = cga;
         this.cha = cha;
         resetAnalysis();
     }
@@ -73,7 +73,7 @@ public class TransferAnalysis implements Analysis
             return;
         }
 
-        for (CGNode node : cfa.getCallGraph())
+        for (CGNode node : cga.getCallGraph())
         {
             // Only add transfer sites from nodes whose methods are declared directly on the capsule
             // template. Ignore any others. This is done because transfer points can only be defined
@@ -84,9 +84,9 @@ public class TransferAnalysis implements Analysis
         }
         
         Set<CGNode> transferringNodes = getTransferringNodes();
-        reachingNodes = SoterUtil.makeCalledByClosure(transferringNodes, cfa.getCallGraph());
+        reachingNodes = SoterUtil.makeCalledByClosure(transferringNodes, cga.getCallGraph());
 
-        for (CGNode node : cfa.getCallGraph())
+        for (CGNode node : cga.getCallGraph())
         {
             if (transferringNodes.contains(node)) {
                 findOtherRelevantSites(node);
@@ -193,7 +193,7 @@ public class TransferAnalysis implements Analysis
         while(callSiteIter.hasNext())
         {
             CallSiteReference callSite = callSiteIter.next();
-            for (CGNode targetNode : cfa.getCallGraph().getPossibleTargets(node, callSite))
+            for (CGNode targetNode : cga.getCallGraph().getPossibleTargets(node, callSite))
             {
                 if (reachingNodes.contains(targetNode))
                 {
@@ -254,7 +254,7 @@ public class TransferAnalysis implements Analysis
     }
     
     /**
-     * @return The set of nodes which, by some finite sequence of calls in the `cfa`, reach a
+     * @return The set of nodes which, by some finite sequence of calls in the `cga`, reach a
      *         transferring call graph node. (See `SoterUtil.makeCalledByClosure()`.)
      */
     public IdentitySet<CGNode> getReachingNodes()

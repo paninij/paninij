@@ -3,7 +3,7 @@ package org.paninij.soter.live;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 
@@ -13,12 +13,12 @@ import com.ibm.wala.ipa.callgraph.CGNode;
  */
 public class LocalLiveAnalysisFactory
 {
-    CallGraphAnalysis cfa;
+    CallGraphAnalysis cga;
     Map<CGNode, LocalLiveAnalysis> cachedAnalyses;
 
-    public LocalLiveAnalysisFactory(CallGraphAnalysis cfa)
+    public LocalLiveAnalysisFactory(CallGraphAnalysis cga)
     {
-        this.cfa = cfa;
+        this.cga = cga;
         resetAnalysisCache();
     }
     
@@ -26,7 +26,7 @@ public class LocalLiveAnalysisFactory
     {
         LocalLiveAnalysis analysis = cachedAnalyses.get(node);
         if (analysis == null) {
-            analysis = new LocalLiveAnalysis(node, cfa);
+            analysis = new LocalLiveAnalysis(node, cga);
             cachedAnalyses.put(node, analysis);
         }
         return analysis;

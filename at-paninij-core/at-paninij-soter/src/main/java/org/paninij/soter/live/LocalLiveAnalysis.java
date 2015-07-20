@@ -3,7 +3,7 @@ package org.paninij.soter.live;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.dataflow.graph.BitVectorFramework;
@@ -28,8 +28,9 @@ import edu.illinois.soter.analysis.transferfunctionproviders.LocalLiveVariablesT
 
 public class LocalLiveAnalysis implements Analysis
 {
+    // Analysis dependencies:
     protected final CGNode node;
-    protected final CallGraphAnalysis cfa;
+    protected final CallGraphAnalysis cga;
     
     protected final OrdinalSetMapping<PointerKey> latticeValues;
     protected final ITransferFunctionProvider<ISSABasicBlock, BitVectorVariable> transferFunctions;
@@ -38,13 +39,13 @@ public class LocalLiveAnalysis implements Analysis
 
     protected boolean hasBeenPerformed = false;
     
-    public LocalLiveAnalysis(CGNode node, CallGraphAnalysis cfa)
+    public LocalLiveAnalysis(CGNode node, CallGraphAnalysis cga)
     {
         this.node = node;
-        this.cfa = cfa;
+        this.cga = cga;
 
         latticeValues = MutableMapping.make();
-        transferFunctions = new LocalLiveVariablesTransferFunctionProvider(cfa.getHeapModel(),
+        transferFunctions = new LocalLiveVariablesTransferFunctionProvider(cga.getHeapModel(),
                                                                            node, latticeValues);
     }
 

@@ -1,4 +1,4 @@
-package org.paninij.soter.cfa;
+package org.paninij.soter.cga;
 
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.util.WalaUtil;
@@ -42,8 +42,8 @@ public class CallGraphAnalysisFactory
         IClass templateClass = WalaUtil.loadTemplateClass(templateName, cha);
         CapsuleTemplate template = new CapsuleTemplate(templateClass);
 
-        CallGraphAnalysis cfa = new CallGraphAnalysis(template, cha, options);
-        cfa.perform();
-        return cfa;
+        CallGraphAnalysis cga = new CallGraphAnalysis(template, cha, options);
+        cga.perform();
+        return cga;
     }
 }

@@ -1,6 +1,6 @@
 package org.paninij.soter.live;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.transfer.TransferAnalysisFactory;
@@ -11,21 +11,21 @@ public class CallGraphLiveAnalysisFactory
 {
     protected final IClassHierarchy cha;
 
-    protected final TransferAnalysisFactory transferAnalysisFactory;
-    protected final TransferLiveAnalysisFactory transferLiveAnalysisFactory;
+    protected final TransferAnalysisFactory taFactory;
+    protected final TransferLiveAnalysisFactory tlaFactory;
 
     public CallGraphLiveAnalysisFactory(IClassHierarchy cha)
     {
         this.cha = cha;
 
-        transferAnalysisFactory = new TransferAnalysisFactory(cha);
-        transferLiveAnalysisFactory = new TransferLiveAnalysisFactory(cha);
+        taFactory = new TransferAnalysisFactory(cha);
+        tlaFactory = new TransferLiveAnalysisFactory(cha);
     }
 
-    public CallGraphLiveAnalysis make(CapsuleTemplate template, CallGraphAnalysis cfa)
+    public CallGraphLiveAnalysis make(CapsuleTemplate template, CallGraphAnalysis cga)
     {
-        TransferAnalysis ta = transferAnalysisFactory.make(template, cfa);
-        TransferLiveAnalysis tla = transferLiveAnalysisFactory.make(template, cfa);
-        return new CallGraphLiveAnalysis(template, cfa, ta, tla, cha);
+        TransferAnalysis ta = taFactory.make(template, cga);
+        TransferLiveAnalysis tla = tlaFactory.make(template, cga, ta);
+        return new CallGraphLiveAnalysis(template, cga, ta, tla, cha);
     }
 }

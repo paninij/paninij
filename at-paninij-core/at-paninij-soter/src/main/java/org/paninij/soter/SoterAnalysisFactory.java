@@ -1,15 +1,11 @@
 package org.paninij.soter;
 
-import org.paninij.soter.cfa.CallGraphAnalysis;
-import org.paninij.soter.cfa.CallGraphAnalysisFactory;
+import org.paninij.soter.cga.CallGraphAnalysis;
+import org.paninij.soter.cga.CallGraphAnalysisFactory;
 import org.paninij.soter.live.CallGraphLiveAnalysis;
 import org.paninij.soter.live.CallGraphLiveAnalysisFactory;
-import org.paninij.soter.live.TransferLiveAnalysis;
-import org.paninij.soter.live.TransferLiveAnalysisFactory;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.CapsuleTemplateFactory;
-import org.paninij.soter.transfer.TransferAnalysis;
-import org.paninij.soter.transfer.TransferAnalysisFactory;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
@@ -23,9 +19,9 @@ public class SoterAnalysisFactory
 {
     protected final IClassHierarchy cha;
     protected final AnalysisOptions options;
-    protected final CapsuleTemplateFactory capsuleTemplateFactory;
-    protected final CallGraphAnalysisFactory callGraphAnalysisFactory;
-    protected final CallGraphLiveAnalysisFactory callGraphLiveAnalysisFactory;
+    protected final CapsuleTemplateFactory templateFactory;
+    protected final CallGraphAnalysisFactory cgaFactory;
+    protected final CallGraphLiveAnalysisFactory cglaFactory;
 
     public SoterAnalysisFactory(String classPath)
     {
@@ -34,9 +30,9 @@ public class SoterAnalysisFactory
         cha = WalaUtil.makeClassHierarchy(classPath);
         options = WalaUtil.makeAnalysisOptions(cha);
         
-        capsuleTemplateFactory = new CapsuleTemplateFactory(cha);
-        callGraphAnalysisFactory = new CallGraphAnalysisFactory(cha, options);
-        callGraphLiveAnalysisFactory = new CallGraphLiveAnalysisFactory(cha);
+        templateFactory = new CapsuleTemplateFactory(cha);
+        cgaFactory = new CallGraphAnalysisFactory(cha, options);
+        cglaFactory = new CallGraphLiveAnalysisFactory(cha);
     }
     
     /**
@@ -44,10 +40,10 @@ public class SoterAnalysisFactory
      */
     public SoterAnalysis make(String capsuleName)
     {
-        CapsuleTemplate template = capsuleTemplateFactory.make(capsuleName);
-        CallGraphAnalysis cfa = callGraphAnalysisFactory.make(template);
-        CallGraphLiveAnalysis cgla = callGraphLiveAnalysisFactory.make(template, cfa);
+        CapsuleTemplate template = templateFactory.make(capsuleName);
+        CallGraphAnalysis cga = cgaFactory.make(template);
+        CallGraphLiveAnalysis cgla = cglaFactory.make(template, cga);
 
-        return new SoterAnalysis(template, cfa, cgla, cha);
+        return new SoterAnalysis(template, cga, cgla, cha);
     }
 }
