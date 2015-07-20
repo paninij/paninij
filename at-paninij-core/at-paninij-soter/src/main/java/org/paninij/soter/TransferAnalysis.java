@@ -18,12 +18,13 @@ public class TransferAnalysis
         this.cfa = cfa;
         this.cha = cha;
     }
-    
+
     public void perform()
     {
+        cfa.perform();
         // TODO: Use site live analysis factory
     }
-    
+
     public CallGraph getCallGraph()
     {
         return cfa.getCallGraph();

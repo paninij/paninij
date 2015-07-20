@@ -275,6 +275,8 @@ public class PaniniProcessor extends AbstractProcessor
             {
                 String capsuleName = capsule.getQualifiedName();
                 TransferAnalysis transferAnalysis = transferAnalysisFactory.make(capsuleName);
+                transferAnalysis.perform();
+
                 String callGraphPDF = callGraphPDFs + File.separator + capsuleName + ".pdf";
                 WalaUtil.makeGraphFile(transferAnalysis.getCallGraph(), callGraphPDF);
             }

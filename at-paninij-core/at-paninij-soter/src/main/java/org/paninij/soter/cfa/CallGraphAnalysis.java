@@ -25,6 +25,7 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  */
 public class CallGraphAnalysis
 {
+    protected final CapsuleTemplate template;
     protected final IClassHierarchy cha;
     protected final AnalysisOptions options;
     protected final AnalysisCache cache;
@@ -34,27 +35,39 @@ public class CallGraphAnalysis
     protected PointerAnalysis<InstanceKey> pointerAnalysis;
     protected HeapModel heapModel;
     protected HeapGraph<InstanceKey> heapGraph;
+    
+    protected boolean hasBeenPerformed;
 
-    public CallGraphAnalysis(IClassHierarchy cha, AnalysisOptions options)
+    public CallGraphAnalysis(CapsuleTemplate template, IClassHierarchy cha, AnalysisOptions options)
     {
-        this(cha, options, new AnalysisCache());
+        this(template, cha, options, new AnalysisCache());
     }
     
-    public CallGraphAnalysis(IClassHierarchy cha, AnalysisOptions options, AnalysisCache cache)
+    public CallGraphAnalysis(CapsuleTemplate template, IClassHierarchy cha, AnalysisOptions options,
+                             AnalysisCache cache)
     {
+        this.template = template;
         this.cha = cha;
         this.options = options;
         this.cache = cache;
+        
+        hasBeenPerformed = false;
     }
 
     /**
      * This performs a zero-one CFA algorithm which simultaneously builds the call graph and
      * performs the pointer analysis. Note that by calling this function, any entrypoints stored in
      * `options` will be overridden with new entrypoints.
+     * 
+     * Note that this is idempotent, that is, calling this after the first time has no effect.
      */
     @SuppressWarnings("unchecked")
-    public void perform(CapsuleTemplate template)
+    public void perform()
     {
+        if (hasBeenPerformed) {
+            return;
+        }
+
         options.setEntrypoints(CapsuleTemplateEntrypoint.makeAll(template.getTemplateClass()));
 
         ContextSelector contextSelector = new ReceiverInstanceContextSelector();
@@ -73,6 +86,8 @@ public class CallGraphAnalysis
             String msg = "Call graph construction was unexpectedly cancelled: ";
             throw new IllegalArgumentException(msg + template.toString());
         }
+        
+        hasBeenPerformed = true;
     }
     
     public CallGraph getCallGraph()
@@ -109,29 +124,5 @@ public class CallGraphAnalysis
             throw new IllegalStateException(msg);
         }
         return heapGraph;
-    }
-    
-    /**
-     * A helper method for making a call graph analysis and performing the build in the default way.
-     * This is useful for building a single call for a template. However, if call graphs for
-     * multiple templates are needed, it is recommended (for performance reasons) separate
-     * `CallGraphAnalyses` and to call perform on each with resources shared across all of the
-     * call graph analyses (e.g. the class * hierarchy analysis).
-     * 
-     * @param templateName  The name of the template to be analyzed. Should be something of the form
-     *                      `-Lorg/paninij/soter/FooTemplate`.
-     * @param classPath     A colon-separated list of file system locations in which WALA should
-     *                      look for application classes.
-     */
-    public static CallGraphAnalysis build(String templateName, String classPath)
-    {
-        IClassHierarchy cha = WalaUtil.makeClassHierarchy(classPath);
-        AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
-
-        CallGraphAnalysis builder = new CallGraphAnalysis(cha, options);
-
-        CapsuleTemplate template = new CapsuleTemplate(WalaUtil.loadTemplateClass(templateName, cha));
-        builder.perform(template);
-        return builder;
     }
 }

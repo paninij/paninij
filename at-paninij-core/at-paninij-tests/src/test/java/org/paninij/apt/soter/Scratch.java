@@ -1,6 +1,7 @@
 package org.paninij.apt.soter;
 
 import static org.paninij.apt.util.ArtifactCompiler.buildEffectiveClassPath;
+import static org.paninij.soter.cfa.CallGraphAnalysisFactory.performStandardAnalysis;
 
 import java.util.Collection;
 
@@ -25,8 +26,8 @@ public class Scratch
     @Test
     public void scratch()
     {
-        CallGraphAnalysis built = CallGraphAnalysis.build(ACTIVE_CLIENT_NAME, CLASSPATH);
-        CallGraph cg = built.getCallGraph();
+        CallGraphAnalysis analysis = performStandardAnalysis(ACTIVE_CLIENT_NAME, CLASSPATH);
+        CallGraph cg = analysis.getCallGraph();
         IdentitySet<CGNode> init = SoterUtil.getInitialCallNodes(cg);
         IdentitySet<CGNode> reachable = SoterUtil.makeCalledByClosure(init, cg);
 

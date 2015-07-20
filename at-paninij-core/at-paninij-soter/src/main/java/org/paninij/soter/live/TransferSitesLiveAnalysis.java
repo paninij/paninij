@@ -3,7 +3,6 @@ package org.paninij.soter.live;
 import java.util.Map;
 import java.util.Set;
 
-import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
@@ -23,34 +22,36 @@ import com.ibm.wala.ssa.ISSABasicBlock;
  */
 public class TransferSitesLiveAnalysis
 {
+    // The analysis's dependencies:
     final protected CapsuleTemplate capsuleTemplate;
-    final protected CallGraphAnalysis cfa;
-    final protected IClassHierarchy cha;
-
     final protected LocalLiveAnalysisFactory localLiveAnalysisFactory;
     final protected TransferSitesAnalysis transferSitesAnalysis;
+    final protected CallGraphAnalysis cfa;
+    final protected IClassHierarchy cha;
     
-    protected Set<CGNode> relevantNodes;
-    protected IdentitySet<CGNode> reachingNodes;
+    // The results of the analysis:
     protected Map<TransferSite, Set<PointerKey>> liveVariables;
 
-    public TransferSitesLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa, IClassHierarchy cha)
+
+    public TransferSitesLiveAnalysis(CapsuleTemplate template,
+                                     LocalLiveAnalysisFactory localLiveAnalysisFactory,
+                                     TransferSitesAnalysis transferSitesAnalysis,
+                                     CallGraphAnalysis cfa,
+                                     IClassHierarchy cha)
     {
         this.capsuleTemplate = template;
+        this.localLiveAnalysisFactory = localLiveAnalysisFactory;
+        this.transferSitesAnalysis = transferSitesAnalysis;
         this.cfa = cfa;
         this.cha = cha;
-
-        localLiveAnalysisFactory = new LocalLiveAnalysisFactory(cfa);
-        transferSitesAnalysis = new TransferSitesAnalysis(template, cfa, cha);
     }
-    
+
+
     public void perform()
     {
         transferSitesAnalysis.perform();
-        reachingNodes = transferSitesAnalysis.getReachingNodes();        
-        relevantNodes = transferSitesAnalysis.getRelevantNodes();
 
-        for (CGNode node : reachingNodes)
+        for (CGNode node : transferSitesAnalysis.getReachingNodes())
         {
             Set<TransferSite> relevantSites = transferSitesAnalysis.getRelevantSites(node);
             LocalLiveAnalysis localAnalysis = localLiveAnalysisFactory.lookupOrMake(node);
@@ -59,19 +60,10 @@ public class TransferSitesLiveAnalysis
                 liveVariables.put(site, getPointerKeysAfter(site));
             }
         }
-        
-        // Free all sub-analyses, because all relevant information from them has already been saved.
-        transferSitesAnalysis.resetAnalysis();
-        localLiveAnalysisFactory.resetAnalysisCache();
     }
 
-    /**
-     * @param transferSite A transfer site defined w.r.t. the factory's call graph analysis.
-     * @return The set of pointer keys into the heap model of the factory's call graph analysis
-     *         which the analysis found to be live at the "in" program point of the given transfer
-     *         site.
-     */
-    protected Set<PointerKey> getPointerKeysAfter(TransferSite transferSite)
+
+    protected void addPointerKeysAfter(TransferSite transferSite)
     {
         CGNode node = transferSite.getNode();
         assert cfa.getCallGraph().containsNode(node);
@@ -81,6 +73,19 @@ public class TransferSitesLiveAnalysis
 
         IR nodeIR = node.getIR();
         ISSABasicBlock block = nodeIR.getBasicBlockForInstruction(transferSite.getInstruction());
-        return localLiveAnalysis.getPointerKeysAfter(block);
+        liveVariables.put(transferSite, localLiveAnalysis.getPointerKeysAfter(block));
+    }
+
+
+    /**
+     * @param transferSite A transfer site defined w.r.t. the factory's call graph analysis.
+     * 
+     * @return The set of pointer keys into the heap model of the factory's call graph analysis
+     *         which the analysis found to be live after the program point of the given transfer
+     *         site.
+     */
+    public Set<PointerKey> getPointerKeysAfter(TransferSite transferSite)
+    {
+        return liveVariables.get(transferSite);
     }
 }

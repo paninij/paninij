@@ -53,6 +53,8 @@ public class TransferSitesAnalysis
      */
     protected Map<CGNode, Set<TransferSite>> otherRelevantSitesMap;
     
+    protected boolean hasBeenPerformed = false;
+    
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
     public TransferSitesAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa,
@@ -61,12 +63,18 @@ public class TransferSitesAnalysis
         this.template = template;
         this.cfa = cfa;
         this.cha = cha;
-
         resetAnalysis();
     }
     
+    /**
+     * Note that this is idempotent, that is, calling this after the first time has no effect.
+     */
     public void perform()
     {
+        if (hasBeenPerformed) {
+            return;
+        }
+
         for (CGNode node : cfa.getCallGraph())
         {
             // Only add transfer sites from nodes whose methods are declared directly on the capsule
@@ -86,6 +94,8 @@ public class TransferSitesAnalysis
                 findOtherRelevantSites(node);
             }
         }
+        
+        hasBeenPerformed = true;
     }
 
     public void findTransferSites(CGNode node)
@@ -261,5 +271,6 @@ public class TransferSitesAnalysis
         transferringSitesMap = new HashMap<CGNode, Set<TransferSite>>();
         reachingNodes = null;
         otherRelevantSitesMap = new HashMap<CGNode, Set<TransferSite>>();
+        hasBeenPerformed = false;
     }
 }
