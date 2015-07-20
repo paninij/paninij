@@ -19,10 +19,15 @@ public class TransferSite
      * @param node          The call graph node in which this transfer
      * @param transferInstr The instruction (from the SSA IR of `node`) which performs the transfer.
      * @param transfers     A set of value numbers (from the SSA IR of `node`) which are
-     *                      transferred at this transfer site.
+     *                      transferred at this transfer site. If there are no transfers, then that
+     *                      should be represented by passing `null`.
      */
     public TransferSite(CGNode node, SSAInstruction transferInstr, IntSet transfers)
     {
+        assert node != null;
+        assert transferInstr != null;
+        assert transfers == null || ! transfers.isEmpty();
+
         this.node = node;
         this.transferInstr = transferInstr;
         this.transfers = transfers;
@@ -43,6 +48,15 @@ public class TransferSite
         return transferInstr;
     }
     
+    /**
+     * @return An IntSet of the SSA IR value numbers which are potentially-unsafe transfers (or
+     *         `null` if there are none).
+     */
+    public IntSet getTransfers()
+    {
+        return transfers;
+    }
+
     public CGNode getNode()
     {
         return node;

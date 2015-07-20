@@ -6,6 +6,7 @@ import static org.paninij.soter.util.PaniniModel.isKnownSafeTypeForTransfer;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
+import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IMethod;
@@ -31,8 +33,25 @@ public class TransferSitesAnalysis
     protected final CallGraphAnalysis cfa;
     protected final IClassHierarchy cha;
 
-    protected Map<CGNode, Set<TransferSite>> transferSitesMap;
-    protected Set<CallSiteReference> transferringCallSites;
+    /**
+     * A map from some call graph node to the set of the node's transfer sites which were found to
+     * include some potentially unsafe transfers.
+     */
+    protected final Map<CGNode, Set<TransferSite>> transferringSitesMap;
+    
+    /**
+     * The set of nodes which, by some finite sequence of calls in the `cfa`, reach a transferring
+     * call graph node.
+     */
+    protected IdentitySet<CGNode> reachingNodes;
+    
+    /**
+     * A map from some call graph node to the set of the node's transfer sites which were not found
+     * to include any potentially unsafe transfers, but were found to be considered relevant. Here,
+     * "relevant" means that the transfer is an invocation which includes a call graph target to a
+     * "reachable" node.
+     */
+    protected final Map<CGNode, Set<TransferSite>> otherRelevantSitesMap;
     
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
@@ -43,8 +62,8 @@ public class TransferSitesAnalysis
         this.cfa = cfa;
         this.cha = cha;
 
-        transferSitesMap = new HashMap<CGNode, Set<TransferSite>>();
-        transferringCallSites = new HashSet<CallSiteReference>();
+        transferringSitesMap = new HashMap<CGNode, Set<TransferSite>>();
+        otherRelevantSitesMap = new HashMap<CGNode, Set<TransferSite>>();
     }
     
     public void perform()
@@ -55,17 +74,27 @@ public class TransferSitesAnalysis
             // template. Ignore any others. This is done because transfer points can only be defined
             // within the capsule template itself.
             if (template.getTemplateClass().equals(node.getMethod().getDeclaringClass())) {
-                addTransferSitesFrom(node);
+                findTransferSites(node);
+            }
+        }
+        
+        Set<CGNode> transferringNodes = getTransferringNodes();
+        reachingNodes = SoterUtil.makeCalledByClosure(transferringNodes, cfa.getCallGraph());
+
+        for (CGNode node : cfa.getCallGraph())
+        {
+            if (transferringNodes.contains(node)) {
+                findOtherRelevantSites(node);
             }
         }
     }
 
     public Set<TransferSite> getTransferSites(CGNode node)
     {
-        return transferSitesMap.get(node);
+        return transferringSitesMap.get(node);
     }
 
-    public void addTransferSitesFrom(CGNode node)
+    public void findTransferSites(CGNode node)
     {
         IMethod method = node.getMethod();
 
@@ -74,10 +103,10 @@ public class TransferSitesAnalysis
             for (SSAInstruction instr : node.getIR().getInstructions())
             {
                 if (instr instanceof SSAReturnInstruction) {
-                    addTransferSite(node, (SSAReturnInstruction) instr);
+                    foundTransferringSite(node, (SSAReturnInstruction) instr);
                 }
                 if (instr instanceof SSAAbstractInvokeInstruction) {
-                    maybeAddTransferSite(node, (SSAAbstractInvokeInstruction) instr);
+                    foundTransferringSite(node, (SSAAbstractInvokeInstruction) instr);
                 }
             }
         }
@@ -86,13 +115,10 @@ public class TransferSitesAnalysis
             for (SSAInstruction instr : node.getIR().getInstructions())
             {
                 if (instr instanceof SSAAbstractInvokeInstruction) {
-                    maybeAddTransferSite(node, (SSAAbstractInvokeInstruction) instr);
+                    foundTransferringSite(node, (SSAAbstractInvokeInstruction) instr);
                 }
             }
         }
-
-        // TODO: Add to set of transferring call sites when appropriate.
-        throw new UnsupportedOperationException("TODO");
     }
     
     protected boolean shouldCheckForReturnTransfers(IMethod method)
@@ -100,20 +126,21 @@ public class TransferSitesAnalysis
         return isProcedure(method) && !isKnownSafeTypeForTransfer(method.getReturnType());
     }
      
-    protected void addTransferSite(CGNode node, SSAReturnInstruction returnInstr)
+    protected void foundTransferringSite(CGNode node, SSAReturnInstruction returnInstr)
     {
         // A return instruction always has one transfer.
         MutableIntSet transfers = new BitVectorIntSet();
         int returnValueNumber = returnInstr.getUse(0);
         transfers.add(returnValueNumber);
-        addTransferSite(node, new TransferSite(node, returnInstr, transfers));
+        addTransferringSite(node, new TransferSite(node, returnInstr, transfers));
     }
     
+
     /**
      * Adds a transfer site with every transfer which is not known to be safe. If all of the
      * transfers at a transfer site are known to be safe, then no transfer point is added.
      */
-    protected void maybeAddTransferSite(CGNode node, SSAAbstractInvokeInstruction invokeInstr)
+    protected void foundTransferringSite(CGNode node, SSAAbstractInvokeInstruction invokeInstr)
     {
         // Return static methods and dispatch methods with only the receiver argument.
         if (invokeInstr.isStatic() || invokeInstr.getNumberOfParameters() == 1)
@@ -135,28 +162,80 @@ public class TransferSitesAnalysis
         }
         
         if (! transfers.isEmpty()) {
-            addTransferSite(node, new TransferSite(node, invokeInstr, transfers));
+            addTransferringSite(node, new TransferSite(node, invokeInstr, transfers));
         }
     }
     
-    protected void addTransferSite(CGNode node, TransferSite transferSite)
+    protected void addTransferringSite(CGNode node, TransferSite transferSite)
     {
-        Set<TransferSite> sites = transferSitesMap.get(node);
+        assert transferSite.getTransfers().isEmpty() == false;
+
+        Set<TransferSite> sites = transferringSitesMap.get(node);
         if (sites == null) {
             // This is the first transfer site from this `CGNode` to be added to `transferSitesMap`.
             sites = new HashSet<TransferSite>();
-            transferSitesMap.put(node, sites);
+            transferringSitesMap.put(node, sites);
+        }
+        sites.add(transferSite);
+    }
+
+    /**
+     * A call site is considered relevant if it is transferring or if one of the call site's
+     * possible call graph targets is in `reaching`.
+     * 
+     * @return The set of all relevant call sites within the given call graph node.
+     */
+    protected void findOtherRelevantSites(CGNode node)
+    {
+        Iterator<CallSiteReference> callSiteIter = node.iterateCallSites();
+        while(callSiteIter.hasNext())
+        {
+            CallSiteReference callSite = callSiteIter.next();
+            for (CGNode targetNode : cfa.getCallGraph().getPossibleTargets(node, callSite))
+            {
+                if (reachingNodes.contains(targetNode))
+                {
+                    foundOtherRelevantSite(node, callSite);
+                    break;
+                }
+            }
+        }
+    }
+    
+    protected void foundOtherRelevantSite(CGNode node, CallSiteReference callSite)
+    {
+        SSAAbstractInvokeInstruction[] instrs = node.getIR().getCalls(callSite);
+        if (instrs.length != 1) {
+            String msg = "The given call site does not have exactly one SSA IR insturction!";
+            throw new RuntimeException(msg);
+        }
+        addOtherRelevantSite(node, new TransferSite(node, instrs[0], null));
+    }
+    
+    protected void addOtherRelevantSite(CGNode node, TransferSite transferSite)
+    {
+        assert transferSite.getTransfers() == null;
+
+        Set<TransferSite> sites = transferringSitesMap.get(node);
+        if (sites == null) {
+            // This is the first transfer site from this `CGNode` to be added to `transferSitesMap`.
+            sites = new HashSet<TransferSite>();
+            transferringSitesMap.put(node, sites);
         }
         sites.add(transferSite);
     }
 
     public Set<CGNode> getTransferringNodes()
     {
-        return transferSitesMap.keySet();
+        return transferringSitesMap.keySet();
     }
-
-    public boolean isTransferring(CallSiteReference cs)
+    
+    /**
+     * @return The set of nodes which, by some finite sequence of calls in the `cfa`, reach a
+     *         transferring call graph node. (See `SoterUtil.makeCalledByClosure()`.)
+     */
+    public IdentitySet<CGNode> getReachingNodes()
     {
-        return transferringCallSites.contains(cs);
+        return reachingNodes;
     }
 }

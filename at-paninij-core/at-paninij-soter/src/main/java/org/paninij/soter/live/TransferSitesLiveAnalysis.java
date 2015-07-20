@@ -51,9 +51,7 @@ public class TransferSitesLiveAnalysis
     public void perform()
     {
         Set<CGNode> transferringNodes = transferSitesAnalysis.getTransferringNodes();
-        IdentitySet<CGNode> reachingNodes = SoterUtil.makeCalledByClosure(transferringNodes,
-                                                                          cfa.getCallGraph());
-        
+        IdentitySet<CGNode> reachingNodes = transferSitesAnalysis.getReachingNodes();        
         for (CGNode node : reachingNodes)
         {
             LocalLiveAnalysis OUT = localLiveAnalysisFactory.lookupOrMake(node);
@@ -61,38 +59,7 @@ public class TransferSitesLiveAnalysis
             throw new UnsupportedOperationException("TODO");
         }
     }
-    
-    
-    /**
-     * A call site is considered relevant if it is transferring or if one of the call site's
-     * possible call graph targets is in `reaching`.
-     * 
-     * @return The set of all relevant call sites within the given call graph node.
-     */
-    protected Set<CallSiteReference> getRelevantCallSites(CGNode node, IdentitySet<CGNode> reaching)
-    {
-        Set<CallSiteReference> relevant = new HashSet<CallSiteReference>();
-        Iterator<CallSiteReference> iter = node.iterateCallSites();
-        while (iter.hasNext())
-        {
-            CallSiteReference cs = iter.next();
-            if (transferSitesAnalysis.isTransferring(cs))
-            {
-                relevant.add(cs);
-                continue;
-            }
 
-            for (CGNode targetNode : cfa.getCallGraph().getPossibleTargets(node, cs))
-            {
-                if (reaching.contains(targetNode))
-                {
-                    relevant.add(cs);
-                    break;
-                }
-            }
-        }
-        return relevant;
-    }
     
 
     /**
