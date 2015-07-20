@@ -3,6 +3,7 @@ package org.paninij.soter.live;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.paninij.soter.Analysis;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 
 import com.ibm.wala.dataflow.graph.BitVectorFramework;
@@ -25,7 +26,7 @@ import com.ibm.wala.util.intset.OrdinalSetMapping;
 
 import edu.illinois.soter.analysis.transferfunctionproviders.LocalLiveVariablesTransferFunctionProvider;
 
-public class LocalLiveAnalysis
+public class LocalLiveAnalysis implements Analysis
 {
     protected final CGNode node;
     protected final CallGraphAnalysis cfa;
@@ -47,10 +48,8 @@ public class LocalLiveAnalysis
                                                                            node, latticeValues);
     }
 
-    /**
-     * Note that this is idempotent, that is, calling this after the first time has no effect.
-     */
-    protected void perform()
+    @Override
+    public void perform()
     {
         if (hasBeenPerformed) {
             return;
@@ -64,11 +63,12 @@ public class LocalLiveAnalysis
         try {
             dataFlowSolver = new BitVectorSolver<ISSABasicBlock>(dataFlowFramework);
             dataFlowSolver.solve((IProgressMonitor) new NullProgressMonitor());
-            hasBeenPerformed = true;
         } catch (CancelException ex) {
             String msg = "Caught unexpected `CancelException` while solving a `LocalLiveAnalysis`.";
             throw new RuntimeException(msg);
         }
+
+        hasBeenPerformed = true;
     }
     
     

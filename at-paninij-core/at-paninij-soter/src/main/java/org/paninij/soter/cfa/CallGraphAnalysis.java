@@ -1,11 +1,10 @@
 package org.paninij.soter.cfa;
 
+import org.paninij.soter.Analysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.analysis.pointers.BasicHeapGraph;
 import com.ibm.wala.analysis.pointers.HeapGraph;
-import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.CallGraph;
@@ -23,7 +22,7 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  * Builds Zero-One CFA call graph using flow insensitive Andersen style points-to analysis with
  * entrypoints stemming from the procedures of a single template class.
  */
-public class CallGraphAnalysis
+public class CallGraphAnalysis implements Analysis
 {
     protected final CapsuleTemplate template;
     protected final IClassHierarchy cha;
@@ -59,8 +58,9 @@ public class CallGraphAnalysis
      * performs the pointer analysis. Note that by calling this function, any entrypoints stored in
      * `options` will be overridden with new entrypoints.
      * 
-     * Note that this is idempotent, that is, calling this after the first time has no effect.
+     * @see org.paninij.soter.Analysis#perform()
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void perform()
     {

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.paninij.runtime.util.IdentitySet;
+import org.paninij.soter.Analysis;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
@@ -27,7 +28,7 @@ import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.intset.BitVectorIntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 
-public class TransferSitesAnalysis
+public class TransferSitesAnalysis implements Analysis
 {
     protected final CapsuleTemplate template;
     protected final CallGraphAnalysis cfa;
@@ -66,9 +67,7 @@ public class TransferSitesAnalysis
         resetAnalysis();
     }
     
-    /**
-     * Note that this is idempotent, that is, calling this after the first time has no effect.
-     */
+    @Override
     public void perform()
     {
         if (hasBeenPerformed) {

@@ -3,6 +3,7 @@ package org.paninij.soter.live;
 import java.util.Map;
 import java.util.Set;
 
+import org.paninij.soter.Analysis;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
@@ -20,7 +21,7 @@ import com.ibm.wala.ssa.ISSABasicBlock;
  * 
  * See Figure 8 of Negara, 2011.
  */
-public class TransferSitesLiveAnalysis
+public class TransferSitesLiveAnalysis implements Analysis
 {
     // The analysis's dependencies:
     final protected CapsuleTemplate capsuleTemplate;
@@ -32,6 +33,7 @@ public class TransferSitesLiveAnalysis
     // The results of the analysis:
     protected Map<TransferSite, Set<PointerKey>> liveVariables;
 
+    protected boolean hasBeenPerformed;
 
     public TransferSitesLiveAnalysis(CapsuleTemplate template,
                                      LocalLiveAnalysisFactory localLiveAnalysisFactory,
@@ -44,11 +46,18 @@ public class TransferSitesLiveAnalysis
         this.transferSitesAnalysis = transferSitesAnalysis;
         this.cfa = cfa;
         this.cha = cha;
+        
+        hasBeenPerformed = false;
     }
 
 
+    @Override
     public void perform()
     {
+        if (hasBeenPerformed) {
+            return;
+        }
+
         transferSitesAnalysis.perform();
 
         for (CGNode node : transferSitesAnalysis.getReachingNodes())
@@ -60,6 +69,8 @@ public class TransferSitesLiveAnalysis
                 liveVariables.put(site, getPointerKeysAfter(site));
             }
         }
+        
+        hasBeenPerformed = true;
     }
 
 

@@ -2,6 +2,9 @@ package org.paninij.soter;
 
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.cfa.CallGraphAnalysisFactory;
+import org.paninij.soter.live.TransferSitesAnalysis;
+import org.paninij.soter.live.TransferSitesAnalysisFactory;
+import org.paninij.soter.live.TransferSitesLiveAnalysis;
 import org.paninij.soter.live.TransferSitesLiveAnalysisFactory;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.CapsuleTemplateFactory;
@@ -20,6 +23,7 @@ public class TransferAnalysisFactory
     protected final AnalysisOptions options;
     protected final CapsuleTemplateFactory capsuleTemplateFactory;
     protected final CallGraphAnalysisFactory callGraphAnalysisFactory;
+    protected final TransferSitesAnalysisFactory transferSitesAnalysisFactory;
     protected final TransferSitesLiveAnalysisFactory transferSitesLiveAnalysisFactory;
 
     public TransferAnalysisFactory(String classPath)
@@ -31,6 +35,7 @@ public class TransferAnalysisFactory
         
         capsuleTemplateFactory = new CapsuleTemplateFactory(cha);
         callGraphAnalysisFactory = new CallGraphAnalysisFactory(cha, options);
+        transferSitesAnalysisFactory = new TransferSitesAnalysisFactory(cha);
         transferSitesLiveAnalysisFactory = new TransferSitesLiveAnalysisFactory(cha);
     }
     
@@ -41,6 +46,12 @@ public class TransferAnalysisFactory
     {
         CapsuleTemplate template = capsuleTemplateFactory.make(capsuleName);
         CallGraphAnalysis cfa = callGraphAnalysisFactory.make(template);
-        return new TransferAnalysis(template, cfa, cha);
+        TransferSitesAnalysis transferSitesAnalysis
+                = transferSitesAnalysisFactory.make(template, cfa);
+        TransferSitesLiveAnalysis transferSitesLiveAnalysis
+                = transferSitesLiveAnalysisFactory.make(template, cfa);
+
+        return new TransferAnalysis(template, cfa, transferSitesAnalysis,
+                                    transferSitesLiveAnalysis, cha);
     }
 }
