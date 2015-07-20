@@ -53,9 +53,11 @@ import org.paninij.apt.model.SignatureElement;
 import org.paninij.apt.util.ArtifactCompiler;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
-import org.paninij.soter.Analysis;
-import org.paninij.soter.AnalysisFactory;
+import org.paninij.soter.TransferAnalysis;
+import org.paninij.soter.TransferAnalysisFactory;
+import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.cfa.PaniniCallGraphAnalysis;
+import org.paninij.soter.model.CapsuleTemplateFactory;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
@@ -84,7 +86,7 @@ public class PaniniProcessor extends AbstractProcessor
     protected boolean initializedWithOptions = false;
     protected boolean midpointCompile = false;
     protected ArtifactCompiler artifactCompiler;
-    protected AnalysisFactory analysisFactory;
+    protected TransferAnalysisFactory analysisFactory;
 
     // Annotation processor options (i.e. `-A` arguments):
     // TODO: Make these not static.
@@ -124,7 +126,7 @@ public class PaniniProcessor extends AbstractProcessor
             {
                 initSoterOptions(options);
                 artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(options);
-                analysisFactory = new AnalysisFactory(artifactCompiler.getClassPath());
+                analysisFactory = new TransferAnalysisFactory(artifactCompiler.getClassPath());
                 midpointCompile = true;
             }
             catch (IOException e)
@@ -267,14 +269,19 @@ public class PaniniProcessor extends AbstractProcessor
         
         if (callGraphPDFs != null)
         {
+            WalaUtil.checkRequiredResourcesExist();
+            IClassHierarchy cha = WalaUtil.makeClassHierarchy(artifactCompiler.getClassPath());
+            AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
+            PaniniCallGraphAnalysis cfa = new PaniniCallGraphAnalysis();
+            CapsuleTemplateFactory capsuleTemplateFactory = new CapsuleTemplateFactory(cha);
+            // TODO: Everything!
+
             for (Capsule capsule : capsules)
             {
                 String name = capsule.getQualifiedName();
-                Analysis analysis = analysisFactory.make(name);
-                analysis.perform();
 
                 String callGraphPDF = callGraphPDFs + File.separator + name + ".pdf";
-                WalaUtil.makeGraphFile(analysis.getCallGraph(), callGraphPDF);
+                WalaUtil.makeGraphFile(cfa.getCallGraph(), callGraphPDF);
             }
         }
         

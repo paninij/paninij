@@ -1,4 +1,4 @@
-package org.paninij.soter.cfa;
+package org.paninij.soter.live;
 
 import static org.paninij.soter.util.PaniniModel.isProcedure;
 import static org.paninij.soter.util.PaniniModel.isRemoteProcedure;
@@ -9,8 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.paninij.runtime.util.IdentitySet;
+import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.TransferSite;
 
+import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
@@ -21,29 +25,51 @@ import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.intset.BitVectorIntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 
-public class TransferSitesMapBuilder
+public class TransferSitesAnalysis
 {
-    IClassHierarchy cha;
+    protected final CapsuleTemplate template;
+    protected final CallGraphAnalysis cfa;
+    protected final IClassHierarchy cha;
+
     protected Map<CGNode, Set<TransferSite>> transferSitesMap;
+    protected Set<CallSiteReference> transferringCallSites;
     
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
-    public TransferSitesMapBuilder(IClassHierarchy cha)
+    public TransferSitesAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa,
+                                 IClassHierarchy cha)
     {
+        this.template = template;
+        this.cfa = cfa;
         this.cha = cha;
+
         transferSitesMap = new HashMap<CGNode, Set<TransferSite>>();
+        transferringCallSites = new HashSet<CallSiteReference>();
+    }
+    
+    public void perform()
+    {
+        for (CGNode node : cfa.getCallGraph())
+        {
+            // Only add transfer sites from nodes whose methods are declared directly on the capsule
+            // template. Ignore any others. This is done because transfer points can only be defined
+            // within the capsule template itself.
+            if (template.getTemplateClass().equals(node.getMethod().getDeclaringClass())) {
+                addTransferSitesFrom(node);
+            }
+        }
     }
 
-    public Map<CGNode, Set<TransferSite>> getTransferSitesMap()
+    public Set<TransferSite> getTransferSites(CGNode node)
     {
-        return transferSitesMap;
+        return transferSitesMap.get(node);
     }
 
     public void addTransferSitesFrom(CGNode node)
     {
         IMethod method = node.getMethod();
 
-        if (isProcedure(method) && !isKnownSafeTypeForTransfer(method.getReturnType()))
+        if (shouldCheckForReturnTransfers(method))
         {
             for (SSAInstruction instr : node.getIR().getInstructions())
             {
@@ -64,6 +90,14 @@ public class TransferSitesMapBuilder
                 }
             }
         }
+
+        // TODO: Add to set of transferring call sites when appropriate.
+        throw new UnsupportedOperationException("TODO");
+    }
+    
+    protected boolean shouldCheckForReturnTransfers(IMethod method)
+    {
+        return isProcedure(method) && !isKnownSafeTypeForTransfer(method.getReturnType());
     }
      
     protected void addTransferSite(CGNode node, SSAReturnInstruction returnInstr)
@@ -114,5 +148,15 @@ public class TransferSitesMapBuilder
             transferSitesMap.put(node, sites);
         }
         sites.add(transferSite);
+    }
+
+    public Set<CGNode> getTransferringNodes()
+    {
+        return transferSitesMap.keySet();
+    }
+
+    public boolean isTransferring(CallSiteReference cs)
+    {
+        return transferringCallSites.contains(cs);
     }
 }

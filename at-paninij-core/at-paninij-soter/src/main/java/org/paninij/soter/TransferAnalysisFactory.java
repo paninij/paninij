@@ -15,12 +15,12 @@ import com.ibm.wala.types.TypeReference;
  * A factory for creating and performing `@PaniniJ` SOTER analyses. It caches resources that can be
  * used across multiple SOTER analyses (e.g. the class hierarchy analysis).
  */
-public class AnalysisFactory
+public class TransferAnalysisFactory
 {
     IClassHierarchy cha;
     AnalysisOptions options;
 
-    public AnalysisFactory(String classPath)
+    public TransferAnalysisFactory(String classPath)
     {
         cha = WalaUtil.makeClassHierarchy(classPath);
         options = WalaUtil.makeAnalysisOptions(cha);
@@ -29,17 +29,17 @@ public class AnalysisFactory
     }
     
     /**
-     * @param capsule A fully qualified name of a capsule (e.g. "org.paninij.examples.pi.Pi").
+     * @param capsuleTemplate A fully qualified name of a capsule (e.g. "org.paninij.examples.pi.Pi").
      */
-    public Analysis make(String capsuleName)
+    public TransferAnalysis make(String capsuleName)
     {
         String templatePath = WalaUtil.fromQualifiedNameToWalaPath(capsuleName) + "Template";
         IClass templateClass = cha.lookupClass(TypeReference.find(Application, templatePath));
-        CapsuleTemplate capsule = new CapsuleTemplate(templateClass);
+        CapsuleTemplate template = new CapsuleTemplate(templateClass);
 
         PaniniCallGraphAnalysis cfa = new PaniniCallGraphAnalysis();
-        cfa.perform(templateClass, cha, options);
-        Analysis analysis = new Analysis(capsule, cfa, cha);
+        cfa.perform(template, cha, options);
+        TransferAnalysis analysis = new TransferAnalysis(template, cfa, cha);
 
         return analysis;
     }

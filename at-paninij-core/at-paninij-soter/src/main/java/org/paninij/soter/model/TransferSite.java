@@ -38,6 +38,16 @@ public class TransferSite
         return kind == Kind.INVOKE;
     }
     
+    public SSAInstruction getInstruction()
+    {
+        return transferInstr;
+    }
+    
+    public CGNode getNode()
+    {
+        return node;
+    }
+    
     public static enum Kind
     {
         INVOKE,

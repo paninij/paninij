@@ -1,5 +1,6 @@
 package org.paninij.soter.cfa;
 
+import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.analysis.pointers.BasicHeapGraph;
@@ -46,9 +47,9 @@ public class PaniniCallGraphAnalysis implements CallGraphAnalysis
      * `options` will be overridden with new entrypoints.
      */
     @SuppressWarnings("unchecked")
-    public void perform(IClass template, IClassHierarchy cha, AnalysisOptions options)
+    public void perform(CapsuleTemplate template, IClassHierarchy cha, AnalysisOptions options)
     {
-        options.setEntrypoints(CapsuleTemplateEntrypoint.makeAll(template));
+        options.setEntrypoints(CapsuleTemplateEntrypoint.makeAll(template.getTemplateClass()));
 
         ContextSelector contextSelector = new ReceiverInstanceContextSelector();
         PropagationCallGraphBuilder builder = Util.makeZeroOneCFABuilder(options, analysisCache,
@@ -117,11 +118,17 @@ public class PaniniCallGraphAnalysis implements CallGraphAnalysis
     public static PaniniCallGraphAnalysis build(String templateName, String classPath)
     {
         IClassHierarchy cha = WalaUtil.makeClassHierarchy(classPath);
-        IClass template = WalaUtil.loadTemplateClass(templateName, cha);
+        CapsuleTemplate template = new CapsuleTemplate(WalaUtil.loadTemplateClass(templateName, cha));
         AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
 
         PaniniCallGraphAnalysis builder = new PaniniCallGraphAnalysis();
         builder.perform(template, cha, options);
         return builder;
+    }
+
+    @Override
+    public HeapModel getHeapModel()
+    {
+        return heapModel;
     }
 }
