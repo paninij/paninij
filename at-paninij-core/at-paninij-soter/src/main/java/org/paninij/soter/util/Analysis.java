@@ -1,4 +1,4 @@
-package org.paninij.soter;
+package org.paninij.soter.util;
 
 public interface Analysis
 {

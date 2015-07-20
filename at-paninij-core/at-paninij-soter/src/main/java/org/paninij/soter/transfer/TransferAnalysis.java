@@ -1,4 +1,4 @@
-package org.paninij.soter.live;
+package org.paninij.soter.transfer;
 
 import static org.paninij.soter.util.PaniniModel.isProcedure;
 import static org.paninij.soter.util.PaniniModel.isRemoteProcedure;
@@ -11,10 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.paninij.runtime.util.IdentitySet;
-import org.paninij.soter.Analysis;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.model.TransferSite;
+import org.paninij.soter.util.Analysis;
 import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -28,7 +27,7 @@ import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.intset.BitVectorIntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 
-public class TransferSitesAnalysis implements Analysis
+public class TransferAnalysis implements Analysis
 {
     protected final CapsuleTemplate template;
     protected final CallGraphAnalysis cfa;
@@ -58,7 +57,7 @@ public class TransferSitesAnalysis implements Analysis
     
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
-    public TransferSitesAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa,
+    public TransferAnalysis(CapsuleTemplate template, CallGraphAnalysis cfa,
                                  IClassHierarchy cha)
     {
         this.template = template;

@@ -53,8 +53,8 @@ import org.paninij.apt.model.SignatureElement;
 import org.paninij.apt.util.ArtifactCompiler;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
-import org.paninij.soter.TransferAnalysis;
-import org.paninij.soter.TransferAnalysisFactory;
+import org.paninij.soter.SoterAnalysis;
+import org.paninij.soter.SoterAnalysisFactory;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.cfa.CallGraphAnalysisFactory;
@@ -88,7 +88,7 @@ public class PaniniProcessor extends AbstractProcessor
     protected boolean initializedWithOptions = false;
     protected boolean midpointCompile = false;
     protected ArtifactCompiler artifactCompiler;
-    protected TransferAnalysisFactory transferAnalysisFactory;
+    protected SoterAnalysisFactory transferAnalysisFactory;
 
     // Annotation processor options (i.e. `-A` arguments):
     // TODO: Make these not static.
@@ -128,7 +128,7 @@ public class PaniniProcessor extends AbstractProcessor
             {
                 initSoterOptions(options);
                 artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(options);
-                transferAnalysisFactory = new TransferAnalysisFactory(artifactCompiler.getClassPath());
+                transferAnalysisFactory = new SoterAnalysisFactory(artifactCompiler.getClassPath());
                 midpointCompile = true;
             }
             catch (IOException e)
@@ -274,7 +274,7 @@ public class PaniniProcessor extends AbstractProcessor
             for (Capsule capsule : capsules)
             {
                 String capsuleName = capsule.getQualifiedName();
-                TransferAnalysis transferAnalysis = transferAnalysisFactory.make(capsuleName);
+                SoterAnalysis transferAnalysis = transferAnalysisFactory.make(capsuleName);
                 transferAnalysis.perform();
 
                 String callGraphPDF = callGraphPDFs + File.separator + capsuleName + ".pdf";

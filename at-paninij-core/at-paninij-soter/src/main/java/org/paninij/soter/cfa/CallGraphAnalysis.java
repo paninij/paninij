@@ -1,7 +1,7 @@
 package org.paninij.soter.cfa;
 
-import org.paninij.soter.Analysis;
 import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.analysis.pointers.BasicHeapGraph;
 import com.ibm.wala.analysis.pointers.HeapGraph;
@@ -58,7 +58,7 @@ public class CallGraphAnalysis implements Analysis
      * performs the pointer analysis. Note that by calling this function, any entrypoints stored in
      * `options` will be overridden with new entrypoints.
      * 
-     * @see org.paninij.soter.Analysis#perform()
+     * @see org.paninij.soter.util.Analysis#perform()
      */
     @Override
     @SuppressWarnings("unchecked")

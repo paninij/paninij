@@ -3,8 +3,8 @@ package org.paninij.soter.live;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.paninij.soter.Analysis;
 import org.paninij.soter.cfa.CallGraphAnalysis;
+import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.dataflow.graph.BitVectorFramework;
 import com.ibm.wala.dataflow.graph.BitVectorSolver;

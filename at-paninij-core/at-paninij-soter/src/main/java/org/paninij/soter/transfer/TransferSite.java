@@ -1,4 +1,4 @@
-package org.paninij.soter.model;
+package org.paninij.soter.transfer;
 
 import java.text.MessageFormat;
 

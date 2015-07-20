@@ -3,10 +3,11 @@ package org.paninij.soter.live;
 import java.util.Map;
 import java.util.Set;
 
-import org.paninij.soter.Analysis;
 import org.paninij.soter.cfa.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.model.TransferSite;
+import org.paninij.soter.transfer.TransferAnalysis;
+import org.paninij.soter.transfer.TransferSite;
+import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
@@ -21,12 +22,12 @@ import com.ibm.wala.ssa.ISSABasicBlock;
  * 
  * See Figure 8 of Negara, 2011.
  */
-public class TransferSitesLiveAnalysis implements Analysis
+public class TransferLiveAnalysis implements Analysis
 {
     // The analysis's dependencies:
     final protected CapsuleTemplate capsuleTemplate;
     final protected LocalLiveAnalysisFactory localLiveAnalysisFactory;
-    final protected TransferSitesAnalysis transferSitesAnalysis;
+    final protected TransferAnalysis transferSitesAnalysis;
     final protected CallGraphAnalysis cfa;
     final protected IClassHierarchy cha;
     
@@ -35,9 +36,9 @@ public class TransferSitesLiveAnalysis implements Analysis
 
     protected boolean hasBeenPerformed;
 
-    public TransferSitesLiveAnalysis(CapsuleTemplate template,
+    public TransferLiveAnalysis(CapsuleTemplate template,
                                      LocalLiveAnalysisFactory localLiveAnalysisFactory,
-                                     TransferSitesAnalysis transferSitesAnalysis,
+                                     TransferAnalysis transferSitesAnalysis,
                                      CallGraphAnalysis cfa,
                                      IClassHierarchy cha)
     {
