@@ -42,7 +42,15 @@ public class IdentitySet<T> implements Iterable<T>
         size++;
         return true;
     }
-    
+  
+
+    public void addAll(IdentitySet<T> that)
+    {
+        for (int idx = 0; idx < that.size; idx++) {
+            this.add(that.data[idx]);
+        }
+    }  
+
 
     public boolean contains(T obj)
     {
@@ -107,4 +115,21 @@ public class IdentitySet<T> implements Iterable<T>
         }
         return result;
     }
+
+
+    public boolean isDisjointFrom(IdentitySet<Object> that)
+    {
+        for (int i = 0; i < this.size; i++)
+        {
+            for (int j = 0; j < that.size; j++)
+            {
+                if (this.data[i] == that.data[j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 }
