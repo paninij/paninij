@@ -27,7 +27,7 @@ public class IntMap<T>
         if (value == null) {
             throw new IllegalArgumentException("The given value cannot be `null`.");
         }
-        if (key >= capacity) {
+        while (key >= capacity) {
             growArray();
         }
         data[key] = value;
@@ -40,7 +40,7 @@ public class IntMap<T>
      */
     public T get(int key)
     {
-        return data[key];
+        return (key >= capacity) ? null : data[key];
     }
     
 
