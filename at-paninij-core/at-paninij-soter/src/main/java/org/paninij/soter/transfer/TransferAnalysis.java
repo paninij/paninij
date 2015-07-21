@@ -136,7 +136,7 @@ public class TransferAnalysis implements Analysis
         MutableIntSet transfers = new BitVectorIntSet();
         int returnValueNumber = returnInstr.getUse(0);
         transfers.add(returnValueNumber);
-        addTransferringSite(node, new TransferSite(node, returnInstr, transfers));
+        addTransferringSite(node, new ReturnTransferSite(node, transfers, returnInstr));
     }
     
 
@@ -166,7 +166,7 @@ public class TransferAnalysis implements Analysis
         }
         
         if (! transfers.isEmpty()) {
-            addTransferringSite(node, new TransferSite(node, invokeInstr, transfers));
+            addTransferringSite(node, new InvokeTransferSite(node, transfers, invokeInstr));
         }
     }
     
@@ -213,7 +213,7 @@ public class TransferAnalysis implements Analysis
             String msg = "The given call site does not have exactly one SSA IR insturction!";
             throw new RuntimeException(msg);
         }
-        addOtherRelevantSite(node, new TransferSite(node, instrs[0], null));
+        addOtherRelevantSite(node, new InvokeTransferSite(node, null, instrs[0]));
     }
     
     protected void addOtherRelevantSite(CGNode node, TransferSite transferSite)

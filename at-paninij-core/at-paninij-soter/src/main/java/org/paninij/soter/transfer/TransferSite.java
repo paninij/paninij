@@ -2,17 +2,18 @@ package org.paninij.soter.transfer;
 
 import java.text.MessageFormat;
 
+import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSAReturnInstruction;
 import com.ibm.wala.util.intset.IntSet;
 
-public class TransferSite
+public abstract class TransferSite
 {
     protected CGNode node;
-    protected SSAInstruction transferInstr;
     protected IntSet transfers;
+    protected SSAInstruction transferInstr;
     protected Kind kind;
     
     /**
@@ -22,25 +23,24 @@ public class TransferSite
      *                      transferred at this transfer site. If there are no transfers, then that
      *                      should be represented by passing `null`.
      */
-    public TransferSite(CGNode node, SSAInstruction transferInstr, IntSet transfers)
+    public TransferSite(CGNode node, IntSet transfers, SSAInstruction transferInstr)
     {
         assert node != null;
-        assert transferInstr != null;
         assert transfers == null || ! transfers.isEmpty();
+        assert transferInstr != null;
 
         this.node = node;
         this.transferInstr = transferInstr;
         this.transfers = transfers;
     }
     
-    public boolean isReturnKind()
-    {
-        return kind == Kind.RETURN;
-    }
+    public abstract boolean isReturnKind();
     
-    public boolean isInvokeKind()
+    public abstract boolean isInvokeKind();
+
+    public CGNode getNode()
     {
-        return kind == Kind.INVOKE;
+        return node;
     }
     
     public SSAInstruction getInstruction()
@@ -57,11 +57,6 @@ public class TransferSite
         return transfers;
     }
 
-    public CGNode getNode()
-    {
-        return node;
-    }
-    
     public static enum Kind
     {
         INVOKE,
