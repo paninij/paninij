@@ -127,7 +127,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
     @Override
     protected List<String> generateProcedure(Procedure procedure) {
         MessageShape shape = new MessageShape(procedure);
-        String doBlock = shape.behavior == Behavior.BLOCKED_FUTURE ? "panini$emptyQueue();" : "";
+        String doBlock = shape.behavior == Behavior.BLOCKED_FUTURE || shape.behavior == Behavior.BLOCKED_PREMADE ? "panini$emptyQueue();" : "";
         List<String> source = Source.lines(
                 "@Override",
                 "#0",
