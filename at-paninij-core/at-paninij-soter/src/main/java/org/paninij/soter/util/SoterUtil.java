@@ -5,7 +5,6 @@ import static org.paninij.soter.util.PaniniModel.isCapsuleInterface;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.runtime.util.IdentityStack;

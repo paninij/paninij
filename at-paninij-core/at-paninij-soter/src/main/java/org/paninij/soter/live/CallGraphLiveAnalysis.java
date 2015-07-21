@@ -31,6 +31,8 @@ import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.NullProgressMonitor;
 import com.ibm.wala.util.intset.BitVector;
+import com.ibm.wala.util.intset.IntIterator;
+import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableMapping;
 import com.ibm.wala.util.intset.OrdinalSetMapping;
 
@@ -134,6 +136,30 @@ public class CallGraphLiveAnalysis implements Analysis
             
             liveVariables.put(node, nodeLiveVariables);
         }
+    }
+    
+    /**
+     * @return The set of pointer keys representing the variables which the analysis found to be
+     *         live after the given call graph node.
+     */
+    public Set<PointerKey> getPointerKeysAfter(CGNode node)
+    {
+        Set<PointerKey> pointerKeys = new HashSet<PointerKey>();
+
+        // Note that we are calling `getIn()` because `getOut()` does not work. (The transfer
+        // function provider does not produce node transfer functions).
+        IntSet solutionValues = dataFlowSolver.getIn(node).getValue();
+        if (solutionValues != null)
+        {
+            IntIterator iter = solutionValues.intIterator();
+            while (iter.hasNext())
+            {
+                int variableIndex = iter.next();
+                pointerKeys.add(globalLatticeValues.getMappedObject(variableIndex));
+            }
+        }
+
+        return pointerKeys;
     }
     
     

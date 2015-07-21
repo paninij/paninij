@@ -2,7 +2,6 @@ package org.paninij.soter.transfer;
 
 import java.text.MessageFormat;
 
-import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
