@@ -14,6 +14,7 @@ import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.MethodReference;
@@ -44,7 +45,7 @@ public class SoterUtil
             closure.add(m);
         }
 
-        // Find the all nodes `n` satisfying the relation `m CB n`:
+        // In each iteration, for some `m`, find the all nodes `n` satisfying `m CB n`:
         CGNode m, n;
         while ((m = workstack.pop()) != null)
         {
@@ -76,14 +77,53 @@ public class SoterUtil
      *      
      * is satisfied iff `p` points to `q`.
      * 
-     * This means that a node `q` in `cg` will be in the returned set iff `cg` includes
-     * a finite sequence of call edges between any node `m` in `init` and `n`.
+     * TODO: This is not a good description, because it does not take into account the alternation
+     * between `PointerKey` nodes and `InstanceKey` nodes.
      */
-    public static IdentitySet<Object> makePointsToClosure(PointerKey ptr, HeapGraph hg)
+    public static IdentitySet<InstanceKey> makePointsToClosure(PointerKey ptr,
+                                                               HeapGraph<InstanceKey> hg)
     {
-        // TODO: Everything!
-        IdentitySet<CGNode> closure = new IdentitySet<CGNode>();
-        throw new UnsupportedOperationException();
+        IdentitySet<InstanceKey> closure = new IdentitySet<InstanceKey>();
+
+        IdentityStack<PointerKey> workstack = new IdentityStack<PointerKey>();
+        InstanceKey instanceKey;
+        Iterator<Object> instanceKeyIter;
+
+        workstack.push(ptr);
+        while ((ptr = workstack.pop()) != null)
+        {
+            // Explore the pointer key.
+            instanceKeyIter = hg.getSuccNodes(ptr);
+            while (instanceKeyIter.hasNext())
+            {
+                // Explore all of its instance keys.
+                instanceKey = (InstanceKey) instanceKeyIter.next();
+                if (!closure.contains(instanceKey) && !isKnownToBeEffectivelyImmutable(instanceKey))
+                {
+                    closure.add(instanceKey);
+                    Iterator<Object> pointerKeyIter = hg.getSuccNodes(instanceKey);
+                    while (pointerKeyIter.hasNext()) {
+                        workstack.push((PointerKey) pointerKeyIter.next());
+                    }
+                }
+            }
+        }
+        return closure;
+    }
+    
+    
+    public static boolean isKnownToBeEffectivelyImmutable(InstanceKey instanceKey)
+    {
+        String className = instanceKey.getConcreteType().getName().toString();
+        return className.equals("Ljava/lang/Character")
+            || className.equals("Ljava/lang/Byte")
+            || className.equals("Ljava/lang/Short")
+            || className.equals("Ljava/lang/Integer")
+            || className.equals("Ljava/lang/Long")
+            || className.equals("Ljava/lang/Float")
+            || className.equals("Ljava/lang/Double")
+            || className.equals("Ljava/lang/Boolean")
+            || className.equals("Ljava/lang/String");
     }
     
     

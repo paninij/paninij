@@ -117,7 +117,7 @@ public class IdentitySet<T> implements Iterable<T>
     }
 
 
-    public boolean isDisjointFrom(IdentitySet<Object> that)
+    public boolean isDisjointFrom(IdentitySet<T> that)
     {
         for (int i = 0; i < this.size; i++)
         {

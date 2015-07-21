@@ -85,7 +85,7 @@ public class SoterAnalysis implements Analysis
                 results.liveVariables.addAll(cgla.getPointerKeysAfter(transferringNode));
                 
                 // Find all of the (transitively) live objects.
-                results.liveObjects = new IdentitySet<Object>();
+                results.liveObjects = new IdentitySet<InstanceKey>();
                 for (PointerKey pointerKey : results.liveVariables) {
                     results.liveObjects.addAll(makePointsToClosure(pointerKey, cga.getHeapGraph()));
                 }
@@ -100,7 +100,7 @@ public class SoterAnalysis implements Analysis
                     int paramID = paramIter.next();
 
                     PointerKey ptr = heapModel.getPointerKeyForLocal(transferringNode, paramID);
-                    IdentitySet<Object> escaped = makePointsToClosure(ptr, heapGraph);
+                    IdentitySet<InstanceKey> escaped = makePointsToClosure(ptr, heapGraph);
                     results.setEscapedObjects(paramID, escaped);
 
                     boolean isSafeTransfer = results.liveObjects.isDisjointFrom(escaped);
@@ -127,38 +127,37 @@ public class SoterAnalysis implements Analysis
     {
         IntMap<ParameterResults> parameterResultsMap = new IntMap<ParameterResults>();
         Set<PointerKey> liveVariables;
-        private IdentitySet<Object> liveObjects;
+        private IdentitySet<InstanceKey> liveObjects;
         
-        public void setEscapedObjects(int paramID, IdentitySet<Object> escapedObjects)
+        public void setEscapedObjects(int paramID, IdentitySet<InstanceKey> escapedObjects)
         {
-            ParameterResults paramResults = parameterResultsMap.get(paramID);
-            if (paramResults == null)
-            {
-                paramResults = new ParameterResults();
-                parameterResultsMap.put(paramID, paramResults);
-            }
-            paramResults.escapedObjects = escapedObjects;
+            getParameterResults(paramID).escapedObjects = escapedObjects;
         }
         
-        public IdentitySet<Object> getEscapedObjects(int paramID)
+        public IdentitySet<InstanceKey> getEscapedObjects(int paramID)
         {
             return parameterResultsMap.get(paramID).escapedObjects;
         }
      
         public void setTransferSafety(int paramID, boolean isSafeTransfer)
         {
+            getParameterResults(paramID).isSafeTransfer = isSafeTransfer;
+        }
+        
+        public boolean getTransferSafety(int paramID)
+        {
+            return parameterResultsMap.get(paramID).isSafeTransfer;
+        }
+        
+        private ParameterResults getParameterResults(int paramID)
+        {
             ParameterResults paramResults = parameterResultsMap.get(paramID);
             if (paramResults == null)
             {
                 paramResults = new ParameterResults();
                 parameterResultsMap.put(paramID, paramResults);
             }
-            paramResults.isSafeTransfer = isSafeTransfer;
-        }
-        
-        public boolean getTransferSafety(int paramID)
-        {
-            return parameterResultsMap.get(paramID).isSafeTransfer;
+           return paramResults;
         }
     }
     
@@ -169,7 +168,7 @@ public class SoterAnalysis implements Analysis
      */
     private final static class ParameterResults
     {
-        IdentitySet<Object> escapedObjects;
+        IdentitySet<InstanceKey> escapedObjects;
         boolean isSafeTransfer;
     }
  }
