@@ -106,10 +106,39 @@ public class SoterAnalysis implements Analysis
                     boolean isSafeTransfer = results.liveObjects.isDisjointFrom(escaped);
                     results.setTransferSafety(paramID, isSafeTransfer);
                 }
+                
+                transferSiteResultsMap.put(transferSite, results);
             }
         }
         
         hasBeenPerformed = true;
+    }
+    
+    
+    public String getResultsString()
+    {
+        StringBuilder builder = new StringBuilder();
+        for (TransferSite transferSite : transferSiteResultsMap.keySet())
+        {
+            TransferSiteResults results = transferSiteResultsMap.get(transferSite);
+            IntIterator transfersIter = transferSite.getTransfers().intIterator();
+
+            builder.append("\n");
+            builder.append("--------------------------\n");
+            builder.append(transferSite.toString() + "\n");
+            builder.append("[liveVariables]" + results.liveVariables + "\n");
+            builder.append("[liveObjects]" + results.liveObjects + "\n");
+            while (transfersIter.hasNext())
+            {
+                int transfer = transfersIter.next();
+                builder.append("    [parameterResults] " + transfer + "\n");
+                builder.append("    [escapedObjects]" + results.getEscapedObjects(transfer) + "\n");
+                builder.append("    [isSafeTransfer]" + results.getTransferSafety(transfer) + "\n");
+            }
+            builder.append("--------------------------\n");
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 
 
