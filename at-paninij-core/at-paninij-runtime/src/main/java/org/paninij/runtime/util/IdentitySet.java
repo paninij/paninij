@@ -132,4 +132,17 @@ public class IdentitySet<T> implements Iterable<T>
         return true;
     }
 
+    public String toString()
+    {
+        if (size == 0)
+            return "{}";
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        for (int idx = 0; idx < size - 1; idx++) {
+            builder.append(data[idx].toString() + ", ");
+        }
+        builder.append(data[size - 1].toString() + "}");
+        return builder.toString();
+    }
 }

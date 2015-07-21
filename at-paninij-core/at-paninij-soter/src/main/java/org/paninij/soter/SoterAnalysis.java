@@ -126,14 +126,15 @@ public class SoterAnalysis implements Analysis
             builder.append("\n");
             builder.append("--------------------------\n");
             builder.append(transferSite.toString() + "\n");
-            builder.append("[liveVariables]" + results.liveVariables + "\n");
-            builder.append("[liveObjects]" + results.liveObjects + "\n");
+            builder.append("[liveVariables] " + results.liveVariables + "\n");
+            builder.append("[liveObjects] " + results.liveObjects + "\n");
             while (transfersIter.hasNext())
             {
                 int transfer = transfersIter.next();
+                builder.append("\n");
                 builder.append("    [parameterResults] " + transfer + "\n");
-                builder.append("    [escapedObjects]" + results.getEscapedObjects(transfer) + "\n");
-                builder.append("    [isSafeTransfer]" + results.getTransferSafety(transfer) + "\n");
+                builder.append("    [escapedObjects] " + results.getEscapedObjects(transfer) + "\n");
+                builder.append("    [isSafeTransfer] " + results.getTransferSafety(transfer) + "\n");
             }
             builder.append("--------------------------\n");
             builder.append("\n");
