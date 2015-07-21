@@ -25,8 +25,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 {
     protected Thread panini$thread;
     protected volatile Object[] panini$queue;
-    protected volatile int panini$head, panini$tail, panini$size;
-    protected volatile int panini$links;
+    protected volatile int panini$head, panini$tail, panini$size, panini$links;
 
     protected final ReentrantLock panini$queueLock;
 
@@ -56,9 +55,9 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         if (panini$tail <= panini$head)
         {
             System.arraycopy(panini$queue, panini$head, newObjects, 0,
-                             panini$queue.length - panini$head);
+                    panini$queue.length - panini$head);
             System.arraycopy(panini$queue, 0, newObjects, panini$queue.length - panini$head,
-                             panini$tail);
+                    panini$tail);
         }
         else
         {
@@ -139,6 +138,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      * @throws IllegalArgumentException If the value of millis is negative
      *
      */
+    @Override
     public void yield(long millis)
     {
         if (millis < 0) {
