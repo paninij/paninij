@@ -1,5 +1,7 @@
 package org.paninij.soter.cga;
 
+import static com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys.*;
+
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.util.Analysis;
 
@@ -14,7 +16,8 @@ import com.ibm.wala.ipa.callgraph.propagation.HeapModel;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerAnalysis;
 import com.ibm.wala.ipa.callgraph.propagation.PropagationCallGraphBuilder;
-import com.ibm.wala.ipa.callgraph.impl.Util;
+import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXCFABuilder;
+import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 
 
@@ -24,6 +27,11 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  */
 public class CallGraphAnalysis implements Analysis
 {
+    public static final int INSTANCE_POLICY = ZeroXInstanceKeys.ALLOCATIONS
+                                            //| ZeroXInstanceKeys.SMUSH_MANY
+                                            //| ZeroXInstanceKeys.SMUSH_STRINGS
+                                            | ZeroXInstanceKeys.SMUSH_THROWABLES;
+    
     // Analysis dependencies:
     protected final CapsuleTemplate template;
     protected final IClassHierarchy cha;
@@ -72,9 +80,9 @@ public class CallGraphAnalysis implements Analysis
         options.setEntrypoints(CapsuleTemplateEntrypoint.makeAll(template.getTemplateClass()));
 
         ContextSelector contextSelector = new ReceiverInstanceContextSelector();
-        PropagationCallGraphBuilder builder = Util.makeZeroOneCFABuilder(options, cache, cha,
-                                                                         cha.getScope(),
-                                                                         contextSelector, null);
+        PropagationCallGraphBuilder builder = ZeroXCFABuilder.make(cha, options, cache,
+                                                                   contextSelector, null,
+                                                                   INSTANCE_POLICY);
         try
         {
             callGraph = builder.makeCallGraph(options, null);
