@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.paninij.soter.cga.CapsuleTemplateEntrypoint;
 
+import com.ibm.wala.analysis.pointers.HeapGraph;
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
@@ -15,6 +16,7 @@ import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
+import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.types.MethodReference;
@@ -218,5 +220,10 @@ public class SoterAnalysisPrototype extends OwnershipTransferAnalysis
     
     public CallGraph getCallGraph() {
         return callGraph;
+    }
+
+    public HeapGraph<InstanceKey> getHeapGraph()
+    {
+        return basicHeapGraph;
     }
 }

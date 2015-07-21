@@ -279,6 +279,10 @@ public class PaniniProcessor extends AbstractProcessor
 
                 String callGraphPDF = callGraphPDFs + File.separator + capsuleName + ".pdf";
                 WalaUtil.makeGraphFile(transferAnalysis.getCallGraph(), callGraphPDF);
+                
+                // TODO: Make this its own annotation processor option:
+                String heapGraphPDF = callGraphPDFs + File.separator + "heap-graphs" + File.separator + capsuleName + ".pdf";
+                WalaUtil.makeGraphFile(transferAnalysis.getHeapGraph(), heapGraphPDF);
             }
         }
         

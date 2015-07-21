@@ -24,6 +24,7 @@ import com.ibm.wala.ipa.callgraph.propagation.HeapModel;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
+import com.ibm.wala.util.graph.Graph;
 import com.ibm.wala.util.intset.IntIterator;
 
 public class SoterAnalysis implements Analysis
@@ -152,7 +153,11 @@ public class SoterAnalysis implements Analysis
     {
         return cga.getCallGraph();
     }
-    
+
+    public HeapGraph<InstanceKey> getHeapGraph()
+    {
+        return cga.getHeapGraph();
+    } 
     
     /**
      * A simple container class to hold all of the results which the analysis generates for a single
@@ -206,4 +211,5 @@ public class SoterAnalysis implements Analysis
         IdentitySet<InstanceKey> escapedObjects;
         boolean isSafeTransfer;
     }
+
  }
