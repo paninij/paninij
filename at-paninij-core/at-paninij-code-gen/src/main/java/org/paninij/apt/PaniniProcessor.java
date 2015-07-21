@@ -143,6 +143,7 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleThreadFactory threadCapsuleFactory = new CapsuleThreadFactory();
         CapsuleSerialFactory serialCapsuleFactory = new CapsuleSerialFactory();
         CapsuleMonitorFactory monitorCapsuleFactory = new CapsuleMonitorFactory();
+        CapsuleTaskFactory taskCapsuleFactory = new CapsuleTaskFactory();
 
         // Generate artifacts from signature model
         for (org.paninij.model.Signature signature : signatures)
@@ -179,7 +180,8 @@ public class PaniniProcessor extends AbstractProcessor
             // Generate capsule monitor profile
             this.createJavaFile(monitorCapsuleFactory.make(capsule));
 
-            // TODO Generate other capsule profiles
+            // Generate capsule task profile
+            this.createJavaFile(taskCapsuleFactory.make(capsule));
         }
 
         // Generate capsule test artifacts

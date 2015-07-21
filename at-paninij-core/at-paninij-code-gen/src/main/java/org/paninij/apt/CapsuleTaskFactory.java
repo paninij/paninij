@@ -26,18 +26,19 @@ import java.util.Set;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
+import org.paninij.model.Behavior;
 import org.paninij.model.Procedure;
 import org.paninij.model.Type;
 import org.paninij.model.Variable;
 
-public class CapsuleThreadFactory extends CapsuleProfileFactory
+public class CapsuleTaskFactory extends CapsuleProfileFactory
 {
-    public static final String CAPSULE_PROFILE_THREAD_SUFFIX = "$Thread";
+    public static final String CAPSULE_PROFILE_TASK_SUFFIX = "$Task";
 
     @Override
     protected String getQualifiedName()
     {
-        return this.capsule.getQualifiedName() + CAPSULE_PROFILE_THREAD_SUFFIX;
+        return this.capsule.getQualifiedName() + CAPSULE_PROFILE_TASK_SUFFIX;
     }
 
     @Override
@@ -49,7 +50,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "##",
                 "",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "public class #1 extends Capsule$Thread implements #2",
+                "public class #1 extends Capsule$Task implements #2",
                 "{",
                 "    ##",
                 "}");
@@ -68,7 +69,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
     @Override
     protected String generateClassName()
     {
-        return this.capsule.getSimpleName() + CAPSULE_PROFILE_THREAD_SUFFIX;
+        return this.capsule.getSimpleName() + CAPSULE_PROFILE_TASK_SUFFIX;
     }
 
     private List<String> generateImports()
@@ -83,7 +84,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         imports.addAll(this.capsule.getImports());
 
         imports.add("java.util.concurrent.Future");
-        imports.add("org.paninij.runtime.Capsule$Thread");
+        imports.add("org.paninij.runtime.Capsule$Task");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
@@ -123,6 +124,31 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         return decls;
     }
 
+    @Override
+    protected List<String> generateProcedure(Procedure procedure) {
+        MessageShape shape = new MessageShape(procedure);
+        String doBlock = shape.behavior == Behavior.BLOCKED_FUTURE ? "panini$emptyQueue();" : "";
+        List<String> source = Source.lines(
+                "@Override",
+                "#0",
+                "{",
+                "    #1 panini$message = null;",
+                "    panini$message = new #1(#2);",
+                "    #3;",
+                "    panini$push(panini$message);",
+                "    #4",
+                "    #5",
+                "}",
+                "");
+        return Source.formatAll(source,
+                this.generateProcedureDecl(shape),
+                shape.encoded,
+                this.generateProcedureArguments(shape),
+                this.generateAssertSafeInvocationTransfer(),
+                doBlock,
+                this.generateProcedureReturn(shape));
+    }
+
     private List<String> generateProcedures()
     {
         ArrayList<String> src = new ArrayList<String>();
@@ -150,13 +176,13 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                         lines,
                         child.getIdentifier(),
                         child.getEncapsulatedType(),
-                        CAPSULE_PROFILE_THREAD_SUFFIX));
+                        CAPSULE_PROFILE_TASK_SUFFIX));
             } else {
                 source.add(Source.format(
                         "panini$encapsulated.#0 = new #1#2();",
                         child.getIdentifier(),
                         child.raw(),
-                        CAPSULE_PROFILE_THREAD_SUFFIX));
+                        CAPSULE_PROFILE_TASK_SUFFIX));
             }
         }
 
@@ -210,18 +236,17 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         if (this.capsule.isActive()) {
             return Source.lines(
                     "@Override",
-                    "public void run() {",
-                    "    Panini$System.self.set(this);",
+                    "public final boolean run() {",
                     "    try {",
-                    "        panini$checkRequiredFields();",
-                    "        panini$initChildren();",
-                    "        panini$initState();",
+                    "        panini$init(4); //TODO determine pool count?",
+                    "        panini$capsuleInit();",
                     "        panini$encapsulated.run();",
                     "    } catch (Throwable thrown) {",
                     "        panini$errors.add(thrown);",
                     "    } finally {",
                     "        panini$onTerminate();",
                     "    }",
+                    "    return true;",
                     "}",
                     "");
         }
@@ -229,21 +254,14 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         List<String> src = Source.lines(
                 "@Override",
                 "@SuppressWarnings(\"unchecked\")",
-                "public void run() {",
-                "    Panini$System.self.set(this);",
+                "public final boolean run() {",
                 "    try {",
-                "        panini$checkRequiredFields();",
-                "        panini$initChildren();",
-                "        panini$initState();",
-                "",
-                "        boolean terminated = false;",
-                "        while (!terminated) {",
-                "            Panini$Message msg = panini$nextMessage();",
-                "            ##",
-                "        }",
+                "        Panini$Message msg = panini$nextMessage();",
+                "        ##",
                 "    } catch (Throwable thrown) {",
                 "        panini$errors.add(thrown);",
                 "    }",
+                "    return false;",
                 "}",
                 "");
 
@@ -267,8 +285,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "    break;",
                 "case PANINI$TERMINATE:",
                 "    panini$onTerminate();",
-                "    terminated = true;",
-                "    break;",
+                "    return true;",
                 "}"));
         return lines;
     }

@@ -41,7 +41,8 @@ public final class Panini$TaskPool extends Thread {
     static final synchronized Panini$TaskPool add(Capsule$Task t) {
         // TODO: See load balancing
         int currentPool = nextPool;
-        nextPool = (nextPool >= poolSize - 1) ? 0 : nextPool++;
+        nextPool++;
+        if (nextPool >= poolSize) nextPool = 0;
         pools[currentPool]._add(t);
         if (!pools[currentPool].isAlive()) pools[currentPool].start();
         return pools[currentPool];

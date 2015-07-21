@@ -85,6 +85,21 @@ public abstract class Capsule$Task implements Panini$Capsule
     }
 
     /**
+     * Extracts and returns the first message from the capsule's queue.
+     *
+     * Precondition: it is assumed that `panini$queueLock` is held before calling this method.
+     *
+     * @return the first available message in the capsule's queue.
+     */
+    protected final synchronized Panini$Message panini$nextMessage() {
+        if (this.panini$size <= 0) return null;
+        panini$size--;
+        Panini$Message msg = (Panini$Message) panini$queue[panini$head++];
+        if (panini$head >= panini$queue.length) panini$head = 0;
+        return msg;
+    }
+
+    /**
      * Pushes a single object on this capsule's queue.
      *
      * @param o Object to be stored.
@@ -102,6 +117,12 @@ public abstract class Capsule$Task implements Panini$Capsule
 
         if (panini$size == 1) {
             notifyAll();
+        }
+    }
+
+    protected synchronized void panini$emptyQueue() {
+        while (this.panini$size > 0) {
+            this.run();
         }
     }
 
@@ -194,6 +215,11 @@ public abstract class Capsule$Task implements Panini$Capsule
     }
 
     @Override
+    public void yield(long millis) {
+        // TODO
+    }
+
+    @Override
     public void panini$closeLink() {
         panini$push(new SimpleMessage(PANINI$CLOSE_LINK));
     }
@@ -218,7 +244,10 @@ public abstract class Capsule$Task implements Panini$Capsule
     }
 
     protected void panini$capsuleInit() {
-        // TODO ??
+        // ???
+        panini$checkRequiredFields();
+        panini$initChildren();
+        panini$initState();
     }
 
     /**
