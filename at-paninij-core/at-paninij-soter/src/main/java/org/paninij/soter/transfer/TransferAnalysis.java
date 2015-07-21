@@ -250,8 +250,12 @@ public class TransferAnalysis implements Analysis
     public Set<TransferSite> getRelevantSites(CGNode node)
     {
         Set<TransferSite> relevantSites = new HashSet<TransferSite>();
-        relevantSites.addAll(transferringSitesMap.get(node));
-        relevantSites.addAll(otherRelevantSitesMap.get(node));
+        if (transferringSitesMap.containsKey(node)) {
+            relevantSites.addAll(transferringSitesMap.get(node));
+        }
+        if (otherRelevantSitesMap.containsKey(node)) {
+            relevantSites.addAll(otherRelevantSitesMap.get(node));
+        }
         return relevantSites;
     }
     

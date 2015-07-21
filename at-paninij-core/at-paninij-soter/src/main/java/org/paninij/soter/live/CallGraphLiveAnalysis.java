@@ -14,7 +14,9 @@ import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.dataflow.graph.AbstractMeetOperator;
+import com.ibm.wala.dataflow.graph.BitVectorFramework;
 import com.ibm.wala.dataflow.graph.BitVectorIdentity;
+import com.ibm.wala.dataflow.graph.BitVectorSolver;
 import com.ibm.wala.dataflow.graph.BitVectorUnion;
 import com.ibm.wala.dataflow.graph.BitVectorUnionVector;
 import com.ibm.wala.dataflow.graph.ITransferFunctionProvider;
@@ -26,6 +28,8 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
+import com.ibm.wala.util.CancelException;
+import com.ibm.wala.util.NullProgressMonitor;
 import com.ibm.wala.util.intset.BitVector;
 import com.ibm.wala.util.intset.MutableMapping;
 import com.ibm.wala.util.intset.OrdinalSetMapping;
@@ -46,6 +50,8 @@ public class CallGraphLiveAnalysis implements Analysis
     ITransferFunctionProvider<CGNode, BitVectorVariable> transferFunctionProvider;
     Map<CGNode, Map<TransferSite, BitVector>> liveVariables;
     OrdinalSetMapping<PointerKey> globalLatticeValues;
+    BitVectorFramework<CGNode, PointerKey> dataFlowFramework;
+    BitVectorSolver<CGNode> dataFlowSolver;
 
     protected boolean hasBeenPerformed;
     
@@ -74,10 +80,25 @@ public class CallGraphLiveAnalysis implements Analysis
         if (hasBeenPerformed) {
             return;
         }
-        prepareAnalysis();
+
+        cga.perform();
+        ta.perform();
+        tla.perform();
+        collectSubanalysisResults();
+
+        try {
+            dataFlowFramework = new BitVectorFramework<CGNode, PointerKey>(cga.getCallGraph(),
+                                                                           transferFunctionProvider,
+                                                                           globalLatticeValues);
+            dataFlowSolver = new BitVectorSolver<CGNode>(dataFlowFramework);
+            dataFlowSolver.solve(new NullProgressMonitor());
+        }
+        catch (CancelException ex) {
+            String msg = "Caught unexpected `CancelException` while solving a `CallGraphLiveAnalysis`.";
+            throw new RuntimeException(msg); 
+        }
         
         hasBeenPerformed = true;
-        throw new UnsupportedOperationException("TODO");
     }
 
 
@@ -85,7 +106,7 @@ public class CallGraphLiveAnalysis implements Analysis
      * This collects the results of the sub-analyses and saves them into `liveVariables` and
      * `globalLatticeValues`.
      */
-    protected void prepareAnalysis()
+    protected void collectSubanalysisResults()
     {
         for (CGNode node : ta.getRelevantNodes())
         {

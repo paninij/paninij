@@ -1,5 +1,6 @@
 package org.paninij.soter.live;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ public class TransferLiveAnalysis implements Analysis
     final protected IClassHierarchy cha;
     
     // The results of the analysis:
-    protected Map<TransferSite, Set<PointerKey>> liveVariables;
+    protected final Map<TransferSite, Set<PointerKey>> liveVariables;
 
     protected boolean hasBeenPerformed;
 
@@ -47,6 +48,8 @@ public class TransferLiveAnalysis implements Analysis
         this.ta = ta;
         this.cga = cga;
         this.cha = cha;
+        
+        liveVariables = new HashMap<TransferSite, Set<PointerKey>>();
         
         hasBeenPerformed = false;
     }
@@ -67,7 +70,7 @@ public class TransferLiveAnalysis implements Analysis
             LocalLiveAnalysis localAnalysis = llaFactory.lookupOrMake(node);
             localAnalysis.perform();
             for (TransferSite site : relevantSites) {
-                liveVariables.put(site, getPointerKeysAfter(site));
+                addPointerKeysAfter(site);
             }
         }
         
