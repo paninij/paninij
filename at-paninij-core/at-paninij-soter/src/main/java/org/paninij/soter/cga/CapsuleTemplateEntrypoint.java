@@ -110,15 +110,19 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     {
         TypeReference capsuleInterface = field.getFieldTypeReference();
 
-        TypeReference dummy = getDummyCapsuleClassReference(capsuleInterface);
-        if (dummy == null)
+        TypeReference dummyType = getDummyCapsuleClassReference(capsuleInterface);
+        if (dummyType == null)
         {
             String msg = "Could not load the dummy class associated with " + capsuleInterface;
             throw new IllegalArgumentException(msg);
         }
 
         // There's no need to call the dummy's constructor.
-        SSANewInstruction dummyAlloc = root.addAllocationWithoutCtor(dummy);
+        SSANewInstruction dummyAlloc = root.addAllocationWithoutCtor(dummyType);
+        if (dummyAlloc == null) {
+            // This may happen if the dummy class could not be found.
+            throw new RuntimeException("Failed to create an allocation for a dummy: " + dummyType);
+        }
         int dummyValueNumber = dummyAlloc.getDef();
         root.addSetInstance(field.getReference(), receiverValueNumber, dummyValueNumber);
     }

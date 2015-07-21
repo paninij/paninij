@@ -9,7 +9,8 @@ import org.paninij.soter.prototype.SoterAnalysisPrototype;
 public class TestSoterPrototype
 {
     private static final String CLASS_PATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
-    private static final String CLASS_PATH = buildEffectiveClassPath("target/test-classes", CLASS_PATH_FILE);
+    private static final String CLASS_PATH_PREFIX = "target/classes:target/test-classes";
+    private static final String CLASS_PATH = buildEffectiveClassPath(CLASS_PATH_PREFIX, CLASS_PATH_FILE);
     private static final String ACTIVE_CLIENT_PATH = "Lorg/paninij/apt/soter/ActiveClientTemplate";
     private static final String LEAKY_SERVER_PATH = "Lorg/paninij/apt/soter/LeakyServerTemplate";
 
