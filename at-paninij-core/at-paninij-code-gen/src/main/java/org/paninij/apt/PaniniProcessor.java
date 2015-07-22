@@ -20,8 +20,11 @@ package org.paninij.apt;
 
 import static org.paninij.apt.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -279,7 +282,7 @@ public class PaniniProcessor extends AbstractProcessor
                 String capsuleName = capsule.getQualifiedName();
                 SoterAnalysis soterAnalysis = soterAnalysisFactory.make(capsuleName);
                 soterAnalysis.perform();
-                note(soterAnalysis.getResultsString());
+                log("logs/soter_analysis_reports.log", soterAnalysis.getResultsReport());
 
                 SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
                 //soterInstrumenter.perform();
@@ -351,6 +354,18 @@ public class PaniniProcessor extends AbstractProcessor
         return getPackageOf((TypeElement) utils.asElement(type));
     }
 
+    public void log(String logFilePath, String logMsg)
+    {
+        try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true))))
+        {
+            out.println(logMsg);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Failed to log a message.");
+        }
+    }
+    
     public void note(String msg) {
         System.out.println("--- PaniniProcessor: " + msg);
     }

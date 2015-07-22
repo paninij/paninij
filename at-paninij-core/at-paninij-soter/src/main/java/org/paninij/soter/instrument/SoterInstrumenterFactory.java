@@ -11,11 +11,11 @@ import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
 public class SoterInstrumenterFactory
 {
-    protected final String outputPath;
+    protected final String outputDir;
     
     public SoterInstrumenterFactory(String outputPath)
     {
-        this.outputPath = outputPath;
+        this.outputDir = outputPath;
     }
 
     public SoterInstrumenter make(SoterAnalysis sa)
@@ -34,7 +34,7 @@ public class SoterInstrumenterFactory
                                                                    templateShrike.getReader(),
                                                                    new ClassHierarchyStore(),
                                                                    false);
-            return new SoterInstrumenter(template, outputPath, sa, instrumenter);
+            return new SoterInstrumenter(template, outputDir, sa, instrumenter);
         }
         catch (InvalidClassFileException ex)
         {
