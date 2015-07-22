@@ -13,9 +13,9 @@ public class SoterInstrumenterFactory
 {
     protected final String outputDir;
     
-    public SoterInstrumenterFactory(String outputPath)
+    public SoterInstrumenterFactory(String outputDir)
     {
-        this.outputDir = outputPath;
+        this.outputDir = outputDir;
     }
 
     public SoterInstrumenter make(SoterAnalysis sa)

@@ -285,7 +285,7 @@ public class PaniniProcessor extends AbstractProcessor
                 log("logs/soter_analysis_reports.log", soterAnalysis.getResultsReport());
 
                 SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
-                //soterInstrumenter.perform();
+                soterInstrumenter.perform();
 
                 String callGraphPDF = callGraphPDFs + File.separator + capsuleName + ".pdf";
                 WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);

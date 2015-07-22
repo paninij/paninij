@@ -145,4 +145,10 @@ public class IdentitySet<T> implements Iterable<T>
         builder.append(data[size - 1].toString() + "}");
         return builder.toString();
     }
+
+
+    public boolean isEmpty()
+    {
+        return size == 0;
+    }
 }

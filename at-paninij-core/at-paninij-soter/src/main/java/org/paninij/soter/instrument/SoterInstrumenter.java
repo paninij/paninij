@@ -1,13 +1,23 @@
 package org.paninij.soter.instrument;
 
-import static java.io.File.pathSeparator;
+import static java.io.File.separator;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.transfer.TransferSite;
 
+import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.classLoader.ShrikeClass;
+import com.ibm.wala.shrikeBT.MethodData;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
+import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter.MethodExaminer;
 import com.ibm.wala.shrikeCT.ClassWriter;
 import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
@@ -19,6 +29,9 @@ public class SoterInstrumenter
     protected final ClassInstrumenter instrumenter;  // Instrumenter of the capsule template class.
     
     protected final String outputFilePath;
+    protected final ShrikeClass shrikeClass;
+    protected final Map<String, IdentitySet<TransferSite>> unsafeTransferSitesMap;
+    protected final MethodInstrumenter methodInstrumenter;
 
     public SoterInstrumenter(CapsuleTemplate template, String outputDir, SoterAnalysis sa,
                              ClassInstrumenter instrumenter) throws InvalidClassFileException
@@ -27,26 +40,63 @@ public class SoterInstrumenter
         this.sa = sa;
         this.outputDir = outputDir;
         this.instrumenter = instrumenter;
-        
-        outputFilePath = outputDir + pathSeparator + instrumenter.getReader().getName() + ".class";
+
+        outputFilePath = outputDir + separator + instrumenter.getReader().getName() + ".class";
+        shrikeClass = (ShrikeClass) template.getTemplateClass();
+        unsafeTransferSitesMap = new HashMap<String, IdentitySet<TransferSite>>();
+        methodInstrumenter = new MethodInstrumenter();
     }
 
     public void perform()
     {
-        // TODO: Everything!
+        try
+        {
+            buildUnsafeTransferSitesMap();
+            instrumenter.visitMethods(methodInstrumenter);
+            writeInstrumentedClassFile();
+        }
+        catch (InvalidClassFileException | IOException ex) {
+            throw new RuntimeException("Failed to perform soter instrumentation: " + ex, ex);
+        }
     }
     
-    public void writeInstrumentedClassFile()
+    protected void buildUnsafeTransferSitesMap()
     {
-        try {
-            ClassWriter classWriter = instrumenter.emitClass();
-            FileOutputStream outputStream = new FileOutputStream(outputFilePath);
-            outputStream.write(classWriter.makeBytes());
-            outputStream.flush();
-            outputStream.close();
+        for (Entry<IMethod, IdentitySet<TransferSite>> entry : sa.getUnsafeTransferSitesMap().entrySet())
+        {
+            String signature = "L" + entry.getKey().getSignature();
+            unsafeTransferSitesMap.put(signature, entry.getValue());
         }
-        catch (Exception ex) {
-            throw new RuntimeException("Failed to write the instrumented class file: " + ex);
+    }
+    
+    protected void writeInstrumentedClassFile() throws InvalidClassFileException, IOException
+    {
+        ClassWriter classWriter = instrumenter.emitClass();
+        FileOutputStream outputStream = new FileOutputStream(outputFilePath);
+        outputStream.write(classWriter.makeBytes());
+        outputStream.flush();
+        outputStream.close();
+    }
+    
+    
+    private class MethodInstrumenter implements MethodExaminer
+    {
+        @Override
+        public void examineCode(MethodData methodData)
+        {
+            // Note that this name mangling is performed because the differences between the 
+            // `getSignature()` methods on `MethodData` and `IMethod`.
+            String signature = methodData.getClassType().replace('/', '.').replace(';', '.')
+                             + methodData.getName()
+                             + methodData.getSignature();
+            IdentitySet<TransferSite> unsafeTransferSites = unsafeTransferSitesMap.get(signature);
+
+            // Ignore any methods on the template in which there are no unsafe transfer sites.
+            if (unsafeTransferSites == null || unsafeTransferSites.isEmpty()) {
+                return;
+            }
+            
+            System.out.println("[MethodInstrumenter] visiting " + signature);
         }
     }
 }
