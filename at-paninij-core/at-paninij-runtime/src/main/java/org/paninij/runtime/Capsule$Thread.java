@@ -31,6 +31,8 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 
     protected final Panini$ErrorQueue panini$errors;
 
+    protected boolean panini$terminated;
+
     public static final int PANINI$CLOSE_LINK = -1;
     public static final int PANINI$TERMINATE = -2;
 
@@ -43,6 +45,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         panini$size = 0;
         panini$links = 0;
         panini$queueLock = new ReentrantLock();
+        panini$terminated = false;
         panini$errors = new Panini$ErrorQueue();
     }
 
@@ -336,7 +339,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 
     protected void panini$onCloseLink() {
         panini$links--;
-        if (panini$links == 0) panini$push(new SimpleMessage(PANINI$TERMINATE));
+        if (panini$links == 0 && !panini$terminated) panini$push(new SimpleMessage(PANINI$TERMINATE));
     }
 
     public Throwable panini$pollErrors() {

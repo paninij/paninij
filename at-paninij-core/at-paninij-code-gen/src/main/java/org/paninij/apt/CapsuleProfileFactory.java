@@ -253,6 +253,7 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
                 "@Override",
                 "protected void panini$onTerminate() {",
                 "    ##",
+                "    this.panini$terminated = true;",
                 "}",
                 "");
 

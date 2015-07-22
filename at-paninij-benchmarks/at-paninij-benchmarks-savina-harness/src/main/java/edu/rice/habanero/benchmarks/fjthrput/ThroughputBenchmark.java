@@ -13,6 +13,7 @@ public class ThroughputBenchmark
         ThroughputJetlangActorBenchmark.main(args);
         ThroughputJumiActorBenchmark.main(args);
         ThroughputAtPaniniJBenchmark.main(args);
+        ThroughputAtPaniniJTaskBenchmark.main(args);
         ThroughputLiftActorBenchmark.main(args);
     }
 }

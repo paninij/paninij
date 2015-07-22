@@ -24,10 +24,12 @@ public abstract class Capsule$Monitor implements Panini$Capsule
 {
     protected int panini$links;
     protected final Panini$ErrorQueue panini$errors;
+    protected boolean panini$terminated;
 
     protected Capsule$Monitor() {
         panini$links = 0;
         panini$errors = new Panini$ErrorQueue();
+        panini$terminated = false;
     }
 
     @Override
@@ -60,7 +62,7 @@ public abstract class Capsule$Monitor implements Panini$Capsule
     public void panini$closeLink()
     {
         panini$links--;
-        if (panini$links == 0) panini$onTerminate();
+        if (panini$links == 0 && !panini$terminated) panini$onTerminate();
     }
 
     /**

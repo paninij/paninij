@@ -38,6 +38,13 @@ public final class Panini$TaskPool extends Thread {
         initiated = true;
     }
 
+    private final synchronized void reset() {
+        nextPool = 0;
+        poolSize = 1;
+        pools = new Panini$TaskPool[1];
+        initiated = false;
+    }
+
     static final synchronized Panini$TaskPool add(Capsule$Task t) {
         // TODO: See load balancing
         int currentPool = nextPool;
@@ -100,6 +107,7 @@ public final class Panini$TaskPool extends Thread {
                 current = current.panini$nextCapsule;
             }
         }
+        this.reset();
     }
 
 }

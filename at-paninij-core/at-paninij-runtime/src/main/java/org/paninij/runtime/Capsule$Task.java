@@ -32,6 +32,8 @@ public abstract class Capsule$Task implements Panini$Capsule
     protected final ReentrantLock panini$queueLock;
     protected final Panini$ErrorQueue panini$errors;
 
+    protected boolean panini$terminated;
+
     public static final int PANINI$CLOSE_LINK = -1;
     public static final int PANINI$TERMINATE = -2;
 
@@ -43,6 +45,7 @@ public abstract class Capsule$Task implements Panini$Capsule
         panini$links = 0;
         panini$queueLock = new ReentrantLock();
         panini$errors = new Panini$ErrorQueue();
+        panini$terminated = false;
     }
 
     protected final void panini$extendQueue() {
@@ -236,7 +239,7 @@ public abstract class Capsule$Task implements Panini$Capsule
 
     protected void panini$onCloseLink() {
         panini$links--;
-        if (panini$links == 0) panini$push(new SimpleMessage(PANINI$TERMINATE));
+        if (panini$links == 0 && !panini$terminated) panini$push(new SimpleMessage(PANINI$TERMINATE));
     }
 
     public final static void panini$init(int size) throws Exception {
@@ -244,7 +247,6 @@ public abstract class Capsule$Task implements Panini$Capsule
     }
 
     protected void panini$capsuleInit() {
-        // ???
         panini$checkRequiredFields();
         panini$initChildren();
         panini$initState();
