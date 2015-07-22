@@ -242,6 +242,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                     "        panini$capsuleInit();",
                     "        panini$encapsulated.run();",
                     "    } catch (Throwable thrown) {",
+                    "        thrown.printStackTrace(System.out);",
                     "        panini$errors.add(thrown);",
                     "    } finally {",
                     "        panini$onTerminate();",
