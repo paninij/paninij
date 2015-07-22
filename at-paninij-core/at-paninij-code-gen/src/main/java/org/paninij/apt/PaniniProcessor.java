@@ -57,6 +57,8 @@ import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.SoterAnalysisFactory;
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.cga.CallGraphAnalysisFactory;
+import org.paninij.soter.instrument.SoterInstrumenter;
+import org.paninij.soter.instrument.SoterInstrumenterFactory;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.CapsuleTemplateFactory;
 import org.paninij.soter.util.WalaUtil;
@@ -87,7 +89,8 @@ public class PaniniProcessor extends AbstractProcessor
     protected boolean initializedWithOptions = false;
     protected boolean midpointCompile = false;
     protected ArtifactCompiler artifactCompiler;
-    protected SoterAnalysisFactory transferAnalysisFactory;
+    protected SoterAnalysisFactory soterAnalysisFactory;
+    protected SoterInstrumenterFactory soterInstrumenterFactory;
 
     // Annotation processor options (i.e. `-A` arguments):
     // TODO: Make these not static.
@@ -127,7 +130,8 @@ public class PaniniProcessor extends AbstractProcessor
             {
                 initSoterOptions(options);
                 artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(options);
-                transferAnalysisFactory = new SoterAnalysisFactory(artifactCompiler.getClassPath());
+                soterAnalysisFactory = new SoterAnalysisFactory(artifactCompiler.getClassPath());
+                soterInstrumenterFactory = new SoterInstrumenterFactory(artifactCompiler.getClassOutput());
                 midpointCompile = true;
             }
             catch (IOException e)
@@ -273,16 +277,19 @@ public class PaniniProcessor extends AbstractProcessor
             for (Capsule capsule : capsules)
             {
                 String capsuleName = capsule.getQualifiedName();
-                SoterAnalysis transferAnalysis = transferAnalysisFactory.make(capsuleName);
-                transferAnalysis.perform();
-                note(transferAnalysis.getResultsString());
+                SoterAnalysis soterAnalysis = soterAnalysisFactory.make(capsuleName);
+                soterAnalysis.perform();
+                note(soterAnalysis.getResultsString());
+
+                SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
+                //soterInstrumenter.perform();
 
                 String callGraphPDF = callGraphPDFs + File.separator + capsuleName + ".pdf";
-                WalaUtil.makeGraphFile(transferAnalysis.getCallGraph(), callGraphPDF);
+                WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);
                 
                 // TODO: Make this its own annotation processor option:
                 String heapGraphPDF = callGraphPDFs + File.separator + "heap-graphs" + File.separator + capsuleName + ".pdf";
-                WalaUtil.makeGraphFile(transferAnalysis.getHeapGraph(), heapGraphPDF);
+                WalaUtil.makeGraphFile(soterAnalysis.getHeapGraph(), heapGraphPDF);
             }
         }
         

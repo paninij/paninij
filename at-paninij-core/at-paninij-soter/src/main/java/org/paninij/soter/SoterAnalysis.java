@@ -151,6 +151,11 @@ public class SoterAnalysis extends Analysis
         return cga.getHeapGraph();
     } 
     
+    public CapsuleTemplate getCapsuleTemplate()
+    {
+        return template;
+    }
+
     /**
      * A simple container class to hold all of the results which the analysis generates for a single
      * transfer site.

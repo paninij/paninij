@@ -27,14 +27,17 @@ import javax.tools.ToolProvider;
  */
 public class ArtifactCompiler
 {
-    JavaCompiler javaCompiler;
-    StandardJavaFileManager fileManager;
-    String classPath;
+    protected final JavaCompiler javaCompiler;
+    protected final StandardJavaFileManager fileManager;
+    protected final String classPath;
+    protected final String classOutput;
     
     public ArtifactCompiler(String classPath, String sourcePath,
-                                  String classOutput, String sourceOutput)
+                            String classOutput, String sourceOutput)
     {
         this.classPath = classPath;
+        this.classOutput = classOutput;
+
         javaCompiler = ToolProvider.getSystemJavaCompiler();
 
         fileManager = javaCompiler.getStandardFileManager(null, null, null);
@@ -161,5 +164,11 @@ public class ArtifactCompiler
     public String getClassPath()
     {
         return classPath;
+    }
+    
+
+    public String getClassOutput()
+    {
+        return classOutput;
     }
 }
