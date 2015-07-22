@@ -23,7 +23,7 @@ import com.ibm.wala.ssa.ISSABasicBlock;
  * 
  * See Figure 8 of Negara, 2011.
  */
-public class TransferLiveAnalysis implements Analysis
+public class TransferLiveAnalysis extends Analysis
 {
     // The analysis's dependencies:
     final protected CapsuleTemplate template;
@@ -34,8 +34,6 @@ public class TransferLiveAnalysis implements Analysis
     
     // The results of the analysis:
     protected final Map<TransferSite, Set<PointerKey>> liveVariables;
-
-    protected boolean hasBeenPerformed;
 
     public TransferLiveAnalysis(CapsuleTemplate template,
                                 LocalLiveAnalysisFactory llaFactory,
@@ -50,20 +48,18 @@ public class TransferLiveAnalysis implements Analysis
         this.cha = cha;
         
         liveVariables = new HashMap<TransferSite, Set<PointerKey>>();
-        
-        hasBeenPerformed = false;
     }
 
+    @Override
+    public void performSubAnalyses()
+    {
+        ta.perform();
+    }
+    
 
     @Override
-    public void perform()
+    public void performAnalysis()
     {
-        if (hasBeenPerformed) {
-            return;
-        }
-
-        ta.perform();
-
         for (CGNode node : ta.getReachingNodes())
         {
             Set<TransferSite> relevantSites = ta.getRelevantSites(node);
@@ -73,8 +69,6 @@ public class TransferLiveAnalysis implements Analysis
                 addPointerKeysAfter(site);
             }
         }
-        
-        hasBeenPerformed = true;
     }
 
 
@@ -101,6 +95,7 @@ public class TransferLiveAnalysis implements Analysis
      */
     public Set<PointerKey> getPointerKeysAfter(TransferSite transferSite)
     {
+        assert hasBeenPerformed;
         return liveVariables.get(transferSite);
     }
 }

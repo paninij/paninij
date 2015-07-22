@@ -26,7 +26,7 @@ import com.ibm.wala.util.intset.OrdinalSetMapping;
 
 import edu.illinois.soter.analysis.transferfunctionproviders.LocalLiveVariablesTransferFunctionProvider;
 
-public class LocalLiveAnalysis implements Analysis
+public class LocalLiveAnalysis extends Analysis
 {
     // Analysis dependencies:
     protected final CGNode node;
@@ -37,8 +37,6 @@ public class LocalLiveAnalysis implements Analysis
     protected BitVectorFramework<ISSABasicBlock, PointerKey> dataFlowFramework;
     protected BitVectorSolver<ISSABasicBlock> dataFlowSolver;
 
-    protected boolean hasBeenPerformed = false;
-    
     public LocalLiveAnalysis(CGNode node, CallGraphAnalysis cga)
     {
         this.node = node;
@@ -50,12 +48,8 @@ public class LocalLiveAnalysis implements Analysis
     }
 
     @Override
-    public void perform()
+    public void performAnalysis()
     {
-        if (hasBeenPerformed) {
-            return;
-        }
-
         SSACFG cfg = node.getIR().getControlFlowGraph();
         Graph<ISSABasicBlock> invertedCFG = GraphInverter.invert(cfg);
         dataFlowFramework = new BitVectorFramework<ISSABasicBlock, PointerKey>(invertedCFG,
@@ -68,8 +62,6 @@ public class LocalLiveAnalysis implements Analysis
             String msg = "Caught unexpected `CancelException` while solving a `LocalLiveAnalysis`.";
             throw new RuntimeException(msg);
         }
-
-        hasBeenPerformed = true;
     }
     
     
@@ -81,6 +73,7 @@ public class LocalLiveAnalysis implements Analysis
      */
     public Set<PointerKey> getPointerKeysAfter(ISSABasicBlock basicBlock)
     {
+        assert hasBeenPerformed;
         // TODO: Add assertion which checks for the parameter's precondition.
 
         Set<PointerKey> pointerKeys = new HashSet<PointerKey>();
@@ -102,11 +95,13 @@ public class LocalLiveAnalysis implements Analysis
     
     public BitVectorSolver<ISSABasicBlock> getDataFlowSolver()
     {
+        assert hasBeenPerformed;
         return dataFlowSolver;
     }
     
     public PointerKey getPointerKey(int value)
     {
+        assert hasBeenPerformed;
         return latticeValues.getMappedObject(value);
     }
 }

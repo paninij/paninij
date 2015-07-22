@@ -27,7 +27,7 @@ import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.intset.BitVectorIntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 
-public class TransferAnalysis implements Analysis
+public class TransferAnalysis extends Analysis
 {
     protected final CapsuleTemplate template;
     protected final CallGraphAnalysis cga;
@@ -53,8 +53,6 @@ public class TransferAnalysis implements Analysis
      */
     protected Map<CGNode, Set<TransferSite>> otherRelevantSitesMap;
     
-    protected boolean hasBeenPerformed = false;
-    
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
@@ -65,16 +63,14 @@ public class TransferAnalysis implements Analysis
         this.template = template;
         this.cga = cga;
         this.cha = cha;
-        resetAnalysis();
+
+        transferringSitesMap = new HashMap<CGNode, Set<TransferSite>>();
+        otherRelevantSitesMap = new HashMap<CGNode, Set<TransferSite>>();
     }
     
     @Override
-    public void perform()
+    public void performAnalysis()
     {
-        if (hasBeenPerformed) {
-            return;
-        }
-
         for (CGNode node : cga.getCallGraph())
         {
             // Only add transfer sites from nodes whose methods are declared directly on the capsule
@@ -85,7 +81,7 @@ public class TransferAnalysis implements Analysis
             }
         }
         
-        Set<CGNode> transferringNodes = getTransferringNodes();
+        Set<CGNode> transferringNodes = transferringSitesMap.keySet();
         reachingNodes = SoterUtil.makeCalledByClosure(transferringNodes, cga.getCallGraph());
 
         for (CGNode node : cga.getCallGraph())
@@ -94,8 +90,6 @@ public class TransferAnalysis implements Analysis
                 findOtherRelevantSites(node);
             }
         }
-        
-        hasBeenPerformed = true;
     }
 
     public void findTransferSites(CGNode node)
@@ -231,16 +225,19 @@ public class TransferAnalysis implements Analysis
 
     public Set<TransferSite> getTransferringSites(CGNode node)
     {
+        assert hasBeenPerformed;
         return transferringSitesMap.get(node);
     }
 
     public Set<CGNode> getTransferringNodes()
     {
+        assert hasBeenPerformed;
         return transferringSitesMap.keySet();
     }
     
     public Set<CGNode> getRelevantNodes()
     {
+        assert hasBeenPerformed;
         Set<CGNode> relevantNodes = new HashSet<CGNode>();
         relevantNodes.addAll(transferringSitesMap.keySet());
         relevantNodes.addAll(otherRelevantSitesMap.keySet());
@@ -249,6 +246,7 @@ public class TransferAnalysis implements Analysis
     
     public Set<TransferSite> getRelevantSites(CGNode node)
     {
+        assert hasBeenPerformed;
         Set<TransferSite> relevantSites = new HashSet<TransferSite>();
         if (transferringSitesMap.containsKey(node)) {
             relevantSites.addAll(transferringSitesMap.get(node));
@@ -265,16 +263,7 @@ public class TransferAnalysis implements Analysis
      */
     public IdentitySet<CGNode> getReachingNodes()
     {
+        assert hasBeenPerformed;
         return reachingNodes;
-    }
-
-    public void resetAnalysis()
-    {
-        // TODO Auto-generated method stub
-        
-        transferringSitesMap = new HashMap<CGNode, Set<TransferSite>>();
-        reachingNodes = null;
-        otherRelevantSitesMap = new HashMap<CGNode, Set<TransferSite>>();
-        hasBeenPerformed = false;
     }
 }

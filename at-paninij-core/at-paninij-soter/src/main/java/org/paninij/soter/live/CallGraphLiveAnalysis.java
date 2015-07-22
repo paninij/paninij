@@ -40,7 +40,7 @@ import com.ibm.wala.util.intset.OrdinalSetMapping;
 /**
  * See Figure 9 of Negara 2011.
  */
-public class CallGraphLiveAnalysis implements Analysis
+public class CallGraphLiveAnalysis extends Analysis
 {
     // Analysis dependencies.
     protected final CapsuleTemplate template;
@@ -55,8 +55,6 @@ public class CallGraphLiveAnalysis implements Analysis
     BitVectorFramework<CGNode, PointerKey> dataFlowFramework;
     BitVectorSolver<CGNode> dataFlowSolver;
 
-    protected boolean hasBeenPerformed;
-    
 
     public CallGraphLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
                                  TransferAnalysis ta, TransferLiveAnalysis tla,
@@ -75,17 +73,17 @@ public class CallGraphLiveAnalysis implements Analysis
         hasBeenPerformed = false;
     }
 
-
     @Override
-    public void perform()
+    public void performSubAnalyses()
     {
-        if (hasBeenPerformed) {
-            return;
-        }
-
         cga.perform();
         ta.perform();
         tla.perform();
+    }
+
+    @Override
+    public void performAnalysis()
+    {
         collectSubanalysisResults();
 
         try {
@@ -99,8 +97,6 @@ public class CallGraphLiveAnalysis implements Analysis
             String msg = "Caught unexpected `CancelException` while solving a `CallGraphLiveAnalysis`.";
             throw new RuntimeException(msg); 
         }
-        
-        hasBeenPerformed = true;
     }
 
 
@@ -144,6 +140,8 @@ public class CallGraphLiveAnalysis implements Analysis
      */
     public Set<PointerKey> getPointerKeysAfter(CGNode node)
     {
+        assert hasBeenPerformed;
+
         Set<PointerKey> pointerKeys = new HashSet<PointerKey>();
 
         // Note that we are calling `getIn()` because `getOut()` does not work. (The transfer

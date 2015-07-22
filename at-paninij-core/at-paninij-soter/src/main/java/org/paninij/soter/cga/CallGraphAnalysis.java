@@ -25,7 +25,7 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  * Builds Zero-One CFA call graph using flow insensitive Andersen style points-to analysis with
  * entrypoints stemming from the procedures of a single template class.
  */
-public class CallGraphAnalysis implements Analysis
+public class CallGraphAnalysis extends Analysis
 {
     public static final int INSTANCE_POLICY = ZeroXInstanceKeys.ALLOCATIONS
                                             //| ZeroXInstanceKeys.SMUSH_MANY
@@ -44,8 +44,6 @@ public class CallGraphAnalysis implements Analysis
     protected HeapModel heapModel;
     protected HeapGraph<InstanceKey> heapGraph;
     
-    protected boolean hasBeenPerformed;
-
     public CallGraphAnalysis(CapsuleTemplate template, IClassHierarchy cha, AnalysisOptions options)
     {
         this(template, cha, options, new AnalysisCache());
@@ -58,8 +56,6 @@ public class CallGraphAnalysis implements Analysis
         this.cha = cha;
         this.options = options;
         this.cache = cache;
-        
-        hasBeenPerformed = false;
     }
 
     /**
@@ -71,12 +67,8 @@ public class CallGraphAnalysis implements Analysis
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void perform()
+    public void performAnalysis()
     {
-        if (hasBeenPerformed) {
-            return;
-        }
-
         options.setEntrypoints(CapsuleTemplateEntrypoint.makeAll(template.getTemplateClass()));
 
         ContextSelector contextSelector = new ReceiverInstanceContextSelector();
@@ -95,43 +87,29 @@ public class CallGraphAnalysis implements Analysis
             String msg = "Call graph construction was unexpectedly cancelled: ";
             throw new IllegalArgumentException(msg + template.toString());
         }
-        
-        hasBeenPerformed = true;
     }
     
     public CallGraph getCallGraph()
     {
-        if (callGraph == null)
-        {
-            String msg = "Must call `perform()` before `getCallGraph()`.";
-            throw new IllegalStateException(msg);
-        }
-
+        assert hasBeenPerformed;
         return callGraph;
     }
 
     public HeapModel getHeapModel()
     {
+        assert hasBeenPerformed;
         return heapModel;
     }
 
     public PointerAnalysis<InstanceKey> getPointerAnalysis()
     {
-        if (pointerAnalysis == null)
-        {
-            String msg = "Must call `perform()` before `getCallGraph()`.";
-            throw new IllegalStateException(msg);
-        }
+        assert hasBeenPerformed;
         return pointerAnalysis;
     }
     
     public HeapGraph<InstanceKey> getHeapGraph()
     {
-        if (heapGraph == null)
-        {
-            String msg = "Must call `perform()` before `getHeapGraph()`.";
-            throw new IllegalStateException(msg);
-        }
+        assert hasBeenPerformed;
         return heapGraph;
     }
 }
