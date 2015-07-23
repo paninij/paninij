@@ -2,24 +2,21 @@ package edu.rice.habanero.benchmarks.big;
 
 import java.util.Random;
 
-import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
 @Capsule public class NodeTemplate {
+    @Wired int id;
     @Wired Node[] nodes = new Node[BigConfig.W];
     @Wired Sink sink;
 
-    int id;
     int numPings = 0;
     int numMessages = BigConfig.N;
     int expPinger = -1;
     Random random;
 
-    @Block
-    public void setId(int id) {
-        this.id = id;
-        random = new Random(id);
+    public void init() {
+        random = new Random(this.id);
     }
 
     public void done() {

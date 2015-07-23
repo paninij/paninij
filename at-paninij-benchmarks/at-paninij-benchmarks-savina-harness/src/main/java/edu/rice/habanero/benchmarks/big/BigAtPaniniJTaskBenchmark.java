@@ -6,10 +6,11 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class BigAtPaniniJBenchmark
+public class BigAtPaniniJTaskBenchmark
 {
-    static class BigAtPaniniJ extends Benchmark {
+    static class BigAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -18,7 +19,7 @@ public class BigAtPaniniJBenchmark
 
         @Override
         public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override
@@ -28,7 +29,7 @@ public class BigAtPaniniJBenchmark
 
         @Override
         public void runIteration() {
-            Big$Thread.main(null);
+            Big$Task.main(null);
             try {
                 Panini$System.threads.await();
             } catch (InterruptedException e) {
@@ -38,6 +39,6 @@ public class BigAtPaniniJBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new BigAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new BigAtPaniniJTask());
     }
 }
