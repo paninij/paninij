@@ -6,6 +6,7 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
 public class ThroughputAtPaniniJTaskBenchmark
 {
@@ -18,7 +19,7 @@ public class ThroughputAtPaniniJTaskBenchmark
 
         @Override
         public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override
