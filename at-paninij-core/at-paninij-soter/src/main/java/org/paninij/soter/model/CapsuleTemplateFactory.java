@@ -23,7 +23,21 @@ public class CapsuleTemplateFactory
     public CapsuleTemplate make(String capsuleName)
     {
         String templatePath = WalaUtil.fromQualifiedNameToWalaPath(capsuleName) + "Template";
-        IClass templateClass = cha.lookupClass(TypeReference.find(Application, templatePath));
+
+        TypeReference templateReference = TypeReference.find(Application, templatePath);
+        if (templateReference == null)
+        {
+            String msg = "Could not find the `TypeReference` for template: " + templatePath;
+            throw new RuntimeException(msg);
+        }
+        
+        IClass templateClass = cha.lookupClass(templateReference);
+        if (templateClass == null)
+        {
+            String msg = "Could not find the `IClass` for template: " + templatePath;
+            throw new RuntimeException(msg);
+        }
+
         return new CapsuleTemplate(templateClass);
     }
 }

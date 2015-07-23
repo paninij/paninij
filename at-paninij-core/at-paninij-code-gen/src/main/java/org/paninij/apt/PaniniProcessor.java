@@ -98,10 +98,8 @@ public class PaniniProcessor extends AbstractProcessor
 
         try {
             options = new ProcessorOptions(procEnv.getOptions());
+            note(options.toString());
             artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(procEnv.getFiler(), options);
-            soterAnalysisFactory = new SoterAnalysisFactory(options.effectiveClassPathString);
-            soterInstrumenterFactory = new SoterInstrumenterFactory(options.classOutput.getAbsolutePath());
-            midpointCompile = (options.staticOwnershipTransferKind == Kind.SOTER);
         }
         catch (IOException ex) {
             throw new RuntimeException("Failed to make artifact compiler: " + ex, ex);
@@ -203,47 +201,9 @@ public class PaniniProcessor extends AbstractProcessor
             toBeCompiled.add(sourceFile.qualifiedName);
         }
         
-        if (midpointCompile)
-        {
-            try {
-                artifactCompiler.compileAll(toBeCompiled);
-                note("Compiled the following classes at the processor's midpoint: " + toBeCompiled);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new IllegalStateException("Failed to compile.");
-            }
-        }
-        
         if (options.staticOwnershipTransferKind == Kind.SOTER)
         {
-            for (Capsule capsule : capsules)
-            {
-                String capsuleName = capsule.getQualifiedName();
-                SoterAnalysis soterAnalysis = soterAnalysisFactory.make(capsuleName);
-                soterAnalysis.perform();
-
-                // TODO: Make this actually use the user's directory.
-                if (options.analysisReports != null)
-                {
-                    log(options.analysisReports.getAbsolutePath() + File.separator + capsuleName,
-                        soterAnalysis.getResultsReport());
-                }
-
-                SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
-                soterInstrumenter.perform();
-
-                if (options.callGraphPDFs != null)
-                {
-                    String callGraphPDF = options.callGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
-                    WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);
-                }
-        
-                if (options.heapGraphPDFs != null)
-                {
-                    String heapGraphPDF = options.heapGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
-                    WalaUtil.makeGraphFile(soterAnalysis.getHeapGraph(), heapGraphPDF);
-                }
-            }
+            compileAnalyzeAndInstrument(toBeCompiled, capsules);
         }
         
        
@@ -311,9 +271,54 @@ public class PaniniProcessor extends AbstractProcessor
         {
             out.println(logMsg);
         }
-        catch (IOException e)
+        catch (IOException ex)
         {
-            throw new RuntimeException("Failed to log a message.");
+            throw new RuntimeException("Failed to log a message: " + ex, ex);
+        }
+    }
+    
+    protected void compileAnalyzeAndInstrument(Set<String> toBeCompiled, Set<Capsule> capsules)
+    {
+        assert options.staticOwnershipTransferKind == Kind.SOTER;
+        
+        try {
+            artifactCompiler.compileAll(toBeCompiled);
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to compile: " + ex, ex);
+        }
+
+        // Note that instantiation of the analysis factory needs to happen after the artifacts have
+        // been compiled so that the bytecode for those artifacts will be found by the CHA.
+        soterAnalysisFactory = new SoterAnalysisFactory(options.effectiveClassPathString);
+        soterInstrumenterFactory = new SoterInstrumenterFactory(options.classOutput.getAbsolutePath());
+
+        for (Capsule capsule : capsules)
+        {
+            String capsuleName = capsule.getQualifiedName();
+            SoterAnalysis soterAnalysis = soterAnalysisFactory.make(capsuleName);
+            soterAnalysis.perform();
+
+            // TODO: Make this actually use the user's directory.
+            if (options.analysisReports != null)
+            {
+                log(options.analysisReports.getAbsolutePath() + File.separator + capsuleName,
+                    soterAnalysis.getResultsReport());
+            }
+
+            SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
+            soterInstrumenter.perform();
+
+            if (options.callGraphPDFs != null)
+            {
+                String callGraphPDF = options.callGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
+                WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);
+            }
+    
+            if (options.heapGraphPDFs != null)
+            {
+                String heapGraphPDF = options.heapGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
+                WalaUtil.makeGraphFile(soterAnalysis.getHeapGraph(), heapGraphPDF);
+            }
         }
     }
     

@@ -80,9 +80,9 @@
             <arg>-Apanini.sourceOutput=${generated.test.sources.directory}</arg>
 
             <!-- SOTER analysis settings -->
-            <arg>-Apanini.soter.analysisReports=${project.logsDirectory}/soter-analyses</arg>
-            <arg>-Apanini.soter.callGraphPDFs=${project.logsDirectory}/call-graphs</arg>
-            <arg>-Apanini.soter.heapGraphPDFs=${project.logsDirectory}/heap-graphs</arg>
+            <arg>-Apanini.soter.analysisReports=${project.logsDirectory}/soter/analysis-reports</arg>
+            <arg>-Apanini.soter.callGraphPDFs=${project.logsDirectory}/soter/call-graphs</arg>
+            <arg>-Apanini.soter.heapGraphPDFs=${project.logsDirectory}/soter/heap-graphs</arg>
           </compilerArgs>
         </configuration>
       </plugin>

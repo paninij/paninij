@@ -49,6 +49,7 @@ public class ProcessorOptions
     {
         this.options = options;
 
+        // Initialize the compiler options.
         classPath = makePathFromOption(options, "panini.classPath");
         sourcePath = makePathFromOption(options, "panini.sourcePath");
         classOutput = makeFileFromOption(options, "panini.classOutput");
@@ -59,7 +60,6 @@ public class ProcessorOptions
                                                     options.get("panini.classPathFile"));
         effectiveClassPathString = makeEffectiveClassPathString(options.get("panini.classPath"),
                                                                 options.get("panini.classPathFile"));
-
 
         // Initialize the ownership transfer kinds.
         String opt;
@@ -171,5 +171,27 @@ public class ProcessorOptions
         }
     
         return classPath;
+    }
+    
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ProcessorOptions {\n")
+               .append("    options = ").append(options).append('\n')
+               .append("    classPath = ").append(classPath).append('\n')
+               .append("    sourcePath = ").append(sourcePath).append('\n')
+               .append("    classOutput = ").append(classOutput).append('\n')
+               .append("    sourceOutput = ").append(sourceOutput).append('\n')
+               .append("    classPathFile = ").append(classPathFile).append('\n')
+               .append("    effectiveClassPath = ").append(effectiveClassPath).append('\n')
+               .append("    effectiveClassPathString = ").append(effectiveClassPathString).append('\n')
+               .append("    dynamicOwnershipTransferKind = ").append(dynamicOwnershipTransferKind).append('\n')
+               .append("    staticOwnershipTransferKind = ").append(staticOwnershipTransferKind).append('\n')
+               .append("    analysisReports = ").append(analysisReports).append('\n')
+               .append("    callGraphPDFs = ").append(callGraphPDFs).append('\n')
+               .append("    heapGraphPDFs = ").append(heapGraphPDFs).append('\n')
+               .append("}");
+
+        return builder.toString();
     }
 }

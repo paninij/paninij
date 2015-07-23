@@ -16,7 +16,7 @@ public class TestSoterPrototype
     private static final String ACTIVE_CLIENT_PATH = "Lorg/paninij/apt/soter/ActiveClientTemplate";
     private static final String LEAKY_SERVER_PATH = "Lorg/paninij/apt/soter/LeakyServerTemplate";
     
-    private static final String GRAPH_OUT_DIR = "logs/prototype/";
+    private static final String GRAPH_OUT_DIR = "logs/soter-prototype/";
 
     @Test
     public void analyzeActiveClient() throws Throwable
