@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
@@ -15,7 +16,13 @@ import org.paninij.soter.transfer.TransferSite;
 
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.classLoader.ShrikeClass;
+import com.ibm.wala.shrikeBT.DupInstruction;
+import com.ibm.wala.shrikeBT.InvokeInstruction;
 import com.ibm.wala.shrikeBT.MethodData;
+import com.ibm.wala.shrikeBT.MethodEditor;
+import com.ibm.wala.shrikeBT.Util;
+import com.ibm.wala.shrikeBT.MethodEditor.Output;
+import com.ibm.wala.shrikeBT.MethodEditor.Patch;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter.MethodExaminer;
 import com.ibm.wala.shrikeCT.ClassWriter;
@@ -52,6 +59,10 @@ public class SoterInstrumenter
         try
         {
             buildUnsafeTransferSitesMap();
+            if (unsafeTransferSitesMap.isEmpty()) {
+                return;  // Return if there are no transfer sites that need instrumentation.
+            }
+            
             instrumenter.visitMethods(methodInstrumenter);
             writeInstrumentedClassFile();
         }
@@ -81,6 +92,10 @@ public class SoterInstrumenter
     
     private class MethodInstrumenter implements MethodExaminer
     {
+        final DupInstruction dup = DupInstruction.make(0);
+        final InvokeInstruction assertSafeTransfer = Util.makeInvoke(DynamicOwnershipTransfer.class,
+                                                                     "assertSafeTransfer");
+        
         @Override
         public void examineCode(MethodData methodData)
         {
@@ -95,8 +110,32 @@ public class SoterInstrumenter
             if (unsafeTransferSites == null || unsafeTransferSites.isEmpty()) {
                 return;
             }
-            
-            System.out.println("[MethodInstrumenter] visiting " + signature);
+            instrumentUnsafeTransferSites(methodData, unsafeTransferSites);
+        }
+        
+        private void instrumentUnsafeTransferSites(MethodData methodData,
+                                                   IdentitySet<TransferSite> unsafeTransferSites)
+        {
+            MethodEditor methodEditor = new MethodEditor(methodData);
+            for (TransferSite site : unsafeTransferSites) {
+                patchUnsafeTransferSite(methodEditor, site);
+            }
+            methodEditor.applyPatches();
+            methodEditor.endPass();
+        }
+        
+        private void patchUnsafeTransferSite(MethodEditor methodEditor, TransferSite site)
+        {
+            methodEditor.beginPass();
+            methodEditor.insertBefore(site.getInstruction().iindex, new Patch()
+            {
+                @Override
+                public void emitTo(Output w)
+                {
+                    w.emit(dup);
+                    w.emit(assertSafeTransfer);
+                }
+            });
         }
     }
 }

@@ -13,6 +13,7 @@ import me.dwtj.objectgraph.Navigator;
 import me.dwtj.objectgraph.Visitor;
 
 import org.paninij.lang.Capsule;
+import org.paninij.runtime.Panini$System;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.runtime.util.IdentitySetStore;
 import org.paninij.runtime.util.IdentityStack;
@@ -22,6 +23,18 @@ import org.paninij.runtime.util.IdentityStackStore;
 public class DynamicOwnershipTransfer
 {
     public static final String ARGUMENT_KEY = "panini.ownershipTransfer.dynamic";
+    
+    /**
+     * @param msg The outgoing message (i.e. transfer) to check against the capsule's state.
+     * 
+     * Note that this currently uses the `REFLECTION_OPTIMIZED` method. Also note that the capsule's
+     * state is retrieved via `Panini$System.self`, so this will not work for capsule execution
+     * profiles other than "Thread".
+     */
+    public static void assertSafeTransfer(Object msg)
+    {
+        assert REFLECTION_OPTIMIZED.isSafeTransfer(msg, Panini$System.self.get().panini$getAllState());
+    }
     
     public static boolean isSafeTransfer(Object msg, Object local, Kind method)
     {
