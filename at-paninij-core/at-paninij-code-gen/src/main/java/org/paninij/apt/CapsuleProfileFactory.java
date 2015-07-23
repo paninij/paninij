@@ -107,10 +107,14 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     String generateAssertSafeInvocationTransfer()
     {
+        // TODO: Clean this up!
+        /**
         return Source.format("assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2): #3",
                              PaniniProcessor.dynamicOwnershipTransferKind,
                              "panini$message",
                              "Panini$System.self.get().panini$getAllState()",
                              "\"Procedure invocation performed unsafe ownership transfer.\"");
+        */
+        return "";
     }
 }

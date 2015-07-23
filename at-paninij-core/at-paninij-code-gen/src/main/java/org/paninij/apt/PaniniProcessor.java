@@ -48,6 +48,7 @@ import org.paninij.apt.check.CapsuleChecker;
 import org.paninij.apt.check.CapsuleTestChecker;
 import org.paninij.apt.check.SignatureChecker;
 import org.paninij.apt.check.StaticOwnershipTransfer;
+import org.paninij.apt.check.StaticOwnershipTransfer.Kind;
 import org.paninij.apt.model.Capsule;
 import org.paninij.apt.model.CapsuleElement;
 import org.paninij.apt.model.Procedure;
@@ -58,16 +59,9 @@ import org.paninij.apt.util.SourceFile;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.SoterAnalysisFactory;
-import org.paninij.soter.cga.CallGraphAnalysis;
-import org.paninij.soter.cga.CallGraphAnalysisFactory;
 import org.paninij.soter.instrument.SoterInstrumenter;
 import org.paninij.soter.instrument.SoterInstrumenterFactory;
-import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.model.CapsuleTemplateFactory;
 import org.paninij.soter.util.WalaUtil;
-
-import com.ibm.wala.ipa.callgraph.AnalysisOptions;
-import com.ibm.wala.ipa.cha.IClassHierarchy;
 
 
 /**
@@ -84,90 +78,35 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
                    "panini.sourceOutput",
                    DynamicOwnershipTransfer.ARGUMENT_KEY,
                    StaticOwnershipTransfer.ARGUMENT_KEY,
-                   "panini.soter.callGraphPDFs"})
+                   "panini.soter.analysisReports",
+                   "panini.soter.callGraphPDFs",
+                   "panini.soter.heapGraphPDFs"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
     protected RoundEnvironment roundEnv;
-    protected boolean initializedWithOptions = false;
-    protected boolean midpointCompile = false;
+    protected ProcessorOptions options;
     protected ArtifactCompiler artifactCompiler;
     protected SoterAnalysisFactory soterAnalysisFactory;
     protected SoterInstrumenterFactory soterInstrumenterFactory;
-
-    // Annotation processor options (i.e. `-A` arguments):
-    // TODO: Make these not static.
-    protected static DynamicOwnershipTransfer.Kind dynamicOwnershipTransferKind;
-    protected static StaticOwnershipTransfer.Kind staticOwnershipTransferKind;
-    
-    /**
-     * If null, then no call graph PDFs are generated. Otherwise, this is a path to a directory in
-     * which the PDFs will be placed.
-     */
-    protected String callGraphPDFs;
-
+    protected boolean midpointCompile;
     
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
-        note("init()");
         super.init(procEnv);
 
-        Map<String, String> options = procEnv.getOptions();
-        initWithOptions(options);
-    }
-    
-    public void initWithOptions(Map<String, String> options)
-    {
-        // If this already been initialized, then ignore this attempt with these options:
-        if (initializedWithOptions) {
-            return;
+        try {
+            options = new ProcessorOptions(procEnv.getOptions());
+            artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(procEnv.getFiler(), options);
+            soterAnalysisFactory = new SoterAnalysisFactory(options.effectiveClassPathString);
+            soterInstrumenterFactory = new SoterInstrumenterFactory(options.classOutput.getAbsolutePath());
+            midpointCompile = (options.staticOwnershipTransferKind == Kind.SOTER);
         }
-
-        initOwnershipOptions(options);
-        note("Annotation Processor Options: " + options);
-
-        if (staticOwnershipTransferKind == StaticOwnershipTransfer.Kind.SOTER)
-        {
-            try
-            {
-                initSoterOptions(options);
-                artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(options);
-                soterAnalysisFactory = new SoterAnalysisFactory(artifactCompiler.getClassPath());
-                soterInstrumenterFactory = new SoterInstrumenterFactory(artifactCompiler.getClassOutput());
-                midpointCompile = true;
-            }
-            catch (IOException e)
-            {
-                warning("Failed to make the panini processor's artifact compiler. Disabling SOTER.");
-                midpointCompile = false;
-            }
+        catch (IOException ex) {
+            throw new RuntimeException("Failed to make artifact compiler: " + ex, ex);
         }
-
-        // Consider this processor initialized:
-        initializedWithOptions = true;
     }
-    
-    protected void initOwnershipOptions(Map<String, String> options)
-    {
-        String opt;
-
-        opt = options.get(DynamicOwnershipTransfer.ARGUMENT_KEY);
-        dynamicOwnershipTransferKind = DynamicOwnershipTransfer.Kind.fromString(opt);
-        note(DynamicOwnershipTransfer.ARGUMENT_KEY + " = " + dynamicOwnershipTransferKind);
-
-        opt = options.get(StaticOwnershipTransfer.ARGUMENT_KEY);
-        staticOwnershipTransferKind = StaticOwnershipTransfer.Kind.fromString(opt);
-        note(StaticOwnershipTransfer.ARGUMENT_KEY + " = " + staticOwnershipTransferKind);
-    }
-    
-    
-    protected void initSoterOptions(Map<String, String> options)
-    {
-        assert staticOwnershipTransferKind == StaticOwnershipTransfer.Kind.SOTER;
-        callGraphPDFs = options.get("panini.soter.callGraphPDFs");
-    }
-
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
@@ -275,27 +214,39 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
         
-        if (callGraphPDFs != null)
+        if (options.staticOwnershipTransferKind == Kind.SOTER)
         {
             for (Capsule capsule : capsules)
             {
                 String capsuleName = capsule.getQualifiedName();
                 SoterAnalysis soterAnalysis = soterAnalysisFactory.make(capsuleName);
                 soterAnalysis.perform();
-                log("logs/soter_analysis_reports.log", soterAnalysis.getResultsReport());
+
+                // TODO: Make this actually use the user's directory.
+                if (options.analysisReports != null)
+                {
+                    log(options.analysisReports.getAbsolutePath() + File.separator + capsuleName,
+                        soterAnalysis.getResultsReport());
+                }
 
                 SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
                 soterInstrumenter.perform();
 
-                String callGraphPDF = callGraphPDFs + File.separator + capsuleName + ".pdf";
-                WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);
-                
-                // TODO: Make this its own annotation processor option:
-                String heapGraphPDF = callGraphPDFs + File.separator + "heap-graphs" + File.separator + capsuleName + ".pdf";
-                WalaUtil.makeGraphFile(soterAnalysis.getHeapGraph(), heapGraphPDF);
+                if (options.callGraphPDFs != null)
+                {
+                    String callGraphPDF = options.callGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
+                    WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);
+                }
+        
+                if (options.heapGraphPDFs != null)
+                {
+                    String heapGraphPDF = options.heapGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
+                    WalaUtil.makeGraphFile(soterAnalysis.getHeapGraph(), heapGraphPDF);
+                }
             }
         }
         
+       
         for (Capsule capsule : capsules)
         {
             // Generate capsule thread profile

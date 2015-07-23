@@ -27,6 +27,9 @@
     <maven.generated.class.path.file>
       ${maven.generated.resources.directory}/panini_processor_classpath.txt
     </maven.generated.class.path.file>
+    <project.logsDirectory>
+      ${project.basedir}/logs
+    </project.logsDirectory>
   </properties>
 
 
@@ -75,6 +78,11 @@
             <arg>-Apanini.sourcePath=${project.build.sourceDirectory}:${project.build.testSourceDirectory}:${generated.sources.directory}:${generated.test.sources.directory}</arg>
             <arg>-Apanini.classOutput=${project.build.testOutputDirectory}</arg>
             <arg>-Apanini.sourceOutput=${generated.test.sources.directory}</arg>
+
+            <!-- SOTER analysis settings -->
+            <arg>-Apanini.soter.analysisReports=${project.logsDirectory}/soter-analyses</arg>
+            <arg>-Apanini.soter.callGraphPDFs=${project.logsDirectory}/call-graphs</arg>
+            <arg>-Apanini.soter.heapGraphPDFs=${project.logsDirectory}/heap-graphs</arg>
           </compilerArgs>
         </configuration>
       </plugin>

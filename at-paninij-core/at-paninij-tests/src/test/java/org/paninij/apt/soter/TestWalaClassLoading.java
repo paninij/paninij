@@ -1,6 +1,6 @@
 package org.paninij.apt.soter;
 
-import static org.paninij.apt.util.ArtifactCompiler.buildEffectiveClassPath;
+import static org.paninij.apt.ProcessorOptions.makeEffectiveClassPathString;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 public class TestWalaClassLoading
 {
     private static final String CLASSPATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
-    private static final String CLASSPATH = buildEffectiveClassPath("target/test-classes", CLASSPATH_FILE);
+    private static final String CLASSPATH = makeEffectiveClassPathString("target/test-classes", CLASSPATH_FILE);
 
     private static final String NORMAL_TYPE = "Lorg/paninij/apt/soter/Secret";
     private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/apt/soter/LeakyServerTemplate";

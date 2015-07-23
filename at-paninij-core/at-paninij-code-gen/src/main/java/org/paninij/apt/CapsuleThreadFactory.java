@@ -493,12 +493,16 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
     private String generateAssertSafeResultTransfer()
     {
+        // TODO: Clean this up!
+        /**
         return Source.format(
                 "assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2) : #3",
                 PaniniProcessor.dynamicOwnershipTransferKind,
                 "result",
                 "panini$getAllState()",
                 "\"Procedure return attempted unsafe ownership transfer.\"");
+        */
+        return "";
     }
 
     private boolean deservesMain()
