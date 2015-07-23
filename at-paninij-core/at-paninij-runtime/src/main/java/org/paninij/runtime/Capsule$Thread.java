@@ -312,8 +312,13 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     @Override
     public void panini$start()
     {
-        panini$thread = new Thread(this);
-        panini$thread.start();
+        try {
+            Panini$System.threads.countUp();
+            panini$thread = new Thread(this);
+            panini$thread.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

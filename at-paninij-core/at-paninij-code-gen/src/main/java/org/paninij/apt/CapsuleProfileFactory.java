@@ -289,8 +289,13 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
         List<String> src = Source.lines(
                 "public static void main(String[] args) {",
-                "    #0 root = new #0();",
-                "    root.run();",
+                "    try {",
+                "        Panini$System.threads.countUp();",
+                "        #0 root = new #0();",
+                "        root.run();",
+                "    } catch (InterruptedException e) {",
+                "       e.printStackTrace();",
+                "    }",
                 "}");
 
         return Source.formatAll(src, this.generateClassName());

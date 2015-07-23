@@ -252,6 +252,11 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                     "        panini$errors.add(thrown);",
                     "    } finally {",
                     "        panini$onTerminate();",
+                    "        try {",
+                    "           Panini$System.threads.countDown();",
+                    "        } catch (InterruptedException e) {",
+                    "            e.printStackTrace();",
+                    "        }",
                     "    }",
                     "}",
                     "");

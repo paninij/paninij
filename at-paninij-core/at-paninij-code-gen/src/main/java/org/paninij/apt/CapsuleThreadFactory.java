@@ -29,6 +29,7 @@ import org.paninij.apt.util.Source;
 import org.paninij.model.Procedure;
 import org.paninij.model.Type;
 import org.paninij.model.Variable;
+import org.paninij.runtime.Panini$System;
 
 public class CapsuleThreadFactory extends CapsuleProfileFactory
 {
@@ -221,6 +222,11 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                     "        panini$errors.add(thrown);",
                     "    } finally {",
                     "        panini$onTerminate();",
+                    "        try {",
+                    "           Panini$System.threads.countDown();",
+                    "        } catch (InterruptedException e) {",
+                    "            e.printStackTrace();",
+                    "        }",
                     "    }",
                     "}",
                     "");
@@ -243,6 +249,11 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "        }",
                 "    } catch (Throwable thrown) {",
                 "        panini$errors.add(thrown);",
+                "    }",
+                "    try {",
+                "       Panini$System.threads.countDown();",
+                "    } catch (InterruptedException e) {",
+                "        e.printStackTrace();",
                 "    }",
                 "}",
                 "");

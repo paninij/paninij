@@ -18,20 +18,23 @@
  */
 package org.paninij.runtime;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public final class Panini$TaskPool extends Thread {
-    private static boolean initiated = false;
+    private static volatile boolean initiated = false;
     private static Panini$TaskPool[] pools = new Panini$TaskPool[1];
     private static int poolSize = 1;
     private static int nextPool = 0;
+    private static AtomicInteger shutdown = new AtomicInteger(0);
     private Capsule$Task headNode;
 
     private Panini$TaskPool() { }
 
     static final synchronized void init(int size) throws Exception {
         if (initiated) throw new Exception("Target already initialized");
-
         poolSize = size;
         pools = new Panini$TaskPool[size];
+        shutdown.set(0);
         for (int i = 0; i < pools.length; i ++)
             pools[i] = new Panini$TaskPool();
 
@@ -39,10 +42,19 @@ public final class Panini$TaskPool extends Thread {
     }
 
     private final synchronized void reset() {
-        nextPool = 0;
-        poolSize = 1;
-        pools = new Panini$TaskPool[1];
-        initiated = false;
+        shutdown.incrementAndGet();
+        if (shutdown.get() == poolSize) {
+            nextPool = 0;
+            poolSize = 1;
+            pools = new Panini$TaskPool[1];
+            initiated = false;
+            shutdown.set(0);
+        }
+        try {
+            Panini$System.threads.countDown();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     static final synchronized Panini$TaskPool add(Capsule$Task t) {
@@ -51,7 +63,14 @@ public final class Panini$TaskPool extends Thread {
         nextPool++;
         if (nextPool >= poolSize) nextPool = 0;
         pools[currentPool]._add(t);
-        if (!pools[currentPool].isAlive()) pools[currentPool].start();
+        if (!pools[currentPool].isAlive()) {
+            try {
+                Panini$System.threads.countUp();
+                pools[currentPool].start();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         return pools[currentPool];
     }
 
@@ -107,7 +126,7 @@ public final class Panini$TaskPool extends Thread {
                 current = current.panini$nextCapsule;
             }
         }
-        this.reset();
+        reset();
     }
 
 }
