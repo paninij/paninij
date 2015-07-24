@@ -39,7 +39,6 @@ public class TestPaniniProcessor
     
     private JavaCompiler javaCompiler;
     private StandardJavaFileManager fileManager;
-    private List<Processor> processors;
     private List<JavaFileObject> compilationUnits;
 
     @Before
