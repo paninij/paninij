@@ -26,6 +26,7 @@ public final class Panini$TaskPool extends Thread {
     private static int poolSize = 1;
     private static int nextPool = 0;
     private static AtomicInteger shutdown = new AtomicInteger(0);
+    private static AtomicInteger startup = new AtomicInteger(0);
     private Capsule$Task headNode;
 
     private Panini$TaskPool() { }
@@ -35,6 +36,7 @@ public final class Panini$TaskPool extends Thread {
         poolSize = size;
         pools = new Panini$TaskPool[size];
         shutdown.set(0);
+        startup.set(0);
         for (int i = 0; i < pools.length; i ++)
             pools[i] = new Panini$TaskPool();
 
@@ -43,12 +45,13 @@ public final class Panini$TaskPool extends Thread {
 
     private final synchronized void reset() {
         shutdown.incrementAndGet();
-        if (shutdown.get() == poolSize) {
+        if (shutdown.get() == startup.get()) {
             nextPool = 0;
             poolSize = 1;
             pools = new Panini$TaskPool[1];
             initiated = false;
             shutdown.set(0);
+            startup.set(0);
         }
         try {
             Panini$System.threads.countDown();
@@ -66,6 +69,7 @@ public final class Panini$TaskPool extends Thread {
         if (!pools[currentPool].isAlive()) {
             try {
                 Panini$System.threads.countUp();
+                startup.incrementAndGet();
                 pools[currentPool].start();
             } catch (InterruptedException e) {
                 e.printStackTrace();
