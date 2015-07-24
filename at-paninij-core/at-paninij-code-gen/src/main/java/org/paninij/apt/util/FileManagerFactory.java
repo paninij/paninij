@@ -52,4 +52,10 @@ public class FileManagerFactory
         return make(javaCompiler, classPath, sourcePath, makeSingletonList(classOutput),
                     makeSingletonList(sourceOutput));
     }
+    
+    
+    public static StandardJavaFileManager assignDefaults(StandardJavaFileManager fileManager)
+    {
+        throw new UnsupportedOperationException("TODO!");
+    }
 }

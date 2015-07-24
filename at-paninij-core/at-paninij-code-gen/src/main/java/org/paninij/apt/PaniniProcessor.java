@@ -55,6 +55,7 @@ import org.paninij.apt.model.CapsuleElement;
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Signature;
 import org.paninij.apt.model.SignatureElement;
+import org.paninij.apt.util.Artifact;
 import org.paninij.apt.util.ArtifactCompiler;
 import org.paninij.apt.util.SourceFile;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
@@ -160,58 +161,46 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
         CapsuleThreadFactory threadCapsuleFactory = new CapsuleThreadFactory();
 
-        SourceFile sourceFile;  // A temporary variable.
-        Set<String> toBeCompiled = new HashSet<String>();
-        
-
         // Generate artifacts from signature model
         for (Signature signature : signatures)
         {
-            // The original signature needs to be compiled.
-            toBeCompiled.add(signature.getQualifiedName());
-            
             // Generate Messages
             for (Procedure procedure : signature.getProcedures()) {
-                this.createJavaFile(messageFactory.make(procedure));
+                artifactCompiler.file(messageFactory.make(procedure));
             }
 
             // Generate the mangled signature.
-            sourceFile = signatureFactory.make(signature);
-            this.createJavaFile(sourceFile);
-            toBeCompiled.add(sourceFile.qualifiedName);
+            artifactCompiler.file(signatureFactory.make(signature));
         }
         
         // Generate capsule artifacts
         for (Capsule capsule : capsules)
         {
             // Add the capsule template itself:
-            toBeCompiled.add(capsule.getQualifiedName() + CAPSULE_TEMPLATE_SUFFIX);
+            artifactCompiler.add(capsule.getQualifiedName() + CAPSULE_TEMPLATE_SUFFIX);
             
             // Generate Messages
             for (Procedure procedure : capsule.getProcedures()) {
-                this.createJavaFile(messageFactory.make(procedure));
+                artifactCompiler.file(messageFactory.make(procedure));
             }
 
             // Generate capsule interface
-            sourceFile = capsuleInterfaceFactory.make(capsule);
-            this.createJavaFile(sourceFile);
-            toBeCompiled.add(sourceFile.qualifiedName);
+            artifactCompiler.file(capsuleInterfaceFactory.make(capsule));
             
             // Generate dummy capsule
-            sourceFile = capsuleDummyFactory.make(capsule);
-            this.createJavaFile(sourceFile);
-            toBeCompiled.add(sourceFile.qualifiedName);
+            artifactCompiler.file(capsuleDummyFactory.make(capsule));
         }
         
         if (options.staticOwnershipTransferKind == Kind.SOTER)
         {
-            compileAnalyzeAndInstrument(toBeCompiled, capsules);
+            artifactCompiler.compileArtifacts();
+            analyzeAndInstrument(capsules);
         }
        
         for (Capsule capsule : capsules)
         {
             // Generate capsule thread profile
-            this.createJavaFile(threadCapsuleFactory.make(capsule));
+            artifactCompiler.file(threadCapsuleFactory.make(capsule));
 
             // TODO Generate other capsule profiles
         }
@@ -220,45 +209,27 @@ public class PaniniProcessor extends AbstractProcessor
         for (Capsule capsuleTest : capsuleTests)
         {
             // Generate Messages
-            for (Procedure procedure : capsuleTest.getProcedures()) {
-                this.createJavaFile(messageFactory.make(procedure));
+            for (Procedure procedure : capsuleTest.getProcedures())
+            {
+                artifactCompiler.file(messageFactory.make(procedure));
             }
 
             // Generate the capsule test's interface artifact.
-            this.createJavaFile(capsuleInterfaceFactory.make(capsuleTest));
+            artifactCompiler.file(capsuleInterfaceFactory.make(capsuleTest));
 
             // Generate the capsule test's `$Thread` artifact.
-            this.createJavaFile(threadCapsuleFactory.make(capsuleTest));
+            artifactCompiler.file(threadCapsuleFactory.make(capsuleTest));
 
             // Generate capsule test artifact
-            this.createJavaFile(capsuleTestFactory.make(capsuleTest));
+            artifactCompiler.file(capsuleTestFactory.make(capsuleTest));
         }
+        
+        artifactCompiler.compileArtifacts();
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
         note("Finished a round of processing.");
 
         return false;
-    }
-
-    void createJavaFile(SourceFile source)
-    {
-        if (source != null) {
-            this.createJavaFile(source.qualifiedName, source.content);
-        }
-    }
-
-    /**
-     * @param cls The fully qualified name of the class that will go in the newly created file.
-     * @param src The source to be put in the newly create java file.
-     */
-    void createJavaFile(String cls, String src)
-    {
-        try {
-            JavaFileObject file = processingEnv.getFiler().createSourceFile(cls);
-            file.openWriter().append(src).close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     String getPackageOf(TypeElement type) {
@@ -284,16 +255,10 @@ public class PaniniProcessor extends AbstractProcessor
         }
     }
     
-    protected void compileAnalyzeAndInstrument(Set<String> toBeCompiled, Set<Capsule> capsules)
+    protected void analyzeAndInstrument(Set<Capsule> capsules)
     {
         assert options.staticOwnershipTransferKind == Kind.SOTER;
         
-        try {
-            artifactCompiler.compileAll(toBeCompiled);
-        } catch (IOException ex) {
-            throw new RuntimeException("Failed to compile: " + ex, ex);
-        }
-
         // Note that instantiation of the analysis factory needs to happen after the artifacts have
         // been compiled so that the bytecode for those artifacts will be found by the CHA.
         soterAnalysisFactory = new SoterAnalysisFactory(options.effectiveClassPathString);

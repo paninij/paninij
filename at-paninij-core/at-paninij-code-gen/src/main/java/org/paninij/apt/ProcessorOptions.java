@@ -127,6 +127,10 @@ public class ProcessorOptions
     // TODO: Move this somewhere better.
     public static List<File> makePathFromString(String option)
     {
+        if (option == null) {
+            return null;
+        }
+        
         String[] strArray = option.split(File.pathSeparator);
         if (strArray.length == 0)
         {

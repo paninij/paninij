@@ -22,7 +22,7 @@ package org.paninij.apt.util;
  * This is a class which can be returned to the AbstractProcessor to
  * be actually created.
  */
-public class SourceFile
+public class SourceFile implements Artifact
 {
     public final String qualifiedName;
     public final String content;
@@ -37,4 +37,15 @@ public class SourceFile
         return "FILENAME: " + this.qualifiedName + "\n CONTENT: \n" + this.content;
     }
 
+    @Override
+    public String getQualifiedName()
+    {
+        return qualifiedName;
+    }
+    
+    @Override
+    public String getContent()
+    {
+        return content;
+    }
 }

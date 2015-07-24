@@ -83,6 +83,7 @@ public class TestPaniniProcessor
     private List<String> makeOptionsList()
     {
         List<String> options = new ArrayList<String>();
+        options.add("-proc:only");
         options.add(makeOption("panini.classPath", CLASS_PATH));
         options.add(makeOption("panini.sourcePath", SOURCE_PATH));
         options.add(makeOption("panini.classOutput", CLASS_OUTPUT));

@@ -44,7 +44,8 @@ public class MessageFactory
 
         MessageShape shape = new MessageShape(procedure);
 
-        if (this.generated.add(shape.encoded)) {
+        if (this.generated.add(shape.encoded))
+        {
             switch (shape.category) {
             case DUCKFUTURE:
                 return this.duckSource.generate(procedure);
@@ -61,7 +62,7 @@ public class MessageFactory
                 System.out.println("Unhandled message kind");
                 break;
             }
-      }
+        }
         return null;
     }
 }
