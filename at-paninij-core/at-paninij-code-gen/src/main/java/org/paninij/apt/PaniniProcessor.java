@@ -20,7 +20,6 @@ package org.paninij.apt;
 
 import static org.paninij.apt.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
 import static java.util.Collections.singleton;
-import static org.paninij.apt.util.ArtifactCompiler.makeFromProcessorOptions;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -55,6 +54,9 @@ import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Signature;
 import org.paninij.apt.model.SignatureElement;
 import org.paninij.apt.util.ArtifactCompiler;
+import org.paninij.apt.util.ArtifactFiler;
+import org.paninij.apt.util.ArtifactMaker;
+import org.paninij.apt.util.UserArtifact;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.SoterAnalysisFactory;
@@ -85,7 +87,7 @@ public class PaniniProcessor extends AbstractProcessor
 {
     protected RoundEnvironment roundEnv;
     protected ProcessorOptions options;
-    protected ArtifactCompiler artifactCompiler;
+    protected ArtifactMaker artifactMaker;
     protected SoterAnalysisFactory soterAnalysisFactory;
     protected SoterInstrumenterFactory soterInstrumenterFactory;
     protected boolean midpointCompile;
@@ -101,8 +103,16 @@ public class PaniniProcessor extends AbstractProcessor
             note(options.toString());
             
             // Note that the artifact compiler should not perform annotation processing.
-            artifactCompiler = makeFromProcessorOptions(procEnv.getFiler(), options,
-                                                        singleton("-proc:none"));
+            if (options.staticOwnershipTransferKind == Kind.SOTER)
+            {
+                artifactMaker = ArtifactCompiler.make(procEnv.getFiler(), options,
+                                                      singleton("-proc:none"));
+            }
+            else
+            {
+                artifactMaker = ArtifactFiler.make(procEnv.getFiler(), options);
+            }
+
         }
         catch (IOException ex) {
             throw new RuntimeException("Failed to make artifact compiler: " + ex, ex);
@@ -138,6 +148,7 @@ public class PaniniProcessor extends AbstractProcessor
             if (CapsuleChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
+                artifactMaker.add(new UserArtifact(template.getQualifiedName().toString()));
             }
         }
 
@@ -163,41 +174,38 @@ public class PaniniProcessor extends AbstractProcessor
         {
             // Generate Messages
             for (Procedure procedure : signature.getProcedures()) {
-                artifactCompiler.file(messageFactory.make(procedure));
+                artifactMaker.add(messageFactory.make(procedure));
             }
 
             // Generate the mangled signature.
-            artifactCompiler.file(signatureFactory.make(signature));
+            artifactMaker.add(signatureFactory.make(signature));
         }
         
         // Generate capsule artifacts
         for (Capsule capsule : capsules)
         {
-            // Add the capsule template itself:
-            artifactCompiler.add(capsule.getQualifiedName() + CAPSULE_TEMPLATE_SUFFIX);
-            
             // Generate Messages
             for (Procedure procedure : capsule.getProcedures()) {
-                artifactCompiler.file(messageFactory.make(procedure));
+                artifactMaker.add(messageFactory.make(procedure));
             }
 
             // Generate capsule interface
-            artifactCompiler.file(capsuleInterfaceFactory.make(capsule));
+            artifactMaker.add(capsuleInterfaceFactory.make(capsule));
             
             // Generate dummy capsule
-            artifactCompiler.file(capsuleDummyFactory.make(capsule));
+            artifactMaker.add(capsuleDummyFactory.make(capsule));
         }
         
         if (options.staticOwnershipTransferKind == Kind.SOTER)
         {
-            artifactCompiler.compileArtifacts();
+            artifactMaker.makeAll();
             analyzeAndInstrument(capsules);
         }
        
         for (Capsule capsule : capsules)
         {
             // Generate capsule thread profile
-            artifactCompiler.file(threadCapsuleFactory.make(capsule));
+            artifactMaker.add(threadCapsuleFactory.make(capsule));
 
             // TODO Generate other capsule profiles
         }
@@ -208,20 +216,20 @@ public class PaniniProcessor extends AbstractProcessor
             // Generate Messages
             for (Procedure procedure : capsuleTest.getProcedures())
             {
-                artifactCompiler.file(messageFactory.make(procedure));
+                artifactMaker.add(messageFactory.make(procedure));
             }
 
             // Generate the capsule test's interface artifact.
-            artifactCompiler.file(capsuleInterfaceFactory.make(capsuleTest));
+            artifactMaker.add(capsuleInterfaceFactory.make(capsuleTest));
 
             // Generate the capsule test's `$Thread` artifact.
-            artifactCompiler.file(threadCapsuleFactory.make(capsuleTest));
+            artifactMaker.add(threadCapsuleFactory.make(capsuleTest));
 
             // Generate capsule test artifact
-            artifactCompiler.file(capsuleTestFactory.make(capsuleTest));
+            artifactMaker.add(capsuleTestFactory.make(capsuleTest));
         }
         
-        artifactCompiler.compileArtifacts();
+        artifactMaker.makeAll();
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
         note("Finished a round of processing.");

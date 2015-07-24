@@ -24,7 +24,7 @@ import org.paninij.apt.ProcessorOptions;
  * Uses an appropriately configured `JavaCompiler` and `StandardJavaFileManager` to compile
  * `@PaniniJ` source artifacts to Java class files.
  */
-public class ArtifactCompiler
+public class ArtifactCompiler implements ArtifactMaker
 {
     protected final Filer filer;
     protected final JavaCompiler javaCompiler;
@@ -45,10 +45,8 @@ public class ArtifactCompiler
     }
     
     
-    public static ArtifactCompiler makeFromProcessorOptions(Filer filer,
-                                                            ProcessorOptions processorOptions,
-                                                            Iterable<String> compilerOptions)
-                                                                             throws IOException
+    public static ArtifactCompiler make(Filer filer, ProcessorOptions processorOptions,
+                                        Iterable<String> compilerOptions) throws IOException
     {
         return new ArtifactCompiler(filer,
                                     processorOptions.effectiveClassPath,
@@ -58,8 +56,20 @@ public class ArtifactCompiler
                                     compilerOptions);
     }
     
-    
-    public void compileArtifacts()
+    @Override
+    public void add(Artifact artifact)
+    {
+        if (artifact == null) {
+            return;
+        } else {
+            uncompiledArtifacts.add(artifact.getQualifiedName());
+            if (artifact instanceof UserArtifact == false)
+                createJavaSourceFile(artifact);
+        }
+    }
+
+    @Override
+    public void makeAll()
     {
         List<JavaFileObject> javaSourceFiles = new ArrayList<JavaFileObject>();
         for (String sourceClass : uncompiledArtifacts)
@@ -88,7 +98,9 @@ public class ArtifactCompiler
 
         CompilationTask task = javaCompiler.getTask(null, fileManager, null, compilerOptions,
                                                     null, javaSourceFiles);
-        task.call();       
+        if (task.call() == false) {
+            throw new RuntimeException("Compilation subtask failed.");
+        }
         
         // Reset the set of artifacts.
         uncompiledArtifacts.clear();
@@ -99,7 +111,7 @@ public class ArtifactCompiler
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
      */
-    private void createJavaFile(Artifact artifact)
+    private void createJavaSourceFile(Artifact artifact)
     {
         try {
             JavaFileObject file = filer.createSourceFile(artifact.getQualifiedName());
@@ -111,26 +123,4 @@ public class ArtifactCompiler
     }
 
     
-    public void file(Artifact artifact)
-    {
-        if (artifact == null) {
-            return;
-        } else {
-            uncompiledArtifacts.add(artifact.getQualifiedName());
-            createJavaFile(artifact);
-        }
-    }
-    
-    
-    public void fileAll(Iterable<Artifact> artifacts)
-    {
-        for (Artifact a : artifacts) {
-            file(a);
-        }
-    }
-    
-    public void add(String qualifiedName)
-    {
-        uncompiledArtifacts.add(qualifiedName);
-    }
 }
