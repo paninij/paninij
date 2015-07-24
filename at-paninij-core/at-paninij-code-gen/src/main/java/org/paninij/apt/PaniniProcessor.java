@@ -180,9 +180,7 @@ public class PaniniProcessor extends AbstractProcessor
         for (Capsule capsule : capsules)
         {
             // Add the capsule template itself:
-            if (capsuleTests.contains(capsule) == false) {
-                toBeCompiled.add(capsule.getQualifiedName() + CAPSULE_TEMPLATE_SUFFIX);
-            }
+            toBeCompiled.add(capsule.getQualifiedName() + CAPSULE_TEMPLATE_SUFFIX);
             
             // Generate Messages
             for (Procedure procedure : capsule.getProcedures()) {
@@ -204,7 +202,6 @@ public class PaniniProcessor extends AbstractProcessor
         {
             compileAnalyzeAndInstrument(toBeCompiled, capsules);
         }
-        
        
         for (Capsule capsule : capsules)
         {
@@ -215,18 +212,21 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         // Generate capsule test artifacts
-        for (Capsule capsule : capsuleTests)
+        for (Capsule capsuleTest : capsuleTests)
         {
             // Generate Messages
-            for (Procedure procedure : capsule.getProcedures()) {
+            for (Procedure procedure : capsuleTest.getProcedures()) {
                 this.createJavaFile(messageFactory.make(procedure));
             }
 
+            // Generate the capsule test's interface artifact.
+            this.createJavaFile(capsuleInterfaceFactory.make(capsuleTest));
+
             // Generate the capsule test's `$Thread` artifact.
-            this.createJavaFile(threadCapsuleFactory.make(capsule));
+            this.createJavaFile(threadCapsuleFactory.make(capsuleTest));
 
             // Generate capsule test artifact
-            this.createJavaFile(capsuleTestFactory.make(capsule));
+            this.createJavaFile(capsuleTestFactory.make(capsuleTest));
         }
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
