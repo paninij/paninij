@@ -9,6 +9,7 @@ import org.paninij.soter.util.WalaUtil;
 
 public class TestSoterPrototype
 {
+    /*
     private static final String CLASS_PATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
     private static final String CLASS_PATH_PREFIX = "target/test-classes";
     //private static final String CLASS_PATH_PREFIX = "target/classes:target/test-classes";
@@ -37,4 +38,5 @@ public class TestSoterPrototype
         WalaUtil.makeGraphFile(prototype.getCallGraph(), GRAPH_OUT_DIR + "/" + shortName + ".cg.pdf");
         WalaUtil.makeGraphFile(prototype.getHeapGraph(), GRAPH_OUT_DIR + "/" + shortName + ".hg.pdf");
     }
+    */
 }

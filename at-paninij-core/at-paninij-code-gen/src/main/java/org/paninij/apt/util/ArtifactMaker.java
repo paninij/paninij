@@ -6,5 +6,7 @@ public interface ArtifactMaker
     void add(Artifact artifact);
 
     void makeAll();
+
+    void close();
     
 }

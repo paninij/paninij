@@ -53,4 +53,10 @@ public class ArtifactFiler implements ArtifactMaker
         }
         artifacts.clear();
     }
+    
+    @Override
+    public void close()
+    {
+        // Nothing to do.
+    }
 }

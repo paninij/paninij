@@ -160,6 +160,10 @@ public class PaniniProcessor extends AbstractProcessor
                 capsuleTests.add(CapsuleElement.make(template));
             }
         }
+        
+        if (capsules.isEmpty() && signatures.isEmpty() && capsuleTests.isEmpty()) {
+            return false;
+        }
 
         // Artifact factories
         MessageFactory messageFactory = new MessageFactory();
@@ -230,6 +234,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
         
         artifactMaker.makeAll();
+        artifactMaker.close();
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
         note("Finished a round of processing.");
@@ -248,9 +253,9 @@ public class PaniniProcessor extends AbstractProcessor
         return getPackageOf((TypeElement) utils.asElement(type));
     }
 
-    public void log(String logFilePath, String logMsg)
+    public void log(String logFilePath, String logMsg, boolean append)
     {
-        try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true))))
+        try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, append))))
         {
             out.println(logMsg);
         }
@@ -279,7 +284,7 @@ public class PaniniProcessor extends AbstractProcessor
             if (options.analysisReports != null)
             {
                 log(options.analysisReports.getAbsolutePath() + File.separator + capsuleName,
-                    soterAnalysis.getResultsReport());
+                    soterAnalysis.getResultsReport(), false);
             }
 
             SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);

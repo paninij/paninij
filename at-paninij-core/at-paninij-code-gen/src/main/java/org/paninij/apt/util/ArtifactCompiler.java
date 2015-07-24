@@ -106,7 +106,18 @@ public class ArtifactCompiler implements ArtifactMaker
         uncompiledArtifacts.clear();
     }
     
-    
+    @Override
+    public void close()
+    {
+        try {
+            fileManager.flush();
+            fileManager.close();
+        }
+        catch (IOException ex) {
+            throw new RuntimeException("Failed to close a `ArtifactCompiler`'s `FileManager`.", ex);
+        }
+    }
+   
     /**
      * @param cls The fully qualified name of the class that will go in the newly created file.
      * @param src The source to be put in the newly create java file.
@@ -121,6 +132,4 @@ public class ArtifactCompiler implements ArtifactMaker
             throw new RuntimeException("Failed to create a Java source file: " + ex, ex);
         }
     }
-
-    
 }
