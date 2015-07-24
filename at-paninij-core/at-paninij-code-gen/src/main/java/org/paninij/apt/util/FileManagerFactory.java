@@ -1,8 +1,8 @@
 package org.paninij.apt.util;
 
+import static java.util.Collections.singleton;
 import static javax.tools.StandardLocation.*;
 import static org.paninij.apt.ProcessorOptions.makePathFromString;
-import static org.paninij.apt.util.Collections.makeSingletonList;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,8 +49,8 @@ public class FileManagerFactory
                                                File classOutput,
                                                File sourceOutput) throws IOException
     {
-        return make(javaCompiler, classPath, sourcePath, makeSingletonList(classOutput),
-                    makeSingletonList(sourceOutput));
+        return make(javaCompiler, classPath, sourcePath, singleton(classOutput),
+                    singleton(sourceOutput));
     }
     
     

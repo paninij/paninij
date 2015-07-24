@@ -19,7 +19,7 @@
 package org.paninij.apt;
 
 import static org.paninij.apt.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
-import static org.paninij.apt.util.Collections.makeSingletonList;
+import static java.util.Collections.singleton;
 import static org.paninij.apt.util.ArtifactCompiler.makeFromProcessorOptions;
 
 import java.io.BufferedWriter;
@@ -43,7 +43,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.JavaFileObject;
 
 import org.paninij.apt.check.CapsuleChecker;
 import org.paninij.apt.check.CapsuleTestChecker;
@@ -55,9 +54,7 @@ import org.paninij.apt.model.CapsuleElement;
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Signature;
 import org.paninij.apt.model.SignatureElement;
-import org.paninij.apt.util.Artifact;
 import org.paninij.apt.util.ArtifactCompiler;
-import org.paninij.apt.util.SourceFile;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.SoterAnalysisFactory;
@@ -105,7 +102,7 @@ public class PaniniProcessor extends AbstractProcessor
             
             // Note that the artifact compiler should not perform annotation processing.
             artifactCompiler = makeFromProcessorOptions(procEnv.getFiler(), options,
-                                                        makeSingletonList("-proc:none"));
+                                                        singleton("-proc:none"));
         }
         catch (IOException ex) {
             throw new RuntimeException("Failed to make artifact compiler: " + ex, ex);
