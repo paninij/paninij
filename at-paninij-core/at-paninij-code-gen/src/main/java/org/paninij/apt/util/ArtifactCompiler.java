@@ -30,43 +30,36 @@ public class ArtifactCompiler
 {
     protected final JavaCompiler javaCompiler;
     protected final StandardJavaFileManager fileManager;
+    protected final Iterable<String> compilerOptions;
     
     public ArtifactCompiler(Filer filer, List<File> classPath, List<File> sourcePath,
-                            File classOutput, File sourceOutput) throws IOException
+                            File classOutput, File sourceOutput, Iterable<String> compilerOptions)
+                                                                        throws IOException
     {
-        javaCompiler = ToolProvider.getSystemJavaCompiler();
-
-        fileManager = javaCompiler.getStandardFileManager(null, null, null);
-        if (fileManager == null) {
-            throw new IllegalStateException("Could not get the standard file manager.");
-        }
-
-        fileManager.setLocation(CLASS_PATH, classPath);
-        fileManager.setLocation(SOURCE_PATH, sourcePath);
-        fileManager.setLocation(CLASS_OUTPUT, makeSingletonList(classOutput));
-        fileManager.setLocation(SOURCE_OUTPUT, makeSingletonList(sourceOutput));
+        this.javaCompiler = ToolProvider.getSystemJavaCompiler();
+        this.fileManager = FileManagerFactory.make(javaCompiler, classPath, sourcePath,
+                                                   classOutput, sourceOutput);
+        this.compilerOptions = compilerOptions;
     }
     
     
-    private static <T> List<T> makeSingletonList(T elem)
-    {
-        ArrayList<T> list = new ArrayList<T>(1);
-        list.add(elem);
-        return list;
-    }
-    
-    
-    public static ArtifactCompiler makeFromProcessorOptions(Filer filer, ProcessorOptions options)
+    public static ArtifactCompiler makeFromProcessorOptions(Filer filer,
+                                                            ProcessorOptions processorOptions,
+                                                            Iterable<String> compilerOptions)
                                                                                 throws IOException
     {
-        return new ArtifactCompiler(filer, options.effectiveClassPath, options.sourcePath,
-                                    options.classOutput, options.sourceOutput);
+        return new ArtifactCompiler(filer,
+                                    processorOptions.effectiveClassPath,
+                                    processorOptions.sourcePath,
+                                    processorOptions.classOutput,
+                                    processorOptions.sourceOutput,
+                                    compilerOptions);
     }
     
     
     public void compileAll(Iterable<String> qualifiedJavaClasses) throws IOException
     {
-        List<JavaFileObject> javaFiles = new ArrayList<JavaFileObject>();
+        List<JavaFileObject> javaSourceFiles = new ArrayList<JavaFileObject>();
         for (String sourceClass : qualifiedJavaClasses)
         {
             JavaFileObject javaFile = fileManager.getJavaFileForInput(SOURCE_PATH, sourceClass,
@@ -75,16 +68,16 @@ public class ArtifactCompiler
                 String msg = "Could not find a source file to compile: " + sourceClass;
                 throw new IllegalArgumentException(msg);
             } else {
-                javaFiles.add(javaFile);
+                javaSourceFiles.add(javaFile);
             }
         }
 
-        if (javaFiles.isEmpty()) {
+        if (javaSourceFiles.isEmpty()) {
             return;
         }
 
-        List<String> options = Arrays.asList(new String[] {"-proc:none"});
-        CompilationTask task = javaCompiler.getTask(null, fileManager, null, options, null, javaFiles);
+        CompilationTask task = javaCompiler.getTask(null, fileManager, null, compilerOptions,
+                                                    null, javaSourceFiles);
         task.call();       
     }
 }

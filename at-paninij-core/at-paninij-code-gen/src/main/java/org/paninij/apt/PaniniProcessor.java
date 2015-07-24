@@ -19,6 +19,8 @@
 package org.paninij.apt;
 
 import static org.paninij.apt.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
+import static org.paninij.apt.util.Collections.makeSingletonList;
+import static org.paninij.apt.util.ArtifactCompiler.makeFromProcessorOptions;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,7 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -96,10 +97,14 @@ public class PaniniProcessor extends AbstractProcessor
     {
         super.init(procEnv);
 
-        try {
+        try
+        {
             options = new ProcessorOptions(procEnv.getOptions());
             note(options.toString());
-            artifactCompiler = ArtifactCompiler.makeFromProcessorOptions(procEnv.getFiler(), options);
+            
+            // Note that the artifact compiler should not perform annotation processing.
+            artifactCompiler = makeFromProcessorOptions(procEnv.getFiler(), options,
+                                                        makeSingletonList("-proc:none"));
         }
         catch (IOException ex) {
             throw new RuntimeException("Failed to make artifact compiler: " + ex, ex);
