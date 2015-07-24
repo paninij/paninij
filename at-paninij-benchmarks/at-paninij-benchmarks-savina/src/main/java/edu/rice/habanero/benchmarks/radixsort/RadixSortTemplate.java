@@ -14,25 +14,19 @@ import org.paninij.lang.Child;
     FlagFuture wait;
 
     public void design(RadixSort self) {
-        Adder next = validator;
-        for (int i = 0; i < sortCount; i++) {
-            sorters[i].wire(next);
-            next = sorters[i];
-        }
-        source.wire(next);
-    }
-
-    public void init() {
         long radix = RadixSortConfig.M /2;
-        for (Sort sorter : sorters) {
-            sorter.setRadix(radix);
+        Adder next = validator;
+
+        for (int i = 0; i < sortCount; i++) {
+            sorters[i].wire(next, radix);
+            next = sorters[i];
             radix /= 2;
         }
-        wait = validator.getFlag();
+
+        source.wire(next);
     }
 
     public void run() {
         source.start();
-        wait.block();
     }
 }

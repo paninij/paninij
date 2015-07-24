@@ -1,4 +1,4 @@
-package edu.rice.habanero.benchmarks.radixsort;
+package edu.rice.habanero.benchmarks.piprecision;
 
 import java.io.IOException;
 
@@ -6,10 +6,11 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class RadixSortAtPaniniJBenchmark
+public class PiPrecisionAtPaniniJTaskBenchmark
 {
-    static class RadixSortAtPaniniJ extends Benchmark {
+    static class PiPrecisionAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -18,17 +19,17 @@ public class RadixSortAtPaniniJBenchmark
 
         @Override
         public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override
         public void printArgInfo() {
-            RadixSortConfig.printArgs();
+            PiPrecisionConfig.printArgs();
         }
 
         @Override
         public void runIteration() {
-            RadixSort$Thread.main(null);
+            PiPrecision$Task.main(null);
             try {
                 Panini$System.threads.await();
             } catch (InterruptedException e) {
@@ -38,6 +39,6 @@ public class RadixSortAtPaniniJBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new RadixSortAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new PiPrecisionAtPaniniJTask());
     }
 }

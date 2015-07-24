@@ -10,6 +10,7 @@ import org.paninij.lang.Child;
     public void design(Big self) {
         for (int i = 0; i < BigConfig.W; i++)
             nodes[i].wire(i, nodes, sink);
+
         sink.wire(nodes);
     }
 

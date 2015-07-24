@@ -6,10 +6,12 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.habanero.benchmarks.recmatmul.MatMulAtPaniniJBenchmark.MatMulAtPaniniJ;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class MatMulAtPaniniJBenchmark
+public class MatMulAtPaniniJTaskBenchmark
 {
-    static class MatMulAtPaniniJ extends Benchmark {
+    static class MatMulAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -20,6 +22,7 @@ public class MatMulAtPaniniJBenchmark
 
         @Override
         public void initialize(String[] args) throws IOException {
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
             MatMulConfig.parseArgs(args);
         }
 
@@ -30,7 +33,7 @@ public class MatMulAtPaniniJBenchmark
 
         @Override
         public void runIteration() {
-            MatMul$Thread.main(null);
+            MatMul$Task.main(null);
             try {
                 Panini$System.threads.await();
             } catch (InterruptedException e) {
@@ -40,6 +43,6 @@ public class MatMulAtPaniniJBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new MatMulAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new MatMulAtPaniniJTask());
     }
 }
