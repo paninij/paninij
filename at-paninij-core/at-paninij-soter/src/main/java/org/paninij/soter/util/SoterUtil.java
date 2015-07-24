@@ -18,6 +18,7 @@ import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.MethodReference;
+import com.ibm.wala.types.TypeReference;
 
 public class SoterUtil
 {
@@ -114,7 +115,12 @@ public class SoterUtil
     
     public static boolean isKnownToBeEffectivelyImmutable(InstanceKey instanceKey)
     {
-        String className = instanceKey.getConcreteType().getName().toString();
+        return isKnownToBeEffectivelyImmutable(instanceKey.getConcreteType().getName().toString());
+    }
+    
+    
+    public static boolean isKnownToBeEffectivelyImmutable(String className)
+    {
         return className.equals("Ljava/lang/Character")
             || className.equals("Ljava/lang/Byte")
             || className.equals("Ljava/lang/Short")
@@ -124,6 +130,13 @@ public class SoterUtil
             || className.equals("Ljava/lang/Double")
             || className.equals("Ljava/lang/Boolean")
             || className.equals("Ljava/lang/String");
+
+    }
+    
+    
+    public static boolean isKnownToBeEffectivelyImmutable(TypeReference typeRef)
+    {
+        return isKnownToBeEffectivelyImmutable(typeRef.getName().toString());
     }
     
     

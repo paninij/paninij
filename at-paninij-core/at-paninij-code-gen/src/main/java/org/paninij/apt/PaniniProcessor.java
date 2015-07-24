@@ -143,7 +143,6 @@ public class PaniniProcessor extends AbstractProcessor
         {
             if (CapsuleTestChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
-                capsules.add(CapsuleElement.make(template));
                 capsuleTests.add(CapsuleElement.make(template));
             }
         }
@@ -222,6 +221,9 @@ public class PaniniProcessor extends AbstractProcessor
             for (Procedure procedure : capsule.getProcedures()) {
                 this.createJavaFile(messageFactory.make(procedure));
             }
+
+            // Generate the capsule test's `$Thread` artifact.
+            this.createJavaFile(threadCapsuleFactory.make(capsule));
 
             // Generate capsule test artifact
             this.createJavaFile(capsuleTestFactory.make(capsule));

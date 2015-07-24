@@ -81,8 +81,8 @@
 
             <!-- SOTER analysis settings -->
             <arg>-Apanini.soter.analysisReports=${project.logsDirectory}/soter/analysis-reports</arg>
-            <arg>-Apanini.soter.callGraphPDFs=${project.logsDirectory}/soter/call-graphs</arg>
-            <arg>-Apanini.soter.heapGraphPDFs=${project.logsDirectory}/soter/heap-graphs</arg>
+            <!--<arg>-Apanini.soter.callGraphPDFs=${project.logsDirectory}/soter/call-graphs</arg>-->
+            <!--<arg>-Apanini.soter.heapGraphPDFs=${project.logsDirectory}/soter/heap-graphs</arg>-->
           </compilerArgs>
         </configuration>
       </plugin>

@@ -9,9 +9,12 @@ import static org.paninij.soter.util.PaniniModel.getWiredCapsuleDecls;
 import static org.paninij.soter.util.PaniniModel.isCapsuleTemplate;
 import static org.paninij.soter.util.PaniniModel.isProcedure;
 
+import java.text.MessageFormat;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
@@ -131,8 +134,8 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     /**
      * Transitively instantiates the state associated with this capsule template field.
      * 
-     * @param root  The fake root method to which the instantiation instructions are being added.
-     * @param field A field whose declaring class is considered a "state" by `@PaniniJ`.
+     * @param root            The fake root method to which the new instruction is being added.
+     * @param field           A field whose declaring class is considered a "state" by `@PaniniJ`.
      * @param instValueNumber Value number of the object instance whose field is being instantiated
      */
     protected void addState(AbstractRootMethod root, IField field, int instValueNumber)
@@ -140,7 +143,27 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         // TODO: Everything!
         // TODO: Consider somehow using `DefaultEntrypoint.makeArgument()` here.
         // TODO: This does not yet transitively (a.k.a. recursively) instantiate state.
-        SSANewInstruction stateAlloc = root.addAllocation(field.getFieldTypeReference());
+        TypeReference fieldType = field.getFieldTypeReference();
+        if (fieldType == null)
+        {
+            String msg = "Failed to look up a field's `TypeReference`: " + field;
+            throw new RuntimeException(msg);
+        }
+
+        // No need to add instances for primitives or objects which known to be truly safe.
+        if (fieldType.isPrimitiveType() || SoterUtil.isKnownToBeEffectivelyImmutable(fieldType)) {
+            return;
+        }
+
+        SSANewInstruction stateAlloc = root.addAllocation(fieldType);
+        if (stateAlloc == null)
+        {
+            String msg = "While adding a state for the capsule template `{0}`, a 'new' instruction "
+                       + "could not be added to the fake root for the field `{1}` whose "
+                       + "`TypeReference` is `{2}`";
+            throw new RuntimeException(MessageFormat.format(msg, template, field, fieldType));
+        }
+
         int stateValueNumber = stateAlloc.getDef();
         root.addSetInstance(field.getReference(), instValueNumber, stateValueNumber);
     }
