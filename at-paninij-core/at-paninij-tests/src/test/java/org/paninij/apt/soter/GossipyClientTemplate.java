@@ -17,7 +17,7 @@ public class GossipyClientTemplate
     @Child LeakyServer importantServer;
 
     Secret secrets[] = new Secret[NUM_SECRETS];
-    Secret superSecret = new Secret();
+    Secret superSecret;
 
     
     public void init()
@@ -25,6 +25,7 @@ public class GossipyClientTemplate
         for (int idx = 0; idx < NUM_SECRETS; idx++) {
             secrets[idx] = new Secret();
         }
+        superSecret = new Secret();
     }
     
 
