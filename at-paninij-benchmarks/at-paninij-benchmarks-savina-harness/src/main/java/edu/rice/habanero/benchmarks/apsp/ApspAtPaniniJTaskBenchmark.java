@@ -1,4 +1,4 @@
-package edu.rice.habanero.benchmarks.philosopher;
+package edu.rice.habanero.benchmarks.apsp;
 
 import java.io.IOException;
 
@@ -6,29 +6,32 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class PhilosopherAtPaniniJBenchmark
+public class ApspAtPaniniJTaskBenchmark
 {
-    static class PhilosopherAtPaniniJ extends Benchmark {
+    static class ApspAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
-            // TODO Auto-generated method stub
+            ApspUtils.generateGraph();
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+        public void initialize(String[] args) throws IOException {
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
+            ApspConfig.parseArgs(args);
+            ApspUtils.generateGraph();
         }
 
         @Override
         public void printArgInfo() {
-            PhilosopherConfig.printArgs();
+            ApspConfig.printArgs();
         }
 
         @Override
         public void runIteration() {
-            Master$Thread.main(null);
+            Apsp$Task.main(null);
             try {
                 Panini$System.threads.await();
             } catch (InterruptedException e) {
@@ -38,6 +41,6 @@ public class PhilosopherAtPaniniJBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new PhilosopherAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new ApspAtPaniniJTask());
     }
 }
