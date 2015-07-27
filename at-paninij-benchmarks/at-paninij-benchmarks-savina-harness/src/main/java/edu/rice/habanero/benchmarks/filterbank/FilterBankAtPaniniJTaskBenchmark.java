@@ -1,4 +1,4 @@
-package edu.rice.habanero.benchmarks.fjcreate;
+package edu.rice.habanero.benchmarks.filterbank;
 
 import java.io.IOException;
 
@@ -8,9 +8,9 @@ import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class ForkJoinAtPaniniJTaskBenchmark
+public class FilterBankAtPaniniJTaskBenchmark
 {
-    static class ForkJoinAtPaniniJTask extends Benchmark {
+    static class FilterBankAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -19,28 +19,27 @@ public class ForkJoinAtPaniniJTaskBenchmark
 
         @Override
         public void initialize(String[] arg0) throws IOException {
+            FilterBankConfig.parseArgs(arg0);
             Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override
         public void printArgInfo() {
-            ForkJoinConfig.printArgs();
+            FilterBankConfig.printArgs();
         }
 
         @Override
         public void runIteration() {
-            for (int i = 0; i < ForkJoinConfig.N; i++) {
-                ForkJoin$Task.main(null);
-                try {
-                    Panini$System.threads.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            FilterBank$Task.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new ForkJoinAtPaniniJTask());
+        BenchmarkRunner.runBenchmark(args, new FilterBankAtPaniniJTask());
     }
 }

@@ -14,6 +14,7 @@ public class FilterBankBenchmark
         FilterBankJetlangActorBenchmark.main(args);
         FilterBankJumiActorBenchmark.main(args);
         FilterBankAtPaniniJBenchmark.main(args);
+        FilterBankAtPaniniJTaskBenchmark.main(args);
         FilterBankLiftActorBenchmark.main(args);
     }
 }

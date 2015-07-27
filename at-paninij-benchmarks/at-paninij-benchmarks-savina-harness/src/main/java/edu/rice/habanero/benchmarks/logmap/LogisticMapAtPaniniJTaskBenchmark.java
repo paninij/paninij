@@ -1,4 +1,4 @@
-package edu.rice.habanero.benchmarks.fjcreate;
+package edu.rice.habanero.benchmarks.logmap;
 
 import java.io.IOException;
 
@@ -8,39 +8,37 @@ import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class ForkJoinAtPaniniJTaskBenchmark
+public class LogisticMapAtPaniniJTaskBenchmark
 {
-    static class ForkJoinAtPaniniJTask extends Benchmark {
+    static class LogisticMapAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
-            // TODO Auto-generated method stub
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
+        public void initialize(String[] args) throws IOException {
             Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
+            LogisticMapConfig.parseArgs(args);
         }
 
         @Override
         public void printArgInfo() {
-            ForkJoinConfig.printArgs();
+            LogisticMapConfig.printArgs();
         }
 
         @Override
         public void runIteration() {
-            for (int i = 0; i < ForkJoinConfig.N; i++) {
-                ForkJoin$Task.main(null);
-                try {
-                    Panini$System.threads.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            LogisticMap$Task.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new ForkJoinAtPaniniJTask());
+        BenchmarkRunner.runBenchmark(args, new LogisticMapAtPaniniJTask());
     }
 }

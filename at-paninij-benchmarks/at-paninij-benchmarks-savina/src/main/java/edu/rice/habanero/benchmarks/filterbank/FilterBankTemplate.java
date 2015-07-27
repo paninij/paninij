@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -20,9 +19,6 @@ import org.paninij.lang.Child;
     }
 
     public void run() {
-        FlagFuture wait = sink.getFlag();
-        branches.initialize();
         source.start();
-        wait.block();
     }
 }

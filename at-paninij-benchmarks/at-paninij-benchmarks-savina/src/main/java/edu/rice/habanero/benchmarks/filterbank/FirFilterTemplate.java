@@ -4,20 +4,17 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
 @Capsule public class FirFilterTemplate implements ProcessorTemplate {
-    @Wired Processor next;
 
-    String sourceId;
-    int peekLength;
-    double[] coefficients;
+    @Wired Processor next;
+    @Wired String sourceId;
+    @Wired int peekLength;
+    @Wired double[] coefficients;
 
     double[] data;
     int dataIndex = 0;
     boolean dataFull = false;
 
-    public void initialize(String sourceId, int peekLength, double[] coefficients) {
-        this.sourceId = sourceId;
-        this.peekLength = peekLength;
-        this.coefficients = coefficients;
+    public void init() {
         this.data = new double[peekLength];
     }
 

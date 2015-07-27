@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.logmap;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -14,10 +13,10 @@ import org.paninij.lang.Child;
     int numWorkRecieved = 0;
     double termsSum = 0;
 
-    public void init() {
+    public void design(LogisticMap self) {
         for (int i = 0; i < numWorkers; i++) {
             double startTerm = i * LogisticMapConfig.increment;
-            workers[i].initialize(i, startTerm);
+            workers[i].wire(i, startTerm);
         }
     }
 
@@ -30,7 +29,6 @@ import org.paninij.lang.Child;
             termsSum += w.getResult();
         }
 
-        for (SeriesWorker w : workers) w.exit();
         System.out.println("Terms sum: " + termsSum);
     }
 
