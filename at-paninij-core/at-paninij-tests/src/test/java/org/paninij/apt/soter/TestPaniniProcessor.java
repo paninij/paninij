@@ -31,9 +31,8 @@ import org.paninij.runtime.check.DynamicOwnershipTransfer;
  */
 public class TestPaniniProcessor
 {
-    private static final String CLASS_PATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
-    private static final String CLASS_PATH = ProcessorOptions.makeEffectiveClassPathString("target/test-classes", CLASS_PATH_FILE);
-    private static final String SOURCE_PATH = "src/test/java:target/generated-test-sources";
+    private static final String CLASS_PATH = System.getProperty("java.class.path");
+    private static final String SOURCE_PATH = "src/main/java:target/generated-sources:src/test/java:target/generated-test-sources";
     private static final String CLASS_OUTPUT = "target/test-classes";
     private static final String SOURCE_OUTPUT = "target/generated-test-sources";
     
@@ -74,25 +73,8 @@ public class TestPaniniProcessor
 
         compilationUnits.add(template);
 
-        CompilationTask task = javaCompiler.getTask(null, fileManager, null, makeOptionsList(),
-                                                    null, compilationUnits);
+        CompilationTask task = javaCompiler.getTask(null, fileManager, null, null, null,
+                                                    compilationUnits);
         task.call();
-    }
-    
-    private List<String> makeOptionsList()
-    {
-        List<String> options = new ArrayList<String>();
-        options.add("-proc:only");
-        options.add(makeOption("panini.classPath", CLASS_PATH));
-        options.add(makeOption("panini.sourcePath", SOURCE_PATH));
-        options.add(makeOption("panini.classOutput", CLASS_OUTPUT));
-        options.add(makeOption("panini.sourceOutput", SOURCE_OUTPUT));
-        options.add(makeOption("panini.ownershipTransfer.static", "SOTER"));
-        return options;
-    }
-    
-    private String makeOption(String key, String value)
-    {
-        return MessageFormat.format("-A{0}={1}", key, value);
     }
 }

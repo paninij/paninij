@@ -1,7 +1,5 @@
 package org.paninij.apt.soter;
 
-import static org.paninij.apt.ProcessorOptions.makeEffectiveClassPathString;
-
 import java.io.File;
 
 import org.junit.Before;
@@ -19,8 +17,7 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 
 public class TestWalaClassLoading
 {
-    private static final String CLASSPATH_FILE = "target/generated-resources/maven/panini_processor_classpath.txt";
-    private static final String CLASSPATH = makeEffectiveClassPathString("target/test-classes", CLASSPATH_FILE);
+    private static final String CLASSPATH = System.getProperty("java.class.path");
 
     private static final String NORMAL_TYPE = "Lorg/paninij/apt/soter/Secret";
     private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/apt/soter/LeakyServerTemplate";
@@ -34,6 +31,7 @@ public class TestWalaClassLoading
     @Before
     public void setup() throws Throwable
     {
+        System.out.println("CLASSPATH: " + CLASSPATH);
         File exclusions = new File("Exclusions.txt");
         analysisScope = AnalysisScopeReader.makeJavaBinaryAnalysisScope(CLASSPATH, exclusions);
         classHierarchy = ClassHierarchy.make(analysisScope);

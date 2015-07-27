@@ -18,11 +18,8 @@
  */
 package org.paninij.apt;
 
-import static org.paninij.apt.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
-import static java.util.Collections.singleton;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,7 +30,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -46,42 +42,25 @@ import javax.lang.model.util.Types;
 import org.paninij.apt.check.CapsuleChecker;
 import org.paninij.apt.check.CapsuleTestChecker;
 import org.paninij.apt.check.SignatureChecker;
-import org.paninij.apt.check.StaticOwnershipTransfer;
-import org.paninij.apt.check.StaticOwnershipTransfer.Kind;
 import org.paninij.apt.model.Capsule;
 import org.paninij.apt.model.CapsuleElement;
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Signature;
 import org.paninij.apt.model.SignatureElement;
-import org.paninij.apt.util.ArtifactCompiler;
 import org.paninij.apt.util.ArtifactFiler;
 import org.paninij.apt.util.ArtifactMaker;
 import org.paninij.apt.util.UserArtifact;
-import org.paninij.runtime.check.DynamicOwnershipTransfer;
-import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.SoterAnalysisFactory;
-import org.paninij.soter.instrument.SoterInstrumenter;
 import org.paninij.soter.instrument.SoterInstrumenterFactory;
-import org.paninij.soter.util.WalaUtil;
 
 
 /**
- * Used as a service during compilation to make automatically-generated `.java` files from classes
- * annotated with one of the annotations in `org.paninij.lang`.
+ * Used as an annotation processor service during compilation to make automatically-generated
+ * `.java` files from classes annotated with one of the annotations in `org.paninij.lang`.
  */
 @SupportedAnnotationTypes({"org.paninij.lang.Capsule",
                            "org.paninij.lang.Signature",
                            "org.paninij.lang.CapsuleTester"})
-@SupportedOptions({"panini.classPath",
-                   "panini.classPathFile",
-                   "panini.sourcePath",
-                   "panini.classOutput",
-                   "panini.sourceOutput",
-                   DynamicOwnershipTransfer.ARGUMENT_KEY,
-                   StaticOwnershipTransfer.ARGUMENT_KEY,
-                   "panini.soter.analysisReports",
-                   "panini.soter.callGraphPDFs",
-                   "panini.soter.heapGraphPDFs"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
@@ -97,26 +76,9 @@ public class PaniniProcessor extends AbstractProcessor
     {
         super.init(procEnv);
 
-        try
-        {
-            options = new ProcessorOptions(procEnv.getOptions());
-            note(options.toString());
-            
-            // Note that the artifact compiler should not perform annotation processing.
-            if (options.staticOwnershipTransferKind == Kind.SOTER)
-            {
-                artifactMaker = ArtifactCompiler.make(procEnv.getFiler(), options,
-                                                      singleton("-proc:none"));
-            }
-            else
-            {
-                artifactMaker = ArtifactFiler.make(procEnv.getFiler(), options);
-            }
-
-        }
-        catch (IOException ex) {
-            throw new RuntimeException("Failed to make artifact compiler: " + ex, ex);
-        }
+        options = new ProcessorOptions(procEnv.getOptions());
+        note(options.toString());
+        artifactMaker = ArtifactFiler.make(procEnv.getFiler(), options);
     }
 
     @Override
@@ -124,7 +86,7 @@ public class PaniniProcessor extends AbstractProcessor
     {
         note("Starting a round of processing for annotations: " + annotations.toString());
         this.roundEnv = roundEnv;
-
+        
         // Sets which contain models
         Set<Capsule> capsules = new HashSet<Capsule>();
         Set<Signature> signatures = new HashSet<Signature>();
@@ -200,11 +162,13 @@ public class PaniniProcessor extends AbstractProcessor
             artifactMaker.add(capsuleDummyFactory.make(capsule));
         }
         
+        /*
         if (options.staticOwnershipTransferKind == Kind.SOTER)
         {
             artifactMaker.makeAll();
             analyzeAndInstrument(capsules);
         }
+        */
        
         for (Capsule capsule : capsules)
         {
@@ -265,6 +229,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
     }
     
+    /*
     protected void analyzeAndInstrument(Set<Capsule> capsules)
     {
         assert options.staticOwnershipTransferKind == Kind.SOTER;
@@ -303,6 +268,7 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
     }
+    */
     
     public void note(String msg) {
         System.out.println("--- PaniniProcessor: " + msg);
