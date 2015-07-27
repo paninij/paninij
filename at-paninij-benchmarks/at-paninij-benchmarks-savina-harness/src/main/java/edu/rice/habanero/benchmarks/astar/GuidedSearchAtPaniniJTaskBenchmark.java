@@ -6,10 +6,13 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.habanero.benchmarks.apsp.ApspConfig;
+import edu.rice.habanero.benchmarks.apsp.ApspUtils;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class GuidedSearchAtPaniniJBenchmark
+public class GuidedSearchAtPaniniJTaskBenchmark
 {
-    static class GuidedSearchAtPaniniJ extends Benchmark {
+    static class GuidedSearchAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -20,6 +23,7 @@ public class GuidedSearchAtPaniniJBenchmark
 
         @Override
         public void initialize(String[] args) throws IOException {
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
             GuidedSearchConfig.parseArgs(args);
         }
 
@@ -32,7 +36,7 @@ public class GuidedSearchAtPaniniJBenchmark
 
         @Override
         public void runIteration() {
-            GuidedSearch$Thread.main(null);
+            GuidedSearch$Task.main(null);
             try {
                 Panini$System.threads.await();
             } catch (InterruptedException e) {
@@ -42,6 +46,6 @@ public class GuidedSearchAtPaniniJBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new GuidedSearchAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new GuidedSearchAtPaniniJTask());
     }
 }

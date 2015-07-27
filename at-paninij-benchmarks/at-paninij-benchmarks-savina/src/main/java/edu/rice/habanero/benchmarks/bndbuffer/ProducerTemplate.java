@@ -6,11 +6,11 @@ import org.paninij.lang.Wired;
 @Capsule public class ProducerTemplate {
 
     @Wired Manager manager;
+    @Wired int id;
 
     double prodItem = 0;
     int numItemsToProduce = ProdConsBoundedBufferConfig.numItemsPerProducer;
     int itemsProduced = 0;
-    int id;
     boolean done = false;
 
     public void produce() {
@@ -22,10 +22,6 @@ import org.paninij.lang.Wired;
         prodItem = ProdConsBoundedBufferConfig.processItem(prodItem, ProdConsBoundedBufferConfig.prodCost);
         itemsProduced++;
         manager.dataProduced(id, prodItem);
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
 }

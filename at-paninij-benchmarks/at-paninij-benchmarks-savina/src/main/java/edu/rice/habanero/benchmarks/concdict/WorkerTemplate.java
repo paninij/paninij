@@ -9,23 +9,29 @@ import org.paninij.lang.Wired;
 
     @Wired Master master;
     @Wired Dictionary dictionary;
+    @Wired int id;
 
     int writePercent = DictionaryConfig.WRITE_PERCENTAGE;
-    int work = DictionaryConfig.NUM_MSGS_PER_WORKER;
-    Random random = new Random();
+    int numMessagesPerWorker = DictionaryConfig.NUM_MSGS_PER_WORKER;
+    int messageCount = 0;
+    Random random;
+
+    public void init() {
+        random = new Random(id + numMessagesPerWorker + writePercent);
+    }
 
     public void doWork() {
-        while (work > 0) {
+        messageCount++;
+        if (messageCount <= numMessagesPerWorker) {
             int anInt = random.nextInt(100);
             if (anInt < writePercent) {
-                dictionary.write(Math.abs(random.nextInt()) % DictionaryConfig.DATA_LIMIT, random.nextInt());
+                dictionary.write(Math.abs(random.nextInt()) % DictionaryConfig.DATA_LIMIT, random.nextInt(), id);
             } else {
-                dictionary.read(Math.abs(random.nextInt()) % DictionaryConfig.DATA_LIMIT);
+                dictionary.read(Math.abs(random.nextInt()) % DictionaryConfig.DATA_LIMIT, id);
             }
-            work--;
+        } else {
+            master.workerFinished();
         }
-        master.exit();
-        master.workerFinished();
     }
 
 }

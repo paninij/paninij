@@ -4,26 +4,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Future;
+import org.paninij.lang.Wired;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
 @Capsule public class DictionaryTemplate {
-
+    @Wired Worker[] workers;
     Map<Integer, Integer> dataMap = new HashMap<Integer, Integer>(DictionaryConfig.DATA_MAP);
 
-    public void write(int key, int value) {
+    public void write(int key, int value, int id) {
         dataMap.put(key, value);
+        workers[id].doWork();
     }
 
-    @Future
-    public int read(int key) {
+    public void read(int key, int id) {
         Integer val = dataMap.get(key);
-        return val == null ? -1 : val;
+        val = val == null ? -1 : val;
+        workers[id].doWork();
     }
 
     public void printResult() {
         System.out.printf(BenchmarkRunner.argOutputFormat, "Dictionary Size", dataMap.size());
+        for (Worker w : workers) w.exit();
     }
 
 }

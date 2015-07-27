@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.astar;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -12,15 +11,12 @@ import org.paninij.lang.Child;
     int numWorkCompleted = 0;
     int numWorkersTerminated = 0;
 
-    FlagFuture flag = new FlagFuture();
-
     public void design(Master self) {
         for (Worker w : workers) w.wire(self);
     }
 
-    public FlagFuture start() {
+    public void start() {
         for (Worker w : workers) sendWork(new Work(GuidedSearchConfig.originNode(), GuidedSearchConfig.targetNode()));
-        return flag;
     }
 
     public void sendWork(Work work) {
@@ -44,7 +40,6 @@ import org.paninij.lang.Child;
         numWorkersTerminated++;
         if (numWorkersTerminated == numWorkers) {
             for (Worker w : workers) w.exit();
-            flag.resolve();
         }
     }
 

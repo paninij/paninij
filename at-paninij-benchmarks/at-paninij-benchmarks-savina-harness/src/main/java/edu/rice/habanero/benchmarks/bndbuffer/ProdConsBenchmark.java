@@ -13,6 +13,7 @@ public class ProdConsBenchmark
         ProdConsJetlangActorBenchmark.main(args);
         ProdConsJumiActorBenchmark.main(args);
         ProdConsAtPaniniJBenchmark.main(args);
+        ProdConsAtPaniniJTaskBenchmark.main(args);
         ProdConsLiftActorBenchmark.main(args);
     }
 }

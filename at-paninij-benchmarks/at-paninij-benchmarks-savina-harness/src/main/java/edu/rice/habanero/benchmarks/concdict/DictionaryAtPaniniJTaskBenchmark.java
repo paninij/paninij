@@ -1,4 +1,4 @@
-package edu.rice.habanero.benchmarks.bndbuffer;
+package edu.rice.habanero.benchmarks.concdict;
 
 import java.io.IOException;
 
@@ -6,10 +6,11 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class ProdConsAtPaniniJBenchmark
+public class DictionaryAtPaniniJTaskBenchmark
 {
-    static class ProdConsAtPaniniJ extends Benchmark {
+    static class DictionaryAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -17,18 +18,18 @@ public class ProdConsAtPaniniJBenchmark
         }
 
         @Override
-        public void initialize(String[] args) throws IOException {
-            ProdConsBoundedBufferConfig.parseArgs(args);
+        public void initialize(String[] arg0) throws IOException {
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override
         public void printArgInfo() {
-            ProdConsBoundedBufferConfig.printArgs();
+            DictionaryConfig.printArgs();
         }
 
         @Override
         public void runIteration() {
-            ProdCons$Thread.main(null);
+            Dict$Task.main(null);
             try {
                 Panini$System.threads.await();
             } catch (InterruptedException e) {
@@ -38,6 +39,6 @@ public class ProdConsAtPaniniJBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new ProdConsAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new DictionaryAtPaniniJTask());
     }
 }
