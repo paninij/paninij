@@ -32,7 +32,7 @@ public final class Panini$TaskPool extends Thread {
     private Panini$TaskPool() { }
 
     static final synchronized void init(int size) throws Exception {
-        if (initiated) throw new Exception("Target already initialized");
+        if (initiated) throw new Exception("TaskPool already initialized");
         poolSize = size;
         pools = new Panini$TaskPool[size];
         shutdown.set(0);
@@ -43,15 +43,23 @@ public final class Panini$TaskPool extends Thread {
         initiated = true;
     }
 
+    static final synchronized void init() throws Exception {
+        init(Panini$System.POOL_SIZE);
+    }
+
     private final synchronized void reset() {
+        nextPool = 0;
+        poolSize = 1;
+        pools = new Panini$TaskPool[1];
+        initiated = false;
+        shutdown.set(0);
+        startup.set(0);
+    }
+
+    private final synchronized void shutdown() {
         shutdown.incrementAndGet();
         if (shutdown.get() == startup.get()) {
-            nextPool = 0;
-            poolSize = 1;
-            pools = new Panini$TaskPool[1];
-            initiated = false;
-            shutdown.set(0);
-            startup.set(0);
+            reset();
         }
         try {
             Panini$System.threads.countDown();
@@ -61,6 +69,14 @@ public final class Panini$TaskPool extends Thread {
     }
 
     static final synchronized Panini$TaskPool add(Capsule$Task t) {
+        if (!initiated) {
+            try {
+                init();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+
         // TODO: See load balancing
         int currentPool = nextPool;
         nextPool++;
@@ -86,7 +102,7 @@ public final class Panini$TaskPool extends Thread {
             t.panini$nextCapsule = headNode.panini$nextCapsule;
             headNode.panini$nextCapsule = t;
         }
-        t.panini$capsuleInit(); // TODO ???
+        t.panini$capsuleInit();
     }
 
     static final synchronized void remove(Panini$TaskPool pool, Capsule$Task t) {
@@ -130,7 +146,7 @@ public final class Panini$TaskPool extends Thread {
                 current = current.panini$nextCapsule;
             }
         }
-        reset();
+        shutdown();
     }
 
 }

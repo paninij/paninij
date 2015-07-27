@@ -238,7 +238,6 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                     "@Override",
                     "public final boolean run() {",
                     "    try {",
-                    "        panini$init(Panini$System.POOL_SIZE); //TODO determine pool count?",
                     "        panini$capsuleInit();",
                     "        panini$encapsulated.run();",
                     "    } catch (Throwable thrown) {",
