@@ -17,12 +17,12 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import org.paninij.apt.ProcessorOptions;
-
 
 /**
  * Uses an appropriately configured `JavaCompiler` and `StandardJavaFileManager` to compile
  * `@PaniniJ` source artifacts to Java class files.
+ * 
+ * TODO: Is this class still needed?
  */
 public class ArtifactCompiler implements ArtifactMaker
 {
@@ -44,17 +44,6 @@ public class ArtifactCompiler implements ArtifactMaker
         this.compilerOptions = compilerOptions;
     }
     
-    
-    public static ArtifactCompiler make(Filer filer, ProcessorOptions processorOptions,
-                                        Iterable<String> compilerOptions) throws IOException
-    {
-        return new ArtifactCompiler(filer,
-                                    processorOptions.effectiveClassPath,
-                                    processorOptions.sourcePath,
-                                    processorOptions.classOutput,
-                                    processorOptions.sourceOutput,
-                                    compilerOptions);
-    }
     
     @Override
     public void add(Artifact artifact)

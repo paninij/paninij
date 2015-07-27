@@ -1,7 +1,5 @@
 package org.paninij.soter.prototype;
 
-import static org.paninij.apt.ProcessorOptions.makeEffectiveClassPathString;
-
 import org.junit.Test;
 import org.paninij.soter.prototype.SoterAnalysisPrototype;
 import org.paninij.soter.util.WalaUtil;

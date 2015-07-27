@@ -7,8 +7,6 @@ import java.util.Set;
 import javax.annotation.processing.Filer;
 import javax.tools.JavaFileObject;
 
-import org.paninij.apt.ProcessorOptions;
-
 public class ArtifactFiler implements ArtifactMaker
 {
     protected final Filer filer;
@@ -19,7 +17,7 @@ public class ArtifactFiler implements ArtifactMaker
         this.filer = filer;
     }
     
-    public static ArtifactFiler make(Filer filer, ProcessorOptions options)
+    public static ArtifactFiler make(Filer filer)
     {
         return new ArtifactFiler(filer);
     }

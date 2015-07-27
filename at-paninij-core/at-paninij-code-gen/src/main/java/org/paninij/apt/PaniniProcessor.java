@@ -65,7 +65,6 @@ import org.paninij.soter.instrument.SoterInstrumenterFactory;
 public class PaniniProcessor extends AbstractProcessor
 {
     protected RoundEnvironment roundEnv;
-    protected ProcessorOptions options;
     protected ArtifactMaker artifactMaker;
     protected SoterAnalysisFactory soterAnalysisFactory;
     protected SoterInstrumenterFactory soterInstrumenterFactory;
@@ -75,10 +74,7 @@ public class PaniniProcessor extends AbstractProcessor
     public void init(ProcessingEnvironment procEnv)
     {
         super.init(procEnv);
-
-        options = new ProcessorOptions(procEnv.getOptions());
-        note(options.toString());
-        artifactMaker = ArtifactFiler.make(procEnv.getFiler(), options);
+        artifactMaker = ArtifactFiler.make(procEnv.getFiler());
     }
 
     @Override

@@ -3,13 +3,9 @@ package org.paninij.apt.soter;
 import static javax.tools.JavaFileObject.Kind.SOURCE;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.processing.Processor;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
@@ -19,11 +15,7 @@ import javax.tools.ToolProvider;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.paninij.apt.PaniniProcessor;
-import org.paninij.apt.ProcessorOptions;
-import org.paninij.apt.check.StaticOwnershipTransfer;
 import org.paninij.apt.util.FileManagerFactory;
-import org.paninij.runtime.check.DynamicOwnershipTransfer;
 
 /**
  * Includes tests which perform a Java compilation task with a `PaniniProcessor` instance configured

@@ -31,7 +31,6 @@ public class TestWalaClassLoading
     @Before
     public void setup() throws Throwable
     {
-        System.out.println("CLASSPATH: " + CLASSPATH);
         File exclusions = new File("Exclusions.txt");
         analysisScope = AnalysisScopeReader.makeJavaBinaryAnalysisScope(CLASSPATH, exclusions);
         classHierarchy = ClassHierarchy.make(analysisScope);
@@ -59,7 +58,7 @@ public class TestWalaClassLoading
     
     private void loadTest(String path)
     {
-        @SuppressWarnings("unused") String appClasses = JavaModel.getApplicationClassesString(classHierarchy);
+        //String appClasses = JavaModel.getApplicationClassesString(classHierarchy);
 
         TypeReference ref = getTypeReference(path);
         assertNotNull(ref);
