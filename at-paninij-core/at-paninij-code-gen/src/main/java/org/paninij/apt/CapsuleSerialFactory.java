@@ -28,6 +28,8 @@ import org.paninij.apt.util.PaniniModel;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Variable;
+import org.paninij.apt.model.Type;
+
 
 public class CapsuleSerialFactory extends CapsuleProfileFactory
 {
@@ -145,7 +147,14 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
             argNames.add(0, "-1");
             args = String.join(", ", argNames);
             encap.add(shape.encoded + " msg = new " + shape.encoded + "(" + args + ");");
-            encap.add("msg.panini$resolve(" + call + ");");
+            Type r = shape.procedure.getReturnType();
+            if (r.isVoid()) {
+                encap.add(call + ";");
+                encap.add("msg.panini$resolve(null);");
+            } else {
+                encap.add(r.wrapped() + " result = " + call + ";");
+                encap.add("msg.panini$resolve(result);");
+            }
             encap.add("return msg;");
             return encap;
         case UNBLOCKED_SIMPLE:
