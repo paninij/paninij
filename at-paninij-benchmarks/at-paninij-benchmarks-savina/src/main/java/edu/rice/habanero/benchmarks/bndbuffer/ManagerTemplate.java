@@ -21,25 +21,19 @@ import org.paninij.lang.Child;
     Queue<Producer> availableProducers = new LinkedList<Producer>();
 
     int adjustedBufferSize = ProdConsBoundedBufferConfig.bufferSize - numProducers;
-    FlagFuture flag = new FlagFuture();
 
     public void design(Manager self) {
-        for (Producer p : producers) p.wire(self);
-        for (Consumer c : consumers) c.wire(self);
+        for (int i = 0; i < consumers.length; i++) {
+            consumers[i].wire(self, i);
+            availableConsumers.add(consumers[i]);
+        }
+        for (int i = 0; i < producers.length; i++) {
+            producers[i].wire(self, i);
+        }
     }
 
-    public FlagFuture start() {
-        for (int i = 0; i < consumers.length; i++) {
-            availableConsumers.add(consumers[i]);
-            consumers[i].setId(i);
-        }
-
-        for (int i = 0; i < producers.length; i++) {
-            producers[i].setId(i);
-            producers[i].produce();
-        }
-
-        return flag;
+    public void start() {
+        for (Producer p : producers) p.produce();
     }
 
     public void dataProduced(int id, double data) {
@@ -81,7 +75,6 @@ import org.paninij.lang.Child;
         if (numTerminatedProducers == numProducers && availableConsumers.size() == numConsumers) {
             for (Consumer c : consumers) c.exit();
             for (Producer p : producers) p.exit();
-            flag.resolve();
         }
     }
 

@@ -13,6 +13,7 @@ public class RadixSortBenchmark
         RadixSortJetlangActorBenchmark.main(args);
         RadixSortJumiActorBenchmark.main(args);
         RadixSortAtPaniniJBenchmark.main(args);
+        RadixSortAtPaniniJTaskBenchmark.main(args);
         RadixSortLiftActorBenchmark.main(args);
     }
 }

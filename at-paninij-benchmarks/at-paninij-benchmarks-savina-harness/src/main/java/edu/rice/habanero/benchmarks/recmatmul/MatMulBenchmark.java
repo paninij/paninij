@@ -13,6 +13,7 @@ public class MatMulBenchmark
         MatMulJetlangActorBenchmark.main(args);
         MatMulJumiActorBenchmark.main(args);
         MatMulAtPaniniJBenchmark.main(args);
+        MatMulAtPaniniJTaskBenchmark.main(args);
         MatMulLiftActorBenchmark.main(args);
     }
 }

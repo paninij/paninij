@@ -2,6 +2,8 @@ package edu.rice.habanero.benchmarks.trapezoid;
 
 import java.io.IOException;
 
+import org.paninij.runtime.Panini$System;
+
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 import edu.rice.habanero.benchmarks.fjthrput.ThroughputConfig;
@@ -28,6 +30,11 @@ public class TrapezoidalAtPaniniJBenchmark {
         @Override
         public void runIteration() {
             Trapezoid$Thread.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

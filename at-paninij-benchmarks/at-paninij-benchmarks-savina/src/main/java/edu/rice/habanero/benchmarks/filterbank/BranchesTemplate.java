@@ -14,25 +14,8 @@ import org.paninij.lang.Wired;
     double[][] F = FilterBankConfig.F;
 
     public void design(Branches self) {
-        for (Bank b : banks) b.wire(integrator);
-    }
-
-    public void initialize() {
-        FilterBankConfig.parseArgs(new String[0]);
-
-//        double[][] H = new double[numChannels][numColumns];
-//        double[][] F = new double[numChannels][numColumns];
-//
-//        for (int j = 0; j < numChannels; j++) {
-//            for (int i = 0; i < numColumns; i++) {
-//                H[j][i] = (1.0 * i * numColumns) + (1.0 * j * numChannels) + j + i + j + 1;
-//                F[j][i] = (1.0 * i * j) + (1.0 * j * j) + j + i;
-//            }
-//        }
-
-
         for (int i = 0; i < banks.length; i++) {
-            banks[i].initialize(i, numColumns, FilterBankConfig.H[i], FilterBankConfig.F[i]);
+            banks[i].wire(i, numColumns, FilterBankConfig.H[i], FilterBankConfig.F[i], integrator);
         }
     }
 

@@ -2,13 +2,12 @@ package edu.rice.habanero.benchmarks.piprecision;
 
 import java.math.BigDecimal;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Child;
 
 @Capsule public class DelegatorTemplate
 {
-    @Wired Worker[] workers;
+    @Child Worker[] workers = new Worker[PiPrecisionConfig.NUM_WORKERS];
 
     public BigDecimal pi = BigDecimal.ZERO;
     public final BigDecimal tolerance = BigDecimal.ONE.movePointLeft(PiPrecisionConfig.PRECISION);
@@ -16,32 +15,32 @@ import org.paninij.lang.Wired;
     public int numTermsRequested = 0;
     public int numTermsReceived = 0;
 
-    FlagFuture finished = new FlagFuture();
-    Result[] results = new Result[20];
+    public void design(Delegator self) {
+        for (int i = 0; i < workers.length; i++) {
+            workers[i].wire(self, i);
+        }
+    }
 
-    public FlagFuture start() {
+    public void start() {
         for (int i = 0; i < PiPrecisionConfig.NUM_WORKERS; i++) {
             generateWork(i);
         }
-        return finished;
     }
 
     private void generateWork(int indx) {
-        results[indx] = workers[indx].work(numTermsRequested, indx);
         numTermsRequested++;
+        workers[indx].work(numTermsRequested);
     }
 
-    public void resultFinished(int indx) {
+    public void resultFinished(BigDecimal result, int indx) {
         numTermsReceived++;
-        BigDecimal part = results[indx].getValue();
-        pi = pi.add(part);
-        if (part.compareTo(tolerance) > 0) {
+        pi = pi.add(result);
+        if (result.compareTo(tolerance) > 0) {
             generateWork(indx);
             return;
         }
         if (numTermsReceived == numTermsRequested) {
             for (Worker w : workers) w.exit();
-            finished.resolve();
         }
     }
 

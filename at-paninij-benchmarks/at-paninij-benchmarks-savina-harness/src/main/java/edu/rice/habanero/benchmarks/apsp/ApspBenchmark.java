@@ -13,6 +13,7 @@ public class ApspBenchmark
         ApspJetlangActorBenchmark.main(args);
         ApspJumiActorBenchmark.main(args);
         ApspAtPaniniJBenchmark.main(args);
+        ApspAtPaniniJTaskBenchmark.main(args);
         ApspLiftActorBenchmark.main(args);
     }
 }

@@ -13,6 +13,7 @@ public class PiPrecisionBenchmark
         PiPrecisionJetlangActorBenchmark.main(args);
         PiPrecisionJumiActorBenchmark.main(args);
         PiPrecisionAtPaniniJBenchmark.main(args);
+        PiPrecisionAtPaniniJTaskBenchmark.main(args);
         PiPrecisionLiftActorBenchmark.main(args);
     }
 }

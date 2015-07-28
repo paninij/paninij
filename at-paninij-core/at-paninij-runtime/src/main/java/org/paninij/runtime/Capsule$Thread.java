@@ -25,12 +25,13 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 {
     protected Thread panini$thread;
     protected volatile Object[] panini$queue;
-    protected volatile int panini$head, panini$tail, panini$size;
-    protected volatile int panini$links;
+    protected volatile int panini$head, panini$tail, panini$size, panini$links;
 
     protected final ReentrantLock panini$queueLock;
 
     protected final Panini$ErrorQueue panini$errors;
+
+    protected boolean panini$terminated;
 
     public static final int PANINI$CLOSE_LINK = -1;
     public static final int PANINI$TERMINATE = -2;
@@ -44,6 +45,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         panini$size = 0;
         panini$links = 0;
         panini$queueLock = new ReentrantLock();
+        panini$terminated = false;
         panini$errors = new Panini$ErrorQueue();
     }
 
@@ -56,9 +58,9 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
         if (panini$tail <= panini$head)
         {
             System.arraycopy(panini$queue, panini$head, newObjects, 0,
-                             panini$queue.length - panini$head);
+                    panini$queue.length - panini$head);
             System.arraycopy(panini$queue, 0, newObjects, panini$queue.length - panini$head,
-                             panini$tail);
+                    panini$tail);
         }
         else
         {
@@ -139,6 +141,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
      * @throws IllegalArgumentException If the value of millis is negative
      *
      */
+    @Override
     public void yield(long millis)
     {
         if (millis < 0) {
@@ -309,8 +312,13 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     @Override
     public void panini$start()
     {
-        panini$thread = new Thread(this);
-        panini$thread.start();
+        try {
+            Panini$System.threads.countUp();
+            panini$thread = new Thread(this);
+            panini$thread.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -336,7 +344,7 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
 
     protected void panini$onCloseLink() {
         panini$links--;
-        if (panini$links == 0) panini$push(new SimpleMessage(PANINI$TERMINATE));
+        if (panini$links == 0 && !panini$terminated) panini$push(new SimpleMessage(PANINI$TERMINATE));
     }
 
     public Throwable panini$pollErrors() {

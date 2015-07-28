@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.threadring;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -13,9 +12,7 @@ import org.paninij.lang.Child;
     }
 
     public void run() {
-        FlagFuture flag = new FlagFuture();
-        nodes[0].ping(ThreadRingConfig.R, flag);
-        while (!flag.isDone());
+        nodes[0].ping(ThreadRingConfig.R);
     }
 
 }

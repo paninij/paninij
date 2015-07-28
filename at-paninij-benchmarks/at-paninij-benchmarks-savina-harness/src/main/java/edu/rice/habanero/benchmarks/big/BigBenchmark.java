@@ -13,6 +13,7 @@ public class BigBenchmark
         BigJetlangActorBenchmark.main(args);
         BigJumiActorBenchmark.main(args);
         BigAtPaniniJBenchmark.main(args);
+        BigAtPaniniJTaskBenchmark.main(args);
         BigLiftActorBenchmark.main(args);
     }
 }

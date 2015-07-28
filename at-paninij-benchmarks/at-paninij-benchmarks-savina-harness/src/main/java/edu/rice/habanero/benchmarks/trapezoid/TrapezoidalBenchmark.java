@@ -13,6 +13,7 @@ public class TrapezoidalBenchmark
         TrapezoidalJetlangActorBenchmark.main(args);
         TrapezoidalJumiActorBenchmark.main(args);
         TrapezoidalAtPaniniJBenchmark.main(args);
+        TrapezoidalAtPaniniJTaskBenchmark.main(args);
         TrapezoidalLiftActorBenchmark.main(args);
     }
 }

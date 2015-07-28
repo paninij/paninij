@@ -3,8 +3,7 @@ package edu.rice.habanero.benchmarks.count;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
-@Capsule
-public class CountTemplate {
+@Capsule public class CountTemplate {
     @Child Counter c;
 
     public void run() {

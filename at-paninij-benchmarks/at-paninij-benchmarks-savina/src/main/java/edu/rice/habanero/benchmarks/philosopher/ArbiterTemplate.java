@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.philosopher;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -8,7 +7,6 @@ import org.paninij.lang.Child;
 
     @Child Philosopher[] philosophers = new Philosopher[PhilosopherConfig.N];
 
-    FlagFuture flag = new FlagFuture();
     boolean[] forks = new boolean[PhilosopherConfig.N];
     int numCompletedPhilosophers = 0;
 
@@ -19,9 +17,8 @@ import org.paninij.lang.Child;
         for (Philosopher p : philosophers) p.wire(self);
     }
 
-    public FlagFuture start() {
+    public void start() {
         for (int i = 0; i < PhilosopherConfig.N; i++) philosophers[i].start(i);
-        return flag;
     }
 
     public void notifyHungry(int id) {
@@ -50,7 +47,6 @@ import org.paninij.lang.Child;
         if (numCompletedPhilosophers == PhilosopherConfig.N) {
             for (Philosopher p : philosophers) p.exit();
             System.out.println("  Num retries: " + numRetries);
-            flag.resolve();
         }
     }
 

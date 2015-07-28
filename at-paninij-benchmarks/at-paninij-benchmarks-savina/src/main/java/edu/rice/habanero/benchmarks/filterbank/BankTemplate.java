@@ -6,6 +6,10 @@ import org.paninij.lang.Wired;
 
 @Capsule public class BankTemplate implements ProcessorTemplate {
 
+    @Wired int sourceId;
+    @Wired int numColumns;
+    @Wired double[] H;
+    @Wired double[] F;
     @Wired Integrator integrator;
 
     @Child Delay delay1;
@@ -16,21 +20,12 @@ import org.paninij.lang.Wired;
     @Child TaggedForward tag;
 
     public void design(Bank self) {
-        delay1.wire(fir1);
-        fir1.wire(sample);
-        sample.wire(delay2);
-        delay2.wire(fir2);
-        fir2.wire(tag);
-        tag.wire(integrator);
-    }
-
-    public void initialize(int sourceId, int numColumns, double[] H, double[] F) {
-        delay1.initialize(sourceId + ".1", numColumns - 1);
-        fir1.initialize(sourceId + ".1", numColumns, H);
-        sample.initialize(numColumns);
-        delay2.initialize(sourceId + ".2", numColumns -1);
-        fir2.initialize(sourceId + ".2", numColumns, F);
-        tag.initialize(sourceId);
+        delay1.wire(fir1, sourceId + ".1", numColumns - 1);
+        fir1.wire(sample, sourceId + ".1", numColumns, H);
+        sample.wire(delay2, numColumns);
+        delay2.wire(fir2, sourceId + ".2", numColumns -1);
+        fir2.wire(tag, sourceId + ".2", numColumns, F);
+        tag.wire(integrator, sourceId);
     }
 
     @Override

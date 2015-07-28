@@ -7,17 +7,12 @@ import edu.rice.habanero.benchmarks.radixsort.RadixSortConfig;
 
 @Capsule public class SortTemplate implements AdderTemplate {
     @Wired Adder next;
+    @Wired Long radix;
 
     int valuesSoFar = 0;
-    long radix;
 
     long[] orderingArray = new long[RadixSortConfig.N];
     int j = 0;
-
-
-    public void setRadix(long radix) {
-        this.radix = radix;
-    }
 
     @Override
     public void add(long value) {

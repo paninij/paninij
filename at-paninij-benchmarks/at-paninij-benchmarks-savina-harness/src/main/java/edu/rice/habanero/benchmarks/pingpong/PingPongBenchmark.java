@@ -13,6 +13,7 @@ public class PingPongBenchmark
         PingPongJetlangActorBenchmark.main(args);
         PingPongJumiActorBenchmark.main(args);
         PingPongAtPaniniJBenchmark.main(args);
+        PingPongAtPaniniJTaskBenchmark.main(args);
         PingPongLiftActorBenchmark.main(args);
     }
 }

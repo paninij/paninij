@@ -13,6 +13,7 @@ public class CigaretteSmokerBenchmark
         CigaretteSmokerJetlangActorBenchmark.main(args);
         CigaretteSmokerJumiActorBenchmark.main(args);
         CigaretteSmokerAtPaniniJBenchmark.main(args);
+        CigaretteSmokerAtPaniniJTaskBenchmark.main(args);
         CigaretteSmokerLiftActorBenchmark.main(args);
     }
 }

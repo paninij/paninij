@@ -4,11 +4,10 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
 @Capsule public class WorkerTemplate {
-    @Wired Delegator d;
+    @Wired Delegator delegator;
+    @Wired int id;
 
-    public Result work(int term, int indx) {
-        Result r = new Result(PiPrecisionConfig.calculateBbpTerm(PiPrecisionConfig.PRECISION, term), indx);
-        d.resultFinished(indx);
-        return r;
+    public void work(int term) {
+        delegator.resultFinished(PiPrecisionConfig.calculateBbpTerm(PiPrecisionConfig.PRECISION, term), id);
     }
 }

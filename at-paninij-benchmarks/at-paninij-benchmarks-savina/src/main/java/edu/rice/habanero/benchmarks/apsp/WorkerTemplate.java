@@ -14,8 +14,8 @@ import org.paninij.lang.Wired;
 
     @Wired Master master;
     @Wired Worker[] neighbors = new Worker[numNeighbors];
+    @Wired int myBlockId;
 
-    int myBlockId;
     int rowOffset;
     int colOffset;
 
@@ -24,8 +24,7 @@ import org.paninij.lang.Wired;
     long[][] currentIterData;
 
 
-    public void initialize(int myBlockId, long[][] initGraphData) {
-        this.myBlockId = myBlockId;
+    public void initialize(long[][] initGraphData) {
         this.rowOffset = (myBlockId / numBlocksInSingleDim) * blockSize;
         this.colOffset = (myBlockId % numBlocksInSingleDim) * blockSize;
         this.currentIterData = ApspUtils.getBlock(initGraphData, myBlockId);
@@ -45,9 +44,9 @@ import org.paninij.lang.Wired;
             neighborDataPerIteration.clear();
 
             if (k == (graphSize - 1)) {
-                master.exit();
                 for (Worker n : neighbors) n.exit();
                 master.workerFinished();
+                master.exit();
             }
         }
     }

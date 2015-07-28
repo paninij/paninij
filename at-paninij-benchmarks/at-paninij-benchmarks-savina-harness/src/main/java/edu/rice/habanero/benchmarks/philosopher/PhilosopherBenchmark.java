@@ -15,6 +15,7 @@ public class PhilosopherBenchmark
         PhilosopherJetlangActorBenchmark.main(args);
         PhilosopherJumiActorBenchmark.main(args);
         PhilosopherAtPaniniJBenchmark.main(args);
+        PhilosopherAtPaniniJTaskBenchmark.main(args);
         PhilosopherLiftActorBenchmark.main(args);
     }
 }

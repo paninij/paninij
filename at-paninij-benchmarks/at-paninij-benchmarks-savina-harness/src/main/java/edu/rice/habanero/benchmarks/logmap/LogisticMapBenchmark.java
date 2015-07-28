@@ -5,6 +5,9 @@ public class LogisticMapBenchmark
     public static void main(String[] args) {
 //        LogisticMapScalaActorBenchmark.main(args); -- hangs
 
+        LogisticMapAtPaniniJTaskBenchmark.main(args);
+        LogisticMapAtPaniniJBenchmark.main(args);
+
         LogisticMapScalaManualStashActorBenchmark.main(args);
         LogisticMapScalazActorBenchmark.main(args);
 
@@ -29,7 +32,5 @@ public class LogisticMapBenchmark
         LogisticMapJetlangActorBenchmark.main(args);
 
 //        LogisticMapJetlangManualStashActorBenchmark.main(args); -- error out
-
-        LogisticMapAtPaniniJBenchmark.main(args);
     }
 }

@@ -2,6 +2,8 @@ package edu.rice.habanero.benchmarks.apsp;
 
 import java.io.IOException;
 
+import org.paninij.runtime.Panini$System;
+
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
@@ -28,6 +30,11 @@ public class ApspAtPaniniJBenchmark
         @Override
         public void runIteration() {
             Apsp$Thread.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

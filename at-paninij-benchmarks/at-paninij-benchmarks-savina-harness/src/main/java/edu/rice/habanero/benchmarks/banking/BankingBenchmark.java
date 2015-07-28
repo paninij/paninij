@@ -33,6 +33,7 @@ public class BankingBenchmark
         BankingJumiManualStashActorBenchmark.main(args);
 
         BankingAtPaniniJBenchmark.main(args);
+        BankingAtPaniniJTaskBenchmark.main(args);
 
         BankingLiftManualStashActorBenchmark.main(args);
     }
