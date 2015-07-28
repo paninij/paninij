@@ -106,7 +106,7 @@ public class PaniniModel
      * @param template A capsule template class annotated with `@Capsule`.
      * @return Stream of the template's fields which are annotated with `@Child`.
      */
-    public static Stream<IField> getChildCapsuleDecls(IClass template)
+    public static Stream<IField> getChildDecls(IClass template)
     {
         assert isCapsuleTemplate(template);
         return template.getAllFields()
@@ -119,7 +119,7 @@ public class PaniniModel
      * @param template A capsule template class annotated with `@Capsule`.
      * @return Stream of the template's fields which are annotated with `@Wired`.
      */
-    public static Stream<IField> getWiredCapsuleDecls(IClass template)
+    public static Stream<IField> getWiredDecls(IClass template)
     {
         assert isCapsuleTemplate(template);
         return template.getAllFields()
