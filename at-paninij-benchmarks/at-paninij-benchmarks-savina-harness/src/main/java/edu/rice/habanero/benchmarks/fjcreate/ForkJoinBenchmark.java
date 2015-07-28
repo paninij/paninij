@@ -13,6 +13,7 @@ public class ForkJoinBenchmark
         ForkJoinJetlangActorBenchmark.main(args);
         ForkJoinJumiActorBenchmark.main(args);
         ForkJoinAtPaniniJBenchmark.main(args);
+        ForkJoinAtPaniniJTaskBenchmark.main(args);
         ForkJoinLiftActorBenchmark.main(args);
     }
 }

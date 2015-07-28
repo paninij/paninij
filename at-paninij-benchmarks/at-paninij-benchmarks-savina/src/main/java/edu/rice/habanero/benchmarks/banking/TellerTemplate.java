@@ -2,7 +2,6 @@ package edu.rice.habanero.benchmarks.banking;
 
 import java.util.Random;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -12,15 +11,13 @@ import org.paninij.lang.Child;
     int numCompletedBankings = 0;
     Random randomGen = new Random(123456);
     int numBankings = BankingConfig.N;
-    FlagFuture flag = new FlagFuture();
 
     public void design(Teller self) {
         for (Account a : accounts) a.wire(self, accounts);
     }
 
-    public FlagFuture start() {
+    public void start() {
         for (int i = 0; i < numBankings; i++) generateWork();
-        return flag;
     }
 
     public void transactionComplete() {
@@ -30,7 +27,6 @@ import org.paninij.lang.Child;
                 a.done();
                 a.exit();
             }
-            flag.resolve();
         }
     }
 

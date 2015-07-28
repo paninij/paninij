@@ -2,6 +2,8 @@ package edu.rice.habanero.benchmarks.astar;
 
 import java.io.IOException;
 
+import org.paninij.runtime.Panini$System;
+
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
@@ -31,6 +33,11 @@ public class GuidedSearchAtPaniniJBenchmark
         @Override
         public void runIteration() {
             GuidedSearch$Thread.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

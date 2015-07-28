@@ -6,16 +6,13 @@ import org.paninij.lang.Wired;
 @Capsule public class DelayTemplate implements ProcessorTemplate {
 
     @Wired Processor next;
-
-    String sourceId;
-    int delayLength;
+    @Wired String sourceId;
+    @Wired int delayLength;
 
     int placeHolder = 0;
     double[] state;
 
-    public void initialize(String sourceId, int delayLength) {
-        this.sourceId = sourceId;
-        this.delayLength = delayLength;
+    public void init() {
         this.state = new double[delayLength];
     }
 

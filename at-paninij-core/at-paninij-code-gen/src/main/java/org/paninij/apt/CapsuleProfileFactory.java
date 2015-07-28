@@ -2,6 +2,9 @@ package org.paninij.apt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.lang.model.type.TypeKind;
 
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Variable;
@@ -11,6 +14,8 @@ import org.paninij.apt.util.Source;
 
 public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 {
+    protected abstract String generateClassName();
+
     protected String generateProcedureID(Procedure p) {
         String base = "panini$proc$";
         List<String> params = new ArrayList<String>();
@@ -105,7 +110,7 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
         return declaration;
     }
 
-    String generateAssertSafeInvocationTransfer()
+    protected String generateAssertSafeInvocationTransfer()
     {
         // TODO: Clean this up!
         /**
@@ -116,5 +121,185 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
                              "\"Procedure invocation performed unsafe ownership transfer.\"");
         */
         return "";
+    }
+
+    protected List<String> generateCheckRequiredFields()
+    {
+        // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
+        List<Variable> required = this.capsule.getWired();
+
+        for (Variable child : this.capsule.getChildren()) {
+            if (child.isArray()) required.add(child);
+        }
+
+        if (required.isEmpty()) return new ArrayList<String>();
+
+        List<String> assertions = new ArrayList<String>(required.size());
+        for (int idx = 0; idx < required.size(); idx++) {
+            if (required.get(idx).isCapsule()) {
+                assertions.add(Source.format(
+                        "assert(panini$encapsulated.#0 != null);",
+                        required.get(idx).getIdentifier()));
+            }
+        }
+
+        List<String> lines = Source.lines(
+                "@Override",
+                "public void panini$checkRequiredFields() {",
+                "    ##",
+                "}",
+                "");
+        return Source.formatAlignedFirst(lines, assertions);
+    }
+
+    protected List<String> generateWire()
+    {
+        List<Variable> wired = this.capsule.getWired();
+        List<String> refs = new ArrayList<String>();
+        List<String> decls = new ArrayList<String>();
+
+        if (wired.isEmpty()) return refs;
+
+        for (Variable var : wired) {
+            String instantiation = Source.format("panini$encapsulated.#0 = #0;", var.getIdentifier());
+            refs.add(instantiation);
+
+            if (var.isArray()) {
+                if (var.getEncapsulatedType().isCapsule()) {
+                    List<String> lines = Source.lines(
+                            "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
+                            "    ((Panini$Capsule) panini$encapsulated.#0[i]).panini$openLink();",
+                            "}");
+                    refs.addAll(Source.formatAll(
+                            lines,
+                            var.getIdentifier()));
+                }
+            } else {
+                if (var.isCapsule()) {
+                    refs.add(Source.format("((Panini$Capsule) panini$encapsulated.#0).panini$openLink();", var.getIdentifier()));
+                }
+            }
+
+            decls.add(var.toString());
+        }
+
+        List<String> src = Source.lines(
+                "public void wire(#0) {",
+                "    ##",
+                "}",
+                "");
+
+        src = Source.formatAll(src, String.join(", ", decls));
+        src = Source.formatAlignedFirst(src, refs);
+
+        return src;
+    }
+
+    protected List<String> generateGetAllState()
+    {
+        List<String> states = capsule.getState()
+                                     .stream()
+                                     .filter(s -> s.getKind() == TypeKind.ARRAY
+                                               || s.getKind() == TypeKind.DECLARED)
+                                     .map(s -> "panini$encapsulated." + s.getIdentifier())
+                                     .collect(Collectors.toList());
+
+        List<String> src = Source.lines("@Override",
+                                        "public Object panini$getAllState()",
+                                        "{",
+                                        "    Object[] state = {#0};",
+                                        "    return state;",
+                                        "}",
+                                        "");
+
+        return Source.formatAll(src, String.join(", ", states));
+    }
+
+    protected List<String> generateInitState()
+    {
+        if (!this.capsule.hasInit()) return new ArrayList<String>();
+        return Source.lines(
+                "@Override",
+                "protected void panini$initState() {",
+                "    panini$encapsulated.init();",
+                "}",
+                "");
+    }
+
+    protected List<String> generateOnTerminate() {
+        List<String> shutdowns = new ArrayList<String>();
+        List<Variable> references = new ArrayList<Variable>();
+
+        references.addAll(this.capsule.getWired());
+        references.addAll(this.capsule.getChildren());
+
+        if (references.isEmpty()) return shutdowns;
+
+        for (Variable reference : references) {
+            if (reference.isArray()) {
+                if (reference.getEncapsulatedType().isCapsule()) {
+                    List<String> src = Source.lines(
+                            "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
+                            "    ((Panini$Capsule) panini$encapsulated.#0[i]).panini$closeLink();",
+                            "}");
+                    shutdowns.addAll(Source.formatAll(src, reference.getIdentifier()));
+                }
+            } else {
+                if (reference.isCapsule()) {
+                    shutdowns.add(Source.format("((Panini$Capsule) panini$encapsulated.#0).panini$closeLink();", reference.getIdentifier()));
+                }
+            }
+        }
+
+        List<String> src = Source.lines(
+                "@Override",
+                "protected void panini$onTerminate() {",
+                "    ##",
+                "    this.panini$terminated = true;",
+                "}",
+                "");
+
+        return Source.formatAlignedFirst(src, shutdowns);
+    }
+
+    protected boolean deservesMain()
+    {
+        // if the capsule has external dependencies, it does
+        // not deserve a main
+        if (!this.capsule.getWired().isEmpty()) return false;
+
+        if (this.capsule.isActive()) {
+            // if the capsule is active and has no external deps,
+            // it deserves a main
+            return true;
+        } else {
+            // if the capsule has no children, it does not need a main
+            // (this is a bogus/dull scenario)
+            if (this.capsule.getChildren().isEmpty()) return false;
+
+            // check if any ancestor capsules are active
+            if (this.capsule.hasActiveAncestor()) return true;
+
+            // if no child is active, this does not deserve a main
+            return false;
+        }
+    }
+
+    protected List<String> generateMain()
+    {
+        if (!this.deservesMain()) return new ArrayList<String>();
+
+        List<String> src = Source.lines(
+                "public static void main(String[] args) {",
+                "    try {",
+                "        Panini$System.threads.countUp();",
+                "        #0 root = new #0();",
+                "        root.run();",
+                "    } catch (InterruptedException e) {",
+                "       e.printStackTrace();",
+                "    }",
+                "}");
+
+        return Source.formatAll(src, this.generateClassName());
     }
 }

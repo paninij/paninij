@@ -3,7 +3,6 @@ package edu.rice.habanero.benchmarks.apsp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -14,7 +13,6 @@ import org.paninij.lang.Child;
     int numBlocksInSingleDim = numNodes / blockSize;
     int numWorkers = numBlocksInSingleDim * numBlocksInSingleDim;
     int numWorkersFinished = 0;
-    FlagFuture flag = new FlagFuture();
 
 
     // NOTE we do not have 2d arrays of child/wired capsules yet, so cram into one
@@ -41,27 +39,22 @@ import org.paninij.lang.Child;
                     n[i] = neighbors.get(i);
                 }
 
-                workers[(numBlocksInSingleDim * bi) + bj].wire(self, n);
+                int id = (numBlocksInSingleDim * bi) + bj;
+
+                workers[id].wire(self, n, id);
             }
         }
     }
 
-    public FlagFuture start() {
-        for (int i = 0; i < numBlocksInSingleDim; i++) {
-            for (int j = 0; j < numBlocksInSingleDim; j++) {
-                workers[(numBlocksInSingleDim * i) + j].initialize((i * numBlocksInSingleDim) + j, graphData);
-            }
-        }
-
+    public void start() {
+        for (Worker w : workers) w.initialize(graphData);
         for (Worker w : workers) w.start();
-        return flag;
     }
 
     public void workerFinished() {
         numWorkersFinished++;
         if (numWorkersFinished == numWorkers) {
             for (Worker w : workers) w.exit();
-            flag.resolve();
         }
     }
 

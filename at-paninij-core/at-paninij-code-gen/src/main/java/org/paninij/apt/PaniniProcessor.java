@@ -130,6 +130,9 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleDummyFactory capsuleDummyFactory = new CapsuleDummyFactory();
         CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
         CapsuleThreadFactory threadCapsuleFactory = new CapsuleThreadFactory();
+        CapsuleSerialFactory serialCapsuleFactory = new CapsuleSerialFactory();
+        CapsuleMonitorFactory monitorCapsuleFactory = new CapsuleMonitorFactory();
+        CapsuleTaskFactory taskCapsuleFactory = new CapsuleTaskFactory();
 
         // Generate artifacts from signature model
         for (Signature signature : signatures)
@@ -171,7 +174,14 @@ public class PaniniProcessor extends AbstractProcessor
             // Generate capsule thread profile
             artifactMaker.add(threadCapsuleFactory.make(capsule));
 
-            // TODO Generate other capsule profiles
+            // Generate capsule serial profile
+            artifactMaker.add(serialCapsuleFactory.make(capsule));
+
+            // Generate capsule monitor profile
+            artifactMaker.add(monitorCapsuleFactory.make(capsule));
+
+            // Generate capsule task profile
+            artifactMaker.add(taskCapsuleFactory.make(capsule));
         }
         
         // Generate capsule test artifacts

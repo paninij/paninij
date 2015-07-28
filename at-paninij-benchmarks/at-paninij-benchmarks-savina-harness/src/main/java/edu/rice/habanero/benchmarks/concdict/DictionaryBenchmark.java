@@ -13,6 +13,7 @@ public class DictionaryBenchmark
         DictionaryJetlangActorBenchmark.main(args);
         DictionaryJumiActorBenchmark.main(args);
         DictionaryAtPaniniJBenchmark.main(args);
+        DictionaryAtPaniniJTaskBenchmark.main(args);
         DictionaryLiftActorBenchmark.main(args);
     }
 }

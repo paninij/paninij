@@ -2,6 +2,8 @@ package edu.rice.habanero.benchmarks.filterbank;
 
 import java.io.IOException;
 
+import org.paninij.runtime.Panini$System;
+
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
@@ -16,7 +18,7 @@ public class FilterBankAtPaniniJBenchmark
 
         @Override
         public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+            FilterBankConfig.parseArgs(arg0);
         }
 
         @Override
@@ -27,6 +29,11 @@ public class FilterBankAtPaniniJBenchmark
         @Override
         public void runIteration() {
             FilterBank$Thread.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

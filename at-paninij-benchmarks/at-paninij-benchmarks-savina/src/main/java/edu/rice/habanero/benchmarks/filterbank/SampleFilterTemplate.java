@@ -6,13 +6,9 @@ import org.paninij.lang.Wired;
 @Capsule public class SampleFilterTemplate implements ProcessorTemplate {
 
     @Wired Processor next;
+    @Wired int sampleRate;
 
-    int sampleRate;
     int samplesReceived = 0;
-
-    public void initialize(int sampleRate) {
-        this.sampleRate = sampleRate;
-    }
 
     @Override
     public void process(double value) {

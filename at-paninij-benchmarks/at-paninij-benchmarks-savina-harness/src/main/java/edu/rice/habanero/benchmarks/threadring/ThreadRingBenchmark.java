@@ -13,6 +13,7 @@ public class ThreadRingBenchmark
         ThreadRingJetlangActorBenchmark.main(args);
         ThreadRingJumiActorBenchmark.main(args);
         ThreadRingAtPaniniJBenchmark.main(args);
+        ThreadRingAtPaniniJTaskBenchmark.main(args);
         ThreadRingLiftActorBenchmark.main(args);
     }
 }

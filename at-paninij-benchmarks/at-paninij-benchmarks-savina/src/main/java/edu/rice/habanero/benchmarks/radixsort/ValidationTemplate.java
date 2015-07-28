@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.radixsort;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 
 @Capsule public class ValidationTemplate implements AdderTemplate {
@@ -11,12 +10,6 @@ import org.paninij.lang.Capsule;
 
     long errVal = -1;
     int errIndx = -1;
-
-    FlagFuture flag = new FlagFuture();
-
-    public FlagFuture getFlag() {
-        return flag;
-    }
 
     @Override
     public void add(long value) {
@@ -35,7 +28,6 @@ import org.paninij.lang.Capsule;
             } else {
                 System.out.println("Elements sum: " + sumSoFar);
             }
-            flag.resolve();
         }
 
     }
