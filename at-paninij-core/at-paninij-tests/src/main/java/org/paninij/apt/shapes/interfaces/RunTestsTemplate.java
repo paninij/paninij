@@ -24,10 +24,9 @@ public class RunTestsTemplate
             System.out.println(thing.getTheObject());
             System.out.println(thing.getTheString());
         }
-        catch (InterruptedException | ExecutionException e)
+        catch (Throwable ex)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException(ex);
         }
 
     }
