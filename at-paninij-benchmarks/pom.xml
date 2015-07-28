@@ -21,13 +21,17 @@
         <artifactId>at-paninij-code-gen</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
-
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>at-paninij-runtime</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
-      
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>at-paninij-soter</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
       <dependency>
         <groupId>edu.rice.habanero</groupId>
         <artifactId>savina</artifactId>
