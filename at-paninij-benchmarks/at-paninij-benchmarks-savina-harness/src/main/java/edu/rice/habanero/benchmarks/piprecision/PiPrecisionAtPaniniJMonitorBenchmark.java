@@ -1,4 +1,4 @@
-package edu.rice.habanero.benchmarks.cigsmok;
+package edu.rice.habanero.benchmarks.piprecision;
 
 import java.io.IOException;
 
@@ -6,10 +6,11 @@ import org.paninij.runtime.Panini$System;
 
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
+import edu.rice.hj.runtime.config.HjSystemProperty;
 
-public class CigaretteSmokerAtPaniniJBenchmark
+public class PiPrecisionAtPaniniJMonitorBenchmark
 {
-    static class CigaretteSmokerAtPaniniJ extends Benchmark {
+    static class PiPrecisionAtPaniniJMonitor extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -18,17 +19,17 @@ public class CigaretteSmokerAtPaniniJBenchmark
 
         @Override
         public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override
         public void printArgInfo() {
-            CigaretteSmokerConfig.printArgs();
+            PiPrecisionConfig.printArgs();
         }
 
         @Override
         public void runIteration() {
-            CigaretteSmoker$Thread.main(null);
+            PiPrecision$Monitor.main(null);
             try {
                 Panini$System.threads.await();
             } catch (InterruptedException e) {
@@ -38,6 +39,6 @@ public class CigaretteSmokerAtPaniniJBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new CigaretteSmokerAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new PiPrecisionAtPaniniJMonitor());
     }
 }

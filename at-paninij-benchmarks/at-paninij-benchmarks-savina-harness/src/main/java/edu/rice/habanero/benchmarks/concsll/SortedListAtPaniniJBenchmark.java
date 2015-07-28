@@ -2,6 +2,8 @@ package edu.rice.habanero.benchmarks.concsll;
 
 import java.io.IOException;
 
+import org.paninij.runtime.Panini$System;
+
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
@@ -27,6 +29,11 @@ public class SortedListAtPaniniJBenchmark
         @Override
         public void runIteration() {
             SLL$Thread.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

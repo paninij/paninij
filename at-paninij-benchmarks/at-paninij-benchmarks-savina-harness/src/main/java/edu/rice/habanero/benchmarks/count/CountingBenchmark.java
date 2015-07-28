@@ -13,6 +13,7 @@ public class CountingBenchmark
         CountingJetlangActorBenchmark.main(args);
         CountingJumiActorBenchmark.main(args);
         CountingAtPaniniJBenchmark.main(args);
+        CountingAtPaniniJTaskBenchmark.main(args);
         CountingLiftActorBenchmark.main(args);
     }
 }

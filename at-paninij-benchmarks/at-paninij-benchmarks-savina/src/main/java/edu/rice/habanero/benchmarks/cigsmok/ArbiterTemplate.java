@@ -2,7 +2,6 @@ package edu.rice.habanero.benchmarks.cigsmok;
 
 import java.util.Random;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -10,11 +9,9 @@ import org.paninij.lang.Child;
     @Child Smoker[] smokers = new Smoker[CigaretteSmokerConfig.S];
     Random random = new Random(CigaretteSmokerConfig.R * CigaretteSmokerConfig.S);
     int roundsSoFar = 0;
-    FlagFuture flag = new FlagFuture();
 
-    public FlagFuture start() {
+    public void start() {
         notifyRandomSmoker();
-        return flag;
     }
 
     public void design(Arbiter self ) {
@@ -25,7 +22,6 @@ import org.paninij.lang.Child;
         roundsSoFar++;
         if (roundsSoFar >= CigaretteSmokerConfig.R) {
             for (Smoker s : smokers) s.exit();
-            flag.resolve();
         } else {
             notifyRandomSmoker();
         }

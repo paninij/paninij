@@ -4,15 +4,14 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
 @Capsule public class MasterTemplate {
+
     @Child Worker[] workers = new Worker[DictionaryConfig.NUM_ENTITIES];
     @Child Dictionary dictionary;
 
     int numWorkersTerminated = 0;
 
     public void design(Master self) {
-        for (int i = 0; i < workers.length; i++) {
-            workers[i].wire(self, dictionary, i);
-        }
+        for (int i = 0; i < workers.length; i++) workers[i].wire(self, dictionary, i);
         dictionary.wire(workers);
     }
 
