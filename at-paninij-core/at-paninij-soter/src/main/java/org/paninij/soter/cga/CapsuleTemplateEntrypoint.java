@@ -16,13 +16,17 @@ import java.util.stream.Stream;
 
 import org.paninij.soter.util.SoterUtil;
 
+import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.impl.AbstractRootMethod;
 import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint;
+import com.ibm.wala.shrikeBT.IInvokeInstruction;
 import com.ibm.wala.ssa.SSANewInstruction;
+import com.ibm.wala.types.MethodReference;
+import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.collections.HashSetFactory;
 
@@ -78,11 +82,14 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         
         // Transitively instantiated state variables.
         getStateDecls(template).forEach(f -> addState(root, f, receiverValueNumber));
-
+        
+        // Initialize the newly created receiver object.
+        makeReceiverInitInvocation(root, receiverValueNumber);
+        
         return receiverValueNumber;
     }
     
-
+    
     /**
      * @see makeArgument
      */
@@ -97,6 +104,18 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
 
         // TODO: Everything! But for now just use the default behavior.
         return super.makeArgument(root, i);
+    }
+    
+    
+    /**
+     * @see makeArgument
+     */
+    protected void makeReceiverInitInvocation(AbstractRootMethod root, int i)
+    {
+        MethodReference initMethod = template.getMethod(Selector.make("()V")).getReference();
+        CallSiteReference initCall = CallSiteReference.make(root.getStatements().length, initMethod,
+                                                            IInvokeInstruction.Dispatch.STATIC);
+        root.addInvocation(new int[] {i}, initCall);
     }
     
     
