@@ -27,6 +27,7 @@ import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.PaniniModelInfo;
 import org.paninij.apt.util.Source;
 import org.paninij.model.Procedure;
+import org.paninij.model.Type;
 import org.paninij.model.Variable;
 
 public class CapsuleMonitorFactory extends CapsuleProfileFactory
@@ -159,7 +160,14 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
             argNames.add(0, "-1");
             args = String.join(", ", argNames);
             encap.add(shape.encoded + " msg = new " + shape.encoded + "(" + args + ");");
-            encap.add("msg.panini$resolve(" + call + ");");
+            Type r = shape.procedure.getReturnType();
+            if (r.isVoid()) {
+                encap.add(call + ";");
+                encap.add("msg.panini$resolve(null);");
+            } else {
+                encap.add(r.wrapped() + " result = " + call + ";");
+                encap.add("msg.panini$resolve(result);");
+            }
             encap.add("return msg;");
             return encap;
         case UNBLOCKED_SIMPLE:
