@@ -24,25 +24,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.paninij.apt.model.Procedure;
-import org.paninij.apt.model.Signature;
 import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
-import org.paninij.apt.util.SourceFile;
 
-public class SignatureFactory
+public class SignatureFactory extends SignatureArtifactFactory
 {
-    private Signature context;
-
-    public SourceFile make(Signature signature) {
-        this.context = signature;
-
-        String name = this.context.getQualifiedName();
-        String content = this.generateContent();
-
-        return new SourceFile(name, content);
-    }
-
+    @Override
     protected String generateContent() {
         String src = Source.cat(
                 "package #0;",
@@ -56,8 +44,8 @@ public class SignatureFactory
                 "}");
 
         src = Source.format(src,
-                this.context.getPackage(),
-                this.context.getSimpleName());
+                this.signature.getPackage(),
+                this.signature.getSimpleName());
         src = Source.formatAligned(src, this.generateImports());
         src = Source.formatAligned(src, this.generateFacades());
 
@@ -67,12 +55,12 @@ public class SignatureFactory
     protected List<String> generateImports() {
         Set<String> imports = new HashSet<String>();
 
-        for (Procedure p : this.context.getProcedures()) {
+        for (Procedure p : this.signature.getProcedures()) {
             MessageShape shape = new MessageShape(p);
             imports.add(shape.getPackage() + "." +shape.encoded);
         }
 
-        imports.addAll(this.context.getImports());
+        imports.addAll(this.signature.getImports());
 
         List<String> prefixedImports = new ArrayList<String>();
 
@@ -86,7 +74,7 @@ public class SignatureFactory
     protected List<String> generateFacades() {
         List<String> facades =  new ArrayList<String>();
 
-        for (Procedure p : this.context.getProcedures()) {
+        for (Procedure p : this.signature.getProcedures()) {
             facades.add(this.generateFacade(p));
             facades.add("");
         }
@@ -111,5 +99,11 @@ public class SignatureFactory
                 argDeclString);
 
         return declaration;
+    }
+
+    @Override
+    protected String getQualifiedName()
+    {
+        return signature.getQualifiedName();
     }
 }

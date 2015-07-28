@@ -13,12 +13,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.paninij.apt.model.AnnotationKind;
+import org.paninij.apt.model.Capsule;
 import org.paninij.apt.model.Procedure;
 import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
 
-public class CapsuleMockupFactory extends CapsuleArtifactFactory
+public class CapsuleMockupFactory extends SignatureArtifactFactory
 {
     public static final String CAPSULE_MOCKUP_SUFFIX = "$Mockup";
 
@@ -26,12 +27,12 @@ public class CapsuleMockupFactory extends CapsuleArtifactFactory
     @Override
     protected String getQualifiedName()
     {
-        return capsule.getQualifiedName() + CAPSULE_MOCKUP_SUFFIX;
+        return signature.getQualifiedName() + CAPSULE_MOCKUP_SUFFIX;
     }
     
     protected String getSimpleName()
     {
-        return capsule.getSimpleName() + CAPSULE_MOCKUP_SUFFIX;
+        return signature.getSimpleName() + CAPSULE_MOCKUP_SUFFIX;
     }
     
     @Override
@@ -51,9 +52,9 @@ public class CapsuleMockupFactory extends CapsuleArtifactFactory
                 "    ##",
                 "}");
 
-        src = format(src, this.capsule.getPackage(),
+        src = format(src, this.signature.getPackage(),
                           this.getSimpleName(),
-                          this.capsule.getSimpleName());
+                          this.signature.getSimpleName());
 
         src = formatAligned(src, this.generateImports());
         src = formatAligned(src, this.generateWiredMethod());
@@ -65,7 +66,7 @@ public class CapsuleMockupFactory extends CapsuleArtifactFactory
 
     protected List<String> generateImports()
     {
-        Set<String> imports = this.capsule.getImports();
+        Set<String> imports = this.signature.getImports();
         imports.add("org.paninij.runtime.Capsule$Mockup");
         imports.add("org.paninij.lang.CapsuleMockup");
         return imports.stream()
@@ -76,23 +77,27 @@ public class CapsuleMockupFactory extends CapsuleArtifactFactory
 
     protected List<String> generateWiredMethod()
     {
-        List<String> decls = new ArrayList<String>();
-
-        for (Variable v : this.capsule.getWired()) {
-            decls.add(v.toString());
-        }
-
-        if (decls.isEmpty())
+        if (signature instanceof Capsule)
         {
-            return lines();
+            List<String> decls = new ArrayList<String>();
+            for (Variable v : ((Capsule) this.signature).getWired()) {
+                decls.add(v.toString());
+            }
+
+            if (decls.isEmpty()) {
+                return lines();
+            }
+            else
+            {
+                List<String> src = lines("public void wire(#0)",
+                                         "{",
+                                         "    /* Do nothing. */",
+                                         "}");
+                return Source.formatAll(src, String.join(", ", decls));
+            }
         }
-        else
-        {
-            List<String> src = lines("public void wire(#0)",
-                                     "{",
-                                     "    /* Do nothing. */",
-                                     "}");
-            return Source.formatAll(src, String.join(", ", decls));
+        else {
+            return Source.lines();  // Return an empty list.
         }
     }
 
@@ -100,7 +105,7 @@ public class CapsuleMockupFactory extends CapsuleArtifactFactory
     protected List<String> generateProcedures()
     {
         List<String> src = new ArrayList<String>();
-        for (Procedure p : capsule.getProcedures()) {
+        for (Procedure p : signature.getProcedures()) {
             src.addAll(this.generateProcedure(p));
         }
         return src;

@@ -146,8 +146,7 @@ public class PaniniProcessor extends AbstractProcessor
             artifactMaker.add(signatureFactory.make(signature));
             
             // Generate mockup capsule implementing the signature.
-            // TODO: Modify the mockup factory to be able to generate a mockup from a signature.
-            //artifactMaker.add(capsuleMockupFactory.make(signature));
+            artifactMaker.add(capsuleMockupFactory.make(signature));
         }
         
         // Generate capsule artifacts
