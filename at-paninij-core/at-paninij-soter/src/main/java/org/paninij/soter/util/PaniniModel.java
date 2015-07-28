@@ -27,7 +27,7 @@ public class PaniniModel
     // TODO: Do annotation checking in a more robust way.
     private static final String CAPSULE_ANNOTATION_NAME = "Capsule";
     private static final String CAPSULE_INTERFACE_ANNOTATION_NAME = "CapsuleInterface";
-    private static final String CAPSULE_DUMMY_SUFFIX = "$Dummy";
+    private static final String CAPSULE_MOCKUP_SUFFIX = "$Mockup";
 
 
     /**
@@ -166,13 +166,13 @@ public class PaniniModel
     }
     
     
-    public static TypeReference getDummyCapsuleClassReference(TypeReference capsuleInterface)
+    public static TypeReference getCapsuleMockupClassReference(TypeReference capsuleInterface)
     {
         ClassLoaderReference loader = capsuleInterface.getClassLoader();
 
         TypeName interfaceName = capsuleInterface.getName();
         String pkg = interfaceName.getPackage().toString();
-        String name = interfaceName.getClassName().toString() + CAPSULE_DUMMY_SUFFIX;
+        String name = interfaceName.getClassName().toString() + CAPSULE_MOCKUP_SUFFIX;
 
         return TypeReference.findOrCreateClass(loader, pkg, name);
     }

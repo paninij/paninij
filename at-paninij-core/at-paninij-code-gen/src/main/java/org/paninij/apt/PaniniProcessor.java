@@ -127,7 +127,7 @@ public class PaniniProcessor extends AbstractProcessor
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
         CapsuleInterfaceFactory capsuleInterfaceFactory = new CapsuleInterfaceFactory();
-        CapsuleDummyFactory capsuleDummyFactory = new CapsuleDummyFactory();
+        CapsuleMockupFactory capsuleMockupFactory = new CapsuleMockupFactory();
         CapsuleTestFactory capsuleTestFactory = new CapsuleTestFactory();
         CapsuleThreadFactory threadCapsuleFactory = new CapsuleThreadFactory();
         CapsuleSerialFactory serialCapsuleFactory = new CapsuleSerialFactory();
@@ -157,8 +157,8 @@ public class PaniniProcessor extends AbstractProcessor
             // Generate capsule interface
             artifactMaker.add(capsuleInterfaceFactory.make(capsule));
             
-            // Generate dummy capsule
-            artifactMaker.add(capsuleDummyFactory.make(capsule));
+            // Generate mockup capsule
+            artifactMaker.add(capsuleMockupFactory.make(capsule));
         }
         
         /*

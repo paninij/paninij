@@ -18,20 +18,20 @@ import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
 
-public class CapsuleDummyFactory extends CapsuleArtifactFactory
+public class CapsuleMockupFactory extends CapsuleArtifactFactory
 {
-    public static final String CAPSULE_DUMMY_SUFFIX = "$Dummy";
+    public static final String CAPSULE_MOCKUP_SUFFIX = "$Mockup";
 
     
     @Override
     protected String getQualifiedName()
     {
-        return capsule.getQualifiedName() + CAPSULE_DUMMY_SUFFIX;
+        return capsule.getQualifiedName() + CAPSULE_MOCKUP_SUFFIX;
     }
     
     protected String getSimpleName()
     {
-        return capsule.getSimpleName() + CAPSULE_DUMMY_SUFFIX;
+        return capsule.getSimpleName() + CAPSULE_MOCKUP_SUFFIX;
     }
     
     @Override
@@ -43,8 +43,8 @@ public class CapsuleDummyFactory extends CapsuleArtifactFactory
                 "##",
                 "",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "@CapsuleDummy",
-                "public class #1 extends Capsule$Dummy implements #2",
+                "@CapsuleMockup",
+                "public class #1 extends Capsule$Mockup implements #2",
                 "{",
                 "    ##",
                 "",
@@ -66,8 +66,8 @@ public class CapsuleDummyFactory extends CapsuleArtifactFactory
     protected List<String> generateImports()
     {
         Set<String> imports = this.capsule.getImports();
-        imports.add("org.paninij.runtime.Capsule$Dummy");
-        imports.add("org.paninij.lang.CapsuleDummy");
+        imports.add("org.paninij.runtime.Capsule$Mockup");
+        imports.add("org.paninij.lang.CapsuleMockup");
         return imports.stream()
                       .map(i -> "import " + i + ";")
                       .collect(toList());

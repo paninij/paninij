@@ -1,6 +1,6 @@
 package org.paninij.runtime;
 
-public class Capsule$Dummy implements Panini$Capsule
+public class Capsule$Mockup implements Panini$Capsule
 {
     @Override
     public void panini$start() {
