@@ -144,6 +144,10 @@ public class PaniniProcessor extends AbstractProcessor
 
             // Generate the mangled signature.
             artifactMaker.add(signatureFactory.make(signature));
+            
+            // Generate mockup capsule implementing the signature.
+            // TODO: Modify the mockup factory to be able to generate a mockup from a signature.
+            //artifactMaker.add(capsuleMockupFactory.make(signature));
         }
         
         // Generate capsule artifacts
@@ -157,18 +161,10 @@ public class PaniniProcessor extends AbstractProcessor
             // Generate capsule interface
             artifactMaker.add(capsuleInterfaceFactory.make(capsule));
             
-            // Generate mockup capsule
+            // Generate mockup capsule implementing the capsule interface.
             artifactMaker.add(capsuleMockupFactory.make(capsule));
         }
         
-        /*
-        if (options.staticOwnershipTransferKind == Kind.SOTER)
-        {
-            artifactMaker.makeAll();
-            analyzeAndInstrument(capsules);
-        }
-        */
-       
         for (Capsule capsule : capsules)
         {
             // Generate capsule thread profile

@@ -44,17 +44,34 @@ public class Main
     {
         note("Analyzing and Instrumenting Capsule: " + qualifiedCapsuleName);
         
-        SoterAnalysis soterAnalysis = soterAnalysisFactory.make(qualifiedCapsuleName);
-        soterAnalysis.perform();
+        SoterAnalysis soterAnalysis;
+        try {
+            soterAnalysis = soterAnalysisFactory.make(qualifiedCapsuleName);
+            soterAnalysis.perform();
+        }
+        catch (Exception ex)
+        {
+            error("Caught an exception while analyzing a capsule: " + qualifiedCapsuleName);
+            ex.printStackTrace(System.err);
+            return;
+        }
 
         if (cliArguments.analysisReports != null)
         {
             log(cliArguments.analysisReports + File.separator + qualifiedCapsuleName,
                 soterAnalysis.getResultsReport(), false);
         }
-
-        SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
-        soterInstrumenter.perform();
+        
+        try {
+            SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
+            soterInstrumenter.perform();
+        }
+        catch (Exception ex)
+        {
+            error("Caught an exception while instrumenting a capsule: " + qualifiedCapsuleName);
+            ex.printStackTrace(System.err);
+            return;
+        }
 
         if (cliArguments.callGraphPDFs != null)
         {
@@ -121,10 +138,14 @@ public class Main
     }
     
     public void note(String msg) {
-        System.out.println("--- org.paninij.soter.Main: " + msg);
+        System.err.println("--- org.paninij.soter.Main: " + msg);
     }
 
     public void warning(String msg) {
-        System.out.println("~~~ org.paninij.soter.Main: " + msg);
+        System.err.println("~~~ org.paninij.soter.Main: " + msg);
+    }
+    
+    public void error(String msg) {
+        System.err.println("!!! org.paninij.soter.Main: " + msg);
     }
 }
