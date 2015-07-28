@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import org.paninij.soter.util.PaniniModel;
 import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -84,7 +85,8 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         getStateDecls(template).forEach(f -> addState(root, f, receiverValueNumber));
         
         // Initialize the newly created receiver object.
-        makeReceiverInitInvocation(root, receiverValueNumber);
+        // TODO: Debug and re-enable this.
+        //makeReceiverInitInvocation(root, receiverValueNumber);
         
         return receiverValueNumber;
     }
@@ -108,14 +110,21 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     
     
     /**
+     * Makes an invocation instruction on template object with value number `i`, and adds this
+     * instruction to the given fake root method.
+     * 
      * @see makeArgument
      */
     protected void makeReceiverInitInvocation(AbstractRootMethod root, int i)
     {
-        MethodReference initMethod = template.getMethod(Selector.make("()V")).getReference();
-        CallSiteReference initCall = CallSiteReference.make(root.getStatements().length, initMethod,
-                                                            IInvokeInstruction.Dispatch.STATIC);
-        root.addInvocation(new int[] {i}, initCall);
+        IMethod initMethod = PaniniModel.getInitDecl(template);
+        if (initMethod != null)
+        {
+            CallSiteReference initCall = CallSiteReference.make(root.getStatements().length,
+                                                                initMethod.getReference(),
+                                                                IInvokeInstruction.Dispatch.STATIC);
+            root.addInvocation(new int[] {i}, initCall);
+        }
     }
     
     

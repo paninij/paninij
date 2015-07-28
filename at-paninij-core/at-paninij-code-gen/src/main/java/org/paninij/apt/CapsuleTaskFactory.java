@@ -89,7 +89,6 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
-        imports.add("org.paninij.runtime.check.Panini$Ownership");
         imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();

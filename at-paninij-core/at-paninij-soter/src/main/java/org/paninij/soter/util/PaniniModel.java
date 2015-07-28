@@ -86,6 +86,21 @@ public class PaniniModel
                  .orElse(null);
     }
     
+
+    /**
+     * @param template A capsule template class annotated with `@Capsule`.
+     * @return The template's run declaration, if it defines an active capsule. Otherwise `null`.
+     */
+    public static IMethod getInitDecl(IClass template)
+    {
+        assert isCapsuleTemplate(template);
+        return JavaModel.getApplicationMethodsList(template)
+                 .stream()
+                 .filter(m -> isNamed(m, "init"))
+                 .findFirst()
+                 .orElse(null);
+    }
+    
     
     /**
      * @param template A capsule template class annotated with `@Capsule`.
@@ -177,4 +192,5 @@ public class PaniniModel
         // TODO: Add String and primitive box types (e.g. Integer).
         return typeRef.isPrimitiveType();
     }
+
 }
