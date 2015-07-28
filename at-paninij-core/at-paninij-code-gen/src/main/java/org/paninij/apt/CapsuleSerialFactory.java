@@ -127,7 +127,8 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
     private List<String> generateEncapsulatedMethodCall(MessageShape shape)
     {
         List<String> encap = new ArrayList<String>();
-        String args = String.join(", ", this.generateProcArgumentNames(shape.procedure));
+        List<String> argNames = this.generateProcArgumentNames(shape.procedure);
+        String args = String.join(", ", argNames);
         String call = "panini$encapsulated." + shape.procedure.getName() + "(" + args + ")";
         switch(shape.behavior) {
         case UNBLOCKED_DUCK:
@@ -142,7 +143,9 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         case ERROR:
             break;
         case UNBLOCKED_FUTURE:
-            encap.add(shape.encoded + " msg = new " + shape.encoded + "(-1, " + args + ");");
+            argNames.add(0, "-1");
+            args = String.join(", ", argNames);
+            encap.add(shape.encoded + " msg = new " + shape.encoded + "(" + args + ");");
             encap.add("msg.panini$resolve(" + call + ");");
             encap.add("return msg;");
             return encap;

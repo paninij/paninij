@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.concsll;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -10,22 +9,21 @@ import org.paninij.lang.Child;
     @Child SortedList sortedList;
 
     int numWorkersTerminated = 0;
-    FlagFuture flag = new FlagFuture();
 
     public void design(Master self) {
-        for (Worker w : workers) w.wire(self, sortedList);
+        for (int i = 0; i < workers.length; i++) workers[i].wire(self, sortedList, i);
+        sortedList.wire(workers);
     }
 
-    public FlagFuture start() {
-        for (int i = 0; i < SortedListConfig.NUM_ENTITIES; i++) workers[i].doWork();
-        return flag;
+    public void start() {
+        for (Worker w : workers) w.doWork();
     }
 
     public void workerFinished() {
         numWorkersTerminated++;
         if (numWorkersTerminated == SortedListConfig.NUM_ENTITIES) {
             sortedList.printResult();
-            flag.resolve();
+            for (Worker w : workers) w.exit();
         }
     }
 }
