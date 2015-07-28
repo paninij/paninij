@@ -10,8 +10,13 @@ public class CLIArguments
     private static final String CLASS_OUTPUT_DESCRIPTION =
             "The path to the directory in which the instrumented classes should be placed.";
     
-    private static final String COMPILER_CLASS_PATH_DESCRIPTION =
-            "The class path needed to compile the given capsule template classes.";
+    private static final String CLASS_PATH_DESCRIPTION =
+            "The class path needed to compile the given capsule classes. This value will be "
+            + "appended to the contents of the `-classPathFile`";
+    
+    private static final String CLASS_PATH_FILE_DESCRIPTION =
+            "A file containing the class path needed to compile the given capsule classes. This "
+            + "file's contents will be appended to the `-classPath` value.";
     
     private static final String ANALYSIS_REPORTS_DESCRIPTION =
             "The path to the directory in which the SOTER analysis reports should be placed. "
@@ -32,8 +37,11 @@ public class CLIArguments
     @Parameter(names = "-classOutput", description = CLASS_OUTPUT_DESCRIPTION)
     public String classOutput;
     
-    @Parameter(names = "-compilerClassPath", description = COMPILER_CLASS_PATH_DESCRIPTION)
-    public String compilerClassPath;
+    @Parameter(names = "-classPath", description = CLASS_PATH_DESCRIPTION)
+    public String classPath;
+    
+    @Parameter(names = "-classPathFile", description = CLASS_PATH_FILE_DESCRIPTION)
+    public String classPathFile;
 
     @Parameter(names = "-analysisReports", description = ANALYSIS_REPORTS_DESCRIPTION)
     public String analysisReports;

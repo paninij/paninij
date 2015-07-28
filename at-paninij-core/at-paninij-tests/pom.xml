@@ -21,18 +21,39 @@
     <generated.test.sources.directory>
       ${project.build.directory}/generated-test-sources
     </generated.test.sources.directory>
+    <generated.dependenciesFile>
+      ${project.build.directory}/dependencies.txt
+    </generated.dependenciesFile>
+    <panini.capsuleListFile>
+      ${project.build.directory}/capsule_list.txt
+    </panini.capsuleListFile>
     <project.logsDirectory>
       ${project.basedir}/logs
     </project.logsDirectory>
-    <project.soterArgsFile>
-      ${project.build.directory}/soter_args_file.txt
-    </project.soterArgsFile>
   </properties>
 
 
   <build>
-
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.10</version>
+        <executions>
+          <execution>
+            <id>generate-dependencies-file</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>build-classpath</goal>
+            </goals>
+            <configuration>
+              <outputFile>${generated.dependenciesFile}</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -49,10 +70,16 @@
         <configuration>
           <mainClass>org.paninij.soter.Main</mainClass>
           <arguments>
-            <argument>-analysisReports</argument>
-            <argument>${project.logsDirectory}/soter/analysis-reports</argument>
+            <argument>-classPath</argument>
+            <argument>${project.build.outputDirectory}</argument>
+            <argument>-classPathFile</argument>
+            <argument>${generated.dependenciesFile}</argument>
             <argument>-classOutput</argument>
             <argument>${project.build.outputDirectory}</argument>
+
+            <argument>-analysisReports</argument>
+            <argument>${project.logsDirectory}/soter/analysis-reports</argument>
+
             <!--
             <argument>-callGraphPDFs</argument>
             <argument>${project.logsDirectory}/soter/call-graphs</argument>
@@ -61,7 +88,7 @@
             <argument>-heapGraphPDFs</argument>
             <argument>${project.logsDirectory}/soter/heap-graphs</argument>
             -->
-            <argument>@${project.soterArgsFile}</argument>
+            <argument>@${panini.capsuleListFile}</argument>
           </arguments>
         </configuration>
       </plugin>
@@ -74,7 +101,7 @@
           <generatedTestSourcesDirectory>${generated.test.sources.directory}</generatedTestSourcesDirectory>
           <fork>true</fork>
           <compilerArgs>
-            <arg>-Apanini.soterArgsFile=${project.soterArgsFile}</arg>
+            <arg>-Apanini.capsuleListFile=${panini.capsuleListFile}</arg>
           </compilerArgs>
         </configuration>
       </plugin>

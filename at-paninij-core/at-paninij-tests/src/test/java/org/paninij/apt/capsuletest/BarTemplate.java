@@ -2,6 +2,7 @@ package org.paninij.apt.capsuletest;
 
 import org.paninij.lang.Capsule;
 
+/*
 @Capsule
 public class BarTemplate
 {
@@ -15,3 +16,5 @@ public class BarTemplate
         return ++count;
     }
 }
+
+*/

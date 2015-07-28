@@ -1,5 +1,6 @@
-package org.paninij.apt.soter;
+package org.paninij.soter;
 
+import org.paninij.soter.LeakyServer;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 

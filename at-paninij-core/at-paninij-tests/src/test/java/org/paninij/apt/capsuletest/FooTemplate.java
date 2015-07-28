@@ -3,6 +3,7 @@ package org.paninij.apt.capsuletest;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
+/*
 @Capsule
 public class FooTemplate
 {
@@ -21,3 +22,4 @@ public class FooTemplate
         return ++count;
     }
 }
+*/

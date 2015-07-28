@@ -4,6 +4,7 @@ import org.paninij.lang.CapsuleTest;
 import org.paninij.lang.Child;
 import org.paninij.lang.Test;
 
+/*
 @CapsuleTest
 public class BasicCapsuleTemplate
 {
@@ -55,3 +56,5 @@ public class BasicCapsuleTemplate
         assert count.intValue() == EXPECTED;
     }
 }
+
+*/

@@ -1,4 +1,4 @@
-package org.paninij.apt.soter;
+package org.paninij.soter;
 
 import java.io.File;
 
@@ -17,6 +17,7 @@ import com.ibm.wala.util.config.AnalysisScopeReader;
 
 public class TestWalaClassLoading
 {
+    /*
     private static final String CLASSPATH = System.getProperty("java.class.path");
 
     private static final String NORMAL_TYPE = "Lorg/paninij/apt/soter/Secret";
@@ -69,4 +70,5 @@ public class TestWalaClassLoading
     private final TypeReference getTypeReference(String typeName) {
         return TypeReference.findOrCreate(ClassLoaderReference.Application, typeName);
     }
+    */
 }

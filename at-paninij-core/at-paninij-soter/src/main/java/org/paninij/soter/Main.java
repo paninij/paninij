@@ -1,10 +1,14 @@
 package org.paninij.soter;
 
+import static java.io.File.pathSeparator;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.instrument.SoterInstrumenter;
@@ -29,8 +33,10 @@ public class Main
         // Note that instantiation of the analysis factory needs to happen after the artifacts have
         // been compiled so that the bytecode for those artifacts will be found by the CHA.
         this.cliArguments = cliArguments;
-        System.err.println("compilerClassPath: " + cliArguments.compilerClassPath);
-        soterAnalysisFactory = new SoterAnalysisFactory(cliArguments.compilerClassPath);
+
+        String cp = makeEffectiveClassPath(cliArguments.classPath, cliArguments.classPathFile);
+        note("Effective class path: " + cp);
+        soterAnalysisFactory = new SoterAnalysisFactory(cp);
         soterInstrumenterFactory = new SoterInstrumenterFactory(cliArguments.classOutput);
     }
    
@@ -61,6 +67,34 @@ public class Main
         }
     }
     
+    /**
+     * Appends the contents of the `classPathFile` to the given `classPath`. Either argument can
+     * be `null`.
+     * 
+     * @throws IllegalArgumentException if the `classPathFile` could not be read.
+     */
+    public static String makeEffectiveClassPath(String classPath, String classPathFile)
+    {
+        if (classPath == null) {
+            classPath = "";
+        }
+        if (classPathFile == null || classPathFile == "") {
+            return classPath;
+        }
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(classPathFile));
+            String contents = new String(bytes, "UTF-8");
+            if (! contents.isEmpty()) {
+                classPath = (classPath.equals("")) ? contents : classPath + pathSeparator + contents;
+            }
+        }
+        catch (IOException ex) {
+            throw new IllegalArgumentException("Could not read `classPathFile`: " + classPathFile);
+        }
+    
+        return classPath;
+    }
+
     public static void main(String[] args)
     {
         CLIArguments cliArguments = new CLIArguments();
@@ -82,5 +116,13 @@ public class Main
         {
             throw new RuntimeException("Failed to log a message: " + ex, ex);
         }
+    }
+    
+    public void note(String msg) {
+        System.out.println("--- org.paninij.soter.Main: " + msg);
+    }
+
+    public void warning(String msg) {
+        System.out.println("~~~ org.paninij.soter.Main: " + msg);
     }
 }

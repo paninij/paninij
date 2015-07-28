@@ -5,6 +5,7 @@ import org.paninij.lang.Capsule;
 /**
  * Implements a server which gives away a reference to its state.
  */
+/*
 @Capsule
 public class LeakyServerTemplate
 {
@@ -30,3 +31,4 @@ public class LeakyServerTemplate
         return this;
     }
 }
+*/

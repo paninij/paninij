@@ -1,4 +1,4 @@
-package org.paninij.apt.soter;
+package org.paninij.soter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -20,12 +20,9 @@ package org.paninij.apt;
 
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,8 +51,6 @@ import org.paninij.apt.model.SignatureElement;
 import org.paninij.apt.util.ArtifactFiler;
 import org.paninij.apt.util.ArtifactMaker;
 import org.paninij.apt.util.UserArtifact;
-import org.paninij.soter.SoterAnalysisFactory;
-import org.paninij.soter.instrument.SoterInstrumenterFactory;
 
 
 /**
@@ -65,20 +60,20 @@ import org.paninij.soter.instrument.SoterInstrumenterFactory;
 @SupportedAnnotationTypes({"org.paninij.lang.Capsule",
                            "org.paninij.lang.Signature",
                            "org.paninij.lang.CapsuleTester"})
-@SupportedOptions("panini.soterArgsFile")
+@SupportedOptions("panini.capsuleListFile")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
     protected RoundEnvironment roundEnv;
     protected ArtifactMaker artifactMaker;
-    protected String soterArgsFile;
+    protected String capsuleListFile;
     
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
         super.init(procEnv);
 
-        soterArgsFile = procEnv.getOptions().get("panini.soterArgsFile");
+        capsuleListFile = procEnv.getOptions().get("panini.capsuleListFile");
         artifactMaker = new ArtifactFiler(procEnv.getFiler()) ;
     }
 
@@ -201,8 +196,8 @@ public class PaniniProcessor extends AbstractProcessor
         artifactMaker.makeAll();
         artifactMaker.close();
 
-        if (soterArgsFile != null) {
-            makeSoterArgsFile(capsules);
+        if (capsuleListFile != null) {
+            makeCapsuleListFile(capsules);
         }
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
@@ -212,23 +207,20 @@ public class PaniniProcessor extends AbstractProcessor
     }
     
     
-    protected void makeSoterArgsFile(Set<Capsule> capsules)
+    protected void makeCapsuleListFile(Set<Capsule> capsules)
     {
-        note("Making soter args file: " + soterArgsFile);
+        note("Making capsule list file: " + capsuleListFile);
 
         try {
-            String cp = System.getProperty("java.class.path");
-            PrintWriter soterArgsWriter = new PrintWriter(soterArgsFile, "UTF-8");
-            soterArgsWriter.append("-compilerClassPath\n" + cp + "\n");
+            PrintWriter writer = new PrintWriter(new FileWriter(capsuleListFile, false));
             for (Capsule capsule : capsules) {
-                soterArgsWriter.append(capsule.getQualifiedName() + "\n");
+                writer.append(capsule.getQualifiedName() + "\n");
             }
-            soterArgsWriter.close();
+            writer.close();
         }
-        catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            throw new RuntimeException("Cannot open the SOTER arguments file: " + soterArgsFile);
+        catch (IOException ex) {
+            throw new RuntimeException("Cannot open the SOTER arguments file: " + capsuleListFile);
         }
-        
     }
     
 
