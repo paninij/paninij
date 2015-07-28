@@ -24,6 +24,9 @@
     <project.logsDirectory>
       ${project.basedir}/logs
     </project.logsDirectory>
+    <project.soterArgsFile>
+      ${project.build.directory}/soter_args_file.txt
+    </project.soterArgsFile>
   </properties>
 
 
@@ -46,9 +49,19 @@
         <configuration>
           <mainClass>org.paninij.soter.Main</mainClass>
           <arguments>
-            <argument>-analysisReports ${project.logsDirectory}/soter/analysis-reports</argument>
-            <!--<argument>-callGraphPDFs ${project.logsDirectory}/soter/call-graphs</argument>-->
-            <!--<argument>-heapGraphPDFs ${project.logsDirectory}/soter/heap-graphs</argument>-->
+            <argument>-analysisReports</argument>
+            <argument>${project.logsDirectory}/soter/analysis-reports</argument>
+            <argument>-classOutput</argument>
+            <argument>${project.build.outputDirectory}</argument>
+            <!--
+            <argument>-callGraphPDFs</argument>
+            <argument>${project.logsDirectory}/soter/call-graphs</argument>
+            -->
+            <!--
+            <argument>-heapGraphPDFs</argument>
+            <argument>${project.logsDirectory}/soter/heap-graphs</argument>
+            -->
+            <argument>@${project.soterArgsFile}</argument>
           </arguments>
         </configuration>
       </plugin>
@@ -59,6 +72,10 @@
         <configuration>
           <generatedSourcesDirectory>${generated.sources.directory}</generatedSourcesDirectory>
           <generatedTestSourcesDirectory>${generated.test.sources.directory}</generatedTestSourcesDirectory>
+          <fork>true</fork>
+          <compilerArgs>
+            <arg>-Apanini.soterArgsFile=${project.soterArgsFile}</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

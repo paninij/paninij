@@ -20,9 +20,12 @@ package org.paninij.apt;
 
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +33,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -61,20 +65,21 @@ import org.paninij.soter.instrument.SoterInstrumenterFactory;
 @SupportedAnnotationTypes({"org.paninij.lang.Capsule",
                            "org.paninij.lang.Signature",
                            "org.paninij.lang.CapsuleTester"})
+@SupportedOptions("panini.soterArgsFile")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
     protected RoundEnvironment roundEnv;
     protected ArtifactMaker artifactMaker;
-    protected SoterAnalysisFactory soterAnalysisFactory;
-    protected SoterInstrumenterFactory soterInstrumenterFactory;
-    protected boolean midpointCompile;
+    protected String soterArgsFile;
     
     @Override
     public void init(ProcessingEnvironment procEnv)
     {
         super.init(procEnv);
-        artifactMaker = ArtifactFiler.make(procEnv.getFiler());
+
+        soterArgsFile = procEnv.getOptions().get("panini.soterArgsFile");
+        artifactMaker = new ArtifactFiler(procEnv.getFiler()) ;
     }
 
     @Override
@@ -173,7 +178,7 @@ public class PaniniProcessor extends AbstractProcessor
 
             // TODO Generate other capsule profiles
         }
-
+        
         // Generate capsule test artifacts
         for (Capsule capsuleTest : capsuleTests)
         {
@@ -196,11 +201,36 @@ public class PaniniProcessor extends AbstractProcessor
         artifactMaker.makeAll();
         artifactMaker.close();
 
+        if (soterArgsFile != null) {
+            makeSoterArgsFile(capsules);
+        }
+
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
         note("Finished a round of processing.");
 
         return false;
     }
+    
+    
+    protected void makeSoterArgsFile(Set<Capsule> capsules)
+    {
+        note("Making soter args file: " + soterArgsFile);
+
+        try {
+            String cp = System.getProperty("java.class.path");
+            PrintWriter soterArgsWriter = new PrintWriter(soterArgsFile, "UTF-8");
+            soterArgsWriter.append("-compilerClassPath\n" + cp + "\n");
+            for (Capsule capsule : capsules) {
+                soterArgsWriter.append(capsule.getQualifiedName() + "\n");
+            }
+            soterArgsWriter.close();
+        }
+        catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            throw new RuntimeException("Cannot open the SOTER arguments file: " + soterArgsFile);
+        }
+        
+    }
+    
 
     String getPackageOf(TypeElement type) {
         Elements utils = processingEnv.getElementUtils();
@@ -224,47 +254,7 @@ public class PaniniProcessor extends AbstractProcessor
             throw new RuntimeException("Failed to log a message: " + ex, ex);
         }
     }
-    
-    /*
-    protected void analyzeAndInstrument(Set<Capsule> capsules)
-    {
-        assert options.staticOwnershipTransferKind == Kind.SOTER;
-        
-        // Note that instantiation of the analysis factory needs to happen after the artifacts have
-        // been compiled so that the bytecode for those artifacts will be found by the CHA.
-        soterAnalysisFactory = new SoterAnalysisFactory(options.effectiveClassPathString);
-        soterInstrumenterFactory = new SoterInstrumenterFactory(options.classOutput.getAbsolutePath());
 
-        for (Capsule capsule : capsules)
-        {
-            String capsuleName = capsule.getQualifiedName();
-            SoterAnalysis soterAnalysis = soterAnalysisFactory.make(capsuleName);
-            soterAnalysis.perform();
-
-            // TODO: Make this actually use the user's directory.
-            if (options.analysisReports != null)
-            {
-                log(options.analysisReports.getAbsolutePath() + File.separator + capsuleName,
-                    soterAnalysis.getResultsReport(), false);
-            }
-
-            SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
-            soterInstrumenter.perform();
-
-            if (options.callGraphPDFs != null)
-            {
-                String callGraphPDF = options.callGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
-                WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);
-            }
-    
-            if (options.heapGraphPDFs != null)
-            {
-                String heapGraphPDF = options.heapGraphPDFs.getAbsolutePath() + File.separator + capsuleName + ".pdf";
-                WalaUtil.makeGraphFile(soterAnalysis.getHeapGraph(), heapGraphPDF);
-            }
-        }
-    }
-    */
     
     public void note(String msg) {
         System.out.println("--- PaniniProcessor: " + msg);

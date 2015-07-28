@@ -23,6 +23,7 @@ import org.paninij.apt.util.FileManagerFactory;
  */
 public class TestPaniniProcessor
 {
+    /*
     private static final String CLASS_PATH = System.getProperty("java.class.path");
     private static final String SOURCE_PATH = "src/main/java:target/generated-sources:src/test/java:target/generated-test-sources";
     private static final String CLASS_OUTPUT = "target/test-classes";
@@ -69,4 +70,5 @@ public class TestPaniniProcessor
                                                     compilationUnits);
         task.call();
     }
+    */
 }

@@ -10,18 +10,17 @@ import javax.tools.JavaFileObject;
 public class ArtifactFiler implements ArtifactMaker
 {
     protected final Filer filer;
+
     protected final Set<Artifact> artifacts = new HashSet<Artifact>();
 
-    private ArtifactFiler(Filer filer)
+
+    public ArtifactFiler(Filer filer)
     {
         this.filer = filer;
+
+
     }
     
-    public static ArtifactFiler make(Filer filer)
-    {
-        return new ArtifactFiler(filer);
-    }
-
     @Override
     public void add(Artifact artifact)
     {
@@ -41,7 +40,8 @@ public class ArtifactFiler implements ArtifactMaker
                 if (artifact instanceof UserArtifact)
                     continue;
                 
-                JavaFileObject sourceFile = filer.createSourceFile(artifact.getQualifiedName());
+                String qualifiedName = artifact.getQualifiedName();
+                JavaFileObject sourceFile = filer.createSourceFile(qualifiedName);
                 sourceFile.openWriter().append(artifact.getContent()).close();
             }
         }
