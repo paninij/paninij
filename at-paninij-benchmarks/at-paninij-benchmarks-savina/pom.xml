@@ -13,8 +13,6 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <panini.capsuleListFile>${project.build.directory}/capsule_list.txt</panini.capsuleListFile>
-    <generated.dependenciesFile>${project.build.directory}/dependencies.txt</generated.dependenciesFile>
     <project.logsDirectory>${project.basedir}/logs</project.logsDirectory>
   </properties>
 
@@ -23,74 +21,17 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.10</version>
-        <executions>
-          <execution>
-            <id>generate-dependencies-file</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>build-classpath</goal>
-            </goals>
-            <configuration>
-              <outputFile>${generated.dependenciesFile}</outputFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
           <generatedSourcesDirectory>
             ${project.build.directory}/generated-sources
           </generatedSourcesDirectory>
-          <!--
           <generatedTestSourcesDirectory>
             ${project.build.directory}/generated-test-sources
           </generatedTestSourcesDirectory>
-          -->
-          <fork>true</fork>
-          <compilerArgs>
-            <arg>-Apanini.capsuleListFile=${panini.capsuleListFile}</arg>
-          </compilerArgs>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.4.0</version>
-        <executions>
-          <execution>
-            <id>runtime-ownership-checks</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>org.paninij.soter.Main</mainClass>
-          <arguments>
-            <argument>-classPath</argument>
-            <argument>${project.build.outputDirectory}</argument>
-            <argument>-classPathFile</argument>
-            <argument>${generated.dependenciesFile}</argument>
-            <argument>-classOutput</argument>
-            <argument>${project.build.outputDirectory}</argument>
-
-            <argument>-analysisReports</argument>
-            <argument>${project.logsDirectory}/soter/analysis-reports</argument>
-            <argument>@${panini.capsuleListFile}</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-
 
     </plugins>
   </build>
