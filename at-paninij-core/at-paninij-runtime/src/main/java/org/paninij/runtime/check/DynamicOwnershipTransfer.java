@@ -33,7 +33,13 @@ public class DynamicOwnershipTransfer
      */
     public static void assertSafeTransfer(Object msg)
     {
-        assert REFLECTION_OPTIMIZED.isSafeTransfer(msg, Panini$System.self.get().panini$getAllState());
+        String err = "Capsule performed an illegal ownership transfer: " + Panini$System.self.get();
+        //assert REFLECTION_OPTIMIZED.isSafeTransfer(msg, Panini$System.self.get().panini$getAllState()) : err;
+        if (REFLECTION_OPTIMIZED.isSafeTransfer(msg, Panini$System.self.get().panini$getAllState()) == false)
+        {
+            System.err.println(err);
+            throw new AssertionError(err);
+        }
     }
     
     public static boolean isSafeTransfer(Object msg, Object local, Kind method)

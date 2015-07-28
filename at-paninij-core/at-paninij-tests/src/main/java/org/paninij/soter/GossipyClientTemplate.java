@@ -32,6 +32,8 @@ public class GossipyClientTemplate
 
     public void run()
     {
+        System.out.println("Starting `GossipyClient`.");
+
         Random rand = new Random();
         for (int gossip = 0; gossip < NUM_GOSSIPS; gossip++)
         {
@@ -41,5 +43,7 @@ public class GossipyClientTemplate
         }
         
         importantServer.giveSecret(superSecret);
+
+        System.out.println("Stopping `GossipyClient`.");
     }
 }

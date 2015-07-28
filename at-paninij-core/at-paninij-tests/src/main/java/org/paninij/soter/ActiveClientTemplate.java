@@ -13,6 +13,8 @@ public class ActiveClientTemplate
     
     public void run()
     {
+        System.out.println("Starting `ActiveClient`.");
+        
         server.giveSecret(secret);          // Unsafe
         server.giveSecret(new Secret());    // Safe
 
@@ -20,5 +22,7 @@ public class ActiveClientTemplate
         server.giveInteger(new Integer(7)); // Safe
 
         Secret s = server.getSecret();
+
+        System.out.println("Stopping `ActiveClient`.");
     }
 }
