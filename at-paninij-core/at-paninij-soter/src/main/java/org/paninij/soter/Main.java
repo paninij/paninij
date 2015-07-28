@@ -42,6 +42,8 @@ public class Main
    
     protected void analyzeAndInstrument(String qualifiedCapsuleName)
     {
+        note("Analyzing and instrumenting capsule:" + qualifiedCapsuleName);
+        
         SoterAnalysis soterAnalysis = soterAnalysisFactory.make(qualifiedCapsuleName);
         soterAnalysis.perform();
 
