@@ -1,19 +1,14 @@
 package org.paninij.soter.cga;
 
-import static org.paninij.soter.util.PaniniModel.getChildDecls;
 import static org.paninij.soter.util.PaniniModel.getCapsuleMockupClassReference;
 import static org.paninij.soter.util.PaniniModel.getProceduresList;
 import static org.paninij.soter.util.PaniniModel.getRunDecl;
-import static org.paninij.soter.util.PaniniModel.getStateDecls;
-import static org.paninij.soter.util.PaniniModel.getWiredDecls;
 import static org.paninij.soter.util.PaniniModel.isCapsuleTemplate;
 import static org.paninij.soter.util.PaniniModel.isProcedure;
 import static org.paninij.soter.util.SoterUtil.isKnownToBeEffectivelyImmutable;
 
-import java.text.MessageFormat;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import org.paninij.soter.util.PaniniModel;
 
@@ -25,14 +20,19 @@ import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.impl.AbstractRootMethod;
 import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint;
 import com.ibm.wala.shrikeBT.IInvokeInstruction;
+import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSANewInstruction;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.collections.HashSetFactory;
 
 
+/**
+ * TODO: Consider re-implementing this with some sort of visitor over the capsule template.
+ */
 public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
 {
     protected IClass template;
+    protected int constZeroValueNumber;
 
     /**
      * @param method Either a `run()` declaration or a procedure on a well-formed capsule template
@@ -42,6 +42,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     {
         super(method, method.getClassHierarchy());
         template = method.getDeclaringClass();
+        constZeroValueNumber = 0;
         assert isCapsuleTemplate(template);
     }
 
@@ -64,6 +65,8 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
      */
     protected int makeReceiver(AbstractRootMethod root)
     {
+        constZeroValueNumber = root.addLocal();
+        
         // Instantiate a capsule template instance to serve as this entrypoint's receiver object.
         // Note that every capsule template must (only) have the default constructor.
         TypeReference receiverType = method.getParameterType(0);
@@ -135,28 +138,66 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     protected void addTemplateFieldInstance(AbstractRootMethod root, IField field, int receiverValueNumber)
     {
         TypeReference fieldTypeRef = field.getFieldTypeReference();
-        IClass fieldType = getCha().lookupClass(fieldTypeRef);
         
-        if (fieldTypeRef.isArrayType())
-        {
-            fieldTypeRef.getDimensionality()
-            String msg = "TODO: SOTER cannot yet add instances for array fields.";
-            throw new UnsupportedOperationException(msg);
+        if (fieldTypeRef.isArrayType()) {
+            addTemplateFieldArrayInstance(root, field, receiverValueNumber);
+            return;
         }
 
-        if (fieldTypeRef.isPrimitiveType() || isKnownToBeEffectivelyImmutable(fieldTypeRef))
-        {
+        if (fieldTypeRef.isPrimitiveType() || isKnownToBeEffectivelyImmutable(fieldTypeRef)) {
             // No need to add instances for these types.
             return;
         }
-        else if (PaniniModel.isCapsuleInterface(fieldType))
-        {
+
+        if (PaniniModel.isCapsuleInterface(getCha().lookupClass(fieldTypeRef))) {
             addCapsuleMockupInstance(root, field, receiverValueNumber);
+            return;
         }
-        else
+
+        // Otherwise, consider the field to be non-capsule state variable.
+        addStateInstance(root, field, receiverValueNumber);
+    }
+    
+    
+    /**
+     * If appropriate, instantiate and add an array instance in the given fake root.
+     */
+    protected void addTemplateFieldArrayInstance(AbstractRootMethod root, IField field,
+                                                 int receiverValueNumber)
+    {
+        // Currently, when an array is instantiated it is instantiated with size 1, and when
+        // elements need to be instantiated only the 0th is instantiated.
+        // TODO: Is this bad?
+        final int DEFAULT_ARRAY_LENGTH = 1;
+
+        TypeReference arrayTypeRef = field.getFieldTypeReference();
+        int dimensionality = arrayTypeRef.getDimensionality();
+        if (dimensionality > 1)
         {
-            addStateInstance(root, field, receiverValueNumber);
+            String msg = "TODO: Cannot yet add instances for array whose dimensionality is ";
+            throw new UnsupportedOperationException(msg + dimensionality);
         }
+        
+        TypeReference elemTypeRef = arrayTypeRef.getArrayElementType();
+        SSAInstruction newArrayInstr = root.add1DArrayAllocation(elemTypeRef, DEFAULT_ARRAY_LENGTH);
+
+        if (elemTypeRef.isPrimitiveType() || isKnownToBeEffectivelyImmutable(elemTypeRef))
+        {
+            // No need to add instances for the elements of these types of arrays.
+            return;
+        }
+
+        // Add a single new mockup instance if the array's elements are capsule interfaces.
+        if (PaniniModel.isCapsuleInterface(getCha().lookupClass(elemTypeRef)))
+        {
+            int mockupValueNumber = newCapsuleMockupInstance(root, elemTypeRef);
+            root.addSetArrayField(elemTypeRef, newArrayInstr.getDef(), constZeroValueNumber,
+                                  mockupValueNumber);
+            return;
+        }
+        
+        // Otherwise, assume that the elements of the array should be initialized in source code.
+        // TODO: Is this right.
     }
     
     
@@ -171,12 +212,17 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
      */
     protected void addCapsuleMockupInstance(AbstractRootMethod root, IField field, int receiverValueNumber)
     {
-        TypeReference fieldTypeRef = field.getFieldTypeReference();
-
-        TypeReference mockupType = getCapsuleMockupClassReference(fieldTypeRef);
+        int mockupValueNumber = newCapsuleMockupInstance(root, field.getFieldTypeReference());
+        root.addSetInstance(field.getReference(), receiverValueNumber, mockupValueNumber);
+    }
+    
+    
+    protected int newCapsuleMockupInstance(AbstractRootMethod root, TypeReference interfaceTypeRef)
+    {
+        TypeReference mockupType = getCapsuleMockupClassReference(interfaceTypeRef);
         if (mockupType == null)
         {
-            String msg = "Could not load the mockup class associated with " + fieldTypeRef;
+            String msg = "Could not load the mockup class associated with " + interfaceTypeRef;
             throw new IllegalArgumentException(msg);
         }
 
@@ -188,9 +234,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
             String msg = "Failed to create an allocation for a mockup: " + mockupType;
             throw new RuntimeException(msg);
         }
-        int mockupValueNumber = mockupAlloc.getDef();
-
-        root.addSetInstance(field.getReference(), receiverValueNumber, mockupValueNumber);
+        return mockupAlloc.getDef();
     }
     
 
