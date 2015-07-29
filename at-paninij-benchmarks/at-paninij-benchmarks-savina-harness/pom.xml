@@ -6,7 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>at-paninij-benchmarks-savina-harness</artifactId>
-  <name>at-paniniJ savina benchmarks using savina harness</name>
+  <name>@PaniniJ savina benchmarks using savina harness</name>
   <description>Benchmark classes which pair @PaniniJ benchmarks with Savina harness</description>
   <dependencies>
     <dependency>
