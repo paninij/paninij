@@ -1,14 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
-  <parent>
-    <groupId>org.paninij</groupId>
-    <artifactId>at-paninij-benchmarks</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  
+  <groupId>org.paninij</groupId>
+  <version>0.0.1-SNAPSHOT</version>
   <artifactId>at-paninij-examples</artifactId>
   <name>@PaniniJ Examples</name>
+  <packaging>jar</packaging>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -98,14 +95,17 @@
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-code-gen</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-runtime</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-soter</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
