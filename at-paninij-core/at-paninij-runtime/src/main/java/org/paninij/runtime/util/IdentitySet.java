@@ -2,29 +2,34 @@ package org.paninij.runtime.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Implements a monotonically-increasing set (i.e. identities cannot be removed except by clearing
  * the whole set).
  */
-public class IdentitySet implements Iterable<Object>
+public class IdentitySet<T> implements Iterable<T>
 {
     private static final int DEFAULT_INIT_CAPACITY = 8;
 
-    private Object[] data;
+    private T[] data;
     private int size;
     private int capacity;
     
 
+    @SuppressWarnings("unchecked")
     public IdentitySet()
     {
-        data = new Object[DEFAULT_INIT_CAPACITY];
+        data = (T[]) new Object[DEFAULT_INIT_CAPACITY];
         size = 0;
         capacity = DEFAULT_INIT_CAPACITY;
     }
     
 
-    public boolean add(Object obj)
+    /**
+     * @return True iff the added object is new to the set.
+     */
+    public boolean add(T obj)
     {
         if (contains(obj)) {
             return false;
@@ -37,9 +42,17 @@ public class IdentitySet implements Iterable<Object>
         size++;
         return true;
     }
-    
+  
 
-    public boolean contains(Object obj)
+    public void addAll(IdentitySet<T> that)
+    {
+        for (int idx = 0; idx < that.size; idx++) {
+            this.add(that.data[idx]);
+        }
+    }  
+
+
+    public boolean contains(T obj)
     {
         for (int idx = 0; idx < size; idx++) {
             if (obj == data[idx])
@@ -58,7 +71,7 @@ public class IdentitySet implements Iterable<Object>
     
     
     @Override
-    public Iterator<Object> iterator()
+    public Iterator<T> iterator()
     {
         return new Iter();
     }
@@ -69,7 +82,8 @@ public class IdentitySet implements Iterable<Object>
         capacity = capacity << 1;
         assert capacity >= DEFAULT_INIT_CAPACITY;
 
-        Object[] new_data = new Object[capacity];
+        @SuppressWarnings("unchecked")
+        T[] new_data = (T[]) new Object[capacity];
         for (int idx = 0; idx < size; idx++) {
             new_data[idx] = data[idx];
         }
@@ -77,7 +91,7 @@ public class IdentitySet implements Iterable<Object>
     }
 
 
-    private class Iter implements Iterator<Object>
+    private class Iter implements Iterator<T>
     {
         private int cur;
         
@@ -87,8 +101,54 @@ public class IdentitySet implements Iterable<Object>
         }
 
         @Override
-        public Object next() {
+        public T next() {
             return data[cur++];
         }
+    }
+
+
+    public static <T> IdentitySet<T> make(Set<T> set)
+    {
+        IdentitySet<T> result = new IdentitySet<T>();
+        for (T elem : set) {
+            result.add(elem);
+        }
+        return result;
+    }
+
+
+    public boolean isDisjointFrom(IdentitySet<T> that)
+    {
+        for (int i = 0; i < this.size; i++)
+        {
+            for (int j = 0; j < that.size; j++)
+            {
+                if (this.data[i] == that.data[j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public String toString()
+    {
+        if (size == 0)
+            return "{}";
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        for (int idx = 0; idx < size - 1; idx++) {
+            builder.append(data[idx].toString() + ", ");
+        }
+        builder.append(data[size - 1].toString() + "}");
+        return builder.toString();
+    }
+
+
+    public boolean isEmpty()
+    {
+        return size == 0;
     }
 }

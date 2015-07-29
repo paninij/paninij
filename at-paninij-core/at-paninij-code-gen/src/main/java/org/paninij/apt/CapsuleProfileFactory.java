@@ -6,12 +6,10 @@ import java.util.stream.Collectors;
 
 import javax.lang.model.type.TypeKind;
 
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
-import org.paninij.apt.util.SourceFile;
-import org.paninij.model.Capsule;
-import org.paninij.model.Procedure;
-import org.paninij.model.Variable;
 
 
 public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
@@ -114,11 +112,15 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected String generateAssertSafeInvocationTransfer()
     {
-        return Source.format("assert Panini$Ownership.#0.isSafeTransfer(#1, #2): #3",
-                             PaniniProcessor.ownershipCheckMethod,
+        // TODO: Clean this up!
+        /**
+        return Source.format("assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2): #3",
+                             PaniniProcessor.dynamicOwnershipTransferKind,
                              "panini$message",
                              "Panini$System.self.get().panini$getAllState()",
                              "\"Procedure invocation performed unsafe ownership transfer.\"");
+        */
+        return "";
     }
 
     protected List<String> generateCheckRequiredFields()

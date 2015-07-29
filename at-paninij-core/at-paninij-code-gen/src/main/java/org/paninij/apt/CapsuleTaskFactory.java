@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.paninij.apt.util.MessageShape;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.PaniniModel;
 import org.paninij.apt.util.Source;
-import org.paninij.model.Behavior;
-import org.paninij.model.Procedure;
-import org.paninij.model.Type;
-import org.paninij.model.Variable;
+import org.paninij.apt.model.Behavior;
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Type;
+import org.paninij.apt.model.Variable;
 
 public class CapsuleTaskFactory extends CapsuleProfileFactory
 {
@@ -89,7 +89,6 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
-        imports.add("org.paninij.runtime.check.Panini$Ownership");
         imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -105,7 +104,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
     {
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
-                this.capsule.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
+                this.capsule.getQualifiedName() + PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
     }
 
     private List<String> generateProcedureIDs()
@@ -372,12 +371,15 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
 
     private String generateAssertSafeResultTransfer()
     {
+        /*
         return Source.format(
                 "assert Panini$Ownership.#0.isSafeTransfer(#1, #2) : #3",
                 PaniniProcessor.ownershipCheckMethod,
                 "result",
                 "panini$getAllState()",
                 "\"Procedure return attempted unsafe ownership transfer.\"");
+        */
+        return "";
     }
 
     private List<String> generateCapsuleBody()

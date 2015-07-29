@@ -23,12 +23,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Variable;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
-import org.paninij.apt.util.SourceFile;
-import org.paninij.model.Capsule;
-import org.paninij.model.Procedure;
-import org.paninij.model.Variable;
 
 public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
 {

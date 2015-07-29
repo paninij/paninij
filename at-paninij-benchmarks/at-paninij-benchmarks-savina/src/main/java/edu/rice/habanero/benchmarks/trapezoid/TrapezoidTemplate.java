@@ -40,8 +40,8 @@ public class TrapezoidTemplate
         // loop through each result and add it to the total sum
         try {
             for (Future<Double> result : results) area += result.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
 
         System.out.println("Area: " + area);

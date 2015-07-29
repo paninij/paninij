@@ -1,9 +1,9 @@
 package org.paninij.runtime.util;
 
-public class IdentityStackStore extends ThreadLocal<IdentityStack>
+public class IdentityStackStore<T> extends ThreadLocal<IdentityStack<T>>
 {
-    protected IdentityStack initialValue()
+    protected IdentityStack<T> initialValue()
     {
-        return new IdentityStack();
+        return new IdentityStack<T>();
     }
 }

@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.paninij</groupId>
+    <artifactId>at-paninij-core</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>at-paninij-soter</artifactId>
+  <name>@PaniniJ SOTER</name>
+  <description>
+    Libraries and an executable tool for checking whether ownership transfers
+    between @PaniniJ capsules are safe. It has been directly inspired by
+    `edu.illinois.soter`.
+  </description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <at.paninij.version>0.0.1-SNAPSHOT</at.paninij.version>
+    <java.version>1.8</java.version>
+    <wala.version>1.3.7</wala.version>
+    <soter.version>0.0.1-SNAPSHOT</soter.version>
+  </properties>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <proc>none</proc>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-runtime</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.illinois</groupId>
+      <artifactId>soter</artifactId>
+      <version>${soter.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ibm.wala</groupId>
+      <artifactId>com.ibm.wala.core</artifactId>
+      <version>${wala.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.wala</groupId>
+      <artifactId>com.ibm.wala.shrike</artifactId>
+      <version>${wala.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.wala</groupId>
+      <artifactId>com.ibm.wala.util</artifactId>
+      <version>${wala.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.48</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+</project>

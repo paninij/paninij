@@ -24,10 +24,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.SimpleElementVisitor8;
 
+import org.paninij.apt.model.CapsuleElement;
+import org.paninij.apt.model.Variable;
 import org.paninij.lang.Child;
 import org.paninij.lang.Wired;
-import org.paninij.model.CapsuleElement;
-import org.paninij.model.Variable;
 
 /**
  * The Template visitor as the main visitor for all capsule templates. This class is used by

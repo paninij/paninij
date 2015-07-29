@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.paninij.apt.util.MessageShape;
-import org.paninij.apt.util.PaniniModelInfo;
+import org.paninij.apt.util.PaniniModel;
 import org.paninij.apt.util.Source;
-import org.paninij.model.Procedure;
-import org.paninij.model.Type;
-import org.paninij.model.Variable;
+import org.paninij.apt.model.Procedure;
+import org.paninij.apt.model.Variable;
+import org.paninij.apt.model.Type;
+
 
 public class CapsuleSerialFactory extends CapsuleProfileFactory
 {
@@ -89,7 +90,6 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
-        imports.add("org.paninij.runtime.check.Panini$Ownership");
         imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -105,7 +105,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
     {
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
-                this.capsule.getQualifiedName() + PaniniModelInfo.CAPSULE_TEMPLATE_SUFFIX);
+                this.capsule.getQualifiedName() + PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
     }
 
     @Override

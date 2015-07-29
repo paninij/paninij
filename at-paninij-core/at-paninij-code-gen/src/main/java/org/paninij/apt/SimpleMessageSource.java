@@ -18,10 +18,10 @@
  */
 package org.paninij.apt;
 
+import org.paninij.apt.model.Procedure;
 import org.paninij.apt.util.MessageShape;
 import org.paninij.apt.util.Source;
 import org.paninij.apt.util.SourceFile;
-import org.paninij.model.Procedure;
 
 public class SimpleMessageSource extends MessageSource
 {
