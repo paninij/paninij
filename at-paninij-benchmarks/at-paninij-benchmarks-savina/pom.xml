@@ -18,18 +18,21 @@
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
         <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
           <generatedSourcesDirectory>
             ${project.build.directory}/generated-sources
           </generatedSourcesDirectory>
+          <!--
           <generatedTestSourcesDirectory>
             ${project.build.directory}/generated-test-sources
           </generatedTestSourcesDirectory>
+          -->
         </configuration>
       </plugin>
 
@@ -54,5 +57,4 @@
     	<artifactId>savina</artifactId>
     </dependency>
   </dependencies>
-  
 </project>
