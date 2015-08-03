@@ -15,8 +15,8 @@ public class CountingAtPaniniJBenchmark
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+        public void initialize(String[] args) throws IOException {
+            CountingConfig.parseArgs(args);
         }
 
         @Override
