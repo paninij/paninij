@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.recmatmul;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class MatMulBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("MatMul");
         MatMulScalaActorBenchmark.main(args);
         MatMulScalazActorBenchmark.main(args);
         MatMulAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class MatMulBenchmark
         MatMulJumiActorBenchmark.main(args);
         MatMulAtPaniniJBenchmark.main(args);
         MatMulAtPaniniJTaskBenchmark.main(args);
+        MatMulAtPaniniJSerialBenchmark.main(args);
         MatMulLiftActorBenchmark.main(args);
     }
 }

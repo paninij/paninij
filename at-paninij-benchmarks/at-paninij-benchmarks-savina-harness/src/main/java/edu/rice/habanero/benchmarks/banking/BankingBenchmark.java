@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.banking;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class BankingBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("Banking");
         BankingScalaActorBenchmark.main(args);
         BankingScalaManualStashActorBenchmark.main(args);
 
@@ -34,6 +37,7 @@ public class BankingBenchmark
 
         BankingAtPaniniJBenchmark.main(args);
         BankingAtPaniniJTaskBenchmark.main(args);
+        BankingAtPaniniJSerialBenchmark.main(args);
 
         BankingLiftManualStashActorBenchmark.main(args);
     }

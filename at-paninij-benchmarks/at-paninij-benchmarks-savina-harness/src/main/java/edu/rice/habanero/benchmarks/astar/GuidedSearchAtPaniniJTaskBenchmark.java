@@ -23,8 +23,8 @@ public class GuidedSearchAtPaniniJTaskBenchmark
 
         @Override
         public void initialize(String[] args) throws IOException {
-            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
             GuidedSearchConfig.parseArgs(args);
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override

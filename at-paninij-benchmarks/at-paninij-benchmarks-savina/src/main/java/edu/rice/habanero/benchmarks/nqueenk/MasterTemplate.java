@@ -1,6 +1,5 @@
 package edu.rice.habanero.benchmarks.nqueenk;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 
@@ -8,6 +7,8 @@ import org.paninij.lang.Child;
 
     long solutionsLimit = NQueensConfig.SOLUTIONS_LIMIT;
     int numWorkers = NQueensConfig.NUM_WORKERS;
+
+    static long RESULT;
 
     @Child Worker[] workers = new Worker[numWorkers];
 
@@ -17,20 +18,14 @@ import org.paninij.lang.Child;
     int messageCounter = 0;
     long resultCounter = 0;
 
-    FlagFuture flag = new FlagFuture();
 
     public void design(Master self) {
         for (Worker w : workers) w.wire(self);
     }
 
-    public long getResult() {
-        return resultCounter;
-    }
-
-    public FlagFuture start() {
+    public void start() {
         int[] inArray = new int[0];
         sendWork(inArray, 0);
-        return flag;
     }
 
     public void workerDone() {
@@ -41,9 +36,9 @@ import org.paninij.lang.Child;
     }
 
     public void sendWork(int[] arr, int depth) {
+        numWorkSent++;
         workers[messageCounter].nqueensKernalPar(arr, depth);
         messageCounter = (messageCounter + 1) % numWorkers;
-        numWorkSent++;
     }
 
     public void result() {
@@ -55,12 +50,10 @@ import org.paninij.lang.Child;
 
     public void terminate() {
         numWorkersTerminated++;
-        if (numWorkersTerminated == numWorkers) {
-            flag.resolve();
-        }
     }
 
     private void goalReached() {
+        RESULT = resultCounter;
         for (Worker w : workers) {
             w.terminate();
             w.exit();

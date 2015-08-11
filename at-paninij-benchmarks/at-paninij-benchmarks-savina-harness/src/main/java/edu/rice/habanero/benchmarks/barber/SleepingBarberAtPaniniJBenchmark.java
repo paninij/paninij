@@ -2,6 +2,8 @@ package edu.rice.habanero.benchmarks.barber;
 
 import java.io.IOException;
 
+import org.paninij.runtime.Panini$System;
+
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
@@ -15,8 +17,8 @@ public class SleepingBarberAtPaniniJBenchmark
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+        public void initialize(String[] args) throws IOException {
+            SleepingBarberConfig.parseArgs(args);
         }
 
         @Override
@@ -27,6 +29,11 @@ public class SleepingBarberAtPaniniJBenchmark
         @Override
         public void runIteration() {
             SleepingBarber$Thread.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

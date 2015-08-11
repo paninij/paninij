@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.bndbuffer;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class ProdConsBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("ProdCons");
         ProdConsScalaActorBenchmark.main(args);
         ProdConsScalazActorBenchmark.main(args);
         ProdConsAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class ProdConsBenchmark
         ProdConsJumiActorBenchmark.main(args);
         ProdConsAtPaniniJBenchmark.main(args);
         ProdConsAtPaniniJTaskBenchmark.main(args);
+        ProdConsAtPaniniJSerialBenchmark.main(args);
         ProdConsLiftActorBenchmark.main(args);
     }
 }

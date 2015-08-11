@@ -2,6 +2,8 @@ package edu.rice.habanero.benchmarks.nqueenk;
 
 import java.io.IOException;
 
+import org.paninij.runtime.Panini$System;
+
 import edu.rice.habanero.benchmarks.Benchmark;
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 import edu.rice.habanero.benchmarks.nqueenk.NQueensConfig;
@@ -13,6 +15,7 @@ public class NQueensAtPaniniJBenchmark
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
+            MasterTemplate.RESULT = 0;
         }
 
         @Override
@@ -28,6 +31,20 @@ public class NQueensAtPaniniJBenchmark
         @Override
         public void runIteration() {
             NQueens$Thread.main(null);
+
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            long expSolution = NQueensConfig.SOLUTIONS[NQueensConfig.SIZE - 1];
+            long actSolution = MasterTemplate.RESULT;
+            int solutionsLimit = NQueensConfig.SOLUTIONS_LIMIT;
+            boolean valid = actSolution >= solutionsLimit && actSolution <= expSolution;
+
+            System.out.printf(BenchmarkRunner.argOutputFormat, "Solutions found", actSolution);
+            System.out.printf(BenchmarkRunner.argOutputFormat, "Result valid", valid);
         }
     }
 

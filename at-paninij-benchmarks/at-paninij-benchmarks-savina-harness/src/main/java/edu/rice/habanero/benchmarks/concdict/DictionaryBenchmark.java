@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.concdict;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class DictionaryBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("Dictionary");
         DictionaryScalaActorBenchmark.main(args);
         DictionaryScalazActorBenchmark.main(args);
         DictionaryAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class DictionaryBenchmark
         DictionaryJumiActorBenchmark.main(args);
         DictionaryAtPaniniJBenchmark.main(args);
         DictionaryAtPaniniJTaskBenchmark.main(args);
+//        DictionaryAtPaniniJSerialBenchmark.main(args); -- StackOverflowError
         DictionaryLiftActorBenchmark.main(args);
     }
 }

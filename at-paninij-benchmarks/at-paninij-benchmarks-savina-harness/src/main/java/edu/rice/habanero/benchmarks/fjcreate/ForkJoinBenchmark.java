@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.fjcreate;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class ForkJoinBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("ForkJoin");
         ForkJoinScalaActorBenchmark.main(args);
         ForkJoinScalazActorBenchmark.main(args);
         ForkJoinAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class ForkJoinBenchmark
         ForkJoinJumiActorBenchmark.main(args);
         ForkJoinAtPaniniJBenchmark.main(args);
         ForkJoinAtPaniniJTaskBenchmark.main(args);
+        ForkJoinAtPaniniJSerialBenchmark.main(args);
         ForkJoinLiftActorBenchmark.main(args);
     }
 }
