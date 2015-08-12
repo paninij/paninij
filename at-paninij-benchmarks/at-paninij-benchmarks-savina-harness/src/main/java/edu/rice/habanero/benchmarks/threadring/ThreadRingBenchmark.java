@@ -5,7 +5,7 @@ import org.paninij.benchmarks.savina.util.BenchmarkSuite;
 public class ThreadRingBenchmark
 {
     public static void main(String[] args) {
-        BenchmarkSuite.mark("Trapezoidal");
+        BenchmarkSuite.mark("ThreadRing");
         ThreadRingScalaActorBenchmark.main(args);
         ThreadRingScalazActorBenchmark.main(args);
         ThreadRingAkkaActorBenchmark.main(args);
