@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Light {
+import java.io.Serializable;
+
+public class Light implements Serializable {
+    private static final long serialVersionUID = -2128107150063310904L;
     private Vector position;
     private Color color;
 

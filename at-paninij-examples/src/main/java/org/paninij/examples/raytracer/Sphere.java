@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Sphere extends SceneObject {
+import java.io.Serializable;
+
+public class Sphere extends SceneObject implements Serializable {
+    private static final long serialVersionUID = 9203957170366335623L;
     private Surface sface;
     private Vector center;
     private double radius;

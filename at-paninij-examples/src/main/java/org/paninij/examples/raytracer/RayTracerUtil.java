@@ -1,31 +1,33 @@
 package org.paninij.examples.raytracer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Raytracer {
-    private static int screenWidth;
-    private static int screenHeight;
+public class RayTracerUtil implements Serializable {
+    private static final long serialVersionUID = -8995526731362416729L;
+    private static int screenWidth = 640;
+    private static int screenHeight = 480;
     private static int maxDepth;
 
-    public static void intialize(int screenWidth, int screenHeight) {
-        Raytracer.screenWidth = screenWidth;
-        Raytracer.screenHeight = screenHeight;
-        Raytracer.maxDepth = 5;
+    public static void initialize(int screenWidth, int screenHeight) {
+        RayTracerUtil.screenWidth = screenWidth;
+        RayTracerUtil.screenHeight = screenHeight;
+        RayTracerUtil.maxDepth = 5;
     }
 
     public static int screenWidth() {
-        return Raytracer.screenWidth;
+        return RayTracerUtil.screenWidth;
     }
 
     public static int screenHeight() {
-        return Raytracer.screenWidth;
+        return RayTracerUtil.screenHeight;
     }
 
     public static int maxDepth() {
-        return Raytracer.screenWidth;
+        return RayTracerUtil.maxDepth;
     }
 
     public static List<ISect> intersections(Ray ray, Scene scene) {

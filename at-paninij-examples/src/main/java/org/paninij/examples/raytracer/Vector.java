@@ -1,7 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Vector {
+import java.io.Serializable;
 
+public class Vector implements Serializable {
+    private static final long serialVersionUID = 7518308319579154444L;
     private double[] v;
 
     public Vector(double x, double y, double z) {

@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Ray {
+import java.io.Serializable;
+
+public class Ray implements Serializable {
+    private static final long serialVersionUID = -2503905010508031929L;
     private Vector start;
     private Vector dir;
 

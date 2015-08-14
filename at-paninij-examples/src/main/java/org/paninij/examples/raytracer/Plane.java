@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Plane extends SceneObject {
+import java.io.Serializable;
+
+public class Plane extends SceneObject implements Serializable {
+    private static final long serialVersionUID = 1154526550077527142L;
     private Surface sface;
     private Vector n;
     private double offset;
