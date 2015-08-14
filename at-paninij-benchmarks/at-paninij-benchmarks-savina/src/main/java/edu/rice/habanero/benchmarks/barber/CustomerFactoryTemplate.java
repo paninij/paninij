@@ -3,7 +3,6 @@ package edu.rice.habanero.benchmarks.barber;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
@@ -15,7 +14,6 @@ import org.paninij.lang.Wired;
     int numHaircutsSoFar = 0;
     int haircuts = SleepingBarberConfig.N;
     AtomicLong idGenerator = new AtomicLong(0);
-    FlagFuture flag = new FlagFuture();
 
     private void sendCustomerToRoom() {
         Customer c = new Customer(idGenerator.incrementAndGet());
@@ -27,14 +25,11 @@ import org.paninij.lang.Wired;
         if (!entered) returned(c);
     }
 
-    public FlagFuture start() {
-
+    public void start() {
         for (int i = 0; i < haircuts; i++) {
             sendCustomerToRoom();
             SleepingBarberConfig.busyWait(random.nextInt(SleepingBarberConfig.APR) + 10);
         }
-
-        return flag;
     }
 
     public void returned(Customer c) {
@@ -45,8 +40,8 @@ import org.paninij.lang.Wired;
     public void done() {
         numHaircutsSoFar++;
         if (numHaircutsSoFar == haircuts) {
+            waitingRoom.done();
             waitingRoom.exit();
-            flag.resolve();
             System.out.println("Total attempts: " + idGenerator.get());
         }
     }

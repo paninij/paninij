@@ -10,7 +10,7 @@ import edu.rice.hj.runtime.config.HjSystemProperty;
 
 public class ThroughputAtPaniniJTaskBenchmark
 {
-    static class ThroughputAtPaniniJ extends Benchmark {
+    static class ThroughputAtPaniniJTask extends Benchmark {
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
@@ -18,7 +18,8 @@ public class ThroughputAtPaniniJTaskBenchmark
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
+        public void initialize(String[] args) throws IOException {
+            ThroughputConfig.parseArgs(args);
             Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
@@ -39,6 +40,6 @@ public class ThroughputAtPaniniJTaskBenchmark
     }
 
     public static void main(String[] args) {
-        BenchmarkRunner.runBenchmark(args, new ThroughputAtPaniniJ());
+        BenchmarkRunner.runBenchmark(args, new ThroughputAtPaniniJTask());
     }
 }

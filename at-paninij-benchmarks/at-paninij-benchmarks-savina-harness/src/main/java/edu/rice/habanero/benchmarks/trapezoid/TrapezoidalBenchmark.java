@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.trapezoid;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class TrapezoidalBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("Trapezoidal");
         TrapezoidalScalaActorBenchmark.main(args);
         TrapezoidalScalazActorBenchmark.main(args);
         TrapezoidalAkkaActorBenchmark.main(args);

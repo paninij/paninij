@@ -31,6 +31,11 @@ public class CountingAtPaniniJTaskBenchmark
         @Override
         public void runIteration() {
             Count$Task.main(null);
+            try {
+                Panini$System.threads.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

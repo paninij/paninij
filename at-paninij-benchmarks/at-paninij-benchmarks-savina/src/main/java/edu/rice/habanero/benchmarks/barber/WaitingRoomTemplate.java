@@ -37,4 +37,8 @@ import org.paninij.lang.Wired;
         }
     }
 
+    public void done() {
+        barber.exit();
+    }
+
 }

@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.pingpong;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class PingPongBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("PingPong");
         PingPongScalaActorBenchmark.main(args);
         PingPongScalazActorBenchmark.main(args);
         PingPongAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class PingPongBenchmark
         PingPongJumiActorBenchmark.main(args);
         PingPongAtPaniniJBenchmark.main(args);
         PingPongAtPaniniJTaskBenchmark.main(args);
+        PingPongAtPaniniJSerialBenchmark.main(args);
         PingPongLiftActorBenchmark.main(args);
     }
 }

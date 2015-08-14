@@ -18,7 +18,8 @@ public class RadixSortAtPaniniJTaskBenchmark
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
+        public void initialize(String[] args) throws IOException {
+            RadixSortConfig.parseArgs(args);
             Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 

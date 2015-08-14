@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class FilterBankBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("FilterBank");
         FilterBankScalaActorBenchmark.main(args);
         FilterBankScalazActorBenchmark.main(args);
         FilterBankAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class FilterBankBenchmark
         FilterBankJetlangActorBenchmark.main(args);
         FilterBankJumiActorBenchmark.main(args);
         FilterBankAtPaniniJBenchmark.main(args);
+        FilterBankAtPaniniJSerialBenchmark.main(args);
         FilterBankAtPaniniJTaskBenchmark.main(args);
         FilterBankLiftActorBenchmark.main(args);
     }

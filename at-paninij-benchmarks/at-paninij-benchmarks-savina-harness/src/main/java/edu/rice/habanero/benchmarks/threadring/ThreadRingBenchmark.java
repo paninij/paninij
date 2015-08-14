@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.threadring;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class ThreadRingBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("ThreadRing");
         ThreadRingScalaActorBenchmark.main(args);
         ThreadRingScalazActorBenchmark.main(args);
         ThreadRingAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class ThreadRingBenchmark
         ThreadRingJumiActorBenchmark.main(args);
         ThreadRingAtPaniniJBenchmark.main(args);
         ThreadRingAtPaniniJTaskBenchmark.main(args);
+        ThreadRingAtPaniniJSerialBenchmark.main(args);
         ThreadRingLiftActorBenchmark.main(args);
     }
 }

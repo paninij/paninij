@@ -87,6 +87,10 @@ public abstract class Capsule$Task implements Panini$Capsule
         panini$containingPool = Panini$TaskPool.add(this);
     }
 
+    protected final synchronized boolean panini$isEmpty() {
+        return panini$size == 0;
+    }
+
     /**
      * Extracts and returns the first message from the capsule's queue.
      *

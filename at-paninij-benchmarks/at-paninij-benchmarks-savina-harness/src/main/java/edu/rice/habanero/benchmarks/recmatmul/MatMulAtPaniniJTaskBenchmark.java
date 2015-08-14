@@ -22,8 +22,8 @@ public class MatMulAtPaniniJTaskBenchmark
 
         @Override
         public void initialize(String[] args) throws IOException {
-            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
             MatMulConfig.parseArgs(args);
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
         }
 
         @Override

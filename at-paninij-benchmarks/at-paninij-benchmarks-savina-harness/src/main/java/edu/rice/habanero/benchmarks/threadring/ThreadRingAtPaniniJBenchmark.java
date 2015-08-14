@@ -17,8 +17,8 @@ public class ThreadRingAtPaniniJBenchmark
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+        public void initialize(String[] args) throws IOException {
+            ThreadRingConfig.parseArgs(args);
         }
 
         @Override

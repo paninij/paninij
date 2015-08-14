@@ -1,9 +1,12 @@
 package edu.rice.habanero.benchmarks.astar;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class GuidedSearchBenchmark
 {
 
     public static void main(String[] args) {
+        BenchmarkSuite.mark("GuidedSearch");
         GuidedSearchScalaActorBenchmark.main(args);
         GuidedSearchScalazActorBenchmark.main(args);
         GuidedSearchAkkaActorBenchmark.main(args);
@@ -15,6 +18,7 @@ public class GuidedSearchBenchmark
         GuidedSearchJumiActorBenchmark.main(args);
         GuidedSearchAtPaniniJBenchmark.main(args);
         GuidedSearchAtPaniniJTaskBenchmark.main(args);
+        GuidedSearchAtPaniniJSerialBenchmark.main(args);
         GuidedSearchLiftActorBenchmark.main(args);
     }
 

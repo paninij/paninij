@@ -19,8 +19,8 @@ public class ApspAtPaniniJTaskBenchmark
 
         @Override
         public void initialize(String[] args) throws IOException {
-            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
             ApspConfig.parseArgs(args);
+            Panini$System.POOL_SIZE = Integer.parseInt(HjSystemProperty.numWorkers.getPropertyValue());
             ApspUtils.generateGraph();
         }
 

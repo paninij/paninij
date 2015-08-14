@@ -1,5 +1,6 @@
 package edu.rice.habanero.benchmarks.logmap;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Child;
 import org.paninij.lang.Wired;
@@ -14,10 +15,12 @@ import org.paninij.lang.Wired;
         computer.wire(id);
     }
 
+    @Block
     public void getTerm() {
         term = computer.compute(term);
     }
 
+    @Block
     public double getResult() {
         return term;
     }

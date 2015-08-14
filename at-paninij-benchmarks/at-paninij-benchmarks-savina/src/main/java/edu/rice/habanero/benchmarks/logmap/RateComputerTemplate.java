@@ -1,5 +1,6 @@
 package edu.rice.habanero.benchmarks.logmap;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;
 
@@ -12,6 +13,7 @@ import org.paninij.lang.Wired;
         this.rate = LogisticMapConfig.startRate + (id * LogisticMapConfig.increment);
     }
 
+    @Block
     public double compute(double term) {
         return LogisticMapConfig.computeNextTerm(term, rate);
     }

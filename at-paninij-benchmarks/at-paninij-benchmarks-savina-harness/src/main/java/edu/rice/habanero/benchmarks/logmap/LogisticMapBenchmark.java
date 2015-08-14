@@ -1,15 +1,21 @@
 package edu.rice.habanero.benchmarks.logmap;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class LogisticMapBenchmark
 {
     public static void main(String[] args) {
 //        LogisticMapScalaActorBenchmark.main(args); -- hangs
-
-        LogisticMapAtPaniniJTaskBenchmark.main(args);
-        LogisticMapAtPaniniJBenchmark.main(args);
+        BenchmarkSuite.mark("LogisticMap");
 
         LogisticMapScalaManualStashActorBenchmark.main(args);
         LogisticMapScalazActorBenchmark.main(args);
+
+        LogisticMapAtPaniniJTaskBenchmark.main(args);
+        LogisticMapAtPaniniJBenchmark.main(args);
+        LogisticMapAtPaniniJSerialBenchmark.main(args);
+
+
 
 //        LogisticMapScalazManualStashActorBenchmark.main(args); -- error out
 

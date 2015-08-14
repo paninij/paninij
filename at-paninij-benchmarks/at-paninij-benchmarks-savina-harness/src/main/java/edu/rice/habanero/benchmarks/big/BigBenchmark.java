@@ -1,8 +1,11 @@
 package edu.rice.habanero.benchmarks.big;
 
+import org.paninij.benchmarks.savina.util.BenchmarkSuite;
+
 public class BigBenchmark
 {
     public static void main(String[] args) {
+        BenchmarkSuite.mark("Big");
         BigScalaActorBenchmark.main(args);
         BigScalazActorBenchmark.main(args);
         BigAkkaActorBenchmark.main(args);
@@ -14,6 +17,7 @@ public class BigBenchmark
         BigJumiActorBenchmark.main(args);
         BigAtPaniniJBenchmark.main(args);
         BigAtPaniniJTaskBenchmark.main(args);
+        BigAtPaniniJSerialBenchmark.main(args);
         BigLiftActorBenchmark.main(args);
     }
 }

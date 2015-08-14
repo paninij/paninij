@@ -17,8 +17,8 @@ public class PingPongAtPaniniJBenchmark
         }
 
         @Override
-        public void initialize(String[] arg0) throws IOException {
-            // TODO Auto-generated method stub
+        public void initialize(String[] args) throws IOException {
+            PingPongConfig.parseArgs(args);
         }
 
         @Override
