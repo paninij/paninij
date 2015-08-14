@@ -1,7 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class ISect {
+import java.io.Serializable;
 
+public class ISect implements Serializable {
+    private static final long serialVersionUID = 6601281940824842142L;
     private SceneObject thing;
     private Ray ray;
     private double dist;

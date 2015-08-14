@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Shiny extends Surface {
+import java.io.Serializable;
+
+public class Shiny extends Surface implements Serializable {
+    private static final long serialVersionUID = 6847733167805058111L;
 
     @Override
     public Color diffuse(Vector v) {

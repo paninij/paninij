@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class CheckerBoard extends Surface {
+import java.io.Serializable;
+
+public class CheckerBoard extends Surface implements Serializable {
+    private static final long serialVersionUID = 2694218922038717047L;
 
     @Override
     public Color diffuse(Vector v) {

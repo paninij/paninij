@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Pixel {
+import java.io.Serializable;
+
+public class Pixel implements Serializable {
+    private static final long serialVersionUID = 5331379601064854383L;
     private int x;
     private int y;
     private Color color;

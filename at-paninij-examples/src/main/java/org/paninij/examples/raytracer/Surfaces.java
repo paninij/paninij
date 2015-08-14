@@ -1,6 +1,9 @@
 package org.paninij.examples.raytracer;
 
-public class Surfaces {
+import java.io.Serializable;
+
+public class Surfaces implements Serializable {
+    private static final long serialVersionUID = -178010952350167505L;
     public static final Surface checkerBoard = new CheckerBoard();
     public static final Surface shiny = new Shiny();
 }
