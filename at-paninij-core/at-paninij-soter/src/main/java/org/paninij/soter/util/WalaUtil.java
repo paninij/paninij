@@ -52,7 +52,7 @@ public class WalaUtil
         {
             if (WalaUtil.class.getClassLoader().getResource(res) == null)
             {
-                String msg = "A required resource does not exist.";
+                String msg = "A required resource does not exist: " + res;
                 throw new MissingResourceException(msg, "WalaUtil", res);
             }
         }
