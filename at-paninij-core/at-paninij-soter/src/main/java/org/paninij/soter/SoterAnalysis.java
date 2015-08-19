@@ -292,45 +292,52 @@ public class SoterAnalysis extends Analysis
         private void makeReport()
         {
             report.append("\n");
-            report.append("[SOTER ANALYSIS REPORT] =======================================================\n");
+            report.append("=== [SOTER ANALYSIS REPORT] ===================================================\n");
             report.append("[CAPSULE TEMPLATE] " + template.getQualifiedName() + "\n");
             report.append("\n");
-            report.append("[SUMMARY RESULTS OF UNSAFE TRANSFER SITES BY METHOD] ~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            report.append("~~~ [SUMMARY RESULTS OF UNSAFE TRANSFER SITES BY METHOD] ~~~~~~~~~~~~~~~~~~~~~~\n");
             report.append("\n");
             for (Entry<IMethod, IdentitySet<TransferSite>> entry : unsafeTransferSitesMap.entrySet())
             {
                 IMethod method = entry.getKey();
                 IdentitySet<TransferSite> unsafeTransferSites = entry.getValue();
 
-                report.append("[METHOD] " + method + "\n");
-                report.append("\n");
+                report.append("    [Method] " + method + "\n");
                 for (TransferSite unsafeTransferSite : unsafeTransferSites)
                 {
-                    report.append("[UNSAFE] " + unsafeTransferSite.infoString() + "\n");
-                    report.append("\n");
+                    report.append("    " + unsafeTransferSite.infoString() + "\n");
                 }
             }
             
-            report.append("[FULL RESULTS BY TRANSFER SITE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            report.append("\n");
+            report.append("\n");
+            report.append("~~~ [FULL RESULTS BY TRANSFER SITE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            report.append("\n");
+
             for (TransferSite transferSite : transferSiteResultsMap.keySet())
             {
                 TransferSiteResults results = transferSiteResultsMap.get(transferSite);
 
-                report.append("[TRANSFER SITE RESULTS] --------------------------------------------------------\n");
-                report.append("[TRANSFER SITE]  " + debug(transferSite) + "\n");
-                report.append("[LIVE VARIABLES] " + results.liveVariables + "\n");
-                report.append("[LIVE OBJECTS]   " + results.liveObjects + "\n");
+                report.append("--- [TRANSFER SITE RESULTS] ----------------------------------------------------\n");
+                report.append("\n");
+                report.append("    [Transfer Site Info]  " + transferSite.infoString() + "\n");
+                report.append("    [Transfer Site Debug] " + debug(transferSite) + "\n");
+                report.append("\n");
+                report.append("    [Live Pointer Keys]   " + results.liveVariables + "\n");
+                report.append("\n");
+                report.append("    [Live Instance Keys]  " + results.liveObjects + "\n");
                 report.append("\n");
 
                 IntIterator transfersIter = transferSite.getTransfers().intIterator();
                 while (transfersIter.hasNext())
                 {
                     int transfer = transfersIter.next();
-                    report.append("[TRANSFER ID]       " + transfer + "\n");
-                    report.append("[ESCAPED OBJECTS]   " + results.getEscapedObjects(transfer) + "\n");
-                    report.append("[IS SAFE TRANSFER?] " + results.isSafeTransfer(transfer) + "\n");
+                    report.append("    [TransferID]               " + transfer + "\n");
+                    report.append("    [Escaped Instance Keys]    " + results.getEscapedObjects(transfer) + "\n");
+                    report.append("    [Is Safe Transfer?]        " + results.isSafeTransfer(transfer) + "\n");
                     report.append("\n");
                 }
+                report.append("\n");
             }
             report.append("================================================================================\n");
         }
