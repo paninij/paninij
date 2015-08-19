@@ -3,8 +3,11 @@ package org.paninij.soter;
 import static org.paninij.soter.util.SoterUtil.makePointsToClosure;
 import static java.text.MessageFormat.format;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -22,15 +25,21 @@ import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.analysis.pointers.HeapGraph;
 import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.classLoader.NewSiteReference;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.callgraph.propagation.ArrayContentsKey;
 import com.ibm.wala.ipa.callgraph.propagation.HeapModel;
+import com.ibm.wala.ipa.callgraph.propagation.InstanceFieldKey;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
+import com.ibm.wala.ipa.callgraph.propagation.LocalPointerKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
+import com.ibm.wala.ipa.callgraph.propagation.StaticFieldKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSAReturnInstruction;
+import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.intset.IntIterator;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
@@ -293,7 +302,8 @@ public class SoterAnalysis extends Analysis
         {
             report.append("\n");
             report.append("=== [SOTER ANALYSIS REPORT] ===================================================\n");
-            report.append("[CAPSULE TEMPLATE] " + template.getQualifiedName() + "\n");
+            report.append("\n");
+            report.append("[Capsule Template] " + template.getQualifiedName() + "\n");
             report.append("\n");
             report.append("~~~ [SUMMARY RESULTS OF UNSAFE TRANSFER SITES BY METHOD] ~~~~~~~~~~~~~~~~~~~~~~\n");
             report.append("\n");
@@ -321,11 +331,12 @@ public class SoterAnalysis extends Analysis
                 report.append("--- [TRANSFER SITE RESULTS] ----------------------------------------------------\n");
                 report.append("\n");
                 report.append("    [Transfer Site Info]  " + transferSite.infoString() + "\n");
+                report.append("\n");
                 report.append("    [Transfer Site Debug] " + debug(transferSite) + "\n");
                 report.append("\n");
-                report.append("    [Live Pointer Keys]   " + results.liveVariables + "\n");
+                report.append("    [Live Pointer Keys]   " + debug(results.liveVariables) + "\n");
                 report.append("\n");
-                report.append("    [Live Instance Keys]  " + results.liveObjects + "\n");
+                report.append("    [Live Instance Keys]  " + debug(results.liveObjects) + "\n");
                 report.append("\n");
 
                 IntIterator transfersIter = transferSite.getTransfers().intIterator();
@@ -333,7 +344,7 @@ public class SoterAnalysis extends Analysis
                 {
                     int transfer = transfersIter.next();
                     report.append("    [TransferID]               " + transfer + "\n");
-                    report.append("    [Escaped Instance Keys]    " + results.getEscapedObjects(transfer) + "\n");
+                    report.append("    [Escaped Instance Keys]    " + debug(results.getEscapedObjects(transfer)) + "\n");
                     report.append("    [Is Safe Transfer?]        " + results.isSafeTransfer(transfer) + "\n");
                     report.append("\n");
                 }
@@ -341,7 +352,7 @@ public class SoterAnalysis extends Analysis
             }
             report.append("================================================================================\n");
         }
-        
+
         private String debug(TransferSite ts)
         {
             return format("TransferSite(node = {0}, instruction = {1}, transfers = {2})",
@@ -373,5 +384,68 @@ public class SoterAnalysis extends Analysis
                 throw new RuntimeException(msg);
             }
         }
-    } 
- }
+
+        private String debug(Set<PointerKey> set)
+        {
+            List<String> strings = new ArrayList<String>();
+            for (PointerKey ptr : set) {
+                strings.add(debug(ptr));
+            }
+            return "{" + String.join(", ", strings) + "}";
+        }
+        
+        private String debug(PointerKey ptr)
+        {
+            if (ptr instanceof InstanceFieldKey) return debug((InstanceFieldKey) ptr);
+            else if (ptr instanceof LocalPointerKey) return debug((LocalPointerKey) ptr);
+            else if (ptr instanceof StaticFieldKey) return debug((StaticFieldKey) ptr);
+            else if (ptr instanceof ArrayContentsKey) return debug((ArrayContentsKey) ptr);
+            else throw new RuntimeException("Found `PointerKey` which can't be handled: " + ptr);
+        }
+        
+        private String debug(InstanceFieldKey ptr)
+        {
+            return format("InstanceFieldKey(field = {0})", ptr.getField());
+        }
+
+        private String debug(LocalPointerKey ptr)
+        {
+            return format("LocalPointerKey(method = {0}, valueNumber = {1})",
+                          ptr.getNode().getMethod(), ptr.getValueNumber());
+        }
+
+        private String debug(StaticFieldKey ptr)
+        {
+            return format("StaticFieldKey(field = {0})", ptr.getField());
+        }
+        
+        private String debug(ArrayContentsKey ptr)
+        {
+            return format("ArrayContentsKey()");
+        }
+
+        private String debug(IdentitySet<InstanceKey> set)
+        {
+            List<String> strings = new ArrayList<String>();
+            for (InstanceKey inst : set) {
+                strings.add(debug(inst));
+            }
+            return "{" + String.join(", ", strings) + "}";
+        }
+
+        private String debug(InstanceKey inst)
+        {
+            Iterator<Pair<CGNode, NewSiteReference>> iter = inst.getCreationSites(cga.getCallGraph());
+
+            // Assume that the returned iterator has exactly one `next()`.
+            assert iter.hasNext() == true;
+            Pair<CGNode, NewSiteReference> creationSite = iter.next();
+            assert iter.hasNext() == false;
+
+            return format("InstanceKey(method = {0}, programCounter = {1}, context = {2})",
+                          creationSite.fst.getMethod(),
+                          creationSite.snd.getProgramCounter(),
+                          creationSite.fst.getContext());
+        }
+    }
+}
