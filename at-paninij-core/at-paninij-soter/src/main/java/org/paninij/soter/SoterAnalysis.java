@@ -1,6 +1,7 @@
 package org.paninij.soter;
 
 import static org.paninij.soter.util.SoterUtil.makePointsToClosure;
+import static java.text.MessageFormat.format;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,9 @@ import com.ibm.wala.ipa.callgraph.propagation.HeapModel;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
+import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
+import com.ibm.wala.ssa.SSAInstruction;
+import com.ibm.wala.ssa.SSAReturnInstruction;
 import com.ibm.wala.util.intset.IntIterator;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
@@ -165,54 +169,12 @@ public class SoterAnalysis extends Analysis
     }
     
     
-    public String getResultsReport()
+    public String makeReport()
     {
-        StringBuilder builder = new StringBuilder();
-        
-        builder.append("\n");
-        builder.append("[SOTER ANALYSIS REPORT] =======================================================\n");
-        builder.append("[CAPSULE TEMPLATE] " + template.getQualifiedName() + "\n");
-        builder.append("\n");
-        builder.append("[SUMMARY RESULTS BY METHOD] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        builder.append("\n");
-        for (Entry<IMethod, IdentitySet<TransferSite>> entry : unsafeTransferSitesMap.entrySet())
-        {
-            IMethod method = entry.getKey();
-            IdentitySet<TransferSite> unsafeTransferSites = entry.getValue();
-
-            builder.append("[METHOD] " + method + "\n");
-            builder.append("\n");
-            for (TransferSite unsafeTransferSite : unsafeTransferSites)
-            {
-                builder.append("[UNSAFE TRANSFER SITE] " + unsafeTransferSite + "\n");
-                builder.append("[UNSAFE TRANSFERS]     " + unsafeTransferSite.getTransfers() + "\n");
-                builder.append("\n");
-            }
-        }
-        
-        builder.append("[FULL RESULTS BY TRANSFER SITE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        for (TransferSite transferSite : transferSiteResultsMap.keySet())
-        {
-            TransferSiteResults results = transferSiteResultsMap.get(transferSite);
-
-            builder.append("[TRANSFER SITE RESULTS] --------------------------------------------------------\n");
-            builder.append("[TRANSFER SITE]  " + transferSite + "\n");
-            builder.append("[LIVE VARIABLES] " + results.liveVariables + "\n");
-            builder.append("[LIVE OBJECTS]   " + results.liveObjects + "\n");
-            builder.append("\n");
-
-            IntIterator transfersIter = transferSite.getTransfers().intIterator();
-            while (transfersIter.hasNext())
-            {
-                int transfer = transfersIter.next();
-                builder.append("[TRANSFER ID]       " + transfer + "\n");
-                builder.append("[ESCAPED OBJECTS]   " + results.getEscapedObjects(transfer) + "\n");
-                builder.append("[IS SAFE TRANSFER?] " + results.isSafeTransfer(transfer) + "\n");
-                builder.append("\n");
-            }
-        }
-        builder.append("================================================================================\n");
-        return builder.toString();
+        StringBuilder report = new StringBuilder();
+        Reporter reporter = new Reporter(report);
+        reporter.makeReport();
+        return report.toString();
     }
 
 
@@ -310,4 +272,99 @@ public class SoterAnalysis extends Analysis
             return !unsafeTransfers.isEmpty();
         }
     }
+
+
+
+    /**
+     * Visits the contents of a (performed) `SoterAnalysis` and appends an easy to read report of
+     * the analysis's results to a `StringBuilder`.
+     */
+    private class Reporter
+    {
+        private StringBuilder report;
+        
+        public Reporter(StringBuilder report)
+        {
+            assert report != null;
+            this.report = report;
+        }
+
+        private void makeReport()
+        {
+            report.append("\n");
+            report.append("[SOTER ANALYSIS REPORT] =======================================================\n");
+            report.append("[CAPSULE TEMPLATE] " + template.getQualifiedName() + "\n");
+            report.append("\n");
+            report.append("[SUMMARY RESULTS OF UNSAFE TRANSFER SITES BY METHOD] ~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            report.append("\n");
+            for (Entry<IMethod, IdentitySet<TransferSite>> entry : unsafeTransferSitesMap.entrySet())
+            {
+                IMethod method = entry.getKey();
+                IdentitySet<TransferSite> unsafeTransferSites = entry.getValue();
+
+                report.append("[METHOD] " + method + "\n");
+                report.append("\n");
+                for (TransferSite unsafeTransferSite : unsafeTransferSites)
+                {
+                    report.append("[UNSAFE] " + unsafeTransferSite.infoString() + "\n");
+                    report.append("\n");
+                }
+            }
+            
+            report.append("[FULL RESULTS BY TRANSFER SITE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            for (TransferSite transferSite : transferSiteResultsMap.keySet())
+            {
+                TransferSiteResults results = transferSiteResultsMap.get(transferSite);
+
+                report.append("[TRANSFER SITE RESULTS] --------------------------------------------------------\n");
+                report.append("[TRANSFER SITE]  " + debug(transferSite) + "\n");
+                report.append("[LIVE VARIABLES] " + results.liveVariables + "\n");
+                report.append("[LIVE OBJECTS]   " + results.liveObjects + "\n");
+                report.append("\n");
+
+                IntIterator transfersIter = transferSite.getTransfers().intIterator();
+                while (transfersIter.hasNext())
+                {
+                    int transfer = transfersIter.next();
+                    report.append("[TRANSFER ID]       " + transfer + "\n");
+                    report.append("[ESCAPED OBJECTS]   " + results.getEscapedObjects(transfer) + "\n");
+                    report.append("[IS SAFE TRANSFER?] " + results.isSafeTransfer(transfer) + "\n");
+                    report.append("\n");
+                }
+            }
+            report.append("================================================================================\n");
+        }
+        
+        private String debug(TransferSite ts)
+        {
+            return format("TransferSite(node = {0}, instruction = {1}, transfers = {2})",
+                          debug(ts.getNode()), debug(ts.getInstruction()), ts.getTransfers());
+        }
+        
+        private String debug(CGNode node)
+        {
+            return format("CGNode(method = {0}, context = {1})",
+                          node.getMethod(), node.getContext());
+        }
+        
+        private String debug(SSAInstruction instr)
+        {
+            if (instr instanceof SSAAbstractInvokeInstruction)
+            {
+                SSAAbstractInvokeInstruction invoke = (SSAAbstractInvokeInstruction) instr;
+                return format("SSAAbstractInvokeInstruction(declaredTarget = {0}, programCounter = {1})",
+                              invoke.getDeclaredTarget(), invoke.getCallSite().getProgramCounter());
+            }
+            else if (instr instanceof SSAReturnInstruction)
+            {
+                SSAReturnInstruction ret = (SSAReturnInstruction) instr;
+                return format("SSAReturnInstruction(result = {0})", ret.getResult());
+            }
+            else
+            {
+                String msg = "Attempted to stringify unexpected `SSAInstruction` type.";
+                throw new RuntimeException(msg);
+            }
+        }
+    } 
  }

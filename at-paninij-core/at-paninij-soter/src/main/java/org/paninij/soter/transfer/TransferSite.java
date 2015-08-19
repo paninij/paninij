@@ -1,6 +1,6 @@
 package org.paninij.soter.transfer;
 
-import java.text.MessageFormat;
+import static java.text.MessageFormat.format;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
@@ -10,10 +10,10 @@ import com.ibm.wala.util.intset.IntSet;
 
 public abstract class TransferSite
 {
-    protected CGNode node;
-    protected IntSet transfers;
-    protected SSAInstruction transferInstr;
-    protected Kind kind;
+    protected final CGNode node;
+    protected final IntSet transfers;
+    protected final SSAInstruction transferInstr;
+    protected final Kind kind;
     
     /**
      * @param node          The call graph node in which this transfer
@@ -31,6 +31,7 @@ public abstract class TransferSite
         this.node = node;
         this.transferInstr = transferInstr;
         this.transfers = transfers;
+        this.kind = Kind.fromSSAInstruction(transferInstr);
     }
     
     public abstract boolean isReturnKind();
@@ -73,10 +74,35 @@ public abstract class TransferSite
         }
     }
     
+    public String infoString()
+    {
+        switch (kind) {
+        case INVOKE:
+            SSAAbstractInvokeInstruction invoke = (SSAAbstractInvokeInstruction) transferInstr;
+            return format("TransferSite(kind = INVOKE, iindex = {0}, target = {1}, programCounter = {2}, transfers = {3})",
+                          invoke.iindex,
+                          invoke.getDeclaredTarget().getSignature(),
+                          invoke.getProgramCounter(),
+                          transfers);
+        case RETURN:
+            SSAReturnInstruction ret = (SSAReturnInstruction) transferInstr;
+            return format("TransferSite(kind = RETURN, iindex = {0}, transfers = {1})",
+                          ret.iindex,
+                          transfers);
+        default:
+            throw new RuntimeException("Unknown transfer site kind.");
+        }
+    }
+    
+    public String debugString()
+    {
+        String fmt = "TransferSite(node = {0}, SSAInstruction = {1}, transfers = {2})";
+        return format(fmt, node, transferInstr, transfers);
+    }
+    
     @Override
     public String toString()
     {
-        String fmt = "TransferSite(node = {0}, SSAInstruction = {1}, transfers = {2})";
-        return MessageFormat.format(fmt, node, transferInstr, transfers);
+        return debugString();
     }
 }
