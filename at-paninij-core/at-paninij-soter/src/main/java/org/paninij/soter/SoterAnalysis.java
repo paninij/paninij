@@ -442,7 +442,8 @@ public class SoterAnalysis extends Analysis
             Pair<CGNode, NewSiteReference> creationSite = iter.next();
             assert iter.hasNext() == false;
 
-            return format("InstanceKey(method = {0}, programCounter = {1}, context = {2})",
+            return format("InstanceKey(concreteType = {0}, creationSiteMethod = {1}, creationSiteProgramCounter = {2}, context = {3})",
+                          inst.getConcreteType(),
                           creationSite.fst.getMethod(),
                           creationSite.snd.getProgramCounter(),
                           creationSite.fst.getContext());
