@@ -15,7 +15,7 @@ public class RayTracerUtil implements Serializable {
     public static void initialize(int screenWidth, int screenHeight) {
         RayTracerUtil.screenWidth = screenWidth;
         RayTracerUtil.screenHeight = screenHeight;
-        RayTracerUtil.maxDepth = 5;
+        RayTracerUtil.maxDepth = 20;
     }
 
     public static int screenWidth() {

@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Color extends Vector implements Serializable {
     private static final long serialVersionUID = 6821291418033385296L;
     public static final Color black = new Color(0, 0, 0);
-    public static final Color background = black;
+    public static final Color background = new Color(.1, .3, .4);
     public static final Color plain = black;
 
     public Color(double x, double y, double z) {
