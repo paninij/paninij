@@ -20,14 +20,11 @@ import org.paninij.lang.Wired;
         Camera cam = scene.camera();
         Vector pos = cam.position();
 
-        System.out.println("Tracer render time " + chunkHeight);
-
         for (int i = startHeight; i < endHeight; i++) {
             for (int j = 0; j < screenWidth; j++) {
                 Vector point = RayTracerUtil.getPoint(j, i, cam);
                 Color col = RayTracerUtil.traceRay(new Ray(pos, point), scene, 0);
-                pixels[indx++] = new Pixel(i, j, col);
-                System.out.println(indx + "/" + pixelCount);
+                pixels[indx++] = new Pixel(j, i, col);
             }
         }
 
