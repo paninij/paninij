@@ -17,12 +17,12 @@ public class CheckerBoard extends Surface implements Serializable {
 
     @Override
     public Double reflect(Vector v) {
-        return (Math.floor(v.z()) + Math.floor(v.x())) % 2 != 0 ? 0.1 : 0.7;
+        return (Math.floor(v.z()) + Math.floor(v.x())) % 2 != 0 ? 0.3 : 0.3;
     }
 
     @Override
     public Double roughness() {
-        return 150.0;
+        return 15.0;
     }
 
 }
