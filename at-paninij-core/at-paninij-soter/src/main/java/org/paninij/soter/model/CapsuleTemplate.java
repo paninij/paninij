@@ -90,7 +90,7 @@ public class CapsuleTemplate
         if (packageName.isEmpty()) {
             return className;
         } else {
-            return packageName + "." + className;
+            return packageName + "/" + className;
         }
     }
 }

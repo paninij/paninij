@@ -10,6 +10,7 @@ import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.transfer.TransferSite;
+import org.paninij.soter.transfer.TransferSite.Kind;
 import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -206,7 +207,7 @@ public class CallGraphLiveAnalysis extends Analysis
             for (TransferSite transferSite : ta.getRelevantSites(src))
             {
                 // No `RETURN` kind transfer site will be an invocation from `src` to `dest`.
-                if (transferSite.isReturnKind()) {
+                if (transferSite.getKind() == Kind.RETURN) {
                     continue;
                 }
                 

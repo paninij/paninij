@@ -59,7 +59,7 @@ public class Main
         if (cliArguments.analysisReports != null)
         {
             log(cliArguments.analysisReports + File.separator + qualifiedCapsuleName,
-                soterAnalysis.makeReport(), false);
+                soterAnalysis.toJsonString(), false);
         }
         
         try {

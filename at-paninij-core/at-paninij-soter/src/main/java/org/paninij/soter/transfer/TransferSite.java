@@ -1,6 +1,6 @@
 package org.paninij.soter.transfer;
 
-import static java.text.MessageFormat.format;
+import javax.json.JsonObject;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
@@ -10,11 +10,6 @@ import com.ibm.wala.util.intset.IntSet;
 
 public abstract class TransferSite
 {
-    protected final CGNode node;
-    protected final IntSet transfers;
-    protected final SSAInstruction transferInstr;
-    protected final Kind kind;
-    
     /**
      * @param node          The call graph node in which this transfer
      * @param transferInstr The instruction (from the SSA IR of `node`) which performs the transfer.
@@ -22,6 +17,22 @@ public abstract class TransferSite
      *                      transferred at this transfer site. If there are no transfers, then that
      *                      should be represented by passing `null`.
      */
+    public static TransferSite make(CGNode node, IntSet transfers, SSAInstruction transferInstr)
+    {
+        switch (Kind.fromSSAInstruction(transferInstr)) {
+        case INVOKE:
+        case RETURN:
+            return new ReturnTransferSite(node, transfers, transferInstr);
+        default:
+            String msg = "Cannot make a transfer site because `transferInstr` kind is unknown.";
+            throw new RuntimeException(msg);
+        }
+    }
+    
+    protected final CGNode node;
+    protected final IntSet transfers;
+    protected final SSAInstruction transferInstr;
+    
     public TransferSite(CGNode node, IntSet transfers, SSAInstruction transferInstr)
     {
         assert node != null;
@@ -31,13 +42,12 @@ public abstract class TransferSite
         this.node = node;
         this.transferInstr = transferInstr;
         this.transfers = transfers;
-        this.kind = Kind.fromSSAInstruction(transferInstr);
     }
     
-    public abstract boolean isReturnKind();
+    public abstract Kind getKind();
     
-    public abstract boolean isInvokeKind();
-
+    public abstract JsonObject toJson();
+    
     public CGNode getNode()
     {
         return node;
@@ -72,37 +82,5 @@ public abstract class TransferSite
             String msg = "The given instruction is not a known transfer site kind: " + instr;
             throw new IllegalArgumentException(msg);
         }
-    }
-    
-    public String infoString()
-    {
-        switch (kind) {
-        case INVOKE:
-            SSAAbstractInvokeInstruction invoke = (SSAAbstractInvokeInstruction) transferInstr;
-            return format("TransferSite(kind = INVOKE, iindex = {0}, target = {1}, programCounter = {2}, transfers = {3})",
-                          invoke.iindex,
-                          invoke.getDeclaredTarget().getSignature(),
-                          invoke.getProgramCounter(),
-                          transfers);
-        case RETURN:
-            SSAReturnInstruction ret = (SSAReturnInstruction) transferInstr;
-            return format("TransferSite(kind = RETURN, iindex = {0}, transfers = {1})",
-                          ret.iindex,
-                          transfers);
-        default:
-            throw new RuntimeException("Unknown transfer site kind.");
-        }
-    }
-    
-    public String debugString()
-    {
-        String fmt = "TransferSite(node = {0}, SSAInstruction = {1}, transfers = {2})";
-        return format(fmt, node, transferInstr, transfers);
-    }
-    
-    @Override
-    public String toString()
-    {
-        return debugString();
     }
 }
