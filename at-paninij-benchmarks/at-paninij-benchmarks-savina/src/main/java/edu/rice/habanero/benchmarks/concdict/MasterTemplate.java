@@ -1,18 +1,20 @@
 package edu.rice.habanero.benchmarks.concdict;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class MasterTemplate {
 
-    @Child Worker[] workers = new Worker[DictionaryConfig.NUM_ENTITIES];
-    @Child Dictionary dictionary;
+    @Local Worker[] workers = new Worker[DictionaryConfig.NUM_ENTITIES];
+    @Local Dictionary dictionary;
 
     int numWorkersTerminated = 0;
 
     public void design(Master self) {
-        for (int i = 0; i < workers.length; i++) workers[i].wire(self, dictionary, i);
-        dictionary.wire(workers);
+        for (int i = 0; i < workers.length; i++) {
+            workers[i].imports(self, dictionary, i);
+        }
+        dictionary.imports(workers);
     }
 
     public void start() {

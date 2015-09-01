@@ -1,16 +1,16 @@
 package org.paninij.examples.helloworld;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule
 class HelloWorldTemplate
 {
-    @Child Console c;
-    @Child Greeter g;
+    @Local Console c;
+    @Local Greeter g;
 
     void design(HelloWorld self) {
-        g.wire(c);
+        g.imports(c);
     }
 
     void run() {

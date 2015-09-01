@@ -3,13 +3,13 @@ package edu.rice.habanero.benchmarks.concdict;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class WorkerTemplate {
 
-    @Wired Master master;
-    @Wired Dictionary dictionary;
-    @Wired int id;
+    @Imports Master master;
+    @Imports Dictionary dictionary;
+    @Imports int id;
 
     int writePercent = DictionaryConfig.WRITE_PERCENTAGE;
     int numMessagesPerWorker = DictionaryConfig.NUM_MSGS_PER_WORKER;

@@ -1,12 +1,12 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class TaggedForwardTemplate implements ProcessorTemplate {
 
-    @Wired Integrator integrator;
-    @Wired int sourceId;
+    @Imports Integrator integrator;
+    @Imports int sourceId;
 
     @Override
     public void process(double value) {

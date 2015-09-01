@@ -1,10 +1,10 @@
 package edu.rice.habanero.benchmarks.pingpong;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class PongTemplate {
-    @Wired Ping ping;
+    @Imports Ping ping;
     private int pongs = 0;
 
     public void doPong() {

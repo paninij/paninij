@@ -43,9 +43,9 @@
   </properties>
 
   <modules>
-    <module>at-paninij-code-gen</module>
     <module>at-paninij-runtime</module>
-    <module>at-paninij-apt-tests</module>
+    <module>at-paninij-proc</module>
+    <module>at-paninij-proc-tests</module>
     <module>at-paninij-soter</module>
     <module>at-paninij-soter-tests</module>
   </modules>
@@ -55,25 +55,31 @@
 
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>at-paninij-code-gen</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.paninij</groupId>
         <artifactId>at-paninij-runtime</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>at-paninij-tests</artifactId>
+        <artifactId>at-paninij-proc</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>at-paninij-proc-tests</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>at-paninij-soter</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>at-paninij-soter-tests</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
 

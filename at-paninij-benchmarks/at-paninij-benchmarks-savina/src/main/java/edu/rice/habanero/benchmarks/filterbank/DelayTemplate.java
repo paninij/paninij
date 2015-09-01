@@ -1,13 +1,13 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class DelayTemplate implements ProcessorTemplate {
 
-    @Wired Processor next;
-    @Wired String sourceId;
-    @Wired int delayLength;
+    @Imports Processor next;
+    @Imports String sourceId;
+    @Imports int delayLength;
 
     int placeHolder = 0;
     double[] state;

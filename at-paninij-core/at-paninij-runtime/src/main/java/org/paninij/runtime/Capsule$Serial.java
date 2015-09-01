@@ -67,11 +67,11 @@ public abstract class Capsule$Serial implements Panini$Capsule
     }
 
     /**
-     * Initialize the children of this capsule.
+     * Initialize the locals of this capsule.
      *
      * Must (in general) be called *before* `panini$initState()`.
      */
-    protected void panini$initChildren() {
+    protected void panini$initLocals() {
         // Do nothing.
     }
 

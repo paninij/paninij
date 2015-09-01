@@ -19,19 +19,19 @@
 package org.paninij.examples.asteroids;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule
 public class AsteroidsTemplate {
 
-    @Child Game game;
-    @Child Ship ship;
-    @Child Input input;
-    @Child UserInterface ui;
+    @Local Game game;
+    @Local Ship ship;
+    @Local Input input;
+    @Local UserInterface ui;
 
     public void design(Asteroids self) {
-        input.wire(ship);
-        ui.wire(game);
+        input.imports(ship);
+        ui.imports(game);
     }
 
     public void run() {

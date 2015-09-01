@@ -20,7 +20,7 @@ package org.paninij.examples.echo;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 import java.io.IOException;
 import java.net.*;
@@ -33,7 +33,7 @@ public class EchoServerTemplate
     // instantiate and populate the Array of workers.
     // The size of the array must be provided at this
     // point.
-    @Child Worker[] workers = new Worker[10];
+    @Local Worker[] workers = new Worker[10];
 
     // @Child Worker[] workers; - This will fail because it
     // does not provide the size of the array.
@@ -64,7 +64,7 @@ public class EchoServerTemplate
      */
     public void design(EchoServer self) {
         for (Worker w : this.workers)
-            w.wire(self);
+            w.imports(self);
     }
 
     @Block

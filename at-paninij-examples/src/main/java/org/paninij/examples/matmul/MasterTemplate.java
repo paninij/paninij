@@ -1,20 +1,20 @@
 package org.paninij.examples.matmul;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Local;
+import org.paninij.lang.Imports;
 
 @Capsule public class MasterTemplate {
     int numWorkers = Config.NUM_WORKERS;
 
-    @Wired MatrixData data;
-    @Child Worker[] workers = new Worker[numWorkers];
+    @Imports MatrixData data;
+    @Local Worker[] workers = new Worker[numWorkers];
 
     int numWorkSent = 0;
     int numWorkCompleted = 0;
 
     public void design(Master self) {
-        for (Worker w : workers) w.wire(self, data);
+        for (Worker w : workers) w.imports(self, data);
     }
 
     public void start() {

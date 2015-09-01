@@ -3,12 +3,12 @@ package edu.rice.habanero.benchmarks.concsll;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class WorkerTemplate {
-    @Wired Master master;
-    @Wired SortedList sortedList;
-    @Wired int id;
+    @Imports Master master;
+    @Imports SortedList sortedList;
+    @Imports int id;
 
     int writePercent = SortedListConfig.WRITE_PERCENTAGE;
     int sizePercent = SortedListConfig.SIZE_PERCENTAGE;

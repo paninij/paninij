@@ -1,13 +1,13 @@
 package edu.rice.habanero.benchmarks.logmap;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class LogisticMapTemplate {
     int numTerms = LogisticMapConfig.numTerms;
     int numWorkers = LogisticMapConfig.numSeries;
 
-    @Child SeriesWorker[] workers = new SeriesWorker[numWorkers];
+    @Local SeriesWorker[] workers = new SeriesWorker[numWorkers];
 
     int numWorkRequested = 0;
     int numWorkRecieved = 0;
@@ -16,7 +16,7 @@ import org.paninij.lang.Child;
     public void design(LogisticMap self) {
         for (int i = 0; i < numWorkers; i++) {
             double startTerm = i * LogisticMapConfig.increment;
-            workers[i].wire(i, startTerm);
+            workers[i].imports(i, startTerm);
         }
     }
 

@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
 @Capsule public class DictionaryTemplate {
-    @Wired Worker[] workers;
+    @Imports Worker[] workers;
     Map<Integer, Integer> dataMap = new HashMap<Integer, Integer>(DictionaryConfig.DATA_MAP);
 
     public void write(int key, int value, int id) {

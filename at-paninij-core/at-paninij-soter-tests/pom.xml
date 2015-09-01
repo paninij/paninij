@@ -117,7 +117,7 @@
   <dependencies>
     <dependency>
       <groupId>org.paninij</groupId>
-      <artifactId>at-paninij-code-gen</artifactId>
+      <artifactId>at-paninij-proc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>

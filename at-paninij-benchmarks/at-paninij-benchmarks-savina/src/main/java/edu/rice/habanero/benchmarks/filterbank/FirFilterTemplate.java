@@ -1,14 +1,14 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class FirFilterTemplate implements ProcessorTemplate {
 
-    @Wired Processor next;
-    @Wired String sourceId;
-    @Wired int peekLength;
-    @Wired double[] coefficients;
+    @Imports Processor next;
+    @Imports String sourceId;
+    @Imports int peekLength;
+    @Imports double[] coefficients;
 
     double[] data;
     int dataIndex = 0;

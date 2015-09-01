@@ -1,13 +1,13 @@
 package edu.rice.habanero.benchmarks.radixsort;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 import edu.rice.habanero.benchmarks.radixsort.RadixSortConfig;
 
 
 @Capsule public class SortTemplate implements AdderTemplate {
-    @Wired Adder next;
-    @Wired Long radix;
+    @Imports Adder next;
+    @Imports Long radix;
 
     int valuesSoFar = 0;
 

@@ -19,11 +19,11 @@
 package org.paninij.examples.asteroids;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule
 public class UserInterfaceTemplate {
-    @Wired Game game;
+    @Imports Game game;
 
     private void paintHorizBorder() {
         for (int i = 0; i <= Constants.WIDTH; i++) System.out.print(Constants.SYMBOL_BORDER);

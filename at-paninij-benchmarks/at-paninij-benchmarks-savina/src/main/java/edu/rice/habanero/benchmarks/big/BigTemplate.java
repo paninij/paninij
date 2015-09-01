@@ -1,17 +1,17 @@
 package edu.rice.habanero.benchmarks.big;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class BigTemplate {
-    @Child Sink sink;
-    @Child Node[] nodes = new Node[BigConfig.W];
+    @Local Sink sink;
+    @Local Node[] nodes = new Node[BigConfig.W];
 
     public void design(Big self) {
         for (int i = 0; i < BigConfig.W; i++)
-            nodes[i].wire(i, nodes, sink);
+            nodes[i].imports(i, nodes, sink);
 
-        sink.wire(nodes);
+        sink.imports(nodes);
     }
 
     public void run() {

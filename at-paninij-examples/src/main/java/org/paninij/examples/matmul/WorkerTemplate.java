@@ -1,11 +1,11 @@
 package org.paninij.examples.matmul;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class WorkerTemplate {
-    @Wired Master master;
-    @Wired MatrixData data;
+    @Imports Master master;
+    @Imports MatrixData data;
 
     public void doWork(Work work) {
         int srA = work.srA;

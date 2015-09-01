@@ -3,12 +3,12 @@ package edu.rice.habanero.benchmarks.big;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class NodeTemplate {
-    @Wired int id;
-    @Wired Node[] nodes = new Node[BigConfig.W];
-    @Wired Sink sink;
+    @Imports int id;
+    @Imports Node[] nodes = new Node[BigConfig.W];
+    @Imports Sink sink;
 
     int numPings = 0;
     int numMessages = BigConfig.N;

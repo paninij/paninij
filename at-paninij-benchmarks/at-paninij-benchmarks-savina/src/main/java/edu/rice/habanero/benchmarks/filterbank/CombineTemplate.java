@@ -3,11 +3,11 @@ package edu.rice.habanero.benchmarks.filterbank;
 import java.util.Collection;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class CombineTemplate {
 
-    @Wired Sink sink;
+    @Imports Sink sink;
 
     public void process(DoubleCollection collection) {
         double sum = 0;
