@@ -4,7 +4,7 @@
 //
 //import org.junit.Assert;
 //import org.paninij.lang.CapsuleTest;
-//import org.paninij.lang.Child;
+//import org.paninij.lang.Local;
 //import org.paninij.lang.Test;
 //import org.paninij.runtime.Capsule$Thread;
 //import org.paninij.runtime.Panini$Capsule;
@@ -12,7 +12,7 @@
 //@CapsuleTest
 //public class BasicOwnershipTemplate
 //{
-//    @Child LeakyServer leakyServer;
+//    @Local LeakyServer leakyServer;
 //    Integer testerSecret = 42;
 //    
 //

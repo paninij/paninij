@@ -1,15 +1,15 @@
 package org.paninij.examples.pingpong;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class PingPongTemplate {
-    @Child Ping ping;
-    @Child Pong pong;
+    @Local Ping ping;
+    @Local Pong pong;
 
     public void design(PingPong self) {
-        ping.wire(pong, 100000);
-        pong.wire(ping);
+        ping.imports(pong, 100000);
+        pong.imports(ping);
     }
 
     public void run() {

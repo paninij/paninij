@@ -175,15 +175,15 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         return src;
     }
 
-    private List<String> generateInitChildren()
+    private List<String> generateInitLocals()
     {
-        List<Variable> children = this.capsule.getChildren();
+        List<Variable> locals = this.capsule.getLocalFields();
         List<String> source = new ArrayList<String>();
 
-        if (children.size() == 0) return source;
+        if (locals.size() == 0) return source;
 
-        for (Variable child : children) {
-            if (child.isArray()) {
+        for (Variable local : locals) {
+            if (local.isArray()) {
                 List<String> lines = Source.lines(
                         "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
                         "    panini$encapsulated.#0[i] = new #1#2();",
@@ -191,32 +191,32 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                         "");
                 source.addAll(Source.formatAll(
                         lines,
-                        child.getIdentifier(),
-                        child.getEncapsulatedType(),
+                        local.getIdentifier(),
+                        local.getEncapsulatedType(),
                         CAPSULE_PROFILE_SERIAL_SUFFIX));
             } else {
                 source.add(Source.format(
                         "panini$encapsulated.#0 = new #1#2();",
-                        child.getIdentifier(),
-                        child.raw(),
+                        local.getIdentifier(),
+                        local.raw(),
                         CAPSULE_PROFILE_SERIAL_SUFFIX));
             }
         }
 
 
-        for (Variable child : children) {
-            if (child.isArray()) {
+        for (Variable local : locals) {
+            if (local.isArray()) {
                 List<String> lines = Source.lines(
                         "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
                         "    ((Panini$Capsule) panini$encapsulated.#0[i]).panini$openLink();",
                         "}");
                 source.addAll(Source.formatAll(
                         lines,
-                        child.getIdentifier()));
+                        local.getIdentifier()));
             } else {
                 source.add(Source.format(
                         "((Panini$Capsule) panini$encapsulated.#0).panini$openLink();",
-                        child.getIdentifier()));
+                        local.getIdentifier()));
             }
         }
 
@@ -224,23 +224,23 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
             source.add("panini$encapsulated.design(this);");
         }
 
-        for (Variable child : children) {
-            if (child.isArray()) {
+        for (Variable local : locals) {
+            if (local.isArray()) {
                 List<String> src = Source.lines(
                         "for (int i = 0; i < panini$encapsulated.#0.length; i++) {",
                         "    panini$encapsulated.#0[i].panini$start();",
                         "}");
-                source.addAll(Source.formatAll(src, child.getIdentifier()));
+                source.addAll(Source.formatAll(src, local.getIdentifier()));
             } else {
                 source.add(Source.format(
                         "panini$encapsulated.#0.panini$start();",
-                        child.getIdentifier()));
+                        local.getIdentifier()));
             }
         }
 
         List<String> decl = Source.lines(
                 "@Override",
-                "protected void panini$initChildren() {",
+                "protected void panini$initLocals() {",
                 "    ##",
                 "}",
                 "");
@@ -256,7 +256,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                     "public void run() {",
                     "    try {",
                     "        panini$checkRequiredFields();",
-                    "        panini$initChildren();",
+                    "        panini$initLocals();",
                     "        panini$initState();",
                     "        panini$encapsulated.run();",
                     "    } catch (Throwable thrown) {",
@@ -279,7 +279,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                 "public void run() {",
                 "    try {",
                 "        panini$checkRequiredFields();",
-                "        panini$initChildren();",
+                "        panini$initLocals();",
                 "        panini$initState();",
                 "    } catch (Throwable thrown) {",
                 "        panini$errors.add(thrown);",
@@ -295,8 +295,8 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         src.add(this.generateEncapsulatedDecl());
         src.addAll(this.generateProcedures());
         src.addAll(this.generateCheckRequiredFields());
-        src.addAll(this.generateWire());
-        src.addAll(this.generateInitChildren());
+        src.addAll(this.generateExport());
+        src.addAll(this.generateInitLocals());
         src.addAll(this.generateInitState());
         src.addAll(this.generateOnTerminate());
         src.addAll(this.generateGetAllState());

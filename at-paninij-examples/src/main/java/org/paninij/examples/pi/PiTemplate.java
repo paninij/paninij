@@ -19,7 +19,7 @@
 package org.paninij.examples.pi;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 /***
  * Calculation of Pi using the Panini language
@@ -36,7 +36,7 @@ public class PiTemplate
     static int WORKER_COUNT = 10;
 
     // an array of worker capsules
-    @Child Worker[] workers = new Worker[WORKER_COUNT];
+    @Local Worker[] workers = new Worker[WORKER_COUNT];
 
     public void run() {
         Number[] results = new Number[WORKER_COUNT];

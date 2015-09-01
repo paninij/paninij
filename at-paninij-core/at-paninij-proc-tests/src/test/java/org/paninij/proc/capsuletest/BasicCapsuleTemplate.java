@@ -1,18 +1,18 @@
 package org.paninij.proc.capsuletest;
 
 import org.paninij.lang.CapsuleTest;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 import org.paninij.lang.Test;
 
 /*
 @CapsuleTest
 public class BasicCapsuleTemplate
 {
-    @Child Foo foo;
-    @Child Bar bar;
+    @Local Foo foo;
+    @Local Bar bar;
     
     void design(BasicCapsule self) {
-        foo.wire(bar);
+        foo.imports(bar);
     }
     
     @Test
@@ -37,9 +37,9 @@ public class BasicCapsuleTemplate
     }
 
     @Test
-    public void testWiredBarCount()
+    public void testImportedBarCount()
     {
-        Integer count = foo.wiredBarCount();
+        Integer count = foo.importedBarCount();
         assert count.intValue() == 1;
     }
     
@@ -51,7 +51,7 @@ public class BasicCapsuleTemplate
 
         Integer count = 0;
         for (int idx = 0; idx < ITERATIONS; idx++) {
-            count = foo.wiredBarCount();
+            count = foo.importedBarCount();
         }
         assert count.intValue() == EXPECTED;
     }

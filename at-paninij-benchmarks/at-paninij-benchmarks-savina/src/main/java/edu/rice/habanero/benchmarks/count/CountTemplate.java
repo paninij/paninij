@@ -1,10 +1,10 @@
 package edu.rice.habanero.benchmarks.count;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class CountTemplate {
-    @Child Counter c;
+    @Local Counter c;
 
     public void run() {
         for (int i = 0; i < CountingConfig.N; i++)

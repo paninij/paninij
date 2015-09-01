@@ -2,12 +2,12 @@ package org.paninij.soter;
 
 import org.paninij.soter.LeakyServer;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule
 public class ActiveClientTemplate
 {
-    @Child LeakyServer server;
+    @Local LeakyServer server;
     Secret secret = new Secret();
     Integer integer = new Integer(42);
     

@@ -24,8 +24,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.SimpleElementVisitor8;
 
-import org.paninij.lang.Child;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Local;
+import org.paninij.lang.Imports;
 import org.paninij.proc.model.CapsuleElement;
 import org.paninij.proc.model.Variable;
 
@@ -54,10 +54,10 @@ public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement
     @Override
     public CapsuleElement visitVariable(VariableElement e, CapsuleElement capsule) {
         Variable variable = new Variable(e.asType(), e.getSimpleName().toString());
-        if (e.getAnnotation(Child.class) != null) {
-            capsule.addChild(variable);
-        } else if (e.getAnnotation(Wired.class) != null) {
-            capsule.addWired(variable);
+        if (e.getAnnotation(Local.class) != null) {
+            capsule.addLocals(variable);
+        } else if (e.getAnnotation(Imports.class) != null) {
+            capsule.addImportDecl(variable);
         } else {
             capsule.addState(variable);
         }

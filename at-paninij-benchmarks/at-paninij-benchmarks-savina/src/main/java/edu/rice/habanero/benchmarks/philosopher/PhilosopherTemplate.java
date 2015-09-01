@@ -1,10 +1,10 @@
 package edu.rice.habanero.benchmarks.philosopher;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class PhilosopherTemplate {
-    @Wired Arbiter arbiter;
+    @Imports Arbiter arbiter;
 
     int roundsSoFar = 0;
 

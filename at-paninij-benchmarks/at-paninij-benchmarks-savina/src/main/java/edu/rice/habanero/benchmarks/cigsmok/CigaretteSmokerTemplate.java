@@ -1,10 +1,10 @@
 package edu.rice.habanero.benchmarks.cigsmok;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class CigaretteSmokerTemplate {
-    @Child Arbiter arbiter;
+    @Local Arbiter arbiter;
 
     public void run() {
         arbiter.start();

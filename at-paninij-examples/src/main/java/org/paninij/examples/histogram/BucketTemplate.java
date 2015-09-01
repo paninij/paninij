@@ -20,7 +20,7 @@ package org.paninij.examples.histogram;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 /**
  * Each Bucket holds the count for an ascii character.
@@ -28,7 +28,7 @@ import org.paninij.lang.Wired;
  */
 @Capsule public class BucketTemplate
 {
-    @Wired Printer p;
+    @Imports Printer p;
 
     long count;
 

@@ -56,7 +56,7 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
                 this.capsule.getPackage(),
                 this.capsule.getSimpleName(),
                 this.generateInterfaces(),
-                this.generateWiredDecl());
+                this.generateImportDecl());
 
         src = Source.formatAligned(src, this.generateImports());
         src = Source.formatAligned(src, this.generateFacades());
@@ -71,15 +71,15 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
         return String.join(", ", interfaces);
     }
 
-    protected String generateWiredDecl()
+    protected String generateImportDecl()
     {
         List<String> decls = new ArrayList<String>();
 
-        for (Variable v : this.capsule.getWired()) {
+        for (Variable v : this.capsule.getImportFields()) {
             decls.add(v.toString());
         }
 
-        return decls.isEmpty() ? "" : Source.format("public void wire(#0);", String.join(", ", decls));
+        return decls.isEmpty() ? "" : Source.format("public void imports(#0);", String.join(", ", decls));
     }
 
     protected List<String> generateImports()

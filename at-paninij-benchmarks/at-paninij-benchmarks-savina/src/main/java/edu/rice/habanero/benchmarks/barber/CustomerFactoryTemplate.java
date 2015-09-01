@@ -4,11 +4,11 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class CustomerFactoryTemplate {
 
-    @Wired WaitingRoom waitingRoom;
+    @Imports WaitingRoom waitingRoom;
 
     Random random = new Random();
     int numHaircutsSoFar = 0;

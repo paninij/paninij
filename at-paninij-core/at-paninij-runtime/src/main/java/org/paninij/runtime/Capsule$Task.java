@@ -252,25 +252,25 @@ public abstract class Capsule$Task implements Panini$Capsule
 
     protected void panini$capsuleInit() {
         panini$checkRequiredFields();
-        panini$initChildren();
+        panini$initLocals();
         panini$initState();
     }
 
     /**
      * Initialize the capsule-requirements of this capsule.
      *
-     * Should be called *before* `panini$initChildren()` or `panini$initState() are called.
+     * Should be called *before* `panini$initLocals()` or `panini$initState() are called.
      */
     protected void panini$checkRequiredFields() {
         // Do nothing.
     }
 
     /**
-     * Initialize the children of this capsule.
+     * Initialize the locals of this capsule.
      *
      * Must (in general) be called *before* `panini$initState()`.
      */
-    protected void panini$initChildren() {
+    protected void panini$initLocals() {
         // Do nothing.
     }
 

@@ -125,11 +125,11 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected List<String> generateCheckRequiredFields()
     {
-        // Get the fields which must be non-null, i.e. all wired fields and all arrays of children.
-        List<Variable> required = this.capsule.getWired();
+        // Get the fields which must be non-null, i.e. all @Import fields and all arrays of locals.
+        List<Variable> required = this.capsule.getImportFields();
 
-        for (Variable child : this.capsule.getChildren()) {
-            if (child.isArray()) required.add(child);
+        for (Variable local : this.capsule.getLocalFields()) {
+            if (local.isArray()) required.add(local);
         }
 
         if (required.isEmpty()) return new ArrayList<String>();
@@ -152,15 +152,15 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
         return Source.formatAlignedFirst(lines, assertions);
     }
 
-    protected List<String> generateWire()
+    protected List<String> generateExport()
     {
-        List<Variable> wired = this.capsule.getWired();
+        List<Variable> imported = this.capsule.getImportFields();
         List<String> refs = new ArrayList<String>();
         List<String> decls = new ArrayList<String>();
 
-        if (wired.isEmpty()) return refs;
+        if (imported.isEmpty()) return refs;
 
-        for (Variable var : wired) {
+        for (Variable var : imported) {
             String instantiation = Source.format("panini$encapsulated.#0 = #0;", var.getIdentifier());
             refs.add(instantiation);
 
@@ -184,7 +184,7 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
         }
 
         List<String> src = Source.lines(
-                "public void wire(#0) {",
+                "public void imports(#0) {",
                 "    ##",
                 "}",
                 "");
@@ -197,7 +197,7 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected List<String> generateGetAllState()
     {
-        List<String> states = capsule.getState()
+        List<String> states = capsule.getStateFields()
                                      .stream()
                                      .filter(s -> s.getKind() == TypeKind.ARRAY
                                                || s.getKind() == TypeKind.DECLARED)
@@ -230,8 +230,8 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
         List<String> shutdowns = new ArrayList<String>();
         List<Variable> references = new ArrayList<Variable>();
 
-        references.addAll(this.capsule.getWired());
-        references.addAll(this.capsule.getChildren());
+        references.addAll(this.capsule.getImportFields());
+        references.addAll(this.capsule.getLocalFields());
 
         if (references.isEmpty()) return shutdowns;
 
@@ -266,21 +266,21 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
     {
         // if the capsule has external dependencies, it does
         // not deserve a main
-        if (!this.capsule.getWired().isEmpty()) return false;
+        if (!this.capsule.getImportFields().isEmpty()) return false;
 
         if (this.capsule.isActive()) {
             // if the capsule is active and has no external deps,
             // it deserves a main
             return true;
         } else {
-            // if the capsule has no children, it does not need a main
+            // if the capsule has no locals, it does not need a main
             // (this is a bogus/dull scenario)
-            if (this.capsule.getChildren().isEmpty()) return false;
+            if (this.capsule.getLocalFields().isEmpty()) return false;
 
             // check if any ancestor capsules are active
             if (this.capsule.hasActiveAncestor()) return true;
 
-            // if no child is active, this does not deserve a main
+            // if no local is active, this does not deserve a main
             return false;
         }
     }

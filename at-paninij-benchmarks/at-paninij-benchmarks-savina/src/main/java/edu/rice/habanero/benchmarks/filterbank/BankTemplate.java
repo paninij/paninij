@@ -1,31 +1,31 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Local;
+import org.paninij.lang.Imports;
 
 @Capsule public class BankTemplate implements ProcessorTemplate {
 
-    @Wired int sourceId;
-    @Wired int numColumns;
-    @Wired double[] H;
-    @Wired double[] F;
-    @Wired Integrator integrator;
+    @Imports int sourceId;
+    @Imports int numColumns;
+    @Imports double[] H;
+    @Imports double[] F;
+    @Imports Integrator integrator;
 
-    @Child Delay delay1;
-    @Child FirFilter fir1;
-    @Child SampleFilter sample;
-    @Child Delay delay2;
-    @Child FirFilter fir2;
-    @Child TaggedForward tag;
+    @Local Delay delay1;
+    @Local FirFilter fir1;
+    @Local SampleFilter sample;
+    @Local Delay delay2;
+    @Local FirFilter fir2;
+    @Local TaggedForward tag;
 
     public void design(Bank self) {
-        delay1.wire(fir1, sourceId + ".1", numColumns - 1);
-        fir1.wire(sample, sourceId + ".1", numColumns, H);
-        sample.wire(delay2, numColumns);
-        delay2.wire(fir2, sourceId + ".2", numColumns -1);
-        fir2.wire(tag, sourceId + ".2", numColumns, F);
-        tag.wire(integrator, sourceId);
+        delay1.imports(fir1, sourceId + ".1", numColumns - 1);
+        fir1.imports(sample, sourceId + ".1", numColumns, H);
+        sample.imports(delay2, numColumns);
+        delay2.imports(fir2, sourceId + ".2", numColumns -1);
+        fir2.imports(tag, sourceId + ".2", numColumns, F);
+        tag.imports(integrator, sourceId);
     }
 
     @Override

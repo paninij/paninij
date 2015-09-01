@@ -22,9 +22,9 @@ import java.util.List;
 
 public interface Capsule extends Signature
 {
-    public List<Variable> getChildren();
-    public List<Variable> getWired();
-    public List<Variable> getState();
+    public List<Variable> getLocalFields();
+    public List<Variable> getImportFields();
+    public List<Variable> getStateFields();
     public List<String> getSignatures();
     public boolean hasInit();
     public boolean hasRun();

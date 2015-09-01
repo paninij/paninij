@@ -57,7 +57,7 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
                           this.signature.getSimpleName());
 
         src = formatAligned(src, this.generateImports());
-        src = formatAligned(src, this.generateWiredMethod());
+        src = formatAligned(src, this.generateImportsMethod());
         src = formatAligned(src, this.generateProcedures());
 
         return src;
@@ -75,12 +75,12 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
     }
 
 
-    protected List<String> generateWiredMethod()
+    protected List<String> generateImportsMethod()
     {
         if (signature instanceof Capsule)
         {
             List<String> decls = new ArrayList<String>();
-            for (Variable v : ((Capsule) this.signature).getWired()) {
+            for (Variable v : ((Capsule) this.signature).getImportFields()) {
                 decls.add(v.toString());
             }
 
@@ -89,7 +89,7 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
             }
             else
             {
-                List<String> src = lines("public void wire(#0)",
+                List<String> src = lines("public void imports(#0)",
                                          "{",
                                          "    /* Do nothing. */",
                                          "}");

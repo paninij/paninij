@@ -227,7 +227,7 @@ public class PaniniModel
 
     public static boolean isCapsuleFieldDecl(PaniniProcessor context, Element elem)
     {
-        return isChildFieldDecl(context, elem) || isWiredFieldDecl(context, elem);
+        return isLocalFieldDecl(context, elem) || isImportFieldDecl(context, elem);
     }
 
 
@@ -250,60 +250,60 @@ public class PaniniModel
     }
 
 
-    public static boolean isChildFieldDecl(PaniniProcessor context, Element elem)
+    public static boolean isLocalFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
-            && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Child");
+            && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Local");
     }
 
 
-    public static boolean hasChildFieldDecls(PaniniProcessor context, TypeElement template) {
-        return getWiredFieldDecls(context, template).isEmpty() == false;
+    public static boolean hasLocalFieldDecls(PaniniProcessor context, TypeElement template) {
+        return getImportFieldDecls(context, template).isEmpty() == false;
     }
 
 
-    public static List<VariableElement> getChildFieldDecls(PaniniProcessor context,
+    public static List<VariableElement> getLocalFieldDecls(PaniniProcessor context,
                                                            TypeElement template)
     {
-        List<VariableElement> children = new ArrayList<VariableElement>();
+        List<VariableElement> locals = new ArrayList<VariableElement>();
         for (Element elem : template.getEnclosedElements())
         {
-            if (isChildFieldDecl(context, elem)) {
-                children.add((VariableElement) elem);
+            if (isLocalFieldDecl(context, elem)) {
+                locals.add((VariableElement) elem);
             }
         }
-        return children;
+        return locals;
     }
 
 
-    public static boolean isWiredFieldDecl(PaniniProcessor context, Element elem)
+    public static boolean isImportFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
-            && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Wired");
+            && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Import");
     }
 
 
-    public static boolean hasWiredFieldDecls(PaniniProcessor context, TypeElement template) {
-        return getWiredFieldDecls(context, template).isEmpty() == false;
+    public static boolean hasImportFieldDecls(PaniniProcessor context, TypeElement template) {
+        return getImportFieldDecls(context, template).isEmpty() == false;
     }
 
-    public static List<VariableElement> getWiredFieldDecls(PaniniProcessor context, TypeElement template)
+    public static List<VariableElement> getImportFieldDecls(PaniniProcessor context, TypeElement template)
     {
-        List<VariableElement> wired = new ArrayList<VariableElement>();
+        List<VariableElement> importFields = new ArrayList<VariableElement>();
         for (Element elem : template.getEnclosedElements())
         {
-            if (isWiredFieldDecl(context, elem)) {
-                wired.add((VariableElement) elem);
+            if (isImportFieldDecl(context, elem)) {
+                importFields.add((VariableElement) elem);
             }
         }
-        return wired;
+        return importFields;
     }
     
     public static boolean isStateFieldDecl(PaniniProcessor context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
-            && isWiredFieldDecl(context, elem) == false
-            && isChildFieldDecl(context, elem) == false;
+            && isImportFieldDecl(context, elem) == false
+            && isLocalFieldDecl(context, elem) == false;
         
     }
     
@@ -326,11 +326,11 @@ public class PaniniModel
     }
 
     /**
-     * A capsule is a "root" capsule if and only if it is active and has no `@Wired` fields.
+     * A capsule is a "root" capsule if and only if it is active and has no `@Import` fields.
      */
     public static boolean isRootCapsule(PaniniProcessor context, TypeElement template)
     {
-        return hasWiredFieldDecls(context, template) == false && isActive(template);
+        return hasImportFieldDecls(context, template) == false && isActive(template);
     }
 
 
@@ -380,7 +380,7 @@ public class PaniniModel
 
     /**
      * Inspects the given capsule template, finds the design declaration on it, then returns a
-     * String representation of a `wire()` method declaration.
+     * String representation of a `imports()` method declaration.
      *
      * For example, if a user-defined capsule template has the form
      *
@@ -388,30 +388,30 @@ public class PaniniModel
      *     @Capsule
      *     public class BazTemplate
      *     {
-     *         @Wired Foo foo;
-     *         @Wired Bar bar;
+     *         @Import Foo foo;
+     *         @Import Bar bar;
      *         // ...
      *     }
      *     ```
      *
-     * where `foo` and `bar` are the only `@Wired`-annotated fields on the template, then this
+     * where `foo` and `bar` are the only `@Import`-annotated fields on the template, then this
      * method would return the `String`
      *
-     *     "public void wire(Foo foo, Bar bar)"
+     *     "public void imports(Foo foo, Bar bar)"
      *
-     * Note: If the `template` has no wired capsules, then this method returns `null`.
+     * Note: If the `template` has no `@Import` capsules, then this method returns `null`.
      */
-    public static String buildWireMethodDecl(PaniniProcessor context, TypeElement template)
+    public static String buildExportMethodDecl(PaniniProcessor context, TypeElement template)
     {
         List<String> paramDecls = new ArrayList<String>();
-        for (VariableElement varElem : getWiredFieldDecls(context, template)) {
+        for (VariableElement varElem : getImportFieldDecls(context, template)) {
             paramDecls.add(Source.buildVariableDecl(varElem));
         }
 
         if (paramDecls.isEmpty()) {
             return null;
         } else {
-            return Source.format("public void wire(#0)", String.join(", ", paramDecls));
+            return Source.format("public void imports(#0)", String.join(", ", paramDecls));
         }
     }
 }

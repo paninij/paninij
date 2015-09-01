@@ -1,11 +1,11 @@
 package edu.rice.habanero.benchmarks.fjthrput;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class ThroughputTemplate
 {
-    @Child Worker[] workers = new Worker[ThroughputConfig.A];
+    @Local Worker[] workers = new Worker[ThroughputConfig.A];
 
     public void run() {
         for (int i = 0; i < ThroughputConfig.N; i++)

@@ -1,18 +1,18 @@
 package edu.rice.habanero.benchmarks.concsll;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class MasterTemplate {
 
-    @Child Worker[] workers = new Worker[SortedListConfig.NUM_ENTITIES];
-    @Child SortedList sortedList;
+    @Local Worker[] workers = new Worker[SortedListConfig.NUM_ENTITIES];
+    @Local SortedList sortedList;
 
     int numWorkersTerminated = 0;
 
     public void design(Master self) {
-        for (int i = 0; i < workers.length; i++) workers[i].wire(self, sortedList, i);
-        sortedList.wire(workers);
+        for (int i = 0; i < workers.length; i++) workers[i].imports(self, sortedList, i);
+        sortedList.imports(workers);
     }
 
     public void start() {

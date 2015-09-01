@@ -4,12 +4,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule
 public class RunTestsTemplate
 {
-    @Child Tests test;
+    @Local Tests test;
 
     public void run() {
         MyInterface t = test.getThing();

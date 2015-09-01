@@ -1,12 +1,12 @@
 package edu.rice.habanero.benchmarks.concsll;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
 @Capsule public class SortedListTemplate {
-    @Wired Worker[] workers;
+    @Imports Worker[] workers;
     SortedLinkedList<Integer> dataList = new SortedLinkedList<Integer>();
 
     public void write(int value, int id) {

@@ -2,14 +2,14 @@ package edu.rice.habanero.benchmarks.radixsort;
 
 import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class RadixSortTemplate {
     int sortCount = (int) (Math.log(RadixSortConfig.M) / Math.log(2));
 
-    @Child Validation validator;
-    @Child IntSource source;
-    @Child Sort[] sorters = new Sort[sortCount];
+    @Local Validation validator;
+    @Local IntSource source;
+    @Local Sort[] sorters = new Sort[sortCount];
 
     FlagFuture wait;
 
@@ -18,12 +18,12 @@ import org.paninij.lang.Child;
         Adder next = validator;
 
         for (int i = 0; i < sortCount; i++) {
-            sorters[i].wire(next, radix);
+            sorters[i].imports(next, radix);
             next = sorters[i];
             radix /= 2;
         }
 
-        source.wire(next);
+        source.imports(next);
     }
 
     public void run() {

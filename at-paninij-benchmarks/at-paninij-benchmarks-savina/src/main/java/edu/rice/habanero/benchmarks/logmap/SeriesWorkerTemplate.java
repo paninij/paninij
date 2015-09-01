@@ -2,17 +2,17 @@ package edu.rice.habanero.benchmarks.logmap;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Local;
+import org.paninij.lang.Imports;
 
 @Capsule public class SeriesWorkerTemplate {
-    @Child RateComputer computer;
+    @Local RateComputer computer;
 
-    @Wired int id;
-    @Wired double term;
+    @Imports int id;
+    @Imports double term;
 
     public void design(SeriesWorker self) {
-        computer.wire(id);
+        computer.imports(id);
     }
 
     @Block

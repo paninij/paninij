@@ -5,7 +5,7 @@ import java.util.Queue;
 
 import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class ManagerTemplate {
 
@@ -13,8 +13,8 @@ import org.paninij.lang.Child;
     int numProducers = ProdConsBoundedBufferConfig.numProducers;
     int numTerminatedProducers = 0;
 
-    @Child Consumer[] consumers = new Consumer[numConsumers];
-    @Child Producer[] producers = new Producer[numProducers];
+    @Local Consumer[] consumers = new Consumer[numConsumers];
+    @Local Producer[] producers = new Producer[numProducers];
 
     Queue<Double> availableData = new LinkedList<Double>();
     Queue<Consumer> availableConsumers = new LinkedList<Consumer>();
@@ -24,11 +24,11 @@ import org.paninij.lang.Child;
 
     public void design(Manager self) {
         for (int i = 0; i < consumers.length; i++) {
-            consumers[i].wire(self, i);
+            consumers[i].imports(self, i);
             availableConsumers.add(consumers[i]);
         }
         for (int i = 0; i < producers.length; i++) {
-            producers[i].wire(self, i);
+            producers[i].imports(self, i);
         }
     }
 

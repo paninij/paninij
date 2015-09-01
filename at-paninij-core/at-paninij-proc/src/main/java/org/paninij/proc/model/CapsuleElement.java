@@ -39,8 +39,8 @@ public class CapsuleElement implements Capsule
     private TypeElement element;
 
     private ArrayList<Procedure> procedures;
-    private ArrayList<Variable> children;
-    private ArrayList<Variable> wired;
+    private ArrayList<Variable> localFields;
+    private ArrayList<Variable> importFields;
     private ArrayList<Variable> state;
 
     private Set<String> imports;
@@ -66,8 +66,8 @@ public class CapsuleElement implements Capsule
         this.qualifiedName = "";
         this.element = null;
         this.procedures = new ArrayList<Procedure>();
-        this.children = new ArrayList<Variable>();
-        this.wired = new ArrayList<Variable>();
+        this.localFields = new ArrayList<Variable>();
+        this.importFields = new ArrayList<Variable>();
         this.state = new ArrayList<Variable>();
         this.imports = new HashSet<String>();
         this.hasInitDecl = false;
@@ -76,26 +76,26 @@ public class CapsuleElement implements Capsule
     }
 
     @Override
-    public List<Variable> getChildren() {
-        return new ArrayList<Variable>(this.children);
+    public List<Variable> getLocalFields() {
+        return new ArrayList<Variable>(this.localFields);
     }
 
     @Override
-    public List<Variable> getWired() {
-        return new ArrayList<Variable>(this.wired);
+    public List<Variable> getImportFields() {
+        return new ArrayList<Variable>(this.importFields);
     }
 
     @Override
-    public List<Variable> getState() {
+    public List<Variable> getStateFields() {
         return new ArrayList<Variable>(this.state);
     }
 
-    public void addChild(Variable v) {
-        this.children.add(v);
+    public void addLocals(Variable v) {
+        this.localFields.add(v);
     }
 
-    public void addWired(Variable v) {
-        this.wired.add(v);
+    public void addImportDecl(Variable v) {
+        this.importFields.add(v);
     }
 
     public void addState(Variable v) {

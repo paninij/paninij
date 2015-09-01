@@ -5,11 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class ReaderTemplate
 {
-    @Wired Bucket[] buckets;
+    @Imports Bucket[] buckets;
 
     public void read(String[] filenames) {
         if (filenames.length == 0) process("shaks12.txt");

@@ -4,12 +4,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 import edu.rice.habanero.benchmarks.astar.GuidedSearchConfig.GridNode;
 
 @Capsule public class WorkerTemplate {
-    @Wired Master master;
+    @Imports Master master;
 
     int threshold = GuidedSearchConfig.THRESHOLD;
 

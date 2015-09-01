@@ -3,10 +3,10 @@ package edu.rice.habanero.benchmarks.cigsmok;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class ArbiterTemplate {
-    @Child Smoker[] smokers = new Smoker[CigaretteSmokerConfig.S];
+    @Local Smoker[] smokers = new Smoker[CigaretteSmokerConfig.S];
     Random random = new Random(CigaretteSmokerConfig.R * CigaretteSmokerConfig.S);
     int roundsSoFar = 0;
 
@@ -15,7 +15,7 @@ import org.paninij.lang.Child;
     }
 
     public void design(Arbiter self ) {
-        for (Smoker s : smokers) s.wire(self);
+        for (Smoker s : smokers) s.imports(self);
     }
 
     public void notifySmoking() {

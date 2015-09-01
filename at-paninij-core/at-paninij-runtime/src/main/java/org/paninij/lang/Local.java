@@ -18,4 +18,4 @@
  */
 package org.paninij.lang;
 
-public @interface Wired { /* No annotation arguments. */ }
+public @interface Local { /* No annotation arguments. */ }

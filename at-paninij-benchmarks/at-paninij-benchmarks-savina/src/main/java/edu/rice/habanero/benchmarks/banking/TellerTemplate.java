@@ -3,17 +3,17 @@ package edu.rice.habanero.benchmarks.banking;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class TellerTemplate {
-    @Child Account[] accounts = new Account[BankingConfig.A];
+    @Local Account[] accounts = new Account[BankingConfig.A];
 
     int numCompletedBankings = 0;
     Random randomGen = new Random(123456);
     int numBankings = BankingConfig.N;
 
     public void design(Teller self) {
-        for (Account a : accounts) a.wire(self, accounts);
+        for (Account a : accounts) a.imports(self, accounts);
     }
 
     public void start() {

@@ -1,20 +1,20 @@
 package org.paninij.proc.capsuletest;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 /*
 @Capsule
 public class FooTemplate
 {
-    @Wired Bar bar;
+    @Import Bar bar;
     int count;
     
     void init() {
         count = 0;
     }
     
-    public Integer wiredBarCount() {
+    public Integer importedBarCount() {
         return bar.barCount();
     }
     

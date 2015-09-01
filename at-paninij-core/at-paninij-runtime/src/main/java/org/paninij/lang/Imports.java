@@ -18,4 +18,4 @@
  */
 package org.paninij.lang;
 
-public @interface Child { /* No annotation arguments. */ }
+public @interface Imports { /* No annotation arguments. */ }

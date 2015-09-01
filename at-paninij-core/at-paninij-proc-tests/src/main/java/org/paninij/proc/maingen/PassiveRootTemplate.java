@@ -1,14 +1,14 @@
 package org.paninij.proc.maingen;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule
 public class PassiveRootTemplate {
 
-    @Child PassiveChild c;
+    @Local PassiveLocal c;
 
     public void design(PassiveRoot self) {
-        c.wire(self);
+        c.imports(self);
     }
 }

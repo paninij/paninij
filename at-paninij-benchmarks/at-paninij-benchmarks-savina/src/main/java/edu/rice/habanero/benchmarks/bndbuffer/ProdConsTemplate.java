@@ -1,10 +1,10 @@
 package edu.rice.habanero.benchmarks.bndbuffer;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class ProdConsTemplate {
-    @Child Manager manager;
+    @Local Manager manager;
 
     public void run() {
         manager.start();
