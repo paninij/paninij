@@ -8,13 +8,13 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>at-paninij-apt-tests</artifactId>
+  <artifactId>at-paninij-proc-tests</artifactId>
   <packaging>jar</packaging>
 
-  <name>@PaniniJ APT Tests</name>
+  <name>@PaniniJ Annotation Processor Tests</name>
   <description>
-    @PaniniJ capsule templates to test the `apt` package (i.e. @PaniniJ's code
-    generation features).
+    @PaniniJ capsule templates to test the `proc` package (i.e. @PaniniJ's
+    annotation processing and code generation features).
   </description>
 
   <properties>
@@ -47,7 +47,7 @@
   <dependencies>
     <dependency>
       <groupId>org.paninij</groupId>
-      <artifactId>at-paninij-code-gen</artifactId>
+      <artifactId>at-paninij-proc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>

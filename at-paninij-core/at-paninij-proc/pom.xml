@@ -7,8 +7,8 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>at-paninij-code-gen</artifactId>
-  <name>@PaniniJ Code Generation</name>
+  <artifactId>at-paninij-proc</artifactId>
+  <name>@PaniniJ Annotation Processor</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
