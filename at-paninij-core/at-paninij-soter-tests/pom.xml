@@ -83,7 +83,6 @@
 
             <argument>-analysisReports</argument>
             <argument>${project.logsDirectory}/soter/analysis-reports</argument>
-
             <!--
             <argument>-callGraphPDFs</argument>
             <argument>${project.logsDirectory}/soter/call-graphs</argument>
@@ -92,6 +91,7 @@
             <argument>-heapGraphPDFs</argument>
             <argument>${project.logsDirectory}/soter/heap-graphs</argument>
             -->
+            <!-- <argument>-noInstrument</argument> -->
             <argument>@${panini.capsuleListFile}</argument>
           </arguments>
         </configuration>

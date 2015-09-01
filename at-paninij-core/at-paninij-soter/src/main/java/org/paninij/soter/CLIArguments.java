@@ -30,6 +30,9 @@ public class CLIArguments
             "The path to the directory in which SOTER heap graph PDFs should be placed. "
             + "If this option is not set, then no heap graph PDFs will be generated.";
     
+    private static final String NO_INSTRUMENT_DESCRIPTION =
+            "Set this flag to disable class file instrumentation (which is enabled by default).";
+
     private static final String CAPSULE_TEMPLATES_DESCRIPTION =
             "A sequence of fully qualified capsule templates (e.g. `com.example.foo.FooTemplate`) "
             + "to be analyzed and instrumented.";
@@ -51,6 +54,9 @@ public class CLIArguments
 
     @Parameter(names = "-heapGraphPDFs", description = HEAP_GRAPH_PDFS_DESCRIPTION)
     public String heapGraphPDFs;
+    
+    @Parameter(names = "-noInstrument", description = NO_INSTRUMENT_DESCRIPTION)
+    public Boolean noInstrument = false;
     
     @Parameter(description = CAPSULE_TEMPLATES_DESCRIPTION)
     public List<String> capsuleTemplates = new ArrayList<>();

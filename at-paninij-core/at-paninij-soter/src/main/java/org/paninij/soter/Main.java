@@ -40,9 +40,10 @@ public class Main
         soterInstrumenterFactory = new SoterInstrumenterFactory(cliArguments.classOutput);
     }
    
+    // TODO: Split up this method. It's too long and does too much.
     protected void analyzeAndInstrument(String qualifiedCapsuleName)
     {
-        note("Analyzing and Instrumenting Capsule: " + qualifiedCapsuleName);
+        note("Analyzing Capsule: " + qualifiedCapsuleName);
         
         SoterAnalysis soterAnalysis;
         try {
@@ -62,15 +63,19 @@ public class Main
                 soterAnalysis.toJsonString(), false);
         }
         
-        try {
-            SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
-            soterInstrumenter.perform();
-        }
-        catch (Exception ex)
+        if (cliArguments.noInstrument == false)
         {
-            error("Caught an exception while instrumenting a capsule: " + qualifiedCapsuleName);
-            ex.printStackTrace(System.err);
-            return;
+            note("Instrumenting Capsule: " + qualifiedCapsuleName);
+            try {
+                SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
+                soterInstrumenter.perform();
+            }
+            catch (Exception ex)
+            {
+                error("Caught an exception while instrumenting a capsule: " + qualifiedCapsuleName);
+                ex.printStackTrace(System.err);
+                return;
+            }
         }
 
         if (cliArguments.callGraphPDFs != null)
