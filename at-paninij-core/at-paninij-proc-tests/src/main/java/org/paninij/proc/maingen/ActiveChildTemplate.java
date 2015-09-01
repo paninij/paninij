@@ -1,4 +1,4 @@
-package org.paninij.apt.maingen;
+package org.paninij.proc.maingen;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Wired;

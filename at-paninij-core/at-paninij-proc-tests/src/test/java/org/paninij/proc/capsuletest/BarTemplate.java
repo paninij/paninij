@@ -1,4 +1,4 @@
-package org.paninij.apt.capsuletest;
+package org.paninij.proc.capsuletest;
 
 import org.paninij.lang.Capsule;
 

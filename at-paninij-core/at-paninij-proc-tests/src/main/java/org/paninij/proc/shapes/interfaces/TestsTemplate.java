@@ -1,4 +1,4 @@
-package org.paninij.apt.shapes.interfaces;
+package org.paninij.proc.shapes.interfaces;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;

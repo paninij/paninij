@@ -1,4 +1,4 @@
-package org.paninij.apt.signatures;
+package org.paninij.proc.signatures;
 
 import org.paninij.lang.Future;
 import org.paninij.lang.Signature;

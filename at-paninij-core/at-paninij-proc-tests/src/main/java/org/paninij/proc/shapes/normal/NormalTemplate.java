@@ -1,4 +1,4 @@
-package org.paninij.apt.shapes.normal;
+package org.paninij.proc.shapes.normal;
 
 import org.paninij.lang.Capsule;
 

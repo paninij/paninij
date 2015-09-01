@@ -1,4 +1,4 @@
-package org.paninij.apt.shapes.arrays;
+package org.paninij.proc.messageshapes;
 
 import org.paninij.lang.Capsule;
 

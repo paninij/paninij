@@ -1,4 +1,4 @@
-package org.paninij.apt.shapes.interfaces;
+package org.paninij.proc.shapes.interfaces;
 
 public class MyImplementation implements MyInterface
 {
