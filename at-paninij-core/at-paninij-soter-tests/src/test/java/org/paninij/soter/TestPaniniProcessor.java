@@ -15,7 +15,7 @@ import javax.tools.ToolProvider;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.paninij.apt.util.FileManagerFactory;
+import org.paninij.proc.util.FileManagerFactory;
 
 /**
  * Includes tests which perform a Java compilation task with a `PaniniProcessor` instance configured
