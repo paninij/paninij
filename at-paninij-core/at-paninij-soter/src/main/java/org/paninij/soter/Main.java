@@ -53,8 +53,7 @@ public class Main
         catch (Exception ex)
         {
             error("Caught an exception while analyzing a capsule: " + qualifiedCapsuleName);
-            ex.printStackTrace(System.err);
-            return;
+            throw ex;
         }
 
         if (cliArguments.analysisReports != null)

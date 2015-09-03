@@ -42,8 +42,15 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     {
         super(method, method.getClassHierarchy());
         template = method.getDeclaringClass();
+        if (template == null) {
+            String msg = "Could not get declaring class of given method: " + method.getSignature();
+            throw new NullPointerException(msg);
+        }
         constZeroValueNumber = 0;
-        assert isCapsuleTemplate(template);
+        if(isCapsuleTemplate(template) == false) {
+            String msg = "Can't make entrypoints on classes unless they are templates.";
+            throw new IllegalArgumentException(msg);
+        }
     }
 
 
@@ -83,7 +90,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         
         // Initialize the newly created receiver object.
         // TODO: Debug and re-enable this.
-        //makeReceiverInitInvocation(root, receiverValueNumber);
+        makeReceiverInitInvocation(root, receiverValueNumber);
         
         return receiverValueNumber;
     }

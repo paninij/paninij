@@ -89,7 +89,7 @@ public class PaniniModel
 
     /**
      * @param template A capsule template class annotated with `@Capsule`.
-     * @return The template's run declaration, if it defines an active capsule. Otherwise `null`.
+     * @return The template's `init()` declaration, if it has one. Otherwise `null`.
      */
     public static IMethod getInitDecl(IClass template)
     {
