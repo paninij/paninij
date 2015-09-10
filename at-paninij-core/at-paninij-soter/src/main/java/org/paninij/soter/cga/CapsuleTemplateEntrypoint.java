@@ -126,7 +126,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         {
             CallSiteReference initCall = CallSiteReference.make(root.getStatements().length,
                                                                 initMethod.getReference(),
-                                                                IInvokeInstruction.Dispatch.STATIC);
+                                                                IInvokeInstruction.Dispatch.VIRTUAL);
             root.addInvocation(new int[] {i}, initCall);
         }
     }
