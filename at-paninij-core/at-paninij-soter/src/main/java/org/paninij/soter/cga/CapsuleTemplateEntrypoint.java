@@ -185,9 +185,9 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
             throw new UnsupportedOperationException(msg + dimensionality);
         }
         
-        TypeReference elemTypeRef = arrayTypeRef.getArrayElementType();
-        SSAInstruction newArrayInstr = root.add1DArrayAllocation(elemTypeRef, DEFAULT_ARRAY_LENGTH);
+        SSAInstruction newArrayInstr = root.add1DArrayAllocation(arrayTypeRef, DEFAULT_ARRAY_LENGTH);
 
+        TypeReference elemTypeRef = arrayTypeRef.getArrayElementType();
         if (elemTypeRef.isPrimitiveType() || isKnownToBeEffectivelyImmutable(elemTypeRef))
         {
             // No need to add instances for the elements of these types of arrays.
