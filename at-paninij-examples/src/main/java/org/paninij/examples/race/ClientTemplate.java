@@ -1,14 +1,14 @@
 package org.paninij.examples.race;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class ClientTemplate {
-    @Child Server server;
-    @Child Relay relay;
+    @Local Server server;
+    @Local Relay relay;
 
     void design(Client self) {
-        relay.wire(server);
+        relay.imports(server);
     }
 
     void run() {

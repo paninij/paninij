@@ -21,12 +21,12 @@ package org.paninij.examples.asteroids;
 import java.io.IOException;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule
 public class InputTemplate {
 
-    @Wired Ship ship;
+    @Imports Ship ship;
 
     public void run() {
         try {

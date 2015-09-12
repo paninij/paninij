@@ -1,10 +1,10 @@
 package edu.rice.habanero.benchmarks.big;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class SinkTemplate {
-    @Wired Node[] nodes = new Node[BigConfig.W];
+    @Imports Node[] nodes = new Node[BigConfig.W];
     int numMessages = 0;
 
     public void start() {

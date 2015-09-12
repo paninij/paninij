@@ -104,41 +104,41 @@ public class PaniniModel
     
     /**
      * @param template A capsule template class annotated with `@Capsule`.
-     * @return Stream of the template's fields which are annotated with `@Child`.
+     * @return Stream of the template's fields which are annotated with `@Local`.
      */
-    public static Stream<IField> getChildDecls(IClass template)
+    public static Stream<IField> getLocalDecls(IClass template)
     {
         assert isCapsuleTemplate(template);
         return template.getAllFields()
                        .stream()
-                       .filter(a -> hasAnnotationNamed(a, "Child"));
+                       .filter(a -> hasAnnotationNamed(a, "Local"));
     }
     
 
     /**
      * @param template A capsule template class annotated with `@Capsule`.
-     * @return Stream of the template's fields which are annotated with `@Wired`.
+     * @return Stream of the template's fields which are annotated with `@Import`.
      */
-    public static Stream<IField> getWiredDecls(IClass template)
+    public static Stream<IField> getImportDecls(IClass template)
     {
         assert isCapsuleTemplate(template);
         return template.getAllFields()
                        .stream()
-                       .filter(a -> hasAnnotationNamed(a, "Wired"));
+                       .filter(a -> hasAnnotationNamed(a, "Import"));
     }
     
     
     /**
      * @param template A capsule template class annotated with `@Capsule`.
-     * @return Stream of the template's fields which are states (i.e. neither `@Child` or `@Wired`).
+     * @return Stream of the template's fields that are states (i.e. neither `@Local` or `@Import`).
      */
     public static Stream<IField> getStateDecls(IClass template)
     {
         assert isCapsuleTemplate(template);
         return template.getAllFields()
                        .stream()
-                       .filter(a -> hasAnnotationNamed(a, "Child") == false
-                                 && hasAnnotationNamed(a, "Wired") == false);
+                       .filter(a -> hasAnnotationNamed(a, "Local") == false
+                                 && hasAnnotationNamed(a, "Import") == false);
     }
  
     

@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 import edu.rice.habanero.benchmarks.trapezoid.TrapezoidalConfig;
 
@@ -14,7 +14,7 @@ import edu.rice.habanero.benchmarks.trapezoid.TrapezoidalConfig;
 public class TrapezoidTemplate
 {
     // The array of worker capsules
-    @Child Worker[] workers = new Worker[TrapezoidalConfig.W];
+    @Local Worker[] workers = new Worker[TrapezoidalConfig.W];
 
     public void run() {
         // we'll populate this list with results from each worker

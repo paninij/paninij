@@ -3,11 +3,11 @@ package edu.rice.habanero.benchmarks.piprecision;
 import java.math.BigDecimal;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class DelegatorTemplate
 {
-    @Child Worker[] workers = new Worker[PiPrecisionConfig.NUM_WORKERS];
+    @Local Worker[] workers = new Worker[PiPrecisionConfig.NUM_WORKERS];
 
     public BigDecimal pi = BigDecimal.ZERO;
     public final BigDecimal tolerance = BigDecimal.ONE.movePointLeft(PiPrecisionConfig.PRECISION);
@@ -17,7 +17,7 @@ import org.paninij.lang.Child;
 
     public void design(Delegator self) {
         for (int i = 0; i < workers.length; i++) {
-            workers[i].wire(self, i);
+            workers[i].imports(self, i);
         }
     }
 

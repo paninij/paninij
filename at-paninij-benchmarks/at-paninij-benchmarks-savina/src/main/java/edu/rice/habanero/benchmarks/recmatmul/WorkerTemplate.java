@@ -1,12 +1,12 @@
 package edu.rice.habanero.benchmarks.recmatmul;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 
 @Capsule public class WorkerTemplate {
 
-    @Wired Master master;
+    @Imports Master master;
 
     final int threshhold = MatMulConfig.BLOCK_THRESHOLD;
 

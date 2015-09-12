@@ -4,7 +4,7 @@ import java.util.Random;
 
 import org.paninij.soter.LeakyServer;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule
 public class GossipyClientTemplate
@@ -14,8 +14,8 @@ public class GossipyClientTemplate
     private static final int NUM_SECRETS = 42;
 
 
-    @Child LeakyServer servers[] = new LeakyServer[NUM_SERVERS];
-    @Child LeakyServer importantServer;
+    @Local LeakyServer servers[] = new LeakyServer[NUM_SERVERS];
+    @Local LeakyServer importantServer;
 
     Secret secrets[] = new Secret[NUM_SECRETS];
     Secret superSecret;

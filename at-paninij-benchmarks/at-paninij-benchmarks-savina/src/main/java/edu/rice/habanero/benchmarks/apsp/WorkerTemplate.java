@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class WorkerTemplate {
     int blockSize = ApspConfig.B;
@@ -12,9 +12,9 @@ import org.paninij.lang.Wired;
     int numBlocksInSingleDim = graphSize / blockSize;
     int numNeighbors = 2 * (numBlocksInSingleDim - 1);
 
-    @Wired Master master;
-    @Wired Worker[] neighbors = new Worker[numNeighbors];
-    @Wired int myBlockId;
+    @Imports Master master;
+    @Imports Worker[] neighbors = new Worker[numNeighbors];
+    @Imports int myBlockId;
 
     int rowOffset;
     int colOffset;

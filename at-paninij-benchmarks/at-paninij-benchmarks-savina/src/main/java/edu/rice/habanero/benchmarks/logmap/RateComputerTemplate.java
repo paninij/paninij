@@ -2,11 +2,11 @@ package edu.rice.habanero.benchmarks.logmap;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class RateComputerTemplate {
 
-    @Wired int id;
+    @Imports int id;
     double rate;
 
     public void init() {

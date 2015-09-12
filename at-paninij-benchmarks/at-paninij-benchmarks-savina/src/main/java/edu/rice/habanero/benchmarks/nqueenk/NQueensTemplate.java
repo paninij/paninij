@@ -1,10 +1,10 @@
 package edu.rice.habanero.benchmarks.nqueenk;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class NQueensTemplate {
-    @Child Master master;
+    @Local Master master;
 
     public void run() {
         master.start();

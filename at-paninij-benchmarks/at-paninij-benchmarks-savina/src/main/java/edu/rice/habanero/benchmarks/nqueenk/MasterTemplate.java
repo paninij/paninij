@@ -1,7 +1,7 @@
 package edu.rice.habanero.benchmarks.nqueenk;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class MasterTemplate {
 
@@ -10,7 +10,7 @@ import org.paninij.lang.Child;
 
     static long RESULT;
 
-    @Child Worker[] workers = new Worker[numWorkers];
+    @Local Worker[] workers = new Worker[numWorkers];
 
     int numWorkersTerminated = 0;
     int numWorkSent = 0;
@@ -20,7 +20,7 @@ import org.paninij.lang.Child;
 
 
     public void design(Master self) {
-        for (Worker w : workers) w.wire(self);
+        for (Worker w : workers) w.imports(self);
     }
 
     public void start() {

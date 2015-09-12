@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class MasterTemplate {
     long[][] graphData = ApspUtils.graphData();
@@ -16,7 +16,7 @@ import org.paninij.lang.Child;
 
 
     // NOTE we do not have 2d arrays of child/wired capsules yet, so cram into one
-    @Child Worker[] workers = new Worker[numWorkers];
+    @Local Worker[] workers = new Worker[numWorkers];
 
     public void design(Master self) {
         for (int bi = 0; bi < numBlocksInSingleDim; bi++) {
@@ -41,7 +41,7 @@ import org.paninij.lang.Child;
 
                 int id = (numBlocksInSingleDim * bi) + bj;
 
-                workers[id].wire(self, n, id);
+                workers[id].imports(self, n, id);
             }
         }
     }

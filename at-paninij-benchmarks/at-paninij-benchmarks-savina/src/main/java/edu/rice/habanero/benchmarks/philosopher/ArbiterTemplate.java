@@ -1,11 +1,11 @@
 package edu.rice.habanero.benchmarks.philosopher;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class ArbiterTemplate {
 
-    @Child Philosopher[] philosophers = new Philosopher[PhilosopherConfig.N];
+    @Local Philosopher[] philosophers = new Philosopher[PhilosopherConfig.N];
 
     boolean[] forks = new boolean[PhilosopherConfig.N];
     int numCompletedPhilosophers = 0;
@@ -14,7 +14,7 @@ import org.paninij.lang.Child;
 
 
     public void design(Arbiter self) {
-        for (Philosopher p : philosophers) p.wire(self);
+        for (Philosopher p : philosophers) p.imports(self);
     }
 
     public void start() {

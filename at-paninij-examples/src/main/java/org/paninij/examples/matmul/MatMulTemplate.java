@@ -1,14 +1,14 @@
 package org.paninij.examples.matmul;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class MatMulTemplate {
-    @Child Master master;
-    @Child MatrixData data;
+    @Local Master master;
+    @Local MatrixData data;
 
     public void design(MatMul self) {
-        master.wire(data);
+        master.imports(data);
     }
 
     public void run() {

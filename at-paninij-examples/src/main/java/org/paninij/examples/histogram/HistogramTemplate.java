@@ -23,13 +23,13 @@
 package org.paninij.examples.histogram;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class HistogramTemplate
 {
-    @Child Printer printer;
-    @Child Reader reader;
-    @Child Bucket[] buckets = new Bucket[128];
+    @Local Printer printer;
+    @Local Reader reader;
+    @Local Bucket[] buckets = new Bucket[128];
 
     String[] filenames;
 
@@ -39,8 +39,8 @@ import org.paninij.lang.Child;
     }
 
     public void design(Histogram self) {
-        reader.wire(buckets);
-        for (Bucket bucket : buckets) bucket.wire(printer);
+        reader.imports(buckets);
+        for (Bucket bucket : buckets) bucket.imports(printer);
     }
 
     public void run() {

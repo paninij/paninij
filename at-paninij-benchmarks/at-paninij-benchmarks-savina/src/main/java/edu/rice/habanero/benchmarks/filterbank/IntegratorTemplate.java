@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class IntegratorTemplate {
-    @Wired Combine combine;
+    @Imports Combine combine;
     int numChannels = FilterBankConfig.NUM_CHANNELS;
     final List<Map<Integer, Double>> data = new ArrayList<Map<Integer, Double>>();
 

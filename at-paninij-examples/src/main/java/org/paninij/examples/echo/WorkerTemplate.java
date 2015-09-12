@@ -19,7 +19,7 @@
 package org.paninij.examples.echo;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 import java.net.*;
 import java.io.*;
@@ -30,7 +30,7 @@ public class WorkerTemplate {
     // A 'Worker' capsule will have a reference to an EchoServer capsule. The
     // reference will be provided by it's parent capsule (in the design()
     // declaration). In this case, the parent is also an EchoServer.
-    @Wired EchoServer server;
+    @Imports EchoServer server;
 
     public void run() {
         while (true) {

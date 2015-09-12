@@ -76,7 +76,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         int receiverValueNumber = receiverAllocation.getDef();
         
         // Make a capsule mockup instance for each of the receiver's fields (i.e. all of its
-        // `@Child`, `@Wired`, and state fields).
+        // `@Local`, `@Import`, and state fields).
         for (IField f : template.getAllFields()) {
             addTemplateFieldInstance(root, f, receiverValueNumber);
         }
@@ -248,7 +248,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     protected void addStateInstance(AbstractRootMethod root, IField field, int instValueNumber)
     {
         // TODO: This is currently disabled based on the idea that artificial addition of
-        // (non-wired) state is unnecessary. All state instances should either be wired in,
+        // (non-imported) state is unnecessary. All state instances should either be wired in,
         // instantiated in the `init()` method, or instantiated at the beginning of `run()`.
 
         // TODO: Consider somehow using `DefaultEntrypoint.makeArgument()` here.

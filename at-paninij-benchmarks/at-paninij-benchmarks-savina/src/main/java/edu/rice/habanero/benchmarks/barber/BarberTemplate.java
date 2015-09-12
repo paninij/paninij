@@ -3,12 +3,12 @@ package edu.rice.habanero.benchmarks.barber;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class BarberTemplate {
 
-    @Wired WaitingRoom waitingRoom;
-    @Wired CustomerFactory factory;
+    @Imports WaitingRoom waitingRoom;
+    @Imports CustomerFactory factory;
 
     Random random = new Random();
 

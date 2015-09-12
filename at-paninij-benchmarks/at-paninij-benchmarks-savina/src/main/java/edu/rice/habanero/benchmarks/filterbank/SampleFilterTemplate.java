@@ -1,12 +1,12 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class SampleFilterTemplate implements ProcessorTemplate {
 
-    @Wired Processor next;
-    @Wired int sampleRate;
+    @Imports Processor next;
+    @Imports int sampleRate;
 
     int samplesReceived = 0;
 

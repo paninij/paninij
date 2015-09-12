@@ -1,11 +1,11 @@
 package org.paninij.examples.pingpong;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Wired;
+import org.paninij.lang.Imports;
 
 @Capsule public class PingTemplate {
-    @Wired Pong pong;
-    @Wired int count;
+    @Imports Pong pong;
+    @Imports int count;
 
     public void ping() {
         if (--count > 0) {
