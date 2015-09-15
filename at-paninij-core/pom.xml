@@ -48,6 +48,7 @@
     <module>at-paninij-proc-tests</module>
     <module>at-paninij-soter</module>
     <module>at-paninij-soter-tests</module>
+    <module>at-paninij-soter-example</module>
   </modules>
 
   <dependencyManagement>
