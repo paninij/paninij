@@ -128,10 +128,10 @@ public class SoterAnalysis extends Analysis
             {
                 TransferSiteResults results = new TransferSiteResults();
 
-                // Find all of the live variables for this transfer site.
+                // Find all of the live variables after this transfer site.
                 results.liveVariables = new HashSet<PointerKey>();
-                results.liveVariables.addAll(tla.getPointerKeysAfter(transferSite));
-                results.liveVariables.addAll(cgla.getPointerKeysAfter(transferringNode));
+                results.liveVariables.addAll(tla.getLiveVariablesAfter(transferSite));
+                results.liveVariables.addAll(cgla.getLiveVariablesAfter(transferringNode));
 
                 // Find all of the (transitively) live objects.
                 results.liveObjects = new IdentitySet<InstanceKey>();

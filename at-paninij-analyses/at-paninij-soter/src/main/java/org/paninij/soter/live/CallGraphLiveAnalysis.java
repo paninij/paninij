@@ -122,7 +122,7 @@ public class CallGraphLiveAnalysis extends Analysis
                     siteLiveVariables.set(key);
                 }
 
-                for (PointerKey livePointerKey : tla.getPointerKeysAfter(site)) 
+                for (PointerKey livePointerKey : tla.getLiveVariablesAfter(site)) 
                 {
                     int key = globalLatticeValues.add(livePointerKey);
                     siteLiveVariables.set(key);
@@ -139,7 +139,7 @@ public class CallGraphLiveAnalysis extends Analysis
      * @return The set of pointer keys representing the variables which the analysis found to be
      *         live after the given call graph node.
      */
-    public Set<PointerKey> getPointerKeysAfter(CGNode node)
+    public Set<PointerKey> getLiveVariablesAfter(CGNode node)
     {
         assert hasBeenPerformed;
 

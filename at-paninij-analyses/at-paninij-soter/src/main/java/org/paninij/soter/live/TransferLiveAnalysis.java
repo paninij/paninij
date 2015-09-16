@@ -93,7 +93,7 @@ public class TransferLiveAnalysis extends Analysis
      *         which the analysis found to be live after the program point of the given transfer
      *         site.
      */
-    public Set<PointerKey> getPointerKeysAfter(TransferSite transferSite)
+    public Set<PointerKey> getLiveVariablesAfter(TransferSite transferSite)
     {
         assert hasBeenPerformed;
         return liveVariables.get(transferSite);
