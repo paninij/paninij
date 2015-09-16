@@ -22,6 +22,14 @@ public class LocalLiveAnalysisFactory
         resetAnalysisCache();
     }
     
+    /**
+     * Creates a local live analysis instance over the given call graph node if this method has
+     * never been called with this node before; otherwise, a previously created (i.e. cached)
+     * analysis instance is returned.
+     * 
+     * Note that newly created analyses have not been performed (i.e. it is the responsibility of
+     * the client to call `LocalLiveAnalysis.perform()`.
+     */
     public LocalLiveAnalysis lookupOrMake(CGNode node)
     {
         LocalLiveAnalysis analysis = cachedAnalyses.get(node);
