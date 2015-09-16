@@ -1,14 +1,20 @@
 package org.paninij.soter;
 
 import static java.io.File.pathSeparator;
+import static java.text.MessageFormat.format;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.instrument.SoterInstrumenter;
@@ -24,6 +30,7 @@ import com.beust.jcommander.JCommander;
  */
 public class Main
 {
+    protected final String classpath;
     protected final CLIArguments cliArguments;
     protected final SoterAnalysisFactory soterAnalysisFactory;
     protected final SoterInstrumenterFactory soterInstrumenterFactory;
@@ -34,14 +41,15 @@ public class Main
         // been compiled so that the bytecode for those artifacts will be found by the CHA.
         this.cliArguments = cliArguments;
 
-        String cp = makeEffectiveClassPath(cliArguments.classPath, cliArguments.classPathFile);
-        note("Effective class path: " + cp);
-        soterAnalysisFactory = new SoterAnalysisFactory(cp);
+        classpath = makeEffectiveClassPath(cliArguments.classPath, cliArguments.classPathFile);
+        note("Effective class path: " + classpath);
+        soterAnalysisFactory = new SoterAnalysisFactory(classpath);
         soterInstrumenterFactory = new SoterInstrumenterFactory(cliArguments.classOutput);
     }
    
     // TODO: Split up this method. It's too long and does too much.
-    protected void analyzeAndInstrument(String qualifiedCapsuleName)
+    protected void analyzeAndInstrument(String qualifiedCapsuleName) throws IOException,
+                                                                     InterruptedException
     {
         note("Analyzing Capsule: " + qualifiedCapsuleName);
         
@@ -90,6 +98,33 @@ public class Main
         }
     }
     
+    // TODO: Move this helper method to somewhere else.
+    protected static void logDisassembledBytecode(String qualifiedClassName, String classpath,
+                                                  String directory)
+                                                  throws IOException, InterruptedException
+    {
+        // TODO: BUG: Handle the case that `classpath` contains spaces!
+        String cmd = "javap -c -classpath " + classpath + " " + qualifiedClassName;
+        note(cmd);
+
+        Runtime runtime = Runtime.getRuntime();
+        Process proc = runtime.exec(cmd);
+        Path path = Paths.get(directory, qualifiedClassName);
+
+        proc.waitFor();
+        if (proc.exitValue() > 0)
+        {
+            warning("Attempt to obtain disassembled bytecode failed: " + qualifiedClassName);
+            InputStream err = proc.getErrorStream();
+            Files.copy(err, path, StandardCopyOption.REPLACE_EXISTING);
+        }
+        else
+        {
+            InputStream in = proc.getInputStream();
+            Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+    
     /**
      * Appends the contents of the `classPathFile` to the given `classPath`. Either argument can
      * be `null`.
@@ -117,14 +152,33 @@ public class Main
     
         return classPath;
     }
+    
+    public void logAllDisassembledPaniniBytecode() throws IOException, InterruptedException
+    {
+        String[] suffixes = {"", "Template"};
+        for (String suffix : suffixes)
+        {
+            for (String capsuleTemplate: cliArguments.capsules)
+            {
+                logDisassembledBytecode(capsuleTemplate + suffix,
+                                        cliArguments.classPath,
+                                        cliArguments.origBytecode);
+            } 
+        }
+    }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException, InterruptedException
     {
         CLIArguments cliArguments = new CLIArguments();
         new JCommander(cliArguments, args);
         Main main = new Main(cliArguments);
-        for (String capsuleTemplate : cliArguments.capsuleTemplates) {
-            main.analyzeAndInstrument(capsuleTemplate);
+        
+        if (cliArguments.origBytecode != null) {
+            main.logAllDisassembledPaniniBytecode();
+        }
+        
+        for (String capsule : cliArguments.capsules) {
+            main.analyzeAndInstrument(capsule);
         }
     }
     
@@ -141,15 +195,15 @@ public class Main
         }
     }
     
-    public void note(String msg) {
+    public static void note(String msg) {
         System.err.println("--- org.paninij.soter.Main: " + msg);
     }
 
-    public void warning(String msg) {
+    public static void warning(String msg) {
         System.err.println("~~~ org.paninij.soter.Main: " + msg);
     }
     
-    public void error(String msg) {
+    public static void error(String msg) {
         System.err.println("!!! org.paninij.soter.Main: " + msg);
     }
 }
