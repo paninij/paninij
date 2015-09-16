@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class TestDriver
 {
-    String[] args = {"-classPath", "/Users/owl/Projects/Panini/at-paninij/at-paninij-analyses/at-paninij-soter-tests/target/classes",
+    String[] args = {"-classPath", "target/classes",
                      "-classPathFile", "target/dependencies.txt",
                      "-classOutput", "target/classes",
                      "-analysisReports", "logs/soter/analysis_reports",

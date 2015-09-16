@@ -1,16 +1,13 @@
 package org.paninij.soter;
 
 import static java.io.File.pathSeparator;
-import static java.text.MessageFormat.format;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -98,6 +95,16 @@ public class Main
         }
     }
     
+    public void logAllTemplatesDisassembledBytecode() throws IOException, InterruptedException
+    {
+        for (String capsuleTemplate: cliArguments.capsules)
+        {
+            logDisassembledBytecode(capsuleTemplate + "Template",
+                                    cliArguments.classPath,
+                                    cliArguments.origBytecode);
+        } 
+    }
+    
     // TODO: Move this helper method to somewhere else.
     protected static void logDisassembledBytecode(String qualifiedClassName, String classpath,
                                                   String directory)
@@ -152,20 +159,6 @@ public class Main
     
         return classPath;
     }
-    
-    public void logAllDisassembledPaniniBytecode() throws IOException, InterruptedException
-    {
-        String[] suffixes = {"", "Template"};
-        for (String suffix : suffixes)
-        {
-            for (String capsuleTemplate: cliArguments.capsules)
-            {
-                logDisassembledBytecode(capsuleTemplate + suffix,
-                                        cliArguments.classPath,
-                                        cliArguments.origBytecode);
-            } 
-        }
-    }
 
     public static void main(String[] args) throws IOException, InterruptedException
     {
@@ -174,7 +167,7 @@ public class Main
         Main main = new Main(cliArguments);
         
         if (cliArguments.origBytecode != null) {
-            main.logAllDisassembledPaniniBytecode();
+            main.logAllTemplatesDisassembledBytecode();
         }
         
         for (String capsule : cliArguments.capsules) {
