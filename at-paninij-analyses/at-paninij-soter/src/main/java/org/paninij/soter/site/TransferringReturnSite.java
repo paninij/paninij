@@ -28,9 +28,9 @@ public class TransferringReturnSite extends TransferringSite
     public JsonObject toJson()
     {
         return Json.createObjectBuilder()
-                   .add("kind", "INVOKE")
+                   .add("type", "TransferringReturnSite")
                    .add("transfers", transfers.toString())
-                   .add("instruction", returnInstr.toString())
+                   .add("returnInstr", returnInstr.toString())
                    .add("iindex", returnInstr.iindex)
                    .add("method", node.getMethod().getSignature())
                    .add("context", node.getContext().toString())
@@ -40,7 +40,7 @@ public class TransferringReturnSite extends TransferringSite
     @Override
     public String toString()
     {
-        String fmt = "ReturnTransferSite(node = {0}, SSAReturnInstruction = {1}, transfers = {2})";
+        String fmt = "TransferringReturnSite(node = {0}, returnInstr = {1}, transfers = {2})";
         return format(fmt, node, returnInstr, transfers);
     }
  

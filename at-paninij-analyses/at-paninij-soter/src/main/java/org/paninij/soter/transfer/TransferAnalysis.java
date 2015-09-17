@@ -130,7 +130,7 @@ public class TransferAnalysis extends Analysis
                 CGNode caller = predsIter.next();
                 Iterator<CallSiteReference> callSiteIter = cg.getPossibleSites(caller, callee);
                 while (callSiteIter.hasNext()) {
-                    callers.add(AnalysisCallSite.make(callee, callSiteIter.next()));
+                    callers.add(AnalysisCallSite.make(caller, callSiteIter.next()));
                 }
             }
 
@@ -205,7 +205,7 @@ public class TransferAnalysis extends Analysis
         }
         
         if (! transfers.isEmpty()) {
-            addTransferringSite(node, new TransferringCallSite(node, invokeInstr, transfers));
+            addTransferringSite(node, TransferringCallSite.make(node, invokeInstr, transfers));
         }
     }
     

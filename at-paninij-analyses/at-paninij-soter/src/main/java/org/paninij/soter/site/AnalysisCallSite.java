@@ -1,5 +1,7 @@
 package org.paninij.soter.site;
 
+import static java.text.MessageFormat.format;
+
 import javax.json.JsonObject;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -18,8 +20,7 @@ public class AnalysisCallSite extends AnalysisSite implements CallSite
         SSAAbstractInvokeInstruction instrs[] = node.getIR().getCalls(callSite);
         if (instrs.length != 1)
         {
-            String msg = "Expecting there to be exactly one SSA instruction "
-                       + "associated with call site: " + callSite;
+            String msg = "Expecting exactly one SSA instruction for this call site:" + callSite;
             throw new RuntimeException(msg);
         }
         return new AnalysisCallSite(node, instrs[0], callSite);
@@ -49,5 +50,12 @@ public class AnalysisCallSite extends AnalysisSite implements CallSite
     public JsonObject toJson()
     {
         throw new UnsupportedOperationException("TODO");
+    }
+    
+    @Override
+    public String toString()
+    {
+        String fmt = "AnalysisCallSite(node = {0}, invokeInstr = {1}, callSite = {2})";
+        return format(fmt, node, invokeInstr, callSite);
     }
 }

@@ -26,21 +26,4 @@ public abstract class TransferringSite extends AnalysisSite
     {
         return transfers;
     }
-    
-    enum Kind
-    {
-        INVOKE,
-        RETURN;
-        
-        public static Kind fromSSAInstruction(SSAInstruction instr)
-        {
-            if (instr instanceof SSAAbstractInvokeInstruction)
-                return INVOKE;
-            if (instr instanceof SSAReturnInstruction)
-                return RETURN;
-            
-            String msg = "The given instruction is not a known transfer site kind: " + instr;
-            throw new IllegalArgumentException(msg);
-        }
-    }
 }
