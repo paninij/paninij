@@ -8,9 +8,11 @@ import java.util.Set;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.site.AnalysisCallSite;
+import org.paninij.soter.site.AnalysisSite;
+import org.paninij.soter.site.CallSite;
+import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.transfer.TransferAnalysis;
-import org.paninij.soter.transfer.TransferSite;
-import org.paninij.soter.transfer.TransferSite.Kind;
 import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -51,7 +53,7 @@ public class CallGraphLiveAnalysis extends Analysis
     protected final IClassHierarchy cha;
     
     ITransferFunctionProvider<CGNode, BitVectorVariable> transferFunctionProvider;
-    Map<CGNode, Map<TransferSite, BitVector>> liveVariables;
+    Map<CGNode, Map<AnalysisSite, BitVector>> liveVariables;
     OrdinalSetMapping<PointerKey> globalLatticeValues;
     BitVectorFramework<CGNode, PointerKey> dataFlowFramework;
     BitVectorSolver<CGNode> dataFlowSolver;
@@ -68,7 +70,7 @@ public class CallGraphLiveAnalysis extends Analysis
         this.cha = cha;
         
         transferFunctionProvider = new TransferFunctionProvider();
-        liveVariables = new HashMap<CGNode, Map<TransferSite, BitVector>>();
+        liveVariables = new HashMap<CGNode, Map<AnalysisSite, BitVector>>();
         globalLatticeValues = MutableMapping.make();
         
         hasBeenPerformed = false;
@@ -107,10 +109,10 @@ public class CallGraphLiveAnalysis extends Analysis
      */
     protected void collectSubanalysisResults()
     {
-        for (CGNode node : ta.getRelevantNodes())
+        for (CGNode node : ta.getReachingNodes())
         {
-            Map<TransferSite, BitVector> nodeLiveVariables = new HashMap<TransferSite, BitVector>();
-            for (TransferSite site : ta.getRelevantSites(node))
+            Map<AnalysisSite, BitVector> nodeLiveVariables = new HashMap<AnalysisSite, BitVector>();
+            for (AnalysisCallSite site : ta.getRelevantCallers(node))
             {
                 BitVector siteLiveVariables = new BitVector();
 
@@ -179,48 +181,45 @@ public class CallGraphLiveAnalysis extends Analysis
         @Override
         public UnaryOperator<BitVectorVariable> getEdgeTransferFunction(CGNode src, CGNode dest)
         {
-            if (! ta.getRelevantNodes().contains(src) || ! ta.getRelevantNodes().contains(dest)) {
+            if (! ta.getReachingNodes().contains(src) || ! ta.getReachingNodes().contains(dest)) {
                 return BitVectorIdentity.instance();
             }
             
-            Map<TransferSite, BitVector> srcNodeLiveVariables = liveVariables.get(src);
+            Map<AnalysisSite, BitVector> srcNodeLiveVariables = liveVariables.get(src);
             
             BitVector union = new BitVector();
-            for (TransferSite transferSite : getTransferSitesBetween(src, dest))
+            for (CallSite callSite : getCallSitesBetween(src, dest))
             {
-                BitVector transferSiteBitVector = srcNodeLiveVariables.get(transferSite);
+                BitVector transferSiteBitVector = srcNodeLiveVariables.get(callSite);
                 assert transferSiteBitVector != null;
                 union.or(transferSiteBitVector);
             }
             return new BitVectorUnionVector(union);
         }
         
-        // TODO: Do we need to consider `RETURN` transfers sites which are transferring values from
-        // `dest` to `src`?
-        private Set<TransferSite> getTransferSitesBetween(CGNode src, CGNode dest)
+        private Set<CallSite> getCallSitesBetween(CGNode src, CGNode dest)
         {
-            Set<TransferSite> transfersBetween = new HashSet<TransferSite>();
+            // TODO: Simplify this by using `CallSiteReference`s instead of SSA instructions?
+            Set<CallSite> callSitesBetween = new HashSet<CallSite>();
             Set<SSAInstruction> instructionsBetween = getInstructionsBetween(src, dest);
 
             // Find that subset of this node's relevant transfer sites which are invocations from
             // the `src` node to the `dest` node.
-            for (TransferSite transferSite : ta.getRelevantSites(src))
+            for (AnalysisSite analysisSite : ta.getRelevantSites(src))
             {
                 // No `RETURN` kind transfer site will be an invocation from `src` to `dest`.
-                if (transferSite.getKind() == Kind.RETURN) {
-                    continue;
-                }
-                
-                for (SSAInstruction instr : instructionsBetween)
-                {
-                    if (transferSite.getInstruction().equals(instr)) {
-                        transfersBetween.add(transferSite);
-                        break;
+                if (analysisSite instanceof CallSite) {
+                    for (SSAInstruction instr : instructionsBetween)
+                    {
+                        if (analysisSite.getInstruction().equals(instr)) {
+                            callSitesBetween.add((CallSite) analysisSite);
+                            break;
+                        }
                     }
                 }
             }
 
-            return transfersBetween;
+            return callSitesBetween;
         }
         
         private Set<SSAInstruction> getInstructionsBetween(CGNode src, CGNode dest)

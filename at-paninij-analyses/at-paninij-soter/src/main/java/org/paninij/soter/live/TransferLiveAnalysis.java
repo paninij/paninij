@@ -6,8 +6,9 @@ import java.util.Set;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.site.TransferringSite;
+import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.transfer.TransferAnalysis;
-import org.paninij.soter.transfer.TransferSite;
 import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -33,7 +34,7 @@ public class TransferLiveAnalysis extends Analysis
     final protected IClassHierarchy cha;
     
     // The results of the analysis:
-    protected final Map<TransferSite, Set<PointerKey>> liveVariables;
+    protected final Map<AnalysisSite, Set<PointerKey>> liveVariables;
 
     public TransferLiveAnalysis(CapsuleTemplate template,
                                 LocalLiveAnalysisFactory llaFactory,
@@ -47,7 +48,7 @@ public class TransferLiveAnalysis extends Analysis
         this.cga = cga;
         this.cha = cha;
         
-        liveVariables = new HashMap<TransferSite, Set<PointerKey>>();
+        liveVariables = new HashMap<AnalysisSite, Set<PointerKey>>();
     }
 
     @Override
@@ -62,40 +63,40 @@ public class TransferLiveAnalysis extends Analysis
     {
         for (CGNode node : ta.getReachingNodes())
         {
-            Set<TransferSite> relevantSites = ta.getRelevantSites(node);
+            Set<AnalysisSite> relevantSites = ta.getRelevantSites(node);
             LocalLiveAnalysis localAnalysis = llaFactory.lookupOrMake(node);
             localAnalysis.perform();
-            for (TransferSite site : relevantSites) {
+            for (AnalysisSite site : relevantSites) {
                 addPointerKeysAfter(site);
             }
         }
     }
 
 
-    protected void addPointerKeysAfter(TransferSite transferSite)
+    protected void addPointerKeysAfter(AnalysisSite site)
     {
-        CGNode node = transferSite.getNode();
+        CGNode node = site.getNode();
         assert cga.getCallGraph().containsNode(node);
 
         LocalLiveAnalysis localLiveAnalysis = llaFactory.lookupOrMake(node);
         localLiveAnalysis.perform();
 
         IR nodeIR = node.getIR();
-        ISSABasicBlock block = nodeIR.getBasicBlockForInstruction(transferSite.getInstruction());
-        liveVariables.put(transferSite, localLiveAnalysis.getPointerKeysAfter(block));
+        ISSABasicBlock block = nodeIR.getBasicBlockForInstruction(site.getInstruction());
+        liveVariables.put(site, localLiveAnalysis.getPointerKeysAfter(block));
     }
 
 
     /**
-     * @param transferSite A transfer site defined w.r.t. the factory's call graph analysis.
+     * @param site A transfer site defined w.r.t. the factory's call graph analysis.
      * 
      * @return The set of pointer keys into the heap model of the factory's call graph analysis
      *         which the analysis found to be live after the program point of the given transfer
      *         site.
      */
-    public Set<PointerKey> getLiveVariablesAfter(TransferSite transferSite)
+    public Set<PointerKey> getLiveVariablesAfter(AnalysisSite site)
     {
         assert hasBeenPerformed;
-        return liveVariables.get(transferSite);
+        return liveVariables.get(site);
     }
 }

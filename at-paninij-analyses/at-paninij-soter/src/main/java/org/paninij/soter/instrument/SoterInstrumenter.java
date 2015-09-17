@@ -12,7 +12,7 @@ import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.transfer.TransferSite;
+import org.paninij.soter.site.TransferringSite;
 
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.classLoader.ShrikeClass;
@@ -37,7 +37,7 @@ public class SoterInstrumenter
     
     protected final String outputFilePath;
     protected final ShrikeClass shrikeClass;
-    protected final Map<String, IdentitySet<TransferSite>> unsafeTransferSitesMap;
+    protected final Map<String, IdentitySet<TransferringSite>> unsafeTransferSitesMap;
     protected final MethodInstrumenter methodInstrumenter;
 
     public SoterInstrumenter(CapsuleTemplate template, String outputDir, SoterAnalysis sa,
@@ -50,7 +50,7 @@ public class SoterInstrumenter
 
         outputFilePath = outputDir + separator + instrumenter.getReader().getName() + ".class";
         shrikeClass = (ShrikeClass) template.getTemplateClass();
-        unsafeTransferSitesMap = new HashMap<String, IdentitySet<TransferSite>>();
+        unsafeTransferSitesMap = new HashMap<String, IdentitySet<TransferringSite>>();
         methodInstrumenter = new MethodInstrumenter();
     }
 
@@ -73,7 +73,7 @@ public class SoterInstrumenter
     
     protected void buildUnsafeTransferSitesMap()
     {
-        for (Entry<IMethod, IdentitySet<TransferSite>> entry : sa.getUnsafeTransferSitesMap().entrySet())
+        for (Entry<IMethod, IdentitySet<TransferringSite>> entry : sa.getUnsafeTransferSitesMap().entrySet())
         {
             String signature = "L" + entry.getKey().getSignature();
             unsafeTransferSitesMap.put(signature, entry.getValue());
@@ -104,7 +104,7 @@ public class SoterInstrumenter
             String signature = methodData.getClassType().replace('/', '.').replace(';', '.')
                              + methodData.getName()
                              + methodData.getSignature();
-            IdentitySet<TransferSite> unsafeTransferSites = unsafeTransferSitesMap.get(signature);
+            IdentitySet<TransferringSite> unsafeTransferSites = unsafeTransferSitesMap.get(signature);
 
             // Ignore any methods on the template in which there are no unsafe transfer sites.
             if (unsafeTransferSites == null || unsafeTransferSites.isEmpty()) {
@@ -114,17 +114,17 @@ public class SoterInstrumenter
         }
         
         private void instrumentUnsafeTransferSites(MethodData methodData,
-                                                   IdentitySet<TransferSite> unsafeTransferSites)
+                                                   IdentitySet<TransferringSite> unsafeTransferSites)
         {
             MethodEditor methodEditor = new MethodEditor(methodData);
-            for (TransferSite site : unsafeTransferSites) {
+            for (TransferringSite site : unsafeTransferSites) {
                 patchUnsafeTransferSite(methodEditor, site);
             }
             methodEditor.applyPatches();
             methodEditor.endPass();
         }
         
-        private void patchUnsafeTransferSite(MethodEditor methodEditor, TransferSite site)
+        private void patchUnsafeTransferSite(MethodEditor methodEditor, TransferringSite site)
         {
             methodEditor.beginPass();
             methodEditor.insertBefore(site.getInstruction().iindex, new Patch()
