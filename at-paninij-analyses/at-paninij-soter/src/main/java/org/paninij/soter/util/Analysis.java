@@ -7,6 +7,9 @@ public abstract class Analysis
     /**
      * If this method has never been called before, then any sub-analyses and the main analysis are
      * performed. If this method has been previously called, then it will return immediately.
+     * 
+     * Warning: implementers of `Analysis` should not not generally override `perform()`. They are
+     * expected to usually override `performAnalysis()` and `performSubAnalyses()`.
      */
     public void perform()
     {
@@ -34,4 +37,5 @@ public abstract class Analysis
     {
         // By default, assume that there are no sub-analyses, and do nothing.
     }
+
 }

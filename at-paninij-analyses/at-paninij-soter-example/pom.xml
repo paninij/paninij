@@ -77,7 +77,6 @@
             <argument>${generated.dependenciesFile}</argument>
             <argument>-classOutput</argument>
             <argument>${project.build.outputDirectory}</argument>
-            <!-- <argument>-noInstrument</argument> -->
             <argument>@${panini.capsuleListFile}</argument>
           </arguments>
         </configuration>

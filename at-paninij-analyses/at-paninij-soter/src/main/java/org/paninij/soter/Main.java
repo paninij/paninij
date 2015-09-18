@@ -2,12 +2,13 @@ package org.paninij.soter;
 
 import static java.io.File.pathSeparator;
 
-import java.io.BufferedWriter;
+import static org.paninij.soter.util.Log.error;
+import static org.paninij.soter.util.Log.note;
+import static org.paninij.soter.util.Log.warning;
+
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +17,7 @@ import java.nio.file.StandardCopyOption;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.instrument.SoterInstrumenter;
 import org.paninij.soter.instrument.SoterInstrumenterFactory;
+import org.paninij.soter.util.Log;
 import org.paninij.soter.util.WalaUtil;
 
 import com.beust.jcommander.JCommander;
@@ -37,6 +39,9 @@ public class Main
         // Note that instantiation of the analysis factory needs to happen after the artifacts have
         // been compiled so that the bytecode for those artifacts will be found by the CHA.
         this.cliArguments = cliArguments;
+        if (cliArguments.analysisReports != null) {
+            Log.analysisLogDirectory = Paths.get(cliArguments.analysisReports);
+        }
 
         classpath = makeEffectiveClassPath(cliArguments.classPath, cliArguments.classPathFile);
         note("Effective class path: " + classpath);
@@ -61,12 +66,6 @@ public class Main
             throw ex;
         }
 
-        if (cliArguments.analysisReports != null)
-        {
-            log(cliArguments.analysisReports + File.separator + qualifiedCapsuleName + ".json",
-                soterAnalysis.toJsonString(), false);
-        }
-        
         if (cliArguments.noInstrument == false)
         {
             note("Instrumenting Capsule: " + qualifiedCapsuleName);
@@ -174,29 +173,5 @@ public class Main
             main.analyzeAndInstrument(capsule);
         }
     }
-    
-    
-    public void log(String logFilePath, String logMsg, boolean append)
-    {
-        try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, append))))
-        {
-            out.println(logMsg);
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException("Failed to log a message: " + ex, ex);
-        }
-    }
-    
-    public static void note(String msg) {
-        System.err.println("--- org.paninij.soter.Main: " + msg);
-    }
 
-    public static void warning(String msg) {
-        System.err.println("~~~ org.paninij.soter.Main: " + msg);
-    }
-    
-    public static void error(String msg) {
-        System.err.println("!!! org.paninij.soter.Main: " + msg);
-    }
 }
