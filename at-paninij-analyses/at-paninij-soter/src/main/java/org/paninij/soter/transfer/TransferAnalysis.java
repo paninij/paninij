@@ -386,38 +386,6 @@ public class TransferAnalysis extends LoggingAnalysis
             return json;
         }
         
-        private <T> JsonArrayBuilder toJsonBuilder(Iterable<T> set)
-        {
-            JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (T elem: set) {
-                builder.add(elem.toString());
-            }
-            return builder;
-        }
-        
-        private <T extends AnalysisSite> JsonArrayBuilder toJsonBuilder(Map<CGNode, Set<T>> map)
-        {
-            JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (Entry<CGNode, Set<T>> entry: map.entrySet())
-            {
-                builder.add(toJsonBuilder(entry.getKey(), entry.getValue()));
-            } 
-            return builder;
-        }
-        
-        private <T extends AnalysisSite> JsonObjectBuilder toJsonBuilder(CGNode node, Set<T> sites)
-        {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("node", node.toString());
-            
-            JsonArrayBuilder sitesArrayBuilder = Json.createArrayBuilder();
-            for (AnalysisSite site: sites) {
-                sitesArrayBuilder.add(site.toJson());
-            }
-            builder.add("sites", sitesArrayBuilder);
-            return builder;
-        }
-
         @Override
         public CallGraph getCallGraph()
         {

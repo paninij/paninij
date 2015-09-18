@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -15,6 +16,7 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 
 import org.paninij.runtime.util.IdentitySet;
+import org.paninij.soter.site.AnalysisSite;
 
 import com.ibm.wala.classLoader.NewSiteReference;
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -148,5 +150,61 @@ public abstract class AnalysisJsonResultsCreator
         builder.add("creationSiteProgramCounter", creationSite.snd.getProgramCounter());
         builder.add("context", creationSite.fst.getContext().toString());
         return builder.build();
+    }
+    
+    protected <T extends AnalysisSite> JsonObjectBuilder toJsonBuilder(CGNode node, Set<T> sites)
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("node", node.toString());
+        
+        JsonArrayBuilder sitesArrayBuilder = Json.createArrayBuilder();
+        for (AnalysisSite site: sites) {
+            sitesArrayBuilder.add(site.toJson());
+        }
+        builder.add("sites", sitesArrayBuilder);
+        return builder;
+    }
+    
+    
+    protected <T> JsonArrayBuilder toJsonBuilder(Iterable<T> set)
+    {
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        for (T elem: set) {
+            builder.add(elem.toString());
+        }
+        return builder;
+    }
+    
+    protected <T extends AnalysisSite> JsonArrayBuilder toJsonBuilder(Map<CGNode, Set<T>> map)
+    {
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        for (Entry<CGNode, Set<T>> entry: map.entrySet())
+        {
+            builder.add(toJsonBuilder(entry.getKey(), entry.getValue()));
+        } 
+        return builder;
+    }
+    
+    protected <T extends AnalysisSite> JsonArrayBuilder ptrMapToJsonBuilder(Map<T, Set<PointerKey>> map)
+    {
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        for (Entry<T, Set<PointerKey>> entry: map.entrySet())
+        {
+            builder.add(toJsonBuilder(entry.getKey(), entry.getValue()));
+        } 
+        return builder;
+    }
+    
+    protected JsonObjectBuilder toJsonBuilder(AnalysisSite site, Set<PointerKey> ptrs)
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("site", site.toJson());
+        
+        JsonArrayBuilder sitesArrayBuilder = Json.createArrayBuilder();
+        for (PointerKey ptr: ptrs) {
+            sitesArrayBuilder.add(toJson(ptr));
+        }
+        builder.add("pointerKeys", sitesArrayBuilder);
+        return builder;
     }
 }

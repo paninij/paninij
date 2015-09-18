@@ -4,14 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.util.Analysis;
+import org.paninij.soter.util.AnalysisJsonResultsCreator;
+import org.paninij.soter.util.LoggingAnalysis;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
@@ -24,7 +31,7 @@ import com.ibm.wala.ssa.ISSABasicBlock;
  * 
  * See Figure 8 of Negara, 2011.
  */
-public class TransferLiveAnalysis extends Analysis
+public class TransferLiveAnalysis extends LoggingAnalysis
 {
     // The analysis's dependencies:
     final protected CapsuleTemplate template;
@@ -35,6 +42,9 @@ public class TransferLiveAnalysis extends Analysis
     
     // The results of the analysis:
     protected final Map<AnalysisSite, Set<PointerKey>> liveVariables;
+
+    protected final JsonResultsCreator jsonCreator;
+
 
     public TransferLiveAnalysis(CapsuleTemplate template,
                                 LocalLiveAnalysisFactory llaFactory,
@@ -49,6 +59,8 @@ public class TransferLiveAnalysis extends Analysis
         this.cha = cha;
         
         liveVariables = new HashMap<AnalysisSite, Set<PointerKey>>();
+
+        jsonCreator = new JsonResultsCreator();
     }
 
     @Override
@@ -98,5 +110,51 @@ public class TransferLiveAnalysis extends Analysis
     {
         assert hasBeenPerformed;
         return liveVariables.get(site);
+    }
+
+    @Override
+    public JsonObject getJsonResults()
+    {
+        assert hasBeenPerformed;
+        return jsonCreator.toJson();
+    }
+
+    @Override
+    public String getJsonResultsString()
+    {
+        assert hasBeenPerformed;
+        return jsonCreator.toJsonString();
+    }
+
+    @Override
+    protected String getJsonResultsLogFileName()
+    {
+        return template.getQualifiedName().replace('/', '.') + ".json";
+    }
+    
+    
+    private class JsonResultsCreator extends AnalysisJsonResultsCreator
+    {
+        @Override
+        public JsonObject toJson()
+        {
+            assert hasBeenPerformed;
+
+            if (json != null) {
+                return json;
+            }
+
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("liveVariables", ptrMapToJsonBuilder(liveVariables));
+            
+            json = builder.build();
+            return json;
+        }
+
+        @Override
+        public CallGraph getCallGraph()
+        {
+            return cga.getCallGraph();
+        }
     }
 }
