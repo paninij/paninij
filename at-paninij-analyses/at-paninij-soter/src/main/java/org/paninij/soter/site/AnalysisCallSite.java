@@ -2,6 +2,7 @@ package org.paninij.soter.site;
 
 import static java.text.MessageFormat.format;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -49,7 +50,17 @@ public class AnalysisCallSite extends AnalysisSite implements CallSite
     @Override
     public JsonObject toJson()
     {
-        throw new UnsupportedOperationException("TODO");
+        return Json.createObjectBuilder()
+                   .add("type", "AnalysisCallSite")
+                   .add("sourceMethod", node.getMethod().getSignature())
+                   .add("programCounter", invokeInstr.getProgramCounter())
+                   .add("targetMethod", invokeInstr.getDeclaredTarget().getSignature())
+                   .add("invokeInstr", invokeInstr.toString())
+                   .add("callSite", callSite.toString())
+                   .add("iindex", invokeInstr.iindex)
+                   .add("method", node.getMethod().getSignature())
+                   .add("context", node.getContext().toString())
+                   .build();
     }
     
     @Override

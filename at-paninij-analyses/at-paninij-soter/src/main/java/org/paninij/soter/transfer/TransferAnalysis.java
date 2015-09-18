@@ -10,9 +10,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
@@ -64,14 +66,15 @@ public class TransferAnalysis extends LoggingAnalysis
     
     /**
      * A map whose domain is the set of reaching nodes. It maps from a given node to the set of
-     * relevant sites defined within it. There are three kinds of relevant sites:
+     * "relevant" analysis sites defined within this node. These are the sites at which local live
+     * analysis information will be collected. There are three kinds of relevant sites:
      * 
-     *  1. an INVOKE transferring site defined within the node,
-     *  2. a RETURN transferring site defined within the node, or
+     *  1. an transferring call site defined within the node,
+     *  2. a transferring return site defined within the node, or
      *  3. a call site defined within the node which was found by the CGA to possibly target a
      *     reaching node.
      */
-    protected final Map<CGNode, Set<AnalysisSite>> relevantSitesMap;
+    protected final Map<CGNode, Set<AnalysisSite>> analysisSitesMap;
     
     /**
      * A map whose domain is the set of reaching nodes. It maps from a given node to the set of
@@ -92,7 +95,7 @@ public class TransferAnalysis extends LoggingAnalysis
         this.cha = cha;
         
         transferringSitesMap = new HashMap<CGNode, Set<TransferringSite>>();
-        relevantSitesMap = new HashMap<CGNode, Set<AnalysisSite>>();
+        analysisSitesMap = new HashMap<CGNode, Set<AnalysisSite>>();
         calledByMap = new HashMap<CGNode, Set<AnalysisCallSite>>();
         
         jsonCreator = new JsonResultsCreator();
@@ -283,7 +286,7 @@ public class TransferAnalysis extends LoggingAnalysis
                 }
             }
         
-            relevantSitesMap.put(node, relevantSites);
+            analysisSitesMap.put(node, relevantSites);
         }
     }
     
@@ -328,7 +331,7 @@ public class TransferAnalysis extends LoggingAnalysis
     public Set<AnalysisSite> getRelevantSites(CGNode node)
     {
         assert hasBeenPerformed;
-        return relevantSitesMap.get(node);
+        return analysisSitesMap.get(node);
     }
     
     /**
@@ -375,11 +378,44 @@ public class TransferAnalysis extends LoggingAnalysis
             
             JsonObjectBuilder builder = Json.createObjectBuilder();
             builder.add("capsuleTemplate", template.getQualifiedName());
-
-            // TODO: Everything!
+            builder.add("transferringSites", toJsonBuilder(transferringSitesMap));
+            builder.add("reachingNodes", toJsonBuilder(reachingNodes));
+            builder.add("calledBy", toJsonBuilder(calledByMap));
             
             json = builder.build();
             return json;
+        }
+        
+        private <T> JsonArrayBuilder toJsonBuilder(Iterable<T> set)
+        {
+            JsonArrayBuilder builder = Json.createArrayBuilder();
+            for (T elem: set) {
+                builder.add(elem.toString());
+            }
+            return builder;
+        }
+        
+        private <T extends AnalysisSite> JsonArrayBuilder toJsonBuilder(Map<CGNode, Set<T>> map)
+        {
+            JsonArrayBuilder builder = Json.createArrayBuilder();
+            for (Entry<CGNode, Set<T>> entry: map.entrySet())
+            {
+                builder.add(toJsonBuilder(entry.getKey(), entry.getValue()));
+            } 
+            return builder;
+        }
+        
+        private <T extends AnalysisSite> JsonObjectBuilder toJsonBuilder(CGNode node, Set<T> sites)
+        {
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("node", node.toString());
+            
+            JsonArrayBuilder sitesArrayBuilder = Json.createArrayBuilder();
+            for (AnalysisSite site: sites) {
+                sitesArrayBuilder.add(site.toJson());
+            }
+            builder.add("sites", sitesArrayBuilder);
+            return builder;
         }
 
         @Override

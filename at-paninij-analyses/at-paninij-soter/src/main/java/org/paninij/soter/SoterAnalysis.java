@@ -348,23 +348,23 @@ public class SoterAnalysis extends LoggingAnalysis
             return json;
         }
 
-        private JsonObject toJson(TransferringSite transferSite, TransferSiteResults results)
+        private JsonObject toJson(TransferringSite site, TransferSiteResults results)
         {
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("transferSite", transferSite.toJson())
-                   .add("livePointerKeys", toJson(results.liveVariables))
-                   .add("liveInstanceKeys", toJson(results.liveObjects));
+            builder.add("transferringSite", site.toJson())
+                   .add("liveVariables", toJson(results.liveVariables))
+                   .add("liveObjects", toJson(results.liveObjects));
 
             // Create an array of JSON objects describing the analysis results for each of the
             // current transfer site's transfers.
-            IntIterator transfersIter = transferSite.getTransfers().intIterator();
+            IntIterator transfersIter = site.getTransfers().intIterator();
             JsonArrayBuilder transfersArrayBuilder = Json.createArrayBuilder();
             while (transfersIter.hasNext())
             {
                 int transfer = transfersIter.next();
                 JsonObjectBuilder transferBuilder = Json.createObjectBuilder();
-                transferBuilder.add("TransferID", transfer)
-                               .add("escapedInstanceKeys", toJson(results.getEscapedObjects(transfer)))
+                transferBuilder.add("transferID", transfer)
+                               .add("escapedObjects", toJson(results.getEscapedObjects(transfer)))
                                .add("isSafeTransfer", results.isSafeTransfer(transfer));
                 transfersArrayBuilder.add(transferBuilder);
             }
