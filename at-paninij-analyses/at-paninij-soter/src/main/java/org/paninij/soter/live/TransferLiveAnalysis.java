@@ -67,13 +67,13 @@ public class TransferLiveAnalysis extends Analysis
             LocalLiveAnalysis localAnalysis = llaFactory.lookupOrMake(node);
             localAnalysis.perform();
             for (AnalysisSite site : relevantSites) {
-                addPointerKeysAfter(site);
+                addLiveVariablesAfter(site);
             }
         }
     }
 
 
-    protected void addPointerKeysAfter(AnalysisSite site)
+    protected void addLiveVariablesAfter(AnalysisSite site)
     {
         CGNode node = site.getNode();
         assert cga.getCallGraph().containsNode(node);
