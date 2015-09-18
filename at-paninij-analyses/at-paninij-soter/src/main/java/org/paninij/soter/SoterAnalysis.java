@@ -80,7 +80,7 @@ public class SoterAnalysis extends LoggingAnalysis
         transferSiteResultsMap = new HashMap<TransferringSite, TransferSiteResults>();
         unsafeTransferSitesMap = new HashMap<IMethod, IdentitySet<TransferringSite>>();
 
-        jsonCreator = new JsonResultsCreator(this);
+        jsonCreator = new JsonResultsCreator();
     }
 
 
@@ -303,11 +303,6 @@ public class SoterAnalysis extends LoggingAnalysis
     
     private class JsonResultsCreator extends AnalysisJsonResultsCreator
     {
-        JsonResultsCreator(SoterAnalysis analysis)
-        {
-            super(analysis);
-        }
-        
         public JsonObject toJson()
         {
             assert hasBeenPerformed;

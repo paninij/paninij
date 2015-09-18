@@ -47,15 +47,6 @@ public abstract class AnalysisJsonResultsCreator
     protected JsonObject json;
     protected String jsonString;
 
-    protected final Analysis analysis;
-
-    protected AnalysisJsonResultsCreator(Analysis analysis)
-    {
-        assert analysis != null;
-        this.analysis = analysis;
-    }
-
-
     public abstract JsonObject toJson();
     
     
@@ -65,8 +56,6 @@ public abstract class AnalysisJsonResultsCreator
 
     public String toJsonString()
     {
-        assert analysis.hasBeenPerformed;
-
         if (jsonString != null) {
             return jsonString;
         }
