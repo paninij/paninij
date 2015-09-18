@@ -43,6 +43,7 @@ public class Log
             FileWriter fw = new FileWriter(logFilePath.toFile(), append);
             PrintWriter out = new PrintWriter(new BufferedWriter(fw));
             out.println(msg);
+            out.close();
             fw.close();
         }
         catch (IOException ex)
