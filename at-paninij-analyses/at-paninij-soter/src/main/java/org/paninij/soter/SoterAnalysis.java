@@ -33,6 +33,8 @@ import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.site.SiteFactory;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.util.Analysis;
+import org.paninij.soter.util.Log;
+import org.paninij.soter.util.LoggingAnalysis;
 
 import com.ibm.wala.analysis.pointers.HeapGraph;
 import com.ibm.wala.classLoader.IMethod;
@@ -56,7 +58,7 @@ import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSetFactory;
 
-public class SoterAnalysis extends Analysis
+public class SoterAnalysis extends LoggingAnalysis
 {
     // The analysis's dependencies:
     protected final CapsuleTemplate template;
@@ -230,17 +232,29 @@ public class SoterAnalysis extends Analysis
     }
 
 
-    public JsonObject toJson()
+    @Override
+    public JsonObject getJsonResults()
     {
+        assert hasBeenPerformed;
         return jsonCreator.toJson();
     }
 
 
-    public String toJsonString()
+    @Override
+    public String getJsonResultsString()
     {
+        assert hasBeenPerformed;
         return jsonCreator.toJsonString();
     }
 
+
+    @Override
+    public String getJsonResultsLogFileName()
+    {
+        return template.getQualifiedName().replace('/', '.') + ".json";
+    }
+    
+    
     /**
      * A simple container class to hold all of the results which the analysis generates for a single
      * transfer site.

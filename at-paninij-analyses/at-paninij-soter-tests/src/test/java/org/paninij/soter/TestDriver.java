@@ -9,8 +9,8 @@ public class TestDriver
     String[] args = {"-classPath", "target/classes",
                      "-classPathFile", "target/dependencies.txt",
                      "-classOutput", "target/classes",
-                     "-analysisReports", "logs/soter/analysis_reports",
-                     "-origBytecode", "logs/soter/orig_bytecode",
+                     "-analysisReports", "logs/analysis_reports",
+                     "-origBytecode", "logs/orig_bytecode",
                      "-noInstrument",
                      "@target/capsule_list.txt"
     };
