@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
@@ -21,6 +25,8 @@ import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.site.TransferringReturnSite;
 import org.paninij.soter.util.Analysis;
+import org.paninij.soter.util.AnalysisJsonResultsCreator;
+import org.paninij.soter.util.LoggingAnalysis;
 import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -36,7 +42,7 @@ import com.ibm.wala.util.intset.BitVectorIntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 
 
-public class TransferAnalysis extends Analysis
+public class TransferAnalysis extends LoggingAnalysis
 {
     protected final CapsuleTemplate template;
     protected final CallGraphAnalysis cga;
@@ -73,6 +79,9 @@ public class TransferAnalysis extends Analysis
      */
     protected final Map<CGNode, Set<AnalysisCallSite>> calledByMap;
     
+    
+    protected final JsonResultsCreator jsonCreator;
+    
 
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
@@ -85,6 +94,8 @@ public class TransferAnalysis extends Analysis
         transferringSitesMap = new HashMap<CGNode, Set<TransferringSite>>();
         relevantSitesMap = new HashMap<CGNode, Set<AnalysisSite>>();
         calledByMap = new HashMap<CGNode, Set<AnalysisCallSite>>();
+        
+        jsonCreator = new JsonResultsCreator();
     }
     
     @Override
@@ -328,5 +339,53 @@ public class TransferAnalysis extends Analysis
     {
         assert hasBeenPerformed;
         return reachingNodes;
+    }
+
+    @Override
+    public JsonObject getJsonResults()
+    {
+        assert hasBeenPerformed;
+        return jsonCreator.toJson();
+    }
+
+    @Override
+    public String getJsonResultsString()
+    {
+        assert hasBeenPerformed;
+        return jsonCreator.toJsonString();
+    }
+
+
+    @Override
+    protected String getJsonResultsLogFileName()
+    {
+        return template.getQualifiedName().replace('/', '.') + ".json";
+    }
+    
+    private class JsonResultsCreator extends AnalysisJsonResultsCreator
+    {
+        @Override
+        public JsonObject toJson()
+        {
+            assert hasBeenPerformed;
+            
+            if (json != null) {
+                return json;
+            }
+            
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("capsuleTemplate", template.getQualifiedName());
+
+            // TODO: Everything!
+            
+            json = builder.build();
+            return json;
+        }
+
+        @Override
+        public CallGraph getCallGraph()
+        {
+            return cga.getCallGraph();
+        }
     }
 }
