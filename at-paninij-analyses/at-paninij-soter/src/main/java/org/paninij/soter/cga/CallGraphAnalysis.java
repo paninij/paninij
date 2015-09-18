@@ -1,7 +1,5 @@
 package org.paninij.soter.cga;
 
-import static com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys.*;
-
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.util.Analysis;
 
