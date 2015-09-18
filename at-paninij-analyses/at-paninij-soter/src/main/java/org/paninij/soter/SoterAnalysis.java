@@ -1,12 +1,9 @@
 package org.paninij.soter;
 
 import static org.paninij.soter.util.SoterUtil.makePointsToClosure;
-import static java.text.MessageFormat.format;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -15,8 +12,6 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
 
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.runtime.util.IntMap;
@@ -27,9 +22,7 @@ import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.site.SiteFactory;
 import org.paninij.soter.transfer.TransferAnalysis;
-import org.paninij.soter.util.Analysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
-import org.paninij.soter.util.Log;
 import org.paninij.soter.util.LoggingAnalysis;
 
 import com.ibm.wala.analysis.pointers.HeapGraph;
@@ -40,9 +33,6 @@ import com.ibm.wala.ipa.callgraph.propagation.HeapModel;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
-import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
-import com.ibm.wala.ssa.SSAInstruction;
-import com.ibm.wala.ssa.SSAReturnInstruction;
 import com.ibm.wala.util.intset.IntIterator;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
