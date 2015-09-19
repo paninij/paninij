@@ -70,12 +70,6 @@
       </dependency>
 
       <dependency>
-        <groupId>me.dwtj</groupId>
-        <artifactId>object-graph-explorer</artifactId>
-        <version>0.2-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.11</version>
