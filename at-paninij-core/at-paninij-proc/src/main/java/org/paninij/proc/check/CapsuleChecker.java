@@ -20,66 +20,39 @@ package org.paninij.proc.check;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.PaniniProcessor;
-import org.paninij.proc.util.PaniniModel;
-import org.paninij.proc.util.Source;
+import org.paninij.proc.check.capsules.SuffixCheck;
 
 
 public class CapsuleChecker
 {
+    protected static TemplateCheck templateChecks[] = {
+        new SuffixCheck()
+    };
+
     /**
      * @param template
      * @return `true` if and only if `template` is can be processed as a valid capsule template.
      */
     public static boolean check(PaniniProcessor context, Element template)
     {
-        // TODO: give errors when the user annotates an element which cannot be a capsule.
-        // TODO: check that the class does not have any inner classes.
-        // TODO: check that every interface implemented by a capsule template is a signature.
-        // TODO: check that every procedure is not variadic.
-        // TODO: check that every procedure returns a class which is NOT final.
-        // TODO: check that every procedure returns a non-primitive value (i.e. an object).
-        // TODO: check that every passive capsule has one or more procedures.
-        // TODO: check that every active capsule has zero procedures.
-
-        if (template.getKind() == ElementKind.FIELD)
+        if (template.getKind() != ElementKind.CLASS)
         {
-            // Ignore type checking if the given element is actually a field.
+            context.error("Capsule template must be either a class.");
             return false;
         }
 
-        if (template.getKind() != ElementKind.CLASS && template.getKind() != ElementKind.INTERFACE)
+        for (TemplateCheck check: templateChecks)
         {
-            context.error("Capsule template must be either a class or an interface.");
-            return false;
-        }
-
-        if (!checkTemplateName(context, template)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static boolean checkTemplateName(PaniniProcessor context, Element template)
-    {
-        String templateName = template.getSimpleName().toString();
-        if (! templateName.endsWith(PaniniModel.CAPSULE_TEMPLATE_SUFFIX))
-        {
-            String msg = Source.cat("Invalid template name: `#0`",
-                                    "Every capsule template name must be suffixed with `#1`");
-            msg = Source.format(msg, templateName, PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
-            context.error(msg);
-            return false;
-        }
-        else if (templateName.length() == PaniniModel.CAPSULE_TEMPLATE_SUFFIX.length())
-        {
-            String msg = Source.cat("Invalid template name: `#0`",
-                                    "Template name can't be the same as the expected suffix");
-            msg = Source.format(msg, templateName);
-            context.error(msg);
-            return false;
+            Result result = check.check((TypeElement) template);
+            if (!result.ok())
+            {
+                context.error(result.err());
+                context.error("For more info see: `" + result.source() + "`.");
+                return false;
+            }
         }
 
         return true;

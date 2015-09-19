@@ -261,9 +261,13 @@ public class PaniniProcessor extends AbstractProcessor
         System.out.println("~~~ PaniniProcessor: " + msg);
     }
 
-    public void error(String msg) {
+    public void error(String msg)
+    {
+        /*
         processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR,
                                                  "!!! PaniniProcessor: " + msg);
+        */
+        System.out.println("!!! PaniniProcessor: " + msg);
     }
 
     public Types getTypeUtils() {
