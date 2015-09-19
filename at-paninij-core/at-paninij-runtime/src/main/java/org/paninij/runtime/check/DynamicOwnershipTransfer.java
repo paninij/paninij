@@ -3,14 +3,8 @@ package org.paninij.runtime.check;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import me.dwtj.objectgraph.Explorer;
-import me.dwtj.objectgraph.GreedyNavigator;
-import me.dwtj.objectgraph.Navigator;
-import me.dwtj.objectgraph.Visitor;
 
 import org.paninij.lang.Capsule;
 import org.paninij.runtime.Panini$System;
@@ -35,7 +29,7 @@ public class DynamicOwnershipTransfer
     {
         String err = "Capsule performed an illegal ownership transfer: " + Panini$System.self.get();
         //assert REFLECTION_OPTIMIZED.isSafeTransfer(msg, Panini$System.self.get().panini$getAllState()) : err;
-        if (REFLECTION_OPTIMIZED.isSafeTransfer(msg, Panini$System.self.get().panini$getAllState()) == false)
+        if (REFLECTION.isSafeTransfer(msg, Panini$System.self.get().panini$getAllState()) == false)
         {
             System.err.println(err);
             throw new AssertionError(err);
@@ -47,10 +41,8 @@ public class DynamicOwnershipTransfer
         switch (method) {
         case NONE:
             return true;
-        case REFLECTION_NAIVE:
-            return REFLECTION_NAIVE.isSafeTransfer(msg, local);
-        case REFLECTION_OPTIMIZED:
-            return REFLECTION_OPTIMIZED.isSafeTransfer(msg, local);
+        case REFLECTION:
+            return REFLECTION.isSafeTransfer(msg, local);
         case NATIVE:
             return NATIVE.isSafeTransfer(msg, local);
         default:
@@ -61,8 +53,7 @@ public class DynamicOwnershipTransfer
     public static enum Kind
     {
         NONE,
-        REFLECTION_NAIVE,
-        REFLECTION_OPTIMIZED,
+        REFLECTION,
         NATIVE;
         
         /**
@@ -77,10 +68,8 @@ public class DynamicOwnershipTransfer
                 return getDefault();
             if (s.equals("NONE"))
                 return NONE;
-            if (s.equals("RUNTIME_REFLECTION_NAIVE"))
-                return REFLECTION_NAIVE;
             if (s.equals("RUNTIME_REFLECTION_OPTIMIZED"))
-                return REFLECTION_OPTIMIZED;
+                return REFLECTION;
             if (s.equals("RUNTIME_NATIVE"))
                 return NATIVE;
             
@@ -115,47 +104,9 @@ public class DynamicOwnershipTransfer
         }
     }
     
-    
 
-    public static class REFLECTION_NAIVE
-    {
-        public static boolean isSafeTransfer(Object msg, Object local)
-        {
-            // These predicates and the navigator are all stateless, so they are safe to reuse.
-            final Predicate<Object> nav_from = (obj -> obj instanceof org.paninij.lang.String == false
-                                                    && obj instanceof java.lang.String == false);
-            final Predicate<Class<?>> nav_to = (clazz -> clazz != org.paninij.lang.String.class
-                                                      && clazz != java.lang.String.class);
-    
-            final Navigator navigator = new GreedyNavigator(nav_from, nav_to);
-            final Visitor visitor = new Visitor() {
-                public void visit(Object obj) {
-                    assert obj.getClass().getAnnotation(Capsule.class) == null;
-                }
-            };
-            
-            Explorer local_explorer = new Explorer(visitor, navigator);
-            local_explorer.explore(local);
-            
-            Explorer msg_explorer = new Explorer(visitor, navigator);
-            msg_explorer.explore(msg);
-            
-            // Filter out those which are known to be safe to transfer.
-            List<Object> local_refs = local_explorer.visited.identities.keySet().stream()
-                                         .collect(Collectors.toList());
-    
-            List<Object> msg_refs = msg_explorer.visited.identities.keySet().stream()
-                                       .collect(Collectors.toList());
-    
-            // Return true iff the intersection of these two sets is empty.
-            msg_refs.retainAll(local_refs);
-            return msg_refs.isEmpty();
-        }
-    }
 
-    
-    
-    public static class REFLECTION_OPTIMIZED
+    public static class REFLECTION
     {
         /**
          * Thread-local storage used to explore the object graph of messages. It is used across all

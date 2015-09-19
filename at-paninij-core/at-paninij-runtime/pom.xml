@@ -19,10 +19,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>me.dwtj</groupId>
-      <artifactId>object-graph-explorer</artifactId>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>

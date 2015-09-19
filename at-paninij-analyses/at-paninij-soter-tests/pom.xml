@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.paninij</groupId>
+    <artifactId>at-paninij-analyses</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>at-paninij-soter-tests</artifactId>
+  <packaging>jar</packaging>
+
+  <name>@PaniniJ SOTER Tests</name>
+  <description>
+    @PaniniJ capsule templates to test the `soter` package (i.e. @PaniniJ's
+    ownership transfer check features).
+  </description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <generated.sources.directory>
+      ${project.build.directory}/generated-sources
+    </generated.sources.directory>
+    <generated.test.sources.directory>
+      ${project.build.directory}/generated-test-sources
+    </generated.test.sources.directory>
+    <generated.dependenciesFile>
+      ${project.build.directory}/dependencies.txt
+    </generated.dependenciesFile>
+    <panini.capsuleListFile>
+      ${project.build.directory}/capsule_list.txt
+    </panini.capsuleListFile>
+  </properties>
+
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.10</version>
+        <executions>
+          <execution>
+            <id>generate-dependencies-file</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>build-classpath</goal>
+            </goals>
+            <configuration>
+              <outputFile>${generated.dependenciesFile}</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <generatedSourcesDirectory>${generated.sources.directory}</generatedSourcesDirectory>
+          <generatedTestSourcesDirectory>${generated.test.sources.directory}</generatedTestSourcesDirectory>
+          <fork>true</fork>
+          <compilerArgs>
+            <arg>-Apanini.capsuleListFile=${panini.capsuleListFile}</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-proc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-soter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

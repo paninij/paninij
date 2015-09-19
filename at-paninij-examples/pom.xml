@@ -29,14 +29,6 @@
             ${project.build.directory}/generated-test-sources
           </generatedTestSourcesDirectory>
           -->
-          <compilerArgs>
-            <arg>-Apanini.ownershipTransfer.dynamic=NONE</arg>
-            <!--<arg>-Apanini.ownershipTransfer.dynamic=REFLECTION_NAIVE</arg>-->
-            <!--<arg>-Apanini.ownershipTransfer.dynamic=REFLECTION_OPTIMIZED</arg>-->
-            <!--<arg>-Apanini.ownershipTransfer.dynamic=NATIVE</arg>-->
-            <arg>-Apanini.ownershipTransfer.static=NONE</arg>
-            <!--<arg>-Apanini.ownershipTransfer.static=SOTER</arg>-->
-          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

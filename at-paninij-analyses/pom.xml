@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.paninij</groupId>
-  <artifactId>at-paninij-core</artifactId>
+  <artifactId>at-paninij-analyses</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>@PaniniJ Core</name>
+  <name>@PaniniJ Analyses</name>
 
   <build>
     <pluginManagement>
@@ -43,9 +43,9 @@
   </properties>
 
   <modules>
-    <module>at-paninij-runtime</module>
-    <module>at-paninij-proc</module>
-    <module>at-paninij-proc-tests</module>
+    <module>at-paninij-soter</module>
+    <module>at-paninij-soter-tests</module>
+    <module>at-paninij-soter-example</module>
   </modules>
 
   <dependencyManagement>
@@ -65,8 +65,20 @@
 
       <dependency>
         <groupId>org.paninij</groupId>
-        <artifactId>at-paninij-proc-tests</artifactId>
+        <artifactId>at-paninij-soter</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.paninij</groupId>
+        <artifactId>at-paninij-soter-tests</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>me.dwtj</groupId>
+        <artifactId>object-graph-explorer</artifactId>
+        <version>0.2-SNAPSHOT</version>
       </dependency>
 
       <dependency>
