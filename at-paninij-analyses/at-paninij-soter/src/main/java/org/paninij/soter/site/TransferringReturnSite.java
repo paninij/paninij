@@ -46,17 +46,29 @@ public class TransferringReturnSite extends TransferringSite
     }
 
     @Override
+    public int hashCode()
+    {
+        // Note that the class definition asserts that all fields are non-null by construction.
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + node.hashCode();
+        result = prime * result + instr.hashCode();
+        result = prime * result + returnInstr.hashCode();
+        result = prime * result + transfers.hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
-        if (o instanceof TransferringCallSite == false) {
+        if (o instanceof TransferringReturnSite == false) {
             return false;
         }
 
         // Note that the class definition asserts that all fields are non-null by construction.
-        TransferringCallSite that = (TransferringCallSite) o;
-        return node.equals(that.node)
-            && instr.equals(that.instr)
-            && returnInstr.equals(that.invokeInstr)
+        TransferringReturnSite that = (TransferringReturnSite) o;
+        return super.equals(that)
+            && returnInstr.equals(that.returnInstr)
             && transfers.equals(that.transfers);
     } 
 }

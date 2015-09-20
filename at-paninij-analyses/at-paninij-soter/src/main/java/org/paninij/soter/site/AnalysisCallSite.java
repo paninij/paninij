@@ -72,6 +72,19 @@ public class AnalysisCallSite extends AnalysisSite implements CallSite
     }
     
     @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        // Note that the class definition asserts that all fields are non-null by construction.
+        result = prime * result + node.hashCode();
+        result = prime * result + instr.hashCode();
+        result = prime * result + invokeInstr.hashCode();
+        result = prime * result + callSite.hashCode();
+        return result;
+    }
+    
+    @Override
     public boolean equals(Object o)
     {
         if (o instanceof AnalysisCallSite == false) {
@@ -80,8 +93,7 @@ public class AnalysisCallSite extends AnalysisSite implements CallSite
 
         // Note that the class definition asserts that all fields are non-null by construction.
         AnalysisCallSite that = (AnalysisCallSite) o;
-        return node.equals(that.node)
-            && instr.equals(that.instr)
+        return super.equals(that)
             && invokeInstr.equals(that.invokeInstr)
             && callSite.equals(that.callSite);
     }
