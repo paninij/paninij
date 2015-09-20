@@ -21,11 +21,13 @@ import org.paninij.soter.site.AnalysisSite;
 import com.ibm.wala.classLoader.NewSiteReference;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.callgraph.Context;
 import com.ibm.wala.ipa.callgraph.propagation.ArrayContentsKey;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceFieldKey;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
 import com.ibm.wala.ipa.callgraph.propagation.LocalPointerKey;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
+import com.ibm.wala.ipa.callgraph.propagation.ReceiverInstanceContext;
 import com.ibm.wala.ipa.callgraph.propagation.StaticFieldKey;
 import com.ibm.wala.util.collections.Pair;
 
@@ -136,26 +138,62 @@ public abstract class AnalysisJsonResultsCreator
 
     protected JsonObject toJson(InstanceKey inst)
     {
-        Iterator<Pair<CGNode, NewSiteReference>> iter = inst.getCreationSites(getCallGraph());
-
-        // Assume that the returned iterator has exactly one `next()`.
-        assert iter.hasNext() == true;
-        Pair<CGNode, NewSiteReference> creationSite = iter.next();
-        assert iter.hasNext() == false;
-
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("type", "InstanceKey");
         builder.add("concreteType", inst.getConcreteType().toString());
+        builder.add("creationSites", toJsonBuilder(inst.getCreationSites(this.getCallGraph())));
+        return builder.build();
+    }
+    
+    protected JsonArrayBuilder toJsonBuilder(Iterator<Pair<CGNode, NewSiteReference>> creationSites)
+    {
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        while (creationSites.hasNext()) {
+            builder.add(toJsonBuilder(creationSites.next()));
+        }
+        return builder;
+    }
+    
+    protected JsonObjectBuilder toJsonBuilder(Pair<CGNode, NewSiteReference> creationSite)
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("creationSiteMethod", creationSite.fst.getMethod().getSignature());
         builder.add("creationSiteProgramCounter", creationSite.snd.getProgramCounter());
         builder.add("context", creationSite.fst.getContext().toString());
-        return builder.build();
+        return builder;
+    }
+    
+    protected JsonObjectBuilder toJsonBuilder(CGNode node)
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("method", node.getMethod().getSignature());
+        builder.add("context", toJsonBuilder(node.getContext()));
+        return builder;
+    }
+    
+    protected JsonObjectBuilder toJsonBuilder(Context context)
+    {
+        if (context instanceof ReceiverInstanceContext) {
+            return toJson((ReceiverInstanceContext) context);
+        } else {
+            // TODO: Fix this ugliness!
+            return Json.createObjectBuilder().addNull(context.toString());
+        }
+    }
+    
+    protected JsonObjectBuilder toJson(ReceiverInstanceContext context)
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("receiverType", context.getReceiver().getConcreteType().getName().toString());
+        builder.add("receiverCreationSites", toJsonBuilder(context.getReceiver()
+                                                             .getCreationSites(getCallGraph())));
+        return builder;
     }
     
     protected <T extends AnalysisSite> JsonObjectBuilder toJsonBuilder(CGNode node, Set<T> sites)
     {
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add("node", node.toString());
+        builder.add("node", toJsonBuilder(node));
         
         JsonArrayBuilder sitesArrayBuilder = Json.createArrayBuilder();
         for (AnalysisSite site: sites) {
