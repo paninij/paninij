@@ -19,6 +19,7 @@ public abstract class Analysis
         performSubAnalyses();
         performAnalysis();
         hasBeenPerformed = true;
+        assert checkPostConditions();
     }
 
      /**
@@ -35,7 +36,20 @@ public abstract class Analysis
      */
     protected void performSubAnalyses()
     {
-        // By default, assume that there are no sub-analyses, and do nothing.
+        // By default, assume that there are no sub-analyses. Do nothing.
     }
 
+    /**
+     * If there are any conditions that should be checked after performing the analysis, they can be
+     * put in a method which overrides this one. This method is automatically called after
+     * performing an analysis when assertions are enabled. This is only meant to be used for
+     * debugging purposes.
+     * 
+     * @return `true` iff all post conditions are satisfied.
+     */
+    protected boolean checkPostConditions()
+    {
+        // By default, assume that there are no post-conditions. Do nothing.
+        return true;
+    }
 }
