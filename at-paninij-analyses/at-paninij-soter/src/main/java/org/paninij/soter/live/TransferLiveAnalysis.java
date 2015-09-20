@@ -11,6 +11,7 @@ import javax.json.JsonObjectBuilder;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
@@ -73,8 +74,19 @@ public class TransferLiveAnalysis extends LoggingAnalysis
     @Override
     public void performAnalysis()
     {
+        // For each relevant site within the fake root, mark its (target) receiver variable live.
+        CGNode fakeRootNode = cga.getCallGraph().getFakeRootNode();
+        for (AnalysisSite site: ta.getRelevantSites(fakeRootNode)) {
+            assert site instanceof AnalysisCallSite;
+            addLiveVariablesForRelevantRootSite((AnalysisCallSite) site);
+        }
+        
         for (CGNode node : ta.getReachingNodes())
         {
+            if (fakeRootNode.equals(node)) {
+                continue;  // Skip the fake root node, since it's already been handled.
+            }
+
             Set<AnalysisSite> relevantSites = ta.getRelevantSites(node);
             LocalLiveAnalysis localAnalysis = llaFactory.lookupOrMake(node);
             localAnalysis.perform();
@@ -83,8 +95,18 @@ public class TransferLiveAnalysis extends LoggingAnalysis
             }
         }
     }
+    
+    private void addLiveVariablesForRelevantRootSite(AnalysisCallSite site)
+    {
+        Set<PointerKey> liveVars = new HashSet<PointerKey>(1);
 
+        int receiver = site.getInvokeInstruction().getReceiver();
+        PointerKey receiverPtr = cga.getHeapModel().getPointerKeyForLocal(site.getNode(), receiver);
+        liveVars.add(receiverPtr);
 
+        liveVariables.put(site, liveVars);
+    }
+    
     protected void addLiveVariablesAfter(AnalysisSite site)
     {
         CGNode node = site.getNode();
