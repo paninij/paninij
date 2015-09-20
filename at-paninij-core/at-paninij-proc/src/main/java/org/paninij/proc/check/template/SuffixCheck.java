@@ -9,7 +9,6 @@ import org.paninij.proc.util.Source;
 
 public class SuffixCheck implements TemplateCheck
 {
-    public static Result.OK ok = new Result.OK();
     public static String errorSource = SuffixCheck.class.getName();
 
     @Override
@@ -30,6 +29,6 @@ public class SuffixCheck implements TemplateCheck
             err = Source.format(err, templateName);
         }
 
-        return (err == null) ? ok : new Result.Error(err, errorSource);
+        return (err == null) ? Result.ok : new Result.Error(err, errorSource);
     }
 }

@@ -19,6 +19,8 @@ public interface Result
         }
     }
     
+    public static Result ok = new OK();
+    
     public static class Error implements Result
     {
         private final String err;
