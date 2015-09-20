@@ -158,6 +158,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
 
         // Note that we are calling `getIn()` because `getOut()` does not work. (The transfer
         // function provider does not produce node transfer functions).
+        // TODO: Try to enable `getOut()` to work.
         IntSet solutionValues = dataFlowSolver.getIn(node).getValue();
         if (solutionValues != null)
         {
@@ -295,29 +296,53 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
 
             JsonObjectBuilder builder = Json.createObjectBuilder();
             builder.add("globalLatticeValues", toJsonBuilder(globalLatticeValues));
-            builder.add("liveVariables", liveVariablesToJson(liveVariables));
+            builder.add("liveVariables", liveVariablesJson());
+            builder.add("liveVariablesAfterReachingNodes", liveVariablesAfterReachingNodesJson());
             json = builder.build();
             return json;
         }
-
-        private JsonArrayBuilder liveVariablesToJson(Map<CGNode, Map<AnalysisSite, BitVector>> liveVariables)
+        
+        private JsonArrayBuilder liveVariablesAfterReachingNodesJson()
         {
             JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (Entry<CGNode, Map<AnalysisSite, BitVector>> entry : liveVariables.entrySet()) {
-                builder.add(liveVariablesEntryToJson(entry.getKey(), entry.getValue()));
+            for (CGNode node: ta.getReachingNodes()) {
+                builder.add(liveVariablesAfterNodeJson(node));
             }
             return builder;
         }
         
-        private JsonObjectBuilder liveVariablesEntryToJson(CGNode node, Map<AnalysisSite, BitVector> map)
+        private JsonObjectBuilder liveVariablesAfterNodeJson(CGNode node)
         {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("node", toJsonBuilder(node));
-            builder.add("analysisSites", liveVariablesSubMapToJson(map));
+            JsonObjectBuilder objBuilder = Json.createObjectBuilder();
+            objBuilder.add("node", toJsonBuilder(node));
+            
+            JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
+            for (PointerKey liveVar: getLiveVariablesAfter(node)) {
+                arrBuilder.add(toJson(liveVar));
+            }
+            objBuilder.add("liveVariables", arrBuilder);
+
+            return objBuilder;
+        }
+
+        private JsonArrayBuilder liveVariablesJson()
+        {
+            JsonArrayBuilder builder = Json.createArrayBuilder();
+            for (Entry<CGNode, Map<AnalysisSite, BitVector>> entry : liveVariables.entrySet()) {
+                builder.add(liveVariablesEntryJson(entry.getKey(), entry.getValue()));
+            }
             return builder;
         }
         
-        private JsonArrayBuilder liveVariablesSubMapToJson(Map<AnalysisSite, BitVector> map)
+        private JsonObjectBuilder liveVariablesEntryJson(CGNode node, Map<AnalysisSite, BitVector> map)
+        {
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("node", toJsonBuilder(node));
+            builder.add("analysisSites", liveVariablesSubMapJson(map));
+            return builder;
+        }
+        
+        private JsonArrayBuilder liveVariablesSubMapJson(Map<AnalysisSite, BitVector> map)
         {
             JsonArrayBuilder builder = Json.createArrayBuilder();
             for (Entry<AnalysisSite, BitVector> entry: map.entrySet())
