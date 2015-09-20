@@ -1,6 +1,7 @@
 package org.paninij.runtime.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -150,5 +151,15 @@ public class IdentitySet<T> implements Iterable<T>
     public boolean isEmpty()
     {
         return size == 0;
+    }
+    
+    public boolean containsAll(Collection<T> that)
+    {
+        for (T elem : that) {
+            if (contains(elem) == false) {
+                return false;
+            }
+        }
+        return true;
     }
 }

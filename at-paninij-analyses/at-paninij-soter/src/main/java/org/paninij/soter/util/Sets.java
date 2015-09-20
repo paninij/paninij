@@ -15,7 +15,7 @@ public class Sets
     {
          // Check that the domain `map` is equivalent to `domain`.
         Set<T> keySet = map.keySet();
-        if (keySet.equals(domain)) {
+        if (!domain.containsAll(keySet)) {
             return false;
         }
         
@@ -33,7 +33,7 @@ public class Sets
     {
          // Check that the domain `map` is equivalent to `domain`.
         Set<T> keySet = map.keySet();
-        if (keySet.equals(domain)) {
+        if (!keySet.containsAll(domain)) {
             return false;
         }
         
