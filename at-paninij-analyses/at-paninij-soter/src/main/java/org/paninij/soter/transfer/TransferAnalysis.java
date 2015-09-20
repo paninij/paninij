@@ -78,7 +78,7 @@ public class TransferAnalysis extends LoggingAnalysis
      * A map whose domain is the set of reaching nodes. It maps from a given node to the set of
      * all call site references which were found by the CGA to possibly target that node.
      */
-    protected final Map<CGNode, Set<AnalysisCallSite>> calledByMap;
+    protected final Map<CGNode, Set<AnalysisCallSite>> relevantCallersMap;
     
     
     protected final JsonResultsCreator jsonCreator;
@@ -94,7 +94,7 @@ public class TransferAnalysis extends LoggingAnalysis
         
         transferringSitesMap = new HashMap<CGNode, Set<TransferringSite>>();
         relevantSitesMap = new HashMap<CGNode, Set<AnalysisSite>>();
-        calledByMap = new HashMap<CGNode, Set<AnalysisCallSite>>();
+        relevantCallersMap = new HashMap<CGNode, Set<AnalysisCallSite>>();
         
         jsonCreator = new JsonResultsCreator();
     }
@@ -146,7 +146,7 @@ public class TransferAnalysis extends LoggingAnalysis
                 }
             }
 
-            calledByMap.put(callee, callers);
+            relevantCallersMap.put(callee, callers);
         }
     }
     
@@ -319,7 +319,7 @@ public class TransferAnalysis extends LoggingAnalysis
     {
         assert hasBeenPerformed;
         assert reachingNodes.contains(node);
-        Set<AnalysisCallSite> retVal = calledByMap.get(node);
+        Set<AnalysisCallSite> retVal = relevantCallersMap.get(node);
         return (retVal == null) ? new HashSet<AnalysisCallSite>() : retVal;
     }
     
@@ -379,7 +379,7 @@ public class TransferAnalysis extends LoggingAnalysis
             builder.add("transferringSites", toJsonBuilder(transferringSitesMap));
             builder.add("reachingNodes", toJsonBuilder(reachingNodes));
             builder.add("relevantSites", toJsonBuilder(relevantSitesMap));
-            builder.add("calledBy", toJsonBuilder(calledByMap));
+            builder.add("calledBy", toJsonBuilder(relevantCallersMap));
             
             json = builder.build();
             return json;
@@ -397,7 +397,7 @@ public class TransferAnalysis extends LoggingAnalysis
     public boolean checkPostConditions()
     {
         return Sets.isWellDefinedOverDomain(relevantSitesMap, reachingNodes)
-            && Sets.isWellDefinedOverDomain(calledByMap, reachingNodes);
+            && Sets.isWellDefinedOverDomain(relevantCallersMap, reachingNodes);
     }
 
 }
