@@ -112,7 +112,7 @@ public class CallGraphLiveAnalysis extends Analysis
         for (CGNode node : ta.getReachingNodes())
         {
             Map<AnalysisSite, BitVector> nodeLiveVariables = new HashMap<AnalysisSite, BitVector>();
-            for (AnalysisCallSite site : ta.getRelevantCallers(node))
+            for (AnalysisSite site : ta.getRelevantSites(node))
             {
                 BitVector siteLiveVariables = new BitVector();
 
