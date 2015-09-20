@@ -44,5 +44,19 @@ public class TransferringReturnSite extends TransferringSite
         String fmt = "TransferringReturnSite(node = {0}, returnInstr = {1}, transfers = {2})";
         return format(fmt, node, returnInstr, transfers);
     }
- 
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof TransferringCallSite == false) {
+            return false;
+        }
+
+        // Note that the class definition asserts that all fields are non-null by construction.
+        TransferringCallSite that = (TransferringCallSite) o;
+        return node.equals(that.node)
+            && instr.equals(that.instr)
+            && returnInstr.equals(that.invokeInstr)
+            && transfers.equals(that.transfers);
+    } 
 }

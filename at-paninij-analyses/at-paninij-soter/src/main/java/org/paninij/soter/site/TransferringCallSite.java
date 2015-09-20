@@ -70,4 +70,20 @@ public class TransferringCallSite extends TransferringSite implements CallSite
         String fmt = "TransferringCallSite(node = {0}, invokeInstr = {1}, callSite = {2}, transfers = {3})";
         return format(fmt, node, invokeInstr, callSite, transfers);
     }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof TransferringCallSite == false) {
+            return false;
+        }
+
+        // Note that the class definition asserts that all fields are non-null by construction.
+        TransferringCallSite that = (TransferringCallSite) o;
+        return node.equals(that.node)
+            && instr.equals(that.instr)
+            && invokeInstr.equals(that.invokeInstr)
+            && callSite.equals(that.callSite)
+            && transfers.equals(that.transfers);
+    }
 }

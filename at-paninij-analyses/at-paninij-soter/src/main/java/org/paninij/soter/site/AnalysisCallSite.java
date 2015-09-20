@@ -70,4 +70,19 @@ public class AnalysisCallSite extends AnalysisSite implements CallSite
         String fmt = "AnalysisCallSite(node = {0}, invokeInstr = {1}, callSite = {2})";
         return format(fmt, node, invokeInstr, callSite);
     }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof AnalysisCallSite == false) {
+            return false;
+        }
+
+        // Note that the class definition asserts that all fields are non-null by construction.
+        AnalysisCallSite that = (AnalysisCallSite) o;
+        return node.equals(that.node)
+            && instr.equals(that.instr)
+            && invokeInstr.equals(that.invokeInstr)
+            && callSite.equals(that.callSite);
+    }
 }
