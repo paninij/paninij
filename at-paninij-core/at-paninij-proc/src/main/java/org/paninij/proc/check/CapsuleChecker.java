@@ -23,7 +23,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.PaniniProcessor;
-import org.paninij.proc.check.capsules.SuffixCheck;
+import org.paninij.proc.check.template.SuffixCheck;
 
 
 public class CapsuleChecker

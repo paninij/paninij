@@ -1,4 +1,4 @@
-package org.paninij.proc.check.capsules;
+package org.paninij.proc.check.template;
 
 import javax.lang.model.element.TypeElement;
 
