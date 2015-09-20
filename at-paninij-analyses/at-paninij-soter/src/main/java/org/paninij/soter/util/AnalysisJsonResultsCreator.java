@@ -30,6 +30,7 @@ import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.callgraph.propagation.ReceiverInstanceContext;
 import com.ibm.wala.ipa.callgraph.propagation.StaticFieldKey;
 import com.ibm.wala.util.collections.Pair;
+import com.ibm.wala.util.intset.OrdinalSetMapping;
 
 
 /**
@@ -243,6 +244,18 @@ public abstract class AnalysisJsonResultsCreator
             sitesArrayBuilder.add(toJson(ptr));
         }
         builder.add("pointerKeys", sitesArrayBuilder);
+        return builder;
+    }
+    
+    protected JsonObjectBuilder toJsonBuilder(OrdinalSetMapping<PointerKey> mapping)
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        int maxIdx = mapping.getMaximumIndex();
+        for (int idx = 0; idx <= maxIdx; idx++) {
+            builder.add(Integer.toString(idx), toJson(mapping.getMappedObject(idx)));
+        }
+
         return builder;
     }
 }

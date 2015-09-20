@@ -4,16 +4,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.site.CallSite;
-import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.transfer.TransferAnalysis;
-import org.paninij.soter.util.Analysis;
+import org.paninij.soter.util.AnalysisJsonResultsCreator;
+import org.paninij.soter.util.LoggingAnalysis;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.dataflow.graph.AbstractMeetOperator;
@@ -26,6 +32,7 @@ import com.ibm.wala.dataflow.graph.ITransferFunctionProvider;
 import com.ibm.wala.fixpoint.BitVectorVariable;
 import com.ibm.wala.fixpoint.UnaryOperator;
 import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
@@ -43,7 +50,7 @@ import com.ibm.wala.util.intset.OrdinalSetMapping;
 /**
  * See Figure 9 of Negara 2011.
  */
-public class CallGraphLiveAnalysis extends Analysis
+public class CallGraphLiveAnalysis extends LoggingAnalysis
 {
     // Analysis dependencies.
     protected final CapsuleTemplate template;
@@ -52,11 +59,13 @@ public class CallGraphLiveAnalysis extends Analysis
     protected final TransferLiveAnalysis tla;
     protected final IClassHierarchy cha;
     
-    ITransferFunctionProvider<CGNode, BitVectorVariable> transferFunctionProvider;
-    Map<CGNode, Map<AnalysisSite, BitVector>> liveVariables;
-    OrdinalSetMapping<PointerKey> globalLatticeValues;
+    protected final OrdinalSetMapping<PointerKey> globalLatticeValues;
+    protected final Map<CGNode, Map<AnalysisSite, BitVector>> liveVariables;
+    protected final ITransferFunctionProvider<CGNode, BitVectorVariable> transferFunctionProvider;
     BitVectorFramework<CGNode, PointerKey> dataFlowFramework;
     BitVectorSolver<CGNode> dataFlowSolver;
+
+    protected final JsonResultsCreator jsonCreator;
 
 
     public CallGraphLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
@@ -69,11 +78,11 @@ public class CallGraphLiveAnalysis extends Analysis
         this.tla = tla;
         this.cha = cha;
         
-        transferFunctionProvider = new TransferFunctionProvider();
-        liveVariables = new HashMap<CGNode, Map<AnalysisSite, BitVector>>();
         globalLatticeValues = MutableMapping.make();
+        liveVariables = new HashMap<CGNode, Map<AnalysisSite, BitVector>>();
+        transferFunctionProvider = new TransferFunctionProvider();
         
-        hasBeenPerformed = false;
+        jsonCreator = new JsonResultsCreator();
     }
 
     @Override
@@ -252,4 +261,79 @@ public class CallGraphLiveAnalysis extends Analysis
             throw new UnsupportedOperationException(msg);
         }
     }
+
+    @Override
+    public JsonObject getJsonResults()
+    {
+        assert hasBeenPerformed;
+        return jsonCreator.toJson();
+    }
+
+    @Override
+    public String getJsonResultsString()
+    {
+        assert hasBeenPerformed;
+        return jsonCreator.toJsonString();
+    }
+
+    @Override
+    protected String getJsonResultsLogFileName()
+    {
+        return template.getQualifiedName().replace('/', '.') + ".json";
+    }
+    
+    private class JsonResultsCreator extends AnalysisJsonResultsCreator
+    {
+        @Override
+        public JsonObject toJson()
+        {
+            assert hasBeenPerformed;
+
+            if (json != null) {
+                return json;
+            }
+
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("globalLatticeValues", toJsonBuilder(globalLatticeValues));
+            builder.add("liveVariables", liveVariablesToJson(liveVariables));
+            json = builder.build();
+            return json;
+        }
+
+        private JsonArrayBuilder liveVariablesToJson(Map<CGNode, Map<AnalysisSite, BitVector>> liveVariables)
+        {
+            JsonArrayBuilder builder = Json.createArrayBuilder();
+            for (Entry<CGNode, Map<AnalysisSite, BitVector>> entry : liveVariables.entrySet()) {
+                builder.add(liveVariablesEntryToJson(entry.getKey(), entry.getValue()));
+            }
+            return builder;
+        }
+        
+        private JsonObjectBuilder liveVariablesEntryToJson(CGNode node, Map<AnalysisSite, BitVector> map)
+        {
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("node", toJsonBuilder(node));
+            builder.add("analysisSites", liveVariablesSubMapToJson(map));
+            return builder;
+        }
+        
+        private JsonArrayBuilder liveVariablesSubMapToJson(Map<AnalysisSite, BitVector> map)
+        {
+            JsonArrayBuilder builder = Json.createArrayBuilder();
+            for (Entry<AnalysisSite, BitVector> entry: map.entrySet())
+            {
+                builder.add(Json.createObjectBuilder()
+                                .add("site", entry.getKey().toJson())
+                                .add("bitVector", entry.getValue().toString()));
+            }
+            return builder;
+        }
+        
+        @Override
+        public CallGraph getCallGraph()
+        {
+            return cga.getCallGraph();
+        }
+    }
+    
 }

@@ -76,7 +76,7 @@ public class CapsuleTemplate
     }
 
     /**
-     * @param qualifiedName A fully-qualified capsule name of the form "org.paninij.examples.pi.Pi".
+     * @param qualifiedName A fully-qualified capsule name of the form "org/paninij/examples/pi/Pi".
      */
     public String getQualifiedName()
     {
