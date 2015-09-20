@@ -2,7 +2,6 @@ package org.paninij.soter.live;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -11,17 +10,16 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.site.CallSite;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
 
-import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.dataflow.graph.AbstractMeetOperator;
 import com.ibm.wala.dataflow.graph.BitVectorFramework;
 import com.ibm.wala.dataflow.graph.BitVectorIdentity;
@@ -35,9 +33,6 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
-import com.ibm.wala.ssa.IR;
-import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
-import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.NullProgressMonitor;
 import com.ibm.wala.util.intset.BitVector;
@@ -125,20 +120,20 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
             {
                 BitVector siteLiveVariables = new BitVector();
 
-                // Always make the reciever object (i.e. `this`) be live:
+                // If a site is non-static, then make its `this` variable be live.
                 if (! node.getMethod().isStatic())
                 {
                     PointerKey receiver = cga.getHeapModel().getPointerKeyForLocal(node, 1);
                     int key = globalLatticeValues.add(receiver);
                     siteLiveVariables.set(key);
                 }
-
+                
                 for (PointerKey livePointerKey : tla.getLiveVariablesAfter(site)) 
                 {
                     int key = globalLatticeValues.add(livePointerKey);
                     siteLiveVariables.set(key);
                 }
-                
+
                 nodeLiveVariables.put(site, siteLiveVariables);
             }
             
@@ -198,56 +193,18 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
             
             Map<AnalysisSite, BitVector> srcNodeLiveVariables = liveVariables.get(src);
             
+            // Make an operator which unions with any argument the union of all live variables of
+            // those call sites which call `dest` from `src`.
             BitVector union = new BitVector();
-            for (CallSite callSite : getCallSitesBetween(src, dest))
+            for (CallSite site : ta.getRelevantCallers(dest))
             {
-                BitVector transferSiteBitVector = srcNodeLiveVariables.get(callSite);
-                assert transferSiteBitVector != null;
-                union.or(transferSiteBitVector);
-            }
-            return new BitVectorUnionVector(union);
-        }
-        
-        private Set<CallSite> getCallSitesBetween(CGNode src, CGNode dest)
-        {
-            // TODO: Simplify this by using `CallSiteReference`s instead of SSA instructions?
-            Set<CallSite> callSitesBetween = new HashSet<CallSite>();
-            Set<SSAInstruction> instructionsBetween = getInstructionsBetween(src, dest);
-
-            // Find that subset of this node's relevant transfer sites which are invocations from
-            // the `src` node to the `dest` node.
-            for (AnalysisSite analysisSite : ta.getRelevantSites(src))
-            {
-                // No `RETURN` kind transfer site will be an invocation from `src` to `dest`.
-                if (analysisSite instanceof CallSite) {
-                    for (SSAInstruction instr : instructionsBetween)
-                    {
-                        if (analysisSite.getInstruction().equals(instr)) {
-                            callSitesBetween.add((CallSite) analysisSite);
-                            break;
-                        }
-                    }
+                if (src.equals(site.getNode())) {
+                    BitVector transferSiteBitVector = srcNodeLiveVariables.get(site);
+                    assert transferSiteBitVector != null;
+                    union.or(transferSiteBitVector);
                 }
             }
-
-            return callSitesBetween;
-        }
-        
-        private Set<SSAInstruction> getInstructionsBetween(CGNode src, CGNode dest)
-        {
-            Set<SSAInstruction> between = new HashSet<SSAInstruction>();
-
-            Iterator<CallSiteReference> callSiteIter = cga.getCallGraph().getPossibleSites(src, dest);
-            IR nodeIR = src.getIR();
-            while (callSiteIter.hasNext())
-            {
-                CallSiteReference callSite = callSiteIter.next();
-                SSAAbstractInvokeInstruction[] callSiteInstructions = nodeIR.getCalls(callSite);
-                assert callSiteInstructions.length == 1;
-                between.add(callSiteInstructions[0]);
-            } 
-            
-            return between;
+            return new BitVectorUnionVector(union);
         }
 
         @Override
@@ -259,7 +216,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
         @Override
         public UnaryOperator<BitVectorVariable> getNodeTransferFunction(CGNode node)
         {
-            String msg = "This provider does not provide any edge transfer functions.";
+            String msg = "This provider does not provide any node transfer functions.";
             throw new UnsupportedOperationException(msg);
         }
     }
