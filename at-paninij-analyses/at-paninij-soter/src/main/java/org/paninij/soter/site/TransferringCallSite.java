@@ -49,6 +49,7 @@ public class TransferringCallSite extends TransferringSite implements CallSite
                    .add("iindex", invokeInstr.iindex)
                    .add("method", node.getMethod().getSignature())
                    .add("context", node.getContext().toString())
+                   .add("hashCode", hashCode())
                    .build();
     }
 

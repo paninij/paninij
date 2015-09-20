@@ -34,6 +34,7 @@ public class TransferringReturnSite extends TransferringSite
                    .add("iindex", returnInstr.iindex)
                    .add("method", node.getMethod().getSignature())
                    .add("context", node.getContext().toString())
+                   .add("hashCode", hashCode())
                    .build();
     }
     
