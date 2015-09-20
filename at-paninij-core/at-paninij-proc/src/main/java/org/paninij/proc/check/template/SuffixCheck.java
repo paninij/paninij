@@ -10,7 +10,7 @@ import org.paninij.proc.util.Source;
 public class SuffixCheck implements TemplateCheck
 {
     public static Result.OK ok = new Result.OK();
-    public static String errorSource = "org.paninij.proc.check.capsules.SuffixCheck";
+    public static String errorSource = SuffixCheck.class.getName();
 
     @Override
     public Result check(TypeElement template)
