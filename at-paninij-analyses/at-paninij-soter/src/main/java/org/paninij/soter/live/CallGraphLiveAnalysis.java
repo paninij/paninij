@@ -150,6 +150,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
      * @return The set of pointer keys representing the variables which the analysis found to be
      *         live after the given call graph node.
      */
+    // TODO: Move this process into `performAnalysis()`, rather than on-demand by clients.
     public Set<PointerKey> getLiveVariablesAfter(CGNode node)
     {
         assert hasBeenPerformed;
@@ -297,9 +298,28 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
             JsonObjectBuilder builder = Json.createObjectBuilder();
             builder.add("globalLatticeValues", toJsonBuilder(globalLatticeValues));
             builder.add("liveVariables", liveVariablesJson());
+            builder.add("dataFlowSolver", dataFlowSolverJson());
             builder.add("liveVariablesAfterReachingNodes", liveVariablesAfterReachingNodesJson());
             json = builder.build();
             return json;
+        }
+        
+        private JsonArrayBuilder dataFlowSolverJson()
+        {
+            JsonArrayBuilder builder = Json.createArrayBuilder();
+            for (CGNode node: ta.getReachingNodes()) {
+                builder.add(dataFlowSolverNodeJson(node));
+            }
+            return builder;
+        }
+        
+        private JsonObjectBuilder dataFlowSolverNodeJson(CGNode node)
+        {
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("node", toJsonBuilder(node));
+            builder.add("in", dataFlowSolver.getIn(node).toString());
+            //builder.add("out", dataFlowSolver.getOut(node).toString());
+            return builder;
         }
         
         private JsonArrayBuilder liveVariablesAfterReachingNodesJson()
