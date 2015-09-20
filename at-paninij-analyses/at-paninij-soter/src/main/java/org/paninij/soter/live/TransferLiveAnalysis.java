@@ -1,6 +1,7 @@
 package org.paninij.soter.live;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,12 +11,11 @@ import javax.json.JsonObjectBuilder;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.transfer.TransferAnalysis;
-import org.paninij.soter.util.Analysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
+import org.paninij.soter.util.Sets;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
@@ -156,5 +156,21 @@ public class TransferLiveAnalysis extends LoggingAnalysis
         {
             return cga.getCallGraph();
         }
+    }
+    
+    
+    @Override
+    public boolean checkPostConditions()
+    {
+        // Check that the domain of `liveVariables` is equivalent to the union of all analysis sites
+        // defined within the set of all reaching nodes.
+        Set<AnalysisSite> domain = new HashSet<AnalysisSite>();
+        for (CGNode node: ta.getReachingNodes()) {
+            domain.addAll(ta.getRelevantSites(node));
+        }
+        if (!Sets.isWellDefinedOverDomain(liveVariables, domain)) {
+            return false;
+        }
+        return true;
     }
 }
