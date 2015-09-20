@@ -7,10 +7,14 @@ public abstract class LoggingAnalysis extends Analysis
     @Override
     public void perform()
     {
-        if (hasBeenPerformed == false) {
-            super.perform();
-            logJsonResults();
+        if (hasBeenPerformed) {
+            return;
         }
+        performSubAnalyses();
+        performAnalysis();
+        hasBeenPerformed = true;
+        logJsonResults();
+        assert checkPostConditions();
     }
    
     public abstract JsonObject getJsonResults();
