@@ -10,11 +10,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
@@ -26,9 +24,9 @@ import org.paninij.soter.site.TransferringCallSite;
 import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.site.TransferringReturnSite;
-import org.paninij.soter.util.Analysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
+import org.paninij.soter.util.Sets;
 import org.paninij.soter.util.SoterUtil;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -74,7 +72,7 @@ public class TransferAnalysis extends LoggingAnalysis
      *  3. a call site defined within the node which was found by the CGA to possibly target a
      *     reaching node.
      */
-    protected final Map<CGNode, Set<AnalysisSite>> analysisSitesMap;
+    protected final Map<CGNode, Set<AnalysisSite>> relevantSitesMap;
     
     /**
      * A map whose domain is the set of reaching nodes. It maps from a given node to the set of
@@ -95,7 +93,7 @@ public class TransferAnalysis extends LoggingAnalysis
         this.cha = cha;
         
         transferringSitesMap = new HashMap<CGNode, Set<TransferringSite>>();
-        analysisSitesMap = new HashMap<CGNode, Set<AnalysisSite>>();
+        relevantSitesMap = new HashMap<CGNode, Set<AnalysisSite>>();
         calledByMap = new HashMap<CGNode, Set<AnalysisCallSite>>();
         
         jsonCreator = new JsonResultsCreator();
@@ -286,7 +284,7 @@ public class TransferAnalysis extends LoggingAnalysis
                 }
             }
         
-            analysisSitesMap.put(node, relevantSites);
+            relevantSitesMap.put(node, relevantSites);
         }
     }
     
@@ -331,7 +329,7 @@ public class TransferAnalysis extends LoggingAnalysis
     public Set<AnalysisSite> getRelevantSites(CGNode node)
     {
         assert hasBeenPerformed;
-        return analysisSitesMap.get(node);
+        return relevantSitesMap.get(node);
     }
     
     /**
@@ -380,6 +378,7 @@ public class TransferAnalysis extends LoggingAnalysis
             builder.add("capsuleTemplate", template.getQualifiedName());
             builder.add("transferringSites", toJsonBuilder(transferringSitesMap));
             builder.add("reachingNodes", toJsonBuilder(reachingNodes));
+            builder.add("relevantSites", toJsonBuilder(relevantSitesMap));
             builder.add("calledBy", toJsonBuilder(calledByMap));
             
             json = builder.build();
@@ -392,4 +391,13 @@ public class TransferAnalysis extends LoggingAnalysis
             return cga.getCallGraph();
         }
     }
+    
+    
+    @Override
+    public boolean checkPostConditions()
+    {
+        return Sets.isWellDefinedOverDomain(relevantSitesMap, reachingNodes)
+            && Sets.isWellDefinedOverDomain(calledByMap, reachingNodes);
+    }
+
 }
