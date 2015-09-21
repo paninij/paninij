@@ -40,9 +40,9 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-import org.paninij.proc.check.CapsuleChecker;
 import org.paninij.proc.check.CapsuleTestChecker;
 import org.paninij.proc.check.SignatureChecker;
+import org.paninij.proc.check.template.TemplateChecker;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
 import org.paninij.proc.model.Procedure;
@@ -69,12 +69,12 @@ public class PaniniProcessor extends AbstractProcessor
     protected String capsuleListFile;
     
     @Override
-    public void init(ProcessingEnvironment procEnv)
+    public void init(ProcessingEnvironment processingEnv)
     {
-        super.init(procEnv);
+        super.init(processingEnv);
 
-        capsuleListFile = procEnv.getOptions().get("panini.capsuleListFile");
-        artifactMaker = new ArtifactFiler(procEnv.getFiler()) ;
+        capsuleListFile = processingEnv.getOptions().get("panini.capsuleListFile");
+        artifactMaker = new ArtifactFiler(processingEnv.getFiler()) ;
     }
 
     @Override
@@ -101,9 +101,10 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         // Collect all Capsule models
+        TemplateChecker templateChecker = new TemplateChecker(processingEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
-            if (CapsuleChecker.check(this, elem)) {
+            if (templateChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
                 artifactMaker.add(new UserArtifact(template.getQualifiedName().toString()));

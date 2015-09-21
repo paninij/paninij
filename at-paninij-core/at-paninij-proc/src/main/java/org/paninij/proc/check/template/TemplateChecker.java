@@ -16,31 +16,45 @@
  *
  * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
  */
-package org.paninij.proc.check;
+package org.paninij.proc.check.template;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.PaniniProcessor;
-import org.paninij.proc.check.template.SuffixCheck;
+import org.paninij.proc.check.Result;
 
 
-public class CapsuleChecker
+public class TemplateChecker
 {
-    protected static TemplateCheck templateChecks[] = {
-        new SuffixCheck()
-    };
+    protected final TemplateCheck templateChecks[];
+    protected final TemplateCheckEnvironment env;
+    
+    public TemplateChecker(ProcessingEnvironment procEnv)
+    {
+        env = new TemplateCheckEnvironment(procEnv);
+        
+        TemplateCheck checks[] = {
+            new SuffixCheck(),
+            new NotSubclassCheck(env)
+        };
+        
+        templateChecks = checks;
+    }
+    
 
     /**
      * @param template
      * @return `true` if and only if `template` is can be processed as a valid capsule template.
      */
-    public static boolean check(PaniniProcessor context, Element template)
+    public boolean check(PaniniProcessor context, Element template)
     {
         if (template.getKind() != ElementKind.CLASS)
         {
-            context.error("Capsule template must be either a class.");
+            // TODO: Make this error message a bit clearer.
+            context.error("A capsule template must be a class, but an element annotated with `@Capsule` is of kind " + template.getKind());
             return false;
         }
 

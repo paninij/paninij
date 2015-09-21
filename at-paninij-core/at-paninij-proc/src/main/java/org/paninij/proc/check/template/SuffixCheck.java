@@ -3,10 +3,13 @@ package org.paninij.proc.check.template;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.check.Result;
-import org.paninij.proc.check.TemplateCheck;
 import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.Source;
 
+
+/**
+ * Checks that a capsule template is named with the appropriate suffix.
+ */
 public class SuffixCheck implements TemplateCheck
 {
     public static String errorSource = SuffixCheck.class.getName();
