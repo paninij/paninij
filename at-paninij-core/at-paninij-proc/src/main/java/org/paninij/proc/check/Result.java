@@ -6,7 +6,7 @@ public interface Result
     String err();
     String source();
     
-    public static class OK implements Result
+    public static class Ok implements Result
     {
         public boolean ok() {
             return true;
@@ -19,7 +19,7 @@ public interface Result
         }
     }
     
-    public static Result ok = new OK();
+    public static Result ok = new Ok();
     
     public static class Error implements Result
     {

@@ -38,7 +38,8 @@ public class TemplateChecker
         
         TemplateCheck checks[] = {
             new SuffixCheck(),
-            new NotSubclassCheck(env)
+            new NotSubclassCheck(env),
+            new NoVariadicMethodsCheck()
         };
         
         templateChecks = checks;
