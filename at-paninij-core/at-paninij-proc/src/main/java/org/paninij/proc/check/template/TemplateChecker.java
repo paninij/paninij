@@ -39,7 +39,8 @@ public class TemplateChecker
         TemplateCheck checks[] = {
             new SuffixCheck(),
             new NotSubclassCheck(env),
-            new NoVariadicMethodsCheck()
+            new NoVariadicMethodsCheck(),
+            new OnlyZeroArgConstructorsCheck()
         };
         
         templateChecks = checks;
@@ -65,7 +66,7 @@ public class TemplateChecker
             if (!result.ok())
             {
                 context.error(result.err());
-                context.error("For more info see: `" + result.source() + "`.");
+                context.error("Error Source: " + result.source());
                 return false;
             }
         }
