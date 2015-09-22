@@ -11,6 +11,7 @@ public class TestDriver
                      "-classOutput", "target/classes",
                      "-analysisReports", "logs/analysis_reports",
                      "-originalBytecode", "logs/original_bytecode",
+                     /* "-instrumentedBytecode", "logs/instrumented_bytecode", */
                      "-noInstrument",
                      "@target/capsule_list.txt"
     };

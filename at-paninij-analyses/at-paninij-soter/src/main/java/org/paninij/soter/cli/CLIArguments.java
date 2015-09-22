@@ -38,7 +38,8 @@ public class CLIArguments
     private static final String INSTRUMENTED_BYTECODE_DESCRIPTION =
             "The path to the directory in which *instrumented* bytecode should be logged. "
             + "A disassembly code file (generated from `javap -c`) is created for each capsule "
-            + "template. If this option is not set, then no such files are created.";
+            + "template. If this option is not set, then no such files are created. Note also that "
+            + "when `-noInstrument` is set this option is ignored and a warning is emitted.";
 
     private static final String NO_INSTRUMENT_DESCRIPTION =
             "Set this flag to disable class file instrumentation.";

@@ -4,6 +4,7 @@ import static java.io.File.separator;
 
 import static org.paninij.soter.util.Log.error;
 import static org.paninij.soter.util.Log.note;
+import static org.paninij.soter.util.Log.warning;
 
 import java.nio.file.Paths;
 
@@ -50,34 +51,51 @@ public class SoterCommand extends Command
         {
             // TODO: Check that `qualifiedCapsuleName` is valid.
             // TODO: Change `qualifiedCapsuleName` so that it is encapsulated by a type.
-            logOrigBytecode(qualifiedCapsuleName);
+            logOriginalBytecode(qualifiedCapsuleName);
             SoterAnalysis soterAnalysis = analyzeCapsule(qualifiedCapsuleName);
             instrumentCapsule(qualifiedCapsuleName, soterAnalysis);
             logGraphPDFs(qualifiedCapsuleName, soterAnalysis);
+            logInstrumentedBytecode(qualifiedCapsuleName);
         }
     }
-    
-    
-    protected void logOrigBytecode(String qualifiedCapsuleName) throws Exception
+
+
+    protected void logOriginalBytecode(String qualifiedCapsuleName) throws Exception
     {
-        try
+        logBytecode(qualifiedCapsuleName, false);
+    }
+
+
+    protected void logInstrumentedBytecode(String qualifiedCapsuleName) throws Exception
+    {
+        if (cliArgs.noInstrument) {
+            warning("Tried to log instrumented bytecode, but `-noInstrument` is set.");
+        } else {
+            logBytecode(qualifiedCapsuleName, true);
+        }
+    }
+
+
+    protected void logBytecode(String qualifiedCapsuleName, boolean isInstrumented) throws Exception
+    {
+        String outDir = isInstrumented ? cliArgs.instrumentedBytecode : cliArgs.originalBytecode;
+        if (outDir != null)
         {
-            if (cliArgs.originalBytecode != null)
+            try
             {
                 String templateName = qualifiedCapsuleName + "Template";
-                note("Logging Template's Original Bytecode: " + templateName);
-                Util.logDisassembledBytecode(templateName, cliArgs.classPath, cliArgs.originalBytecode);
+                note("Logging Template's Bytecode: " + templateName);
+                Util.logDisassembledBytecode(templateName, cliArgs.classPath, outDir);
             }
-        }
-        catch (Exception ex)
-        {
-            String msg = "Re-throwing an exception caught while analyzing a capsule: "
-                       + qualifiedCapsuleName;
-            error(msg);
-            throw ex;
+            catch (Exception ex)
+            {
+                String msg = "Re-throwing an exception caught while logging a template's bytecode: "
+                           + qualifiedCapsuleName;
+                error(msg);
+                throw ex;
+            } 
         }
     }
-    
     
     protected SoterAnalysis analyzeCapsule(String qualifiedCapsuleName)
     {
