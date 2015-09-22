@@ -49,28 +49,17 @@ class Util
         return classPath;
     }
 
-    // TODO: Move this helper method to somewhere else.
-    static void logAllTemplatesDisassembledBytecode(List<String> capsules, String classpath,
-                                                    String origBytecodeDir)
-                                                    throws IOException, InterruptedException
-    {
-        for (String capsuleTemplate: capsules) {
-            logDisassembledBytecode(capsuleTemplate + "Template", classpath, origBytecodeDir);
-        } 
-    }
 
     // TODO: Move this helper method to somewhere else.
-    static void logDisassembledBytecode(String qualifiedClassName, String classpath,
-                                                  String directory)
-                                                  throws IOException, InterruptedException
+    static void logDisassembledBytecode(String qualifiedClassName, String classpath, String logDir)
+                                                           throws IOException, InterruptedException
     {
         // TODO: BUG: Handle the case that `classpath` contains spaces!
-        note("Logging Original Bytecode: " + qualifiedClassName);
         String cmd = "javap -c -classpath " + classpath + " " + qualifiedClassName;
 
         Runtime runtime = Runtime.getRuntime();
         Process proc = runtime.exec(cmd);
-        Path path = Paths.get(directory, qualifiedClassName);
+        Path path = Paths.get(logDir, qualifiedClassName);
 
         proc.waitFor();
         if (proc.exitValue() > 0)

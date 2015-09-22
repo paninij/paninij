@@ -24,42 +24,61 @@ import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
  */
 public class SoterCommand extends Command
 {
-    protected final CLIArguments cliArguments;
+    protected final CLIArguments cliArgs;
     protected final String classpath;
     protected final SoterAnalysisFactory soterAnalysisFactory;
     protected final TemplateInstrumenterFactory templateInstrumenterFactory;
     
-    public SoterCommand(CLIArguments cliArguments)
+    public SoterCommand(CLIArguments cliArgs)
     {
         // Note that instantiation of the analysis factory needs to happen after the artifacts have
         // been compiled so that the bytecode for those artifacts will be found by the CHA.
-        this.cliArguments = cliArguments;
-        if (cliArguments.analysisReports != null) {
-            Log.analysisLogDirectory = Paths.get(cliArguments.analysisReports);
+        this.cliArgs = cliArgs;
+        if (cliArgs.analysisReports != null) {
+            Log.analysisLogDirectory = Paths.get(cliArgs.analysisReports);
         }
 
-        classpath = Util.makeEffectiveClassPath(cliArguments.classPath, cliArguments.classPathFile);
+        classpath = Util.makeEffectiveClassPath(cliArgs.classPath, cliArgs.classPathFile);
         note("Effective class path: " + classpath);
         soterAnalysisFactory = new SoterAnalysisFactory(classpath);
-        templateInstrumenterFactory = new TemplateInstrumenterFactory(cliArguments.classOutput);
+        templateInstrumenterFactory = new TemplateInstrumenterFactory(cliArgs.classOutput);
     }
 
     @Override
     protected void performCommand() throws Exception
     {
-        if (cliArguments.origBytecode != null) {
-            Util.logAllTemplatesDisassembledBytecode(cliArguments.capsules, cliArguments.classPath,
-                                                     cliArguments.origBytecode);
-        }
-        
-        for (String capsule : cliArguments.capsules) {
-            analyzeAndInstrument(capsule);
+        for (String qualifiedCapsuleName : cliArgs.capsules)
+        {
+            // TODO: Check that `qualifiedCapsuleName` is valid.
+            // TODO: Change `qualifiedCapsuleName` so that it is encapsulated by a type.
+            logOrigBytecode(qualifiedCapsuleName);
+            SoterAnalysis soterAnalysis = analyzeCapsule(qualifiedCapsuleName);
+            instrumentCapsule(qualifiedCapsuleName, soterAnalysis);
+            logGraphPDFs(qualifiedCapsuleName, soterAnalysis);
         }
     }
     
-
-    // TODO: Split up this method. It's too long and does too much.
-    protected void analyzeAndInstrument(String qualifiedCapsuleName) throws Exception
+    
+    protected void logOrigBytecode(String qualifiedCapsuleName) throws Exception
+    {
+        try
+        {
+            if (cliArgs.origBytecode != null)
+            {
+                String templateName = qualifiedCapsuleName + "Template";
+                note("Logging Template's Original Bytecode: " + templateName);
+                Util.logDisassembledBytecode(templateName, cliArgs.classPath, cliArgs.origBytecode);
+            }
+        }
+        catch (Exception ex)
+        {
+            error("Caught an exception while analyzing a capsule: " + qualifiedCapsuleName);
+            throw ex;
+        }
+    }
+    
+    
+    protected SoterAnalysis analyzeCapsule(String qualifiedCapsuleName)
     {
         note("Analyzing Capsule: " + qualifiedCapsuleName);
         
@@ -73,15 +92,36 @@ public class SoterCommand extends Command
             error("Caught an exception while analyzing a capsule: " + qualifiedCapsuleName);
             throw ex;
         }
+        return soterAnalysis;
+    }
+    
 
-        if (cliArguments.noInstrument == false)
+    // TODO: Split up this method. It's too long and does too much.
+    protected void instrumentCapsule(String qualifiedCapsuleName, SoterAnalysis soterAnalysis)
+                                                                              throws Exception
+    {
+        if (cliArgs.noInstrument && cliArgs.instrumentAll) {
+            String msg = "Cannot set both `-noInstrument` and `-instrumentAll`";
+            throw new IllegalArgumentException(msg);
+        }
+
+        if (cliArgs.noInstrument) {
+            return;  /* Nothing to do. */
+        }
+
+        if (cliArgs.instrumentAll)
         {
-            note("Instrumenting Capsule: " + qualifiedCapsuleName);
+            note("Instrumenting Capsule At All Transferring Sites: " + qualifiedCapsuleName);
+            throw new UnsupportedOperationException("TODO");
+        }
+        else
+        {
+            note("Instrumenting Capsule Using the SOTER Analysis: " + qualifiedCapsuleName);
             try {
                 ClassInstrumenter templateInstrumenter = templateInstrumenterFactory.make(soterAnalysis.getCapsuleTemplate());
                 SoterInstrumenter soterInstrumenter = new SoterInstrumenter(templateInstrumenter,
                                                                             soterAnalysis,
-                                                                            cliArguments.classOutput);
+                                                                            cliArgs.classOutput);
                 soterInstrumenter.perform();
             }
             catch (Exception ex)
@@ -91,18 +131,22 @@ public class SoterCommand extends Command
                 throw new RuntimeException (msg, ex);
             }
         }
-
-        if (cliArguments.callGraphPDFs != null)
-        {
-            String callGraphPDF = cliArguments.callGraphPDFs + separator + qualifiedCapsuleName + ".pdf";
-            WalaUtil.makeGraphFile(soterAnalysis.getCallGraph(), callGraphPDF);
-        }
-
-        if (cliArguments.heapGraphPDFs != null)
-        {
-            String heapGraphPDF = cliArguments.heapGraphPDFs + separator + qualifiedCapsuleName + ".pdf";
-            WalaUtil.makeGraphFile(soterAnalysis.getHeapGraph(), heapGraphPDF);
-        }
     }
 
+    protected void logGraphPDFs(String qualifiedCapsuleName, SoterAnalysis sa)
+    {
+        if (cliArgs.callGraphPDFs != null)
+        {
+            note("Logging Call Graph: " + qualifiedCapsuleName);
+            String callGraphPDF = cliArgs.callGraphPDFs + separator + qualifiedCapsuleName + ".pdf";
+            WalaUtil.makeGraphFile(sa.getCallGraph(), callGraphPDF);
+        }
+
+        if (cliArgs.heapGraphPDFs != null)
+        {
+            note("Logging Heap Graph: " + qualifiedCapsuleName);
+            String heapGraphPDF = cliArgs.heapGraphPDFs + separator + qualifiedCapsuleName + ".pdf";
+            WalaUtil.makeGraphFile(sa.getHeapGraph(), heapGraphPDF);
+        }       
+    }
 }

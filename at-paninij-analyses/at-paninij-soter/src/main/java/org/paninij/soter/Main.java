@@ -10,9 +10,9 @@ public class Main
 {
     public static void main(String[] args) throws Exception
     {
-        CLIArguments cliArguments = new CLIArguments();
-        new JCommander(cliArguments, args);
-        SoterCommand cmd = new SoterCommand(cliArguments);
+        CLIArguments cliArgs = new CLIArguments();
+        new JCommander(cliArgs, args);
+        SoterCommand cmd = new SoterCommand(cliArgs);
         cmd.perform();
     }
 }

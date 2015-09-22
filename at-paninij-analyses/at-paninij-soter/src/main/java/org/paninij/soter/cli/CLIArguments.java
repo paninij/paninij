@@ -36,8 +36,11 @@ public class CLIArguments
             + "templates. If this option is not set, then no such files are created.";
     
     private static final String NO_INSTRUMENT_DESCRIPTION =
-            "Set this flag to disable class file instrumentation (which is enabled by default).";
+            "Set this flag to disable class file instrumentation.";
 
+    private static final String INSTRUMENT_ALL_DESCRIPTION =
+            "Set this flag to instrument all transfer sites, ignoring the SOTER analysis.";
+    
     private static final String CAPSULE_TEMPLATES_DESCRIPTION =
             "A sequence of fully qualified capsule templates (e.g. `com.example.foo.FooTemplate`) "
             + "to be analyzed and instrumented.";
@@ -65,6 +68,9 @@ public class CLIArguments
 
     @Parameter(names = "-noInstrument", description = NO_INSTRUMENT_DESCRIPTION)
     public Boolean noInstrument = false;
+    
+    @Parameter(names = "-instrumentAll", description = INSTRUMENT_ALL_DESCRIPTION)
+    public Boolean instrumentAll = false;
     
     @Parameter(description = CAPSULE_TEMPLATES_DESCRIPTION)
     public List<String> capsules = new ArrayList<>();
