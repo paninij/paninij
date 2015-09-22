@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.SoterAnalysisFactory;
+import org.paninij.soter.instrument.AllTransferringSitesInstrumenter;
 import org.paninij.soter.instrument.SoterInstrumenter;
 import org.paninij.soter.instrument.TemplateInstrumenterFactory;
 import org.paninij.soter.util.Command;
@@ -38,13 +39,13 @@ public class SoterCommand extends Command
         }
 
         classpath = Util.makeEffectiveClassPath(cliArgs.classPath, cliArgs.classPathFile);
-        note("Effective class path: " + classpath);
         soterAnalysisFactory = new SoterAnalysisFactory(classpath);
     }
 
     @Override
     protected void performCommand() throws Exception
     {
+        note("Performing SOTER command w.r.t. effective class path: " + classpath);
         for (String qualifiedCapsuleName : cliArgs.capsules)
         {
             // TODO: Check that `qualifiedCapsuleName` is valid.
@@ -70,7 +71,9 @@ public class SoterCommand extends Command
         }
         catch (Exception ex)
         {
-            error("Caught an exception while analyzing a capsule: " + qualifiedCapsuleName);
+            String msg = "Re-throwing an exception caught while analyzing a capsule: "
+                       + qualifiedCapsuleName;
+            error(msg);
             throw ex;
         }
     }
@@ -87,14 +90,15 @@ public class SoterCommand extends Command
         }
         catch (Exception ex)
         {
-            error("Caught an exception while analyzing a capsule: " + qualifiedCapsuleName);
+            String msg = "Re-throwing an exception caught while analyzing a capsule: "
+                       + qualifiedCapsuleName;
+            error(msg);
             throw ex;
         }
         return soterAnalysis;
     }
     
 
-    // TODO: Split up this method. It's too long and does too much.
     protected void instrumentCapsule(String qualifiedCapsuleName, SoterAnalysis soterAnalysis)
                                                                               throws Exception
     {
@@ -107,30 +111,35 @@ public class SoterCommand extends Command
             return;  /* Nothing to do. */
         }
 
-        ClassInstrumenter templateInstrumenter = TemplateInstrumenterFactory.make(
-                                                     soterAnalysis.getCapsuleTemplate(),
-                                                     cliArgs.classOutput
-                                                 );
-        if (cliArgs.instrumentAll)
+        ClassInstrumenter templateInstrumenter;
+        templateInstrumenter = TemplateInstrumenterFactory.make(soterAnalysis.getCapsuleTemplate(),
+                                                                cliArgs.classOutput);
+        try
         {
-            note("Instrumenting Capsule (All Transferring Sites): " + qualifiedCapsuleName);
-            throw new UnsupportedOperationException("TODO");
-        }
-        else
-        {
-            note("Instrumenting Capsule (SOTER Analysis): " + qualifiedCapsuleName);
-            try {
-                SoterInstrumenter soterInstrumenter = new SoterInstrumenter(templateInstrumenter,
-                                                                            soterAnalysis,
-                                                                            cliArgs.classOutput);
-                soterInstrumenter.perform();
-            }
-            catch (Exception ex)
+            if (cliArgs.instrumentAll)
             {
-                String msg = "Caught an exception while instrumenting a capsule: " + qualifiedCapsuleName;
-                error(msg);
-                throw new RuntimeException (msg, ex);
+                note("Instrumenting Capsule (All Transferring Sites): " + qualifiedCapsuleName);
+                AllTransferringSitesInstrumenter instrumenter;
+                instrumenter = new AllTransferringSitesInstrumenter(templateInstrumenter,
+                                                                    soterAnalysis.getTransferAnalysis(),
+                                                                    cliArgs.classOutput);
+                instrumenter.perform();
             }
+            else
+            {
+            note("Instrumenting Capsule (SOTER Analysis): " + qualifiedCapsuleName);
+                SoterInstrumenter instrumenter = new SoterInstrumenter(templateInstrumenter,
+                                                                       soterAnalysis,
+                                                                       cliArgs.classOutput);
+                instrumenter.perform();
+            }
+        }
+        catch (Exception ex)
+        {
+            String msg = "Re-throwing an exception caught while instrumenting a capsule: "
+                       + qualifiedCapsuleName;
+            error(msg);
+            throw new RuntimeException (ex);
         }
     }
 

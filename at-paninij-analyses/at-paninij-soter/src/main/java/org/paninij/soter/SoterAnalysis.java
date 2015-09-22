@@ -210,6 +210,13 @@ public class SoterAnalysis extends LoggingAnalysis
     {
         return unsafeTransferSitesMap;
     }
+    
+    
+    public TransferAnalysis getTransferAnalysis()
+    {
+        assert hasBeenPerformed;
+        return ta;
+    }
 
 
     @Override

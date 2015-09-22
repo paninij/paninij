@@ -19,8 +19,9 @@ public class AllTransferringSitesInstrumenter extends Instrumenter
 {
     TransferAnalysis ta;
     
-    public AllTransferringSitesInstrumenter(ClassInstrumenter templateInstrumenter, TransferAnalysis ta,
-                                String outDir) throws InvalidClassFileException
+    public AllTransferringSitesInstrumenter(ClassInstrumenter templateInstrumenter,
+                                            TransferAnalysis ta, String outDir)
+                                            throws InvalidClassFileException
     {
         super(templateInstrumenter, outDir + separator + templateInstrumenter.getReader().getName() + ".class");
         this.ta = ta;
