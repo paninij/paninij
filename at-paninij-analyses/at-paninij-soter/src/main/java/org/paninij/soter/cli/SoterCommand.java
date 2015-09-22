@@ -27,7 +27,6 @@ public class SoterCommand extends Command
     protected final CLIArguments cliArgs;
     protected final String classpath;
     protected final SoterAnalysisFactory soterAnalysisFactory;
-    protected final TemplateInstrumenterFactory templateInstrumenterFactory;
     
     public SoterCommand(CLIArguments cliArgs)
     {
@@ -41,7 +40,6 @@ public class SoterCommand extends Command
         classpath = Util.makeEffectiveClassPath(cliArgs.classPath, cliArgs.classPathFile);
         note("Effective class path: " + classpath);
         soterAnalysisFactory = new SoterAnalysisFactory(classpath);
-        templateInstrumenterFactory = new TemplateInstrumenterFactory(cliArgs.classOutput);
     }
 
     @Override
@@ -109,6 +107,10 @@ public class SoterCommand extends Command
             return;  /* Nothing to do. */
         }
 
+        ClassInstrumenter templateInstrumenter = TemplateInstrumenterFactory.make(
+                                                     soterAnalysis.getCapsuleTemplate(),
+                                                     cliArgs.classOutput
+                                                 );
         if (cliArgs.instrumentAll)
         {
             note("Instrumenting Capsule (All Transferring Sites): " + qualifiedCapsuleName);
@@ -118,7 +120,6 @@ public class SoterCommand extends Command
         {
             note("Instrumenting Capsule (SOTER Analysis): " + qualifiedCapsuleName);
             try {
-                ClassInstrumenter templateInstrumenter = templateInstrumenterFactory.make(soterAnalysis.getCapsuleTemplate());
                 SoterInstrumenter soterInstrumenter = new SoterInstrumenter(templateInstrumenter,
                                                                             soterAnalysis,
                                                                             cliArgs.classOutput);

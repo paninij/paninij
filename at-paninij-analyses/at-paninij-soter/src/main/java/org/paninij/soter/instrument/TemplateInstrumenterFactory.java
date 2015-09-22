@@ -10,14 +10,7 @@ import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
 public class TemplateInstrumenterFactory
 {
-    protected final String outputDir;
-    
-    public TemplateInstrumenterFactory(String outputDir)
-    {
-        this.outputDir = outputDir;
-    }
-
-    public ClassInstrumenter make(CapsuleTemplate template)
+    public static ClassInstrumenter make(CapsuleTemplate template, String outputDir)
     {
         IClass templateClass = template.getTemplateClass();
         if (templateClass instanceof ShrikeClass == false) {
