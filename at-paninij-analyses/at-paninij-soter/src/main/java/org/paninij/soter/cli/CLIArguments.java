@@ -30,7 +30,7 @@ public class CLIArguments
             "The path to the directory in which SOTER heap graph PDFs should be placed. "
             + "If this option is not set, then no heap graph PDFs will be generated.";
     
-    private static final String ORIG_BYTECODE_DESCRIPTION =
+    private static final String ORIGINAL_BYTECODE_DESCRIPTION =
             "The path to the directory in which uninstrumented bytecode should be logged. "
             + "A disassembly code file (generated from `javap -c`) is created for each capsule "
             + "templates. If this option is not set, then no such files are created.";
@@ -63,8 +63,8 @@ public class CLIArguments
     @Parameter(names = "-heapGraphPDFs", description = HEAP_GRAPH_PDFS_DESCRIPTION)
     public String heapGraphPDFs;
     
-    @Parameter(names = "-origBytecode", description = ORIG_BYTECODE_DESCRIPTION)
-    public String origBytecode;
+    @Parameter(names = "-originalBytecode", description = ORIGINAL_BYTECODE_DESCRIPTION)
+    public String originalBytecode;
 
     @Parameter(names = "-noInstrument", description = NO_INSTRUMENT_DESCRIPTION)
     public Boolean noInstrument = false;

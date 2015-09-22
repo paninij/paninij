@@ -62,11 +62,11 @@ public class SoterCommand extends Command
     {
         try
         {
-            if (cliArgs.origBytecode != null)
+            if (cliArgs.originalBytecode != null)
             {
                 String templateName = qualifiedCapsuleName + "Template";
                 note("Logging Template's Original Bytecode: " + templateName);
-                Util.logDisassembledBytecode(templateName, cliArgs.classPath, cliArgs.origBytecode);
+                Util.logDisassembledBytecode(templateName, cliArgs.classPath, cliArgs.originalBytecode);
             }
         }
         catch (Exception ex)

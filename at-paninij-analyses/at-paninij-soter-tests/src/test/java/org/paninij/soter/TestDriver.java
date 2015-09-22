@@ -10,7 +10,7 @@ public class TestDriver
                      "-classPathFile", "target/dependencies.txt",
                      "-classOutput", "target/classes",
                      "-analysisReports", "logs/analysis_reports",
-                     "-origBytecode", "logs/orig_bytecode",
+                     "-originalBytecode", "logs/original_bytecode",
                      "-noInstrument",
                      "@target/capsule_list.txt"
     };
