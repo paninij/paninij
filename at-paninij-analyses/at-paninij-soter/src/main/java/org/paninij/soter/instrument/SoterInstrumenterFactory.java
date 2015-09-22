@@ -30,11 +30,11 @@ public class SoterInstrumenterFactory
         
         try
         {
-            ClassInstrumenter instrumenter = new ClassInstrumenter(template.getWalaPath(),
-                                                                   templateShrike.getReader(),
-                                                                   new ClassHierarchyStore(),
-                                                                   false);
-            return new SoterInstrumenter(template, outputDir, sa, instrumenter);
+            ClassInstrumenter walaInstrumenter = new ClassInstrumenter(template.getWalaPath(),
+                                                                       templateShrike.getReader(),
+                                                                       new ClassHierarchyStore(),
+                                                                       false);
+            return new SoterInstrumenter(walaInstrumenter, template, outputDir, sa);
         }
         catch (InvalidClassFileException ex)
         {

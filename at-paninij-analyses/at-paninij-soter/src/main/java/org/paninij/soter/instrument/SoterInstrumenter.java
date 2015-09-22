@@ -2,8 +2,6 @@ package org.paninij.soter.instrument;
 
 import static java.io.File.separator;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,71 +10,57 @@ import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.TransferringSite;
+import org.paninij.soter.util.Instrumenter;
 
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.classLoader.ShrikeClass;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
-import com.ibm.wala.shrikeCT.ClassWriter;
 import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
-public class SoterInstrumenter
+
+public class SoterInstrumenter extends Instrumenter
 {
     protected final CapsuleTemplate template;
     protected final SoterAnalysis sa;
     protected final String outputDir;
-    protected final ClassInstrumenter instrumenter;  // Instrumenter of the capsule template class.
-    
-    protected final String outputFilePath;
-    protected final ShrikeClass shrikeClass;
-    protected final Map<String, IdentitySet<TransferringSite>> unsafeTransferSitesMap;
-    protected final MethodInstrumenter methodInstrumenter;
 
-    public SoterInstrumenter(CapsuleTemplate template, String outputDir, SoterAnalysis sa,
-                             ClassInstrumenter instrumenter) throws InvalidClassFileException
+    protected final ShrikeClass shrikeClass;
+
+    public SoterInstrumenter(ClassInstrumenter walaInstrumenter, CapsuleTemplate template,
+                             String outputDir, SoterAnalysis sa) throws InvalidClassFileException
     {
+        super(walaInstrumenter, outputDir + separator + walaInstrumenter.getReader().getName() + ".class");
+
         this.template = template;
         this.sa = sa;
         this.outputDir = outputDir;
-        this.instrumenter = instrumenter;
 
-        outputFilePath = outputDir + separator + instrumenter.getReader().getName() + ".class";
         shrikeClass = (ShrikeClass) template.getTemplateClass();
-        unsafeTransferSitesMap = new HashMap<String, IdentitySet<TransferringSite>>();
-        methodInstrumenter = new MethodInstrumenter(this);
     }
 
-    public void perform()
+    @Override
+    public void performInstrumentation() throws InvalidClassFileException
     {
-        try
-        {
-            buildUnsafeTransferSitesMap();
-            if (unsafeTransferSitesMap.isEmpty()) {
-                return;  // Return if there are no transfer sites that need instrumentation.
-            }
-            
-            instrumenter.visitMethods(methodInstrumenter);
-            writeInstrumentedClassFile();
+        Map<String, IdentitySet<TransferringSite>> sitesToInstrument = getSitesToInstrument();
+        if (sitesToInstrument.isEmpty()) {
+            return;  // Return early if there are no sites that need instrumentation.
         }
-        catch (InvalidClassFileException | IOException ex) {
-            throw new RuntimeException("Failed to perform soter instrumentation: " + ex, ex);
-        }
+        walaInstrumenter.visitMethods(new TransferringSiteInstrumenter(sitesToInstrument));
     }
     
-    protected void buildUnsafeTransferSitesMap()
+    protected Map<String, IdentitySet<TransferringSite>> getSitesToInstrument()
     {
-        for (Entry<IMethod, IdentitySet<TransferringSite>> entry : sa.getUnsafeTransferSitesMap().entrySet())
+        Map<String, IdentitySet<TransferringSite>> sitesToInstrument;
+        sitesToInstrument = new HashMap<String, IdentitySet<TransferringSite>>();
+
+        for (Entry<IMethod, IdentitySet<TransferringSite>> entry : sa.getUnsafeTransferSitesMap()
+                                                                     .entrySet())
         {
             String signature = "L" + entry.getKey().getSignature();
-            unsafeTransferSitesMap.put(signature, entry.getValue());
+            sitesToInstrument.put(signature, entry.getValue());
         }
+        
+        return sitesToInstrument;
     }
-    
-    protected void writeInstrumentedClassFile() throws InvalidClassFileException, IOException
-    {
-        ClassWriter classWriter = instrumenter.emitClass();
-        FileOutputStream outputStream = new FileOutputStream(outputFilePath);
-        outputStream.write(classWriter.makeBytes());
-        outputStream.flush();
-        outputStream.close();
-    }
+
 }

@@ -1,6 +1,6 @@
 package org.paninij.soter.util;
 
-public abstract class Analysis
+public abstract class Analysis implements IdempotentOperation
 {
     protected boolean hasBeenPerformed = false;
 

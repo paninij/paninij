@@ -76,8 +76,7 @@ public class Main
             catch (Exception ex)
             {
                 error("Caught an exception while instrumenting a capsule: " + qualifiedCapsuleName);
-                ex.printStackTrace(System.err);
-                return;
+                throw ex;
             }
         }
 
