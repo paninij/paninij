@@ -38,6 +38,10 @@ public abstract class Analysis implements IdempotentOperation
     {
         // By default, assume that there are no sub-analyses. Do nothing.
     }
+    
+    public boolean hasBeenPerformed() {
+        return hasBeenPerformed;
+    }
 
     /**
      * If there are any conditions that should be checked after performing the analysis, they can be

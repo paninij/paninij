@@ -2,6 +2,7 @@ package org.paninij.runtime.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -161,5 +162,15 @@ public class IdentitySet<T> implements Iterable<T>
             }
         }
         return true;
+    }
+
+
+    public Set<T> cloneAsSet()
+    {
+        Set<T> rv = new HashSet<T>();
+        for (int idx = 0; idx < size; idx++) {
+            rv.add(data[idx]);
+        }
+        return rv;
     }
 }

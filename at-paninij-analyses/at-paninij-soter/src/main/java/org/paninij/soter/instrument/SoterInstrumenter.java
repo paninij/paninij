@@ -5,6 +5,7 @@ import static java.io.File.separator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
@@ -30,26 +31,27 @@ public class SoterInstrumenter extends Instrumenter
     @Override
     public void performInstrumentation() throws InvalidClassFileException
     {
-        Map<String, IdentitySet<TransferringSite>> sitesToInstrument = getSitesToInstrument();
+        assert sa.hasBeenPerformed();
+        
+        Map<String, Set<TransferringSite>> sitesToInstrument = getSitesToInstrument();
         if (sitesToInstrument.isEmpty()) {
             return;  // Return early if there are no sites that need instrumentation.
         }
         walaInstrumenter.visitMethods(new TransferringSiteInstrumenter(sitesToInstrument));
     }
     
-    protected Map<String, IdentitySet<TransferringSite>> getSitesToInstrument()
+    protected Map<String, Set<TransferringSite>> getSitesToInstrument()
     {
-        Map<String, IdentitySet<TransferringSite>> sitesToInstrument;
-        sitesToInstrument = new HashMap<String, IdentitySet<TransferringSite>>();
+        Map<String, Set<TransferringSite>> sitesToInstrument;
+        sitesToInstrument = new HashMap<String, Set<TransferringSite>>();
 
         for (Entry<IMethod, IdentitySet<TransferringSite>> entry : sa.getUnsafeTransferSitesMap()
                                                                      .entrySet())
         {
             String signature = "L" + entry.getKey().getSignature();
-            sitesToInstrument.put(signature, entry.getValue());
+            sitesToInstrument.put(signature, entry.getValue().cloneAsSet());
         }
         
         return sitesToInstrument;
     }
-
 }
