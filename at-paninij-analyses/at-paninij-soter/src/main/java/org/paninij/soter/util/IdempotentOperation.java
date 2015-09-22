@@ -8,4 +8,6 @@ public interface IdempotentOperation
      * doing anything.
      */
     void perform();
+    
+    boolean hasBeenPerformed();
 }

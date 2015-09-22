@@ -4,6 +4,11 @@ public abstract class Analysis implements IdempotentOperation
 {
     protected boolean hasBeenPerformed = false;
 
+    @Override
+    public boolean hasBeenPerformed() {
+        return hasBeenPerformed;
+    }
+
     /**
      * If this method has never been called before, then any sub-analyses and the main analysis are
      * performed. If this method has been previously called, then it will return immediately.
@@ -11,6 +16,7 @@ public abstract class Analysis implements IdempotentOperation
      * Warning: implementers of `Analysis` should not not generally override `perform()`. They are
      * expected to usually override `performAnalysis()` and `performSubAnalyses()`.
      */
+    @Override
     public void perform()
     {
         if (hasBeenPerformed) {
@@ -38,10 +44,6 @@ public abstract class Analysis implements IdempotentOperation
     {
         // By default, assume that there are no sub-analyses. Do nothing.
     }
-    
-    public boolean hasBeenPerformed() {
-        return hasBeenPerformed;
-    }
 
     /**
      * If there are any conditions that should be checked after performing the analysis, they can be
@@ -49,7 +51,7 @@ public abstract class Analysis implements IdempotentOperation
      * performing an analysis when assertions are enabled. This is only meant to be used for
      * debugging purposes.
      * 
-     * @return `true` iff all post conditions are satisfied.
+     * @return `true` iff all checked post-conditions are satisfied.
      */
     protected boolean checkPostConditions()
     {

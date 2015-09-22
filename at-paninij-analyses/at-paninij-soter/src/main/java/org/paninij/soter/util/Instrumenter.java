@@ -20,6 +20,13 @@ public abstract class Instrumenter implements IdempotentOperation
         this.outputFilePath = outputFilePath;
     }
 
+    
+    @Override
+    public boolean hasBeenPerformed() {
+        return hasBeenPerformed;
+    }
+
+
     /**
      * If this method has never been called before, then any sub-analyses and the main analysis are
      * performed. If this method has been previously called, then it will return immediately.
@@ -27,6 +34,7 @@ public abstract class Instrumenter implements IdempotentOperation
      * Warning: implementers of `Instrumenter` should not not generally override `perform()`. They
      * are expected to override `performInstrumentation()` and `writeInstrumentedClassFile()`.
      */
+    @Override
     public void perform()
     {
         if (hasBeenPerformed) {
@@ -67,6 +75,14 @@ public abstract class Instrumenter implements IdempotentOperation
     }
 
 
+    /**
+     * If there are any conditions that should be checked after performing the instrumentation, they
+     * can be put in a method which overrides this one. This method is automatically called after
+     * performing a command when assertions are enabled. This is only meant to be used for
+     * debugging purposes.
+     * 
+     * @return `true` iff all checked post-conditions are satisfied.
+     */
     protected boolean checkPostConditions()
     {
         // By default, assume that there are no post-conditions. Do nothing.
