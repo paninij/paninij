@@ -133,17 +133,15 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                 "{",
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
-                "    #3;",
                 "    panini$push(panini$message);",
+                "    #3",
                 "    #4",
-                "    #5",
                 "}",
                 "");
         return Source.formatAll(source,
                 this.generateProcedureDecl(shape),
                 shape.encoded,
                 this.generateProcedureArguments(shape),
-                this.generateAssertSafeInvocationTransfer(),
                 doBlock,
                 this.generateProcedureReturn(shape));
     }
