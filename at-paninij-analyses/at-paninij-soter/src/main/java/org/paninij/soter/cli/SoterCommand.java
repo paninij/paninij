@@ -111,12 +111,12 @@ public class SoterCommand extends Command
 
         if (cliArgs.instrumentAll)
         {
-            note("Instrumenting Capsule At All Transferring Sites: " + qualifiedCapsuleName);
+            note("Instrumenting Capsule (All Transferring Sites): " + qualifiedCapsuleName);
             throw new UnsupportedOperationException("TODO");
         }
         else
         {
-            note("Instrumenting Capsule Using the SOTER Analysis: " + qualifiedCapsuleName);
+            note("Instrumenting Capsule (SOTER Analysis): " + qualifiedCapsuleName);
             try {
                 ClassInstrumenter templateInstrumenter = templateInstrumenterFactory.make(soterAnalysis.getCapsuleTemplate());
                 SoterInstrumenter soterInstrumenter = new SoterInstrumenter(templateInstrumenter,
