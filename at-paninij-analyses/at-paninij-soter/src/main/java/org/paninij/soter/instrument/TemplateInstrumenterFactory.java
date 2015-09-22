@@ -1,6 +1,5 @@
 package org.paninij.soter.instrument;
 
-import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 
 import com.ibm.wala.classLoader.IClass;
@@ -9,18 +8,17 @@ import com.ibm.wala.shrikeBT.analysis.ClassHierarchyStore;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
-public class SoterInstrumenterFactory
+public class TemplateInstrumenterFactory
 {
     protected final String outputDir;
     
-    public SoterInstrumenterFactory(String outputDir)
+    public TemplateInstrumenterFactory(String outputDir)
     {
         this.outputDir = outputDir;
     }
 
-    public SoterInstrumenter make(SoterAnalysis sa)
+    public ClassInstrumenter make(CapsuleTemplate template)
     {
-        CapsuleTemplate template = sa.getCapsuleTemplate();
         IClass templateClass = template.getTemplateClass();
         if (templateClass instanceof ShrikeClass == false) {
             String msg = "Could not cast the template's `IClass` to a `ShrikeClass`";
@@ -30,11 +28,8 @@ public class SoterInstrumenterFactory
         
         try
         {
-            ClassInstrumenter walaInstrumenter = new ClassInstrumenter(template.getWalaPath(),
-                                                                       templateShrike.getReader(),
-                                                                       new ClassHierarchyStore(),
-                                                                       false);
-            return new SoterInstrumenter(walaInstrumenter, template, outputDir, sa);
+            return new ClassInstrumenter(template.getWalaPath(), templateShrike.getReader(),
+                                         new ClassHierarchyStore(), false);
         }
         catch (InvalidClassFileException ex)
         {

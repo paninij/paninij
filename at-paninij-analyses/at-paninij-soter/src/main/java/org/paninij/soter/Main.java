@@ -16,11 +16,12 @@ import java.nio.file.StandardCopyOption;
 
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.instrument.SoterInstrumenter;
-import org.paninij.soter.instrument.SoterInstrumenterFactory;
+import org.paninij.soter.instrument.TemplateInstrumenterFactory;
 import org.paninij.soter.util.Log;
 import org.paninij.soter.util.WalaUtil;
 
 import com.beust.jcommander.JCommander;
+import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 
 
 /**
@@ -32,7 +33,7 @@ public class Main
     protected final String classpath;
     protected final CLIArguments cliArguments;
     protected final SoterAnalysisFactory soterAnalysisFactory;
-    protected final SoterInstrumenterFactory soterInstrumenterFactory;
+    protected final TemplateInstrumenterFactory templateInstrumenterFactory;
     
     protected Main(CLIArguments cliArguments)
     {
@@ -46,7 +47,7 @@ public class Main
         classpath = makeEffectiveClassPath(cliArguments.classPath, cliArguments.classPathFile);
         note("Effective class path: " + classpath);
         soterAnalysisFactory = new SoterAnalysisFactory(classpath);
-        soterInstrumenterFactory = new SoterInstrumenterFactory(cliArguments.classOutput);
+        templateInstrumenterFactory = new TemplateInstrumenterFactory(cliArguments.classOutput);
     }
    
     // TODO: Split up this method. It's too long and does too much.
@@ -70,13 +71,17 @@ public class Main
         {
             note("Instrumenting Capsule: " + qualifiedCapsuleName);
             try {
-                SoterInstrumenter soterInstrumenter = soterInstrumenterFactory.make(soterAnalysis);
+                ClassInstrumenter templateInstrumenter = templateInstrumenterFactory.make(soterAnalysis.getCapsuleTemplate());
+                SoterInstrumenter soterInstrumenter = new SoterInstrumenter(templateInstrumenter,
+                                                                            soterAnalysis,
+                                                                            cliArguments.classOutput);
                 soterInstrumenter.perform();
             }
             catch (Exception ex)
             {
-                error("Caught an exception while instrumenting a capsule: " + qualifiedCapsuleName);
-                throw ex;
+                String msg = "Caught an exception while instrumenting a capsule: " + qualifiedCapsuleName;
+                error(msg);
+                throw new RuntimeException (msg, ex);
             }
         }
 
@@ -109,8 +114,8 @@ public class Main
                                                   throws IOException, InterruptedException
     {
         // TODO: BUG: Handle the case that `classpath` contains spaces!
+        note("Logging Original Bytecode: " + qualifiedClassName);
         String cmd = "javap -c -classpath " + classpath + " " + qualifiedClassName;
-        note(cmd);
 
         Runtime runtime = Runtime.getRuntime();
         Process proc = runtime.exec(cmd);

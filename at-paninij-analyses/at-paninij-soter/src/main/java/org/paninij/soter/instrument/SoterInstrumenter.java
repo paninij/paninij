@@ -8,34 +8,23 @@ import java.util.Map.Entry;
 
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
-import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.util.Instrumenter;
 
 import com.ibm.wala.classLoader.IMethod;
-import com.ibm.wala.classLoader.ShrikeClass;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
 import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
 
 public class SoterInstrumenter extends Instrumenter
 {
-    protected final CapsuleTemplate template;
     protected final SoterAnalysis sa;
-    protected final String outputDir;
 
-    protected final ShrikeClass shrikeClass;
-
-    public SoterInstrumenter(ClassInstrumenter walaInstrumenter, CapsuleTemplate template,
-                             String outputDir, SoterAnalysis sa) throws InvalidClassFileException
+    public SoterInstrumenter(ClassInstrumenter templateInstrumenter, SoterAnalysis sa, String outDir)
+                                                                     throws InvalidClassFileException
     {
-        super(walaInstrumenter, outputDir + separator + walaInstrumenter.getReader().getName() + ".class");
-
-        this.template = template;
+        super(templateInstrumenter, outDir + separator + templateInstrumenter.getReader().getName() + ".class");
         this.sa = sa;
-        this.outputDir = outputDir;
-
-        shrikeClass = (ShrikeClass) template.getTemplateClass();
     }
 
     @Override
