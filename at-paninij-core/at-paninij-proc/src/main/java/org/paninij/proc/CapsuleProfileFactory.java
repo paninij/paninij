@@ -70,7 +70,7 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
                 "    #1 panini$message = null;",
                 "    panini$message = new #1(#2);",
                 "    panini$push(panini$message);",
-                "    #4",
+                "    #3",
                 "}",
                 "");
         return Source.formatAll(source,
