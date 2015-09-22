@@ -318,15 +318,13 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
             // Call the template instance's method and resolve the duck using the result.
             List<String> src = Source.lines("case #0: {",
                                             "    #1 result = #2;",
-                                            "    #3;",
                                             "    ((Panini$Future<#1>) msg).panini$resolve(result);",
                                             "    break;",
                                             "}");
             return Source.formatAll(src,
                     this.generateProcedureID(procedure),
                     procedure.getReturnType().wrapped(),
-                    this.generateEncapsulatedMethodCall(shape),
-                    this.generateAssertSafeResultTransfer());
+                    this.generateEncapsulatedMethodCall(shape));
         }
     }
 
@@ -358,20 +356,6 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "panini$encapsulated.#0(#1)",
                 shape.procedure.getName(),
                 String.join(", ", args));
-    }
-
-    private String generateAssertSafeResultTransfer()
-    {
-        // TODO: Clean this up!
-        /**
-        return Source.format(
-                "assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2) : #3",
-                PaniniProcessor.dynamicOwnershipTransferKind,
-                "result",
-                "panini$getAllState()",
-                "\"Procedure return attempted unsafe ownership transfer.\"");
-        */
-        return "";
     }
 
     private List<String> generateCapsuleBody()
