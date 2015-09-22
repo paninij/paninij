@@ -31,10 +31,15 @@ public class CLIArguments
             + "If this option is not set, then no heap graph PDFs will be generated.";
     
     private static final String ORIGINAL_BYTECODE_DESCRIPTION =
-            "The path to the directory in which uninstrumented bytecode should be logged. "
+            "The path to the directory in which *uninstrumented* bytecode should be logged. "
             + "A disassembly code file (generated from `javap -c`) is created for each capsule "
-            + "templates. If this option is not set, then no such files are created.";
+            + "template. If this option is not set, then no such files are created.";
     
+    private static final String INSTRUMENTED_BYTECODE_DESCRIPTION =
+            "The path to the directory in which *instrumented* bytecode should be logged. "
+            + "A disassembly code file (generated from `javap -c`) is created for each capsule "
+            + "template. If this option is not set, then no such files are created.";
+
     private static final String NO_INSTRUMENT_DESCRIPTION =
             "Set this flag to disable class file instrumentation.";
 
@@ -66,6 +71,9 @@ public class CLIArguments
     @Parameter(names = "-originalBytecode", description = ORIGINAL_BYTECODE_DESCRIPTION)
     public String originalBytecode;
 
+    @Parameter(names = "-instrumentedBytecode", description = INSTRUMENTED_BYTECODE_DESCRIPTION)
+    public String instrumentedBytecode;
+    
     @Parameter(names = "-noInstrument", description = NO_INSTRUMENT_DESCRIPTION)
     public Boolean noInstrument = false;
     
