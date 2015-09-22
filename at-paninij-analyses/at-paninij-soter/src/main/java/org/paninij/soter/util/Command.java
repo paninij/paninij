@@ -24,7 +24,11 @@ public abstract class Command implements IdempotentOperation
         if (hasBeenPerformed) {
             return;
         }
-        performCommand();
+        try {
+            performCommand();
+        } catch (Exception ex) {
+            throw new RuntimeException("An exception occurred while running a command: " + ex, ex);
+        }
         hasBeenPerformed = true;
         assert checkPostConditions();
     }
@@ -35,7 +39,7 @@ public abstract class Command implements IdempotentOperation
      * this method are not expected to be idempotent, because the `perform()` wrapper is provided to
      * provide idempotency checking.
      */
-    protected abstract void performCommand();
+    protected abstract void performCommand() throws Exception;
 
 
     /**
