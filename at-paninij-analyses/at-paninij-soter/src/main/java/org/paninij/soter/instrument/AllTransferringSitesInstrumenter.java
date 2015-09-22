@@ -66,5 +66,6 @@ public class AllTransferringSitesInstrumenter extends Instrumenter
         for (V v : values) {
             nested.add(v);
         }
+        map.put(key, nested);
     }
 }
