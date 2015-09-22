@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
@@ -16,15 +15,7 @@ import org.paninij.soter.site.TransferringSite;
 
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.classLoader.ShrikeClass;
-import com.ibm.wala.shrikeBT.DupInstruction;
-import com.ibm.wala.shrikeBT.InvokeInstruction;
-import com.ibm.wala.shrikeBT.MethodData;
-import com.ibm.wala.shrikeBT.MethodEditor;
-import com.ibm.wala.shrikeBT.Util;
-import com.ibm.wala.shrikeBT.MethodEditor.Output;
-import com.ibm.wala.shrikeBT.MethodEditor.Patch;
 import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter;
-import com.ibm.wala.shrikeBT.shrikeCT.ClassInstrumenter.MethodExaminer;
 import com.ibm.wala.shrikeCT.ClassWriter;
 import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
@@ -51,7 +42,7 @@ public class SoterInstrumenter
         outputFilePath = outputDir + separator + instrumenter.getReader().getName() + ".class";
         shrikeClass = (ShrikeClass) template.getTemplateClass();
         unsafeTransferSitesMap = new HashMap<String, IdentitySet<TransferringSite>>();
-        methodInstrumenter = new MethodInstrumenter();
+        methodInstrumenter = new MethodInstrumenter(this);
     }
 
     public void perform()
@@ -87,55 +78,5 @@ public class SoterInstrumenter
         outputStream.write(classWriter.makeBytes());
         outputStream.flush();
         outputStream.close();
-    }
-    
-    
-    private class MethodInstrumenter implements MethodExaminer
-    {
-        final DupInstruction dup = DupInstruction.make(0);
-        final InvokeInstruction assertSafeTransfer = Util.makeInvoke(DynamicOwnershipTransfer.class,
-                                                                     "assertSafeTransfer");
-        
-        @Override
-        public void examineCode(MethodData methodData)
-        {
-            // Note that this name mangling is performed because the differences between the 
-            // `getSignature()` methods on `MethodData` and `IMethod`.
-            String signature = methodData.getClassType().replace('/', '.').replace(';', '.')
-                             + methodData.getName()
-                             + methodData.getSignature();
-            IdentitySet<TransferringSite> unsafeTransferSites = unsafeTransferSitesMap.get(signature);
-
-            // Ignore any methods on the template in which there are no unsafe transfer sites.
-            if (unsafeTransferSites == null || unsafeTransferSites.isEmpty()) {
-                return;
-            }
-            instrumentUnsafeTransferSites(methodData, unsafeTransferSites);
-        }
-        
-        private void instrumentUnsafeTransferSites(MethodData methodData,
-                                                   IdentitySet<TransferringSite> unsafeTransferSites)
-        {
-            MethodEditor methodEditor = new MethodEditor(methodData);
-            for (TransferringSite site : unsafeTransferSites) {
-                patchUnsafeTransferSite(methodEditor, site);
-            }
-            methodEditor.applyPatches();
-            methodEditor.endPass();
-        }
-        
-        private void patchUnsafeTransferSite(MethodEditor methodEditor, TransferringSite site)
-        {
-            methodEditor.beginPass();
-            methodEditor.insertBefore(site.getInstruction().iindex, new Patch()
-            {
-                @Override
-                public void emitTo(Output w)
-                {
-                    w.emit(dup);
-                    w.emit(assertSafeTransfer);
-                }
-            });
-        }
     }
 }
