@@ -57,8 +57,6 @@ public class TransferAnalysis extends LoggingAnalysis
     /**
      * The set of nodes which, by some finite sequence of calls in the CGA, reach a transferring
      * call graph node.
-     * 
-     * TODO: Figure out whether the fake root node should be considered a reaching node.
      */
     protected IdentitySet<CGNode> reachingNodes;
     

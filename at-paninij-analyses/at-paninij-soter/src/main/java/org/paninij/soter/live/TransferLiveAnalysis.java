@@ -74,7 +74,13 @@ public class TransferLiveAnalysis extends LoggingAnalysis
     @Override
     public void performAnalysis()
     {
+        if (ta.getTransferringNodes().isEmpty()) {
+            // If there are no transferring nodes, that means that there are no transferring sites.
+            return;
+        }
+        
         // For each relevant site within the fake root, mark its (target) receiver variable live.
+        // Note: If there are any transferring nodes, then the fake root node must be "reaching".
         CGNode fakeRootNode = cga.getCallGraph().getFakeRootNode();
         for (AnalysisSite site: ta.getRelevantSites(fakeRootNode)) {
             assert site instanceof AnalysisCallSite;
