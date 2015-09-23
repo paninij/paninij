@@ -128,7 +128,7 @@ public abstract class AnalysisJsonResultsCreator
         return builder.build();
     }
 
-    protected JsonArray toJson(IdentitySet<InstanceKey> set)
+    protected JsonArray instanceKeysToJson(Set<InstanceKey> set)
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         for (InstanceKey inst : set) {

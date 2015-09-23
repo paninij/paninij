@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.util.Instrumenter;
@@ -45,11 +44,10 @@ public class SoterInstrumenter extends Instrumenter
         Map<String, Set<TransferringSite>> sitesToInstrument;
         sitesToInstrument = new HashMap<String, Set<TransferringSite>>();
 
-        for (Entry<IMethod, IdentitySet<TransferringSite>> entry : sa.getUnsafeTransferSitesMap()
-                                                                     .entrySet())
+        for (Entry<IMethod, Set<TransferringSite>> entry : sa.getUnsafeTransferSitesMap().entrySet())
         {
             String signature = "L" + entry.getKey().getSignature();
-            sitesToInstrument.put(signature, entry.getValue().cloneAsSet());
+            sitesToInstrument.put(signature, entry.getValue());
         }
         
         return sitesToInstrument;

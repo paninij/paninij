@@ -59,7 +59,7 @@ public class SoterAnalysis extends LoggingAnalysis
     protected final Map<TransferringSite, TransferSiteResults> transferSiteResultsMap;
 
 
-    protected final Map<IMethod, IdentitySet<TransferringSite>> unsafeTransferSitesMap;
+    protected final Map<IMethod, Set<TransferringSite>> unsafeTransferringSitesMap;
 
 
     protected final JsonResultsCreator jsonCreator;
@@ -78,7 +78,7 @@ public class SoterAnalysis extends LoggingAnalysis
         intSetFactory = new MutableSparseIntSetFactory();
 
         transferSiteResultsMap = new HashMap<TransferringSite, TransferSiteResults>();
-        unsafeTransferSitesMap = new HashMap<IMethod, IdentitySet<TransferringSite>>();
+        unsafeTransferringSitesMap = new HashMap<IMethod, Set<TransferringSite>>();
 
         jsonCreator = new JsonResultsCreator();
     }
@@ -116,9 +116,13 @@ public class SoterAnalysis extends LoggingAnalysis
                 results.liveVariables.addAll(cgla.getLiveVariablesAfter(transferringNode));
 
                 // Find all of the (transitively) live objects.
-                results.liveObjects = new IdentitySet<InstanceKey>();
-                for (PointerKey pointerKey : results.liveVariables) {
-                    results.liveObjects.addAll(makePointsToClosure(pointerKey, cga.getHeapGraph()));
+                results.liveObjects = new HashSet<InstanceKey>();
+                for (PointerKey rootLivePtr : results.liveVariables)
+                {
+                    for (InstanceKey liveObj: makePointsToClosure(rootLivePtr, cga.getHeapGraph()))
+                    {
+                        results.liveObjects.add(liveObj);
+                    }
                 }
 
                 // For each of the transfer site's transfers, find all of the (transitively)
@@ -131,16 +135,27 @@ public class SoterAnalysis extends LoggingAnalysis
                     int paramID = paramIter.next();
 
                     PointerKey ptr = heapModel.getPointerKeyForLocal(transferringNode, paramID);
-                    IdentitySet<InstanceKey> escaped = makePointsToClosure(ptr, heapGraph);
+                    Set<InstanceKey> escaped = makePointsToClosure(ptr, heapGraph).cloneAsSet();
                     results.setEscapedObjects(paramID, escaped);
 
-                    boolean isSafeTransfer = results.liveObjects.isDisjointFrom(escaped);
+                    boolean isSafeTransfer = isDisjointFrom(escaped, results.liveObjects);
                     results.setTransferSafety(paramID, isSafeTransfer);
                 }
 
                 transferSiteResultsMap.put(transferSite, results);
             }
         }
+    }
+    
+    
+    private static boolean isDisjointFrom(Set<InstanceKey> escapedObjs, Set<InstanceKey> liveObjs)
+    {
+        for (InstanceKey escaped: escapedObjs) {
+            if (liveObjs.contains(escaped)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -154,7 +169,7 @@ public class SoterAnalysis extends LoggingAnalysis
             if (results.hasUnsafeTransfers())
             {
                 IMethod method = transferSite.getNode().getMethod();
-                IdentitySet<TransferringSite> unsafeTransferSites = getOrMakeUnsafeTransferSites(method);
+                Set<TransferringSite> unsafeTransferSites = getOrMakeUnsafeTransferringSites(method);
                 TransferringSite unsafeTransferSite = SiteFactory.copyWith(transferSite, results.getUnsafeTransfers());
                 unsafeTransferSites.add(unsafeTransferSite);
             }
@@ -166,15 +181,15 @@ public class SoterAnalysis extends LoggingAnalysis
      * isn't yet such a set in the map, then an empty set is created, added to the map, and
      * returned.
      */
-    private IdentitySet<TransferringSite> getOrMakeUnsafeTransferSites(IMethod method)
+    private Set<TransferringSite> getOrMakeUnsafeTransferringSites(IMethod method)
     {
-        IdentitySet<TransferringSite> unsafeTransferSites = unsafeTransferSitesMap.get(method);
-        if (unsafeTransferSites == null)
+        Set<TransferringSite> unsafeTransferringSites = unsafeTransferringSitesMap.get(method);
+        if (unsafeTransferringSites == null)
         {
-            unsafeTransferSites = new IdentitySet<TransferringSite>();
-            unsafeTransferSitesMap.put(method, unsafeTransferSites);
+            unsafeTransferringSites = new HashSet<TransferringSite>();
+            unsafeTransferringSitesMap.put(method, unsafeTransferringSites);
         }
-        return unsafeTransferSites;
+        return unsafeTransferringSites;
     }
 
 
@@ -206,9 +221,9 @@ public class SoterAnalysis extends LoggingAnalysis
      * 
      * TODO: Consider removing this from the interface.
      */
-    public Map<IMethod, IdentitySet<TransferringSite>> getUnsafeTransferSitesMap()
+    public Map<IMethod, Set<TransferringSite>> getUnsafeTransferSitesMap()
     {
-        return unsafeTransferSitesMap;
+        return unsafeTransferringSitesMap;
     }
     
     
@@ -249,24 +264,24 @@ public class SoterAnalysis extends LoggingAnalysis
     final class TransferSiteResults
     {
         Set<PointerKey> liveVariables;
-        IdentitySet<InstanceKey> liveObjects;
+        Set<InstanceKey> liveObjects;
         MutableIntSet unsafeTransfers;
         MutableIntSet safeTransfers;
-        IntMap<IdentitySet<InstanceKey>> escapedObjectsMap;
+        IntMap<Set<InstanceKey>> escapedObjectsMap;
 
         public TransferSiteResults()
         {
             unsafeTransfers = intSetFactory.make();
             safeTransfers = intSetFactory.make();
-            escapedObjectsMap = new IntMap<IdentitySet<InstanceKey>>();
+            escapedObjectsMap = new IntMap<Set<InstanceKey>>();
         }
 
-        public void setEscapedObjects(int transferID, IdentitySet<InstanceKey> escapedObjects)
+        public void setEscapedObjects(int transferID, Set<InstanceKey> escapedObjects)
         {
             escapedObjectsMap.put(transferID, escapedObjects);
         }
 
-        public IdentitySet<InstanceKey> getEscapedObjects(int transferID)
+        public Set<InstanceKey> getEscapedObjects(int transferID)
         {
             return escapedObjectsMap.get(transferID);
         }
@@ -360,7 +375,7 @@ public class SoterAnalysis extends LoggingAnalysis
             JsonObjectBuilder builder = Json.createObjectBuilder();
             builder.add("transferringSite", site.toJson())
                    .add("liveVariables", toJson(results.liveVariables))
-                   .add("liveObjects", toJson(results.liveObjects));
+                   .add("liveObjects", instanceKeysToJson(results.liveObjects));
 
             // Create an array of JSON objects describing the analysis results for each of the
             // current transfer site's transfers.
@@ -371,7 +386,7 @@ public class SoterAnalysis extends LoggingAnalysis
                 int transfer = transfersIter.next();
                 JsonObjectBuilder transferBuilder = Json.createObjectBuilder();
                 transferBuilder.add("transferID", transfer)
-                               .add("escapedObjects", toJson(results.getEscapedObjects(transfer)))
+                               .add("escapedObjects", instanceKeysToJson(results.getEscapedObjects(transfer)))
                                .add("isSafeTransfer", results.isSafeTransfer(transfer));
                 transfersArrayBuilder.add(transferBuilder);
             }
