@@ -10,6 +10,7 @@ import static org.paninij.soter.util.SoterUtil.isKnownToBeEffectivelyImmutable;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.paninij.soter.util.Log;
 import org.paninij.soter.util.PaniniModel;
 
 import com.ibm.wala.classLoader.CallSiteReference;
@@ -71,7 +72,6 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     
     protected final IClass template;
     protected final TemplateInstance templateInstance;
-    protected int constZeroValueNumber;  // The value number of a variable holding zero.
     
     
     /**
@@ -203,40 +203,43 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     protected void addTemplateFieldArrayInstance(AbstractRootMethod root, IField field,
                                                  int receiverValueNumber)
     {
-        // TODO: I just want to support instantiating arrays of capsule interfaces.
+        // TODO: For now we just want to support instantiating 1D arrays of capsule mockups. In all
+        // other cases, we do nothing.
+        // TODO: Make this safer using `TypeReference.getInnermostElementType()`
+
         TypeReference arrayTypeRef = field.getFieldTypeReference();
         TypeReference elemTypeRef = arrayTypeRef.getArrayElementType();
+
         // Currently, when an array is instantiated it is instantiated with size 1, and when
         // elements need to be instantiated only the 0th is instantiated.
         // TODO: Is this bad?
-        final int DEFAULT_ARRAY_LENGTH = 1;
+        final int DEFAULT_LENGTH = 1;
+
+        if (elemTypeRef.isPrimitiveType() || isKnownToBeEffectivelyImmutable(elemTypeRef)) {
+            return;
+        }
+
+        // If the field is a 1D array of capsules, then we allocate a new array of `DEFAULT_LENGTH`
+        // and add to this array a single new mockup instance.
+        IClass elemType = getCha().lookupClass(elemTypeRef);
+        if (elemType == null) {
+            throw new RuntimeException("Failed to lookup type: " + elemTypeRef);
+        }
+        if (PaniniModel.isCapsuleInterface(elemType))
+        {
+            int newArray = root.add1DArrayAllocation(arrayTypeRef, DEFAULT_LENGTH).getDef();
+            int zeroInt = root.addLocal();
+            int mockup = newCapsuleMockupInstance(root, elemTypeRef);
+            root.addSetArrayField(elemTypeRef, newArray, zeroInt, mockup);
+            return;
+        } 
 
         int dimensionality = arrayTypeRef.getDimensionality();
         if (dimensionality > 1)
         {
-            String msg = "TODO: Cannot yet add instances for array whose dimensionality is ";
-            throw new UnsupportedOperationException(msg + dimensionality);
+            String msg = "Capsule template includes an array field whose dimensionality is ";
+            Log.warning(msg + dimensionality);
         }
-        
-        SSAInstruction newArrayInstr = root.add1DArrayAllocation(arrayTypeRef, DEFAULT_ARRAY_LENGTH);
-
-        if (elemTypeRef.isPrimitiveType() || isKnownToBeEffectivelyImmutable(elemTypeRef))
-        {
-            // No need to add instances for the elements of these types of arrays.
-            return;
-        }
-
-        // Add a single new mockup instance if the array's elements are capsule interfaces.
-        if (PaniniModel.isCapsuleInterface(getCha().lookupClass(elemTypeRef)))
-        {
-            int mockupValueNumber = newCapsuleMockupInstance(root, elemTypeRef);
-            root.addSetArrayField(elemTypeRef, newArrayInstr.getDef(), constZeroValueNumber,
-                                  mockupValueNumber);
-            return;
-        }
-        
-        // Otherwise, assume that the elements of the array should be initialized in source code.
-        // TODO: Is this right.
     }
     
     
