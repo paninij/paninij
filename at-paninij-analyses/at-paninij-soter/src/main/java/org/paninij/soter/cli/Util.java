@@ -55,7 +55,7 @@ class Util
                                                            throws IOException, InterruptedException
     {
         // TODO: BUG: Handle the case that `classpath` contains spaces!
-        String cmd = "javap -c -classpath " + classpath + " " + qualifiedClassName;
+        String cmd = "javap -c -private -classpath " + classpath + " " + qualifiedClassName;
 
         Runtime runtime = Runtime.getRuntime();
         Process proc = runtime.exec(cmd);
