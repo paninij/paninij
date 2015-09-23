@@ -31,26 +31,68 @@ import com.ibm.wala.util.collections.HashSetFactory;
  */
 public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
 {
-    protected IClass template;
-    protected int constZeroValueNumber;
+    /**
+     * A wrapper object that can be shared amongs a set of entrypoints (e.g. all of the entrypoints
+     * created by a single run of `makeAll()`).
+     */
+    private static class TemplateInstance
+    {
+        public boolean hasBeenMade = false;
+        public int valueNumber = 0;
+    }
+    
+    /**
+     * Returns a set of all of the entrypoints on the given capsule template. This set of
+     * entrypoints will all be w.r.t. a single template instance.
+     * 
+     * @param template A well-formed capsule template class, annotated with `@Capsule`.
+     */
+    public static Set<Entrypoint> makeAll(IClass template)
+    {
+        assert isCapsuleTemplate(template);
 
+        Set<Entrypoint> entrypoints = HashSetFactory.make();
+        TemplateInstance templateInstance = new TemplateInstance();
+
+        // The way in which `entrypoints` is populated depends on whether the capsule template 
+        // defines an active or passive capsule. If active, then the only entrypoint is `run()`.
+        // If passive, then every procedure is an entrypoint.
+        IMethod runDecl = getRunDecl(template);
+        if (runDecl != null) {
+            entrypoints.add(new CapsuleTemplateEntrypoint(runDecl, templateInstance));
+        } else {
+            for (IMethod proc: getProceduresList(template)) {
+                entrypoints.add(new CapsuleTemplateEntrypoint(proc, templateInstance));
+            }
+        }
+        return entrypoints;
+    }
+    
+    
+    protected final IClass template;
+    protected final TemplateInstance templateInstance;
+    protected int constZeroValueNumber;  // The value number of a variable holding zero.
+    
+    
     /**
      * @param method Either a `run()` declaration or a procedure on a well-formed capsule template
      *               (i.e. a class annotated with `@Capsule` which passed all `@PaniniJ` checks).
      */
-    public CapsuleTemplateEntrypoint(IMethod method)
+    public CapsuleTemplateEntrypoint(IMethod method, TemplateInstance templateInstance)
     {
         super(method, method.getClassHierarchy());
+
         template = method.getDeclaringClass();
         if (template == null) {
             String msg = "Could not get declaring class of given method: " + method.getSignature();
-            throw new NullPointerException(msg);
+            throw new RuntimeException(msg);
         }
-        constZeroValueNumber = 0;
         if(isCapsuleTemplate(template) == false) {
             String msg = "Can't make entrypoints on classes unless they are templates.";
             throw new IllegalArgumentException(msg);
         }
+
+        this.templateInstance = templateInstance;
     }
 
 
@@ -63,58 +105,42 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     @Override
     protected int makeArgument(AbstractRootMethod root, int i)
     {
-        return (i == 0) ? makeReceiver(root) : makeProcedureArgument(root, i);
+        return (i == 0) ? lookupOrMakeTemplateInstance(root) : makeProcedureArgument(root, i);
     }
     
     
     /**
      * @see makeArgument
      */
-    protected int makeReceiver(AbstractRootMethod root)
+    protected int lookupOrMakeTemplateInstance(AbstractRootMethod root)
     {
-        constZeroValueNumber = root.addLocal();
-        
-        // Instantiate a capsule template instance to serve as this entrypoint's receiver object.
-        // Note that every capsule template must (only) have the default constructor.
-        TypeReference receiverType = method.getParameterType(0);
-        SSANewInstruction receiverAllocation = root.addAllocation(receiverType);
-        if (receiverAllocation == null)
-            return -1;
-        int receiverValueNumber = receiverAllocation.getDef();
-        
-        // Make a capsule mockup instance for each of the receiver's fields (i.e. all of its
-        // `@Local`, `@Import`, and state fields).
-        for (IField f : template.getAllFields()) {
-            addTemplateFieldInstance(root, f, receiverValueNumber);
+        if (templateInstance.hasBeenMade == false)
+        {
+            // Instantiate and initialize a capsule template instance to serve as this entrypoint's
+            // receiver object (and the reciever object for any other entrypoint which is sharing
+            // `templateInstance`). Note that every capsule template must (only) have the default
+            // constructor, so we don't need to worry about arguments to the constructor.
+            TypeReference templateType = template.getReference();
+            SSANewInstruction receiverAllocation = root.addAllocation(templateType);
+            if (receiverAllocation == null) {
+                return -1;  // Error.
+            }
+            templateInstance.valueNumber = receiverAllocation.getDef();
+            makeReceiverInitInvocation(root, templateInstance.valueNumber);
+            templateInstance.hasBeenMade = true;
+            
+            // Make a capsule mockup instance for each of the receiver's fields (i.e. all of its
+            // `@Local`, `@Import`, and state fields).
+            for (IField f : template.getAllFields()) {
+                addTemplateFieldInstance(root, f, templateInstance.valueNumber);
+            }
         }
-        
-        // Initialize the newly created receiver object.
-        // TODO: Debug and re-enable this.
-        makeReceiverInitInvocation(root, receiverValueNumber);
-        
-        return receiverValueNumber;
+        return templateInstance.valueNumber;
     }
     
     
     /**
-     * @see makeArgument
-     */
-    protected int makeProcedureArgument(AbstractRootMethod root, int i)
-    {
-        // This should not be used to make a capsule template receiver object.
-        assert i > 0;
-
-        // Note that if this is called `method` cannot be a run decl and must be a procedure, since
-        // run decls have exactly one argument: the capsule template reciever object.
-        assert isProcedure(method);
-
-        // TODO: Everything! But for now just use the default behavior.
-        return super.makeArgument(root, i);
-    }
-    
-    
-    /**
-     * Makes an invocation instruction on template object with value number `i`, and adds this
+     * Makes an invocation instruction on template instance with value number `i`, and adds this
      * instruction to the given fake root method.
      * 
      * @see makeArgument
@@ -124,6 +150,11 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         IMethod initMethod = PaniniModel.getInitDecl(template);
         if (initMethod != null)
         {
+            if (initMethod.getNumberOfParameters() > 1) {
+                throw new UnsupportedOperationException("Cannot yet support `init()` with params.");
+                // TODO: Use `super.makeArgument()`.
+            }
+
             CallSiteReference initCall = CallSiteReference.make(root.getStatements().length,
                                                                 initMethod.getReference(),
                                                                 IInvokeInstruction.Dispatch.VIRTUAL);
@@ -172,12 +203,14 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     protected void addTemplateFieldArrayInstance(AbstractRootMethod root, IField field,
                                                  int receiverValueNumber)
     {
+        // TODO: I just want to support instantiating arrays of capsule interfaces.
+        TypeReference arrayTypeRef = field.getFieldTypeReference();
+        TypeReference elemTypeRef = arrayTypeRef.getArrayElementType();
         // Currently, when an array is instantiated it is instantiated with size 1, and when
         // elements need to be instantiated only the 0th is instantiated.
         // TODO: Is this bad?
         final int DEFAULT_ARRAY_LENGTH = 1;
 
-        TypeReference arrayTypeRef = field.getFieldTypeReference();
         int dimensionality = arrayTypeRef.getDimensionality();
         if (dimensionality > 1)
         {
@@ -187,7 +220,6 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         
         SSAInstruction newArrayInstr = root.add1DArrayAllocation(arrayTypeRef, DEFAULT_ARRAY_LENGTH);
 
-        TypeReference elemTypeRef = arrayTypeRef.getArrayElementType();
         if (elemTypeRef.isPrimitiveType() || isKnownToBeEffectivelyImmutable(elemTypeRef))
         {
             // No need to add instances for the elements of these types of arrays.
@@ -289,26 +321,18 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     
     
     /**
-     * Returns a set of all of the entrypoints on the given capsule template.
-     * 
-     * @param template A well-formed capsule template class, annotated with `@Capsule`.
+     * @see makeArgument
      */
-    public static Set<Entrypoint> makeAll(IClass template)
+    protected int makeProcedureArgument(AbstractRootMethod root, int i)
     {
-        assert isCapsuleTemplate(template);
+        // This should not be used to make a capsule template receiver object.
+        assert i > 0;
 
-        Set<Entrypoint> entrypoints = HashSetFactory.make();
-        final Consumer<IMethod> addEntrypoint = (m -> entrypoints.add(new CapsuleTemplateEntrypoint(m)));
+        // Note that if this is called `method` cannot be a run decl and must be a procedure, since
+        // run decls have exactly one argument: the capsule template reciever object.
+        assert isProcedure(method);
 
-        // The way in which `entrypoints` is populated depends on whether the capsule template 
-        // defines an active or passive capsule. If active, then the only entrypoint is `run()`.
-        // If passive, then every procedure is an entrypoint.
-        IMethod runDecl = getRunDecl(template);
-        if (runDecl != null) {
-            addEntrypoint.accept(runDecl);
-        } else {
-            getProceduresList(template).forEach(addEntrypoint);
-        }
-        return entrypoints;
+        // TODO: Everything! But for now just use the default behavior.
+        return super.makeArgument(root, i);
     }
 }
