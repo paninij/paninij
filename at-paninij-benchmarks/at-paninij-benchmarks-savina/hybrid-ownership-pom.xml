@@ -9,13 +9,14 @@
   
   <artifactId>at-paninij-benchmarks-savina</artifactId>
   <name>@PaniniJ Savina Benchmarks</name>
-  <description>Savina benchmarks written in at-paninij</description>
+  <description>Savina benchmarks written in @PaniniJ</description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <panini.capsuleListFile>${project.build.directory}/capsule_list.txt</panini.capsuleListFile>
     <generated.dependenciesFile>${project.build.directory}/dependencies.txt</generated.dependenciesFile>
     <project.logsDirectory>${project.basedir}/logs</project.logsDirectory>
+    <project.soterLogsDirectory>${project.logsDirectory}/soter</project.soterLogsDirectory>
   </properties>
 
   <build>
@@ -49,11 +50,9 @@
           <generatedSourcesDirectory>
             ${project.build.directory}/generated-sources
           </generatedSourcesDirectory>
-          <!--
           <generatedTestSourcesDirectory>
             ${project.build.directory}/generated-test-sources
           </generatedTestSourcesDirectory>
-          -->
           <fork>true</fork>
           <compilerArgs>
             <arg>-Apanini.capsuleListFile=${panini.capsuleListFile}</arg>
@@ -76,7 +75,9 @@
         </executions>
         <configuration>
           <mainClass>org.paninij.soter.Main</mainClass>
+
           <arguments>
+
             <argument>-classPath</argument>
             <argument>${project.build.outputDirectory}</argument>
             <argument>-classPathFile</argument>
@@ -84,13 +85,21 @@
             <argument>-classOutput</argument>
             <argument>${project.build.outputDirectory}</argument>
 
+            <argument>-originalBytecode</argument>
+            <argument>${project.soterLogsDirectory}/original_bytecode</argument>
+
             <argument>-analysisReports</argument>
-            <argument>${project.logsDirectory}/soter/analysis-reports</argument>
+            <argument>${project.soterLogsDirectory}/analysis_reports</argument>
+
+            <argument>-instrumentedBytecode</argument>
+            <argument>${project.soterLogsDirectory}/instrumented_bytecode</argument>
+
             <argument>@${panini.capsuleListFile}</argument>
+
           </arguments>
+
         </configuration>
       </plugin>
-
 
     </plugins>
   </build>
@@ -99,7 +108,7 @@
 
     <dependency>
       <groupId>org.paninij</groupId>
-      <artifactId>at-paninij-code-gen</artifactId>
+      <artifactId>at-paninij-proc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>

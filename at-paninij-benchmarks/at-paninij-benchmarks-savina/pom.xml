@@ -9,11 +9,10 @@
   
   <artifactId>at-paninij-benchmarks-savina</artifactId>
   <name>@PaniniJ Savina Benchmarks</name>
-  <description>Savina benchmarks written in at-paninij</description>
+  <description>Savina benchmarks written in @PaniniJ</description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.logsDirectory>${project.basedir}/logs</project.logsDirectory>
   </properties>
 
   <build>
@@ -28,11 +27,9 @@
           <generatedSourcesDirectory>
             ${project.build.directory}/generated-sources
           </generatedSourcesDirectory>
-          <!--
           <generatedTestSourcesDirectory>
             ${project.build.directory}/generated-test-sources
           </generatedTestSourcesDirectory>
-          -->
         </configuration>
       </plugin>
 
@@ -48,10 +45,7 @@
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-runtime</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.paninij</groupId>
-      <artifactId>at-paninij-soter</artifactId>
-    </dependency>
+
     <dependency>
     	<groupId>edu.rice.habanero</groupId>
     	<artifactId>savina</artifactId>

@@ -9,18 +9,18 @@
   
   <artifactId>at-paninij-benchmarks-savina</artifactId>
   <name>@PaniniJ Savina Benchmarks</name>
-  <description>Savina benchmarks written in at-paninij</description>
+  <description>Savina benchmarks written in @PaniniJ</description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <panini.capsuleListFile>${project.build.directory}/capsule_list.txt</panini.capsuleListFile>
     <generated.dependenciesFile>${project.build.directory}/dependencies.txt</generated.dependenciesFile>
     <project.logsDirectory>${project.basedir}/logs</project.logsDirectory>
+    <project.soterLogsDirectory>${project.logsDirectory}/soter</project.soterLogsDirectory>
   </properties>
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -65,7 +65,7 @@
         <version>1.4.0</version>
         <executions>
           <execution>
-            <id>instrument-runtime-ownership-checks</id>
+            <id>instrument-hybrid-ownership-checks</id>
             <phase>process-classes</phase>
             <goals>
               <goal>java</goal>
@@ -74,6 +74,7 @@
         </executions>
         <configuration>
           <mainClass>org.paninij.soter.Main</mainClass>
+
           <arguments>
 
             <argument>-classPath</argument>
@@ -83,16 +84,28 @@
             <argument>-classOutput</argument>
             <argument>${project.build.outputDirectory}</argument>
 
+            <argument>-instrumentAll</argument>
+
+            <argument>-originalBytecode</argument>
+            <argument>${project.soterLogsDirectory}/original_bytecode</argument>
+
+            <argument>-analysisReports</argument>
+            <argument>${project.soterLogsDirectory}/analysis_reports</argument>
+
+            <argument>-instrumentedBytecode</argument>
+            <argument>${project.soterLogsDirectory}/instrumented_bytecode</argument>
+
             <argument>@${panini.capsuleListFile}</argument>
 
           </arguments>
+
         </configuration>
       </plugin>
-
     </plugins>
   </build>
   
   <dependencies>
+
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-code-gen</artifactId>
@@ -102,9 +115,15 @@
       <artifactId>at-paninij-runtime</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-soter</artifactId>
+    </dependency>
+
+    <dependency>
     	<groupId>edu.rice.habanero</groupId>
     	<artifactId>savina</artifactId>
     </dependency>
+
   </dependencies>
   
 </project>
