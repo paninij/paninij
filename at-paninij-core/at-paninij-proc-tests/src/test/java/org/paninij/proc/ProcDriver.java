@@ -1,9 +1,10 @@
-package org.paninij.soter;
+package org.paninij.proc;
 
 import static javax.tools.JavaFileObject.Kind.SOURCE;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.tools.JavaCompiler;
@@ -21,13 +22,13 @@ import org.paninij.proc.util.FileManagerFactory;
  * Includes tests which perform a Java compilation task with a `PaniniProcessor` instance configured
  * to use `-Apanini.staticOwnership=SOTER`.
  */
-public class TestPaniniProcessor
+public class ProcDriver
 {
-    /*
     private static final String CLASS_PATH = System.getProperty("java.class.path");
     private static final String SOURCE_PATH = "src/main/java:target/generated-sources:src/test/java:target/generated-test-sources";
     private static final String CLASS_OUTPUT = "target/test-classes";
     private static final String SOURCE_OUTPUT = "target/generated-test-sources";
+    private static final List<String> OPTIONS = Arrays.asList(new String[] {"-proc:only"});
     
     private JavaCompiler javaCompiler;
     private StandardJavaFileManager fileManager;
@@ -39,22 +40,15 @@ public class TestPaniniProcessor
         javaCompiler = ToolProvider.getSystemJavaCompiler();
         fileManager = FileManagerFactory.make(javaCompiler, CLASS_PATH, SOURCE_PATH,
                                               CLASS_OUTPUT, SOURCE_OUTPUT);
-
         compilationUnits = new ArrayList<JavaFileObject>();
     }
     
     @Test
-    public void processActiveClientTemplate() throws IOException
+    public void processNormalTemplate() throws IOException
     {
-        processTemplate("org.paninij.apt.soter.ActiveClientTemplate");
+        processTemplate("org.paninij.proc.shapes.normal.NormalTemplate");
     }
     
-    @Test
-    public void processLeakyServerTemplate() throws IOException
-    {
-        processTemplate("org.paninij.apt.soter.LeakyServerTemplate");
-    }
-
     private void processTemplate(String templateName) throws IOException
     {
         JavaFileObject template = fileManager.getJavaFileForInput(StandardLocation.SOURCE_PATH,
@@ -66,9 +60,8 @@ public class TestPaniniProcessor
 
         compilationUnits.add(template);
 
-        CompilationTask task = javaCompiler.getTask(null, fileManager, null, null, null,
-                                                    compilationUnits);
+        CompilationTask task = javaCompiler.getTask(null, fileManager, null, OPTIONS,
+                                                    null, compilationUnits);
         task.call();
     }
-    */
 }
