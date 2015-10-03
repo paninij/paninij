@@ -22,7 +22,7 @@ import org.paninij.proc.util.FileManagerFactory;
  * Includes tests which perform a Java compilation task with a `PaniniProcessor` instance configured
  * to use `-Apanini.staticOwnership=SOTER`.
  */
-public class ProcDriver
+public class TestProcDriver
 {
     private static final String CLASS_PATH = System.getProperty("java.class.path");
     private static final String SOURCE_PATH = "src/main/java:target/generated-sources:src/test/java:target/generated-test-sources";
