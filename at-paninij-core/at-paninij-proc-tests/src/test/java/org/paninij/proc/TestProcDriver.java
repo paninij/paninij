@@ -1,10 +1,10 @@
 package org.paninij.proc;
 
+import static java.util.Arrays.asList;
 import static javax.tools.JavaFileObject.Kind.SOURCE;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.tools.JavaCompiler;
@@ -25,10 +25,13 @@ import org.paninij.proc.util.FileManagerFactory;
 public class TestProcDriver
 {
     private static final String CLASS_PATH = System.getProperty("java.class.path");
-    private static final String SOURCE_PATH = "src/main/java:target/generated-sources:src/test/java:target/generated-test-sources";
+    private static final List<String> SOURCE_PATH = asList("src/main/java",
+                                                           "target/generated-sources",
+                                                           "src/test/java",
+                                                           "target/generated-test-sources");
     private static final String CLASS_OUTPUT = "target/test-classes";
     private static final String SOURCE_OUTPUT = "target/generated-test-sources";
-    private static final List<String> OPTIONS = Arrays.asList(new String[] {"-proc:only"});
+    private static final List<String> OPTIONS = asList("-proc:only");
     
     private JavaCompiler javaCompiler;
     private StandardJavaFileManager fileManager;
