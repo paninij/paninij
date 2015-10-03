@@ -24,9 +24,9 @@ public class NoMainCheck implements TemplateCheck
 			if(elem.getKind() == ElementKind.METHOD)
 			{
 				ExecutableElement execElem = (ExecutableElement) elem;
-				Set<Modifier> mods = execElem.getModifiers();
 				if(execElem.getSimpleName().toString().compareTo("main") == 0)
 				{
+					Set<Modifier> mods = execElem.getModifiers();
 					if(mods.contains(Modifier.PUBLIC) && mods.contains(Modifier.STATIC))
 					{
 						if(execElem.getReturnType().getKind() == TypeKind.VOID)
