@@ -15,6 +15,16 @@ public class FileManagerFactory
 {
     public static StandardJavaFileManager make(JavaCompiler javaCompiler,
                                                String classPath,
+                                               List<String> sourcePath,
+                                               String classOutput,
+                                               String sourceOutput) throws IOException
+    {
+        return make(javaCompiler, classPath, String.join(File.pathSeparator, sourcePath),
+                    classOutput, sourceOutput);
+    }
+    
+    public static StandardJavaFileManager make(JavaCompiler javaCompiler,
+                                               String classPath,
                                                String sourcePath,
                                                String classOutput,
                                                String sourceOutput) throws IOException
