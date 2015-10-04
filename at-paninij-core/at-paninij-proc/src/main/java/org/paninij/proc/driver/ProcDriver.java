@@ -62,7 +62,7 @@ public class ProcDriver
         );
         File sourceOutput = new File("target/generated-sources");
         File classOutput = new File("target/classes");
-        List<String> options = asList("-proc:only");
+        List<String> options = asList("-proc:only", "-Apanini.exceptOnFailedChecks");
 
         return new Settings(classPath, sourcePath, classOutput, sourceOutput, options);
     }

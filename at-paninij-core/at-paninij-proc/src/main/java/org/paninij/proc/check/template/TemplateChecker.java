@@ -24,6 +24,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.PaniniProcessor;
+import org.paninij.proc.check.FailureBehavior;
 import org.paninij.proc.check.Result;
 
 
@@ -31,20 +32,20 @@ public class TemplateChecker
 {
     protected final TemplateCheck templateChecks[];
     protected final TemplateCheckEnvironment env;
+    protected final FailureBehavior failureBehavior;
     
-    public TemplateChecker(ProcessingEnvironment procEnv)
+    public TemplateChecker(ProcessingEnvironment procEnv, FailureBehavior errorBehavior)
     {
-        env = new TemplateCheckEnvironment(procEnv);
+        this.env = new TemplateCheckEnvironment(procEnv);
+        this.failureBehavior = errorBehavior;
         
-        TemplateCheck checks[] = {
+        templateChecks = new TemplateCheck[] {
             new SuffixCheck(),
             new NotSubclassCheck(env),
             new NoVariadicMethodsCheck(),
             new OnlyZeroArgConstructorsCheck(),
             new NoMainCheck()
         };
-        
-        templateChecks = checks;
     }
     
 
@@ -57,6 +58,7 @@ public class TemplateChecker
         if (template.getKind() != ElementKind.CLASS)
         {
             // TODO: Make this error message a bit clearer.
+            // TODO: Switch between error behaviors.
             context.error("A capsule template must be a class, but an element annotated with `@Capsule` is of kind " + template.getKind());
             return false;
         }
@@ -66,9 +68,14 @@ public class TemplateChecker
             Result result = check.check((TypeElement) template);
             if (!result.ok())
             {
-                context.error(result.err());
-                context.error("Error Source: " + result.source());
-                throw new TemplateCheckException();
+                switch (failureBehavior) {
+                case LOGGING:
+                    context.error(result.err());
+                    context.error("Error Source: " + result.source());
+                    break;
+                case EXCEPTION:
+                    throw new TemplateCheckException(result.err());
+                }
             }
         }
 
