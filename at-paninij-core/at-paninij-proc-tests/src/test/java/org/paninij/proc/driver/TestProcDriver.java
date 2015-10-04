@@ -1,4 +1,6 @@
-package org.paninij.proc;
+package org.paninij.proc.driver;
+
+import static org.paninij.proc.driver.ProcDriver.makeDefaultSettings;
 
 import java.io.IOException;
 
@@ -14,7 +16,7 @@ public class TestProcDriver
     private final ProcDriver driver;
     
     public TestProcDriver() throws IOException {
-        driver = new ProcDriver(ProcDriver.DEFAULT_SETTINGS);
+        driver = new ProcDriver(makeDefaultSettings());
     }
     
     @Test

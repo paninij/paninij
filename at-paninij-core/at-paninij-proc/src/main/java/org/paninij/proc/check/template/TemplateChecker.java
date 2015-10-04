@@ -40,7 +40,8 @@ public class TemplateChecker
             new SuffixCheck(),
             new NotSubclassCheck(env),
             new NoVariadicMethodsCheck(),
-            new OnlyZeroArgConstructorsCheck()
+            new OnlyZeroArgConstructorsCheck(),
+            new NoMainCheck()
         };
         
         templateChecks = checks;
@@ -67,7 +68,7 @@ public class TemplateChecker
             {
                 context.error(result.err());
                 context.error("Error Source: " + result.source());
-                return false;
+                throw new TemplateCheckException();
             }
         }
 

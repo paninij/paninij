@@ -49,34 +49,28 @@ public class ProcDriver
         }
     }
     
-    static final List<File> DEFAULT_CLASS_PATH;
-    static final List<File> DEFAULT_SOURCE_PATH = asList(
-        new File("src/main/java"),
-        new File("src/main/at-paninij"),
-        new File("target/generated-sources")
-    );
-    static final File DEFAULT_CLASS_OUTPUT = new File("target/classes");
-    static final File DEFAULT_SOURCE_OUTPUT = new File("target/generated-sources");
-    static final List<String> DEFAULT_OPTIONS = asList("-proc:only");
-    
-    public static final Settings DEFAULT_SETTINGS;
-
-    static {
-        List<String> classPath = asList(getProperty("java.class.path").split(File.pathSeparator));
-        DEFAULT_CLASS_PATH = new ArrayList<File>();
-        for (String s : classPath) {
-            DEFAULT_CLASS_PATH.add(new File(s));
+    public static Settings makeDefaultSettings()
+    {
+        List<File> classPath = new ArrayList<File>();
+        for (String s : asList(getProperty("java.class.path").split(File.pathSeparator))) {
+            classPath.add(new File(s));
         }
-        
-        DEFAULT_SETTINGS = new Settings(DEFAULT_CLASS_PATH, DEFAULT_SOURCE_PATH,
-                                        DEFAULT_CLASS_OUTPUT, DEFAULT_SOURCE_OUTPUT,
-                                        DEFAULT_OPTIONS);
+        List<File> sourcePath = asList(
+            new File("src/main/java"),
+            new File("src/main/at-paninij"),
+            new File("target/generated-sources")
+        );
+        File sourceOutput = new File("target/generated-sources");
+        File classOutput = new File("target/classes");
+        List<String> options = asList("-proc:only");
+
+        return new Settings(classPath, sourcePath, classOutput, sourceOutput, options);
     }
     
     
-    final Settings settings;
-    final JavaCompiler javaCompiler;
-    final StandardJavaFileManager fileManager;
+    protected final Settings settings;
+    protected final JavaCompiler javaCompiler;
+    protected final StandardJavaFileManager fileManager;
 
     
     public ProcDriver(Settings settings) throws IOException
