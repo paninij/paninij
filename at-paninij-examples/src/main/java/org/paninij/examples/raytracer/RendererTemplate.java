@@ -5,19 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Local;
 
 @Capsule public class RendererTemplate {
 
     int CHUNKS = 16;
-    @Imports Tracer[] tracers = new Tracer[CHUNKS];
+    @Local Tracer[] tracers = new Tracer[CHUNKS];
     int screenWidth = 640;
     int screenHeight = 480;
     int chunkHeight = screenHeight / CHUNKS;
 
     public void init() {
-        screenWidth = 640;
-        screenHeight = 480;
         chunkHeight = screenHeight / CHUNKS;
     }
 
@@ -28,9 +26,7 @@ import org.paninij.lang.Imports;
     }
 
     public Image render(Scene scene) {
-
         BufferedImage image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-
         List<Pixel[]> chunks = new ArrayList<Pixel[]>();
 
         for (Tracer tracer : tracers) chunks.add(tracer.renderChunk(scene));
