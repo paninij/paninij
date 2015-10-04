@@ -31,8 +31,8 @@ public class NoMainCheck implements TemplateCheck
 					{
 						if(execElem.getReturnType().getKind() == TypeKind.VOID)
 						{
-							String err = "Capsule Templates must not contain a public static void main method."
-									+ "A main method was found in `{0}`";
+							String err = "Capsule Templates must not contain a `public static void main()` "
+									   + "method, but a main method was found in `{0}`.";
 							err = MessageFormat.format(err, template.getSimpleName().toString());
 							return new Result.Error(err, errorSource);
 						}
@@ -43,5 +43,4 @@ public class NoMainCheck implements TemplateCheck
 		
 		return Result.ok;
 	}
-
 }
