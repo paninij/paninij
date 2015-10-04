@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Imports;
 
 @Capsule public class RendererTemplate {
 
     int CHUNKS = 16;
-    @Child Tracer[] tracers = new Tracer[CHUNKS];
+    @Imports Tracer[] tracers = new Tracer[CHUNKS];
     int screenWidth = 640;
     int screenHeight = 480;
     int chunkHeight = screenHeight / CHUNKS;
@@ -23,7 +23,7 @@ import org.paninij.lang.Child;
 
     public void design(Renderer self) {
         for (int i = 0; i < tracers.length; i++) {
-            tracers[i].wire(i, chunkHeight, screenWidth, screenHeight);
+            tracers[i].imports(i, chunkHeight, screenWidth, screenHeight);
         }
     }
 

@@ -1,12 +1,12 @@
 package org.paninij.examples.raytracer;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Child;
+import org.paninij.lang.Local;
 
 @Capsule public class RayTracerTemplate {
-    @Child Renderer renderer;
-    @Child SceneData sceneData;
-    @Child UserInterface ui;
+    @Local Renderer renderer;
+    @Local SceneData sceneData;
+    @Local UserInterface ui;
 
     public void init() {
         RayTracerUtil.initialize(640, 480);
