@@ -1,5 +1,9 @@
 package org.paninij.proc.util;
 
+import static java.util.Collections.singleton;
+import static javax.tools.StandardLocation.CLASS_OUTPUT;
+import static javax.tools.StandardLocation.CLASS_PATH;
+import static javax.tools.StandardLocation.SOURCE_OUTPUT;
 import static javax.tools.StandardLocation.SOURCE_PATH;
 
 import java.io.File;
@@ -39,8 +43,13 @@ public class ArtifactCompiler implements ArtifactMaker
     {
         this.filer = filer;
         this.javaCompiler = ToolProvider.getSystemJavaCompiler();
-        this.fileManager = FileManagerFactory.make(javaCompiler, classPath, sourcePath,
-                                                   classOutput, sourceOutput);
+
+        this.fileManager = this.javaCompiler.getStandardFileManager(null, null, null);
+        fileManager.setLocation(CLASS_PATH, classPath);
+        fileManager.setLocation(SOURCE_PATH, sourcePath);
+        fileManager.setLocation(CLASS_OUTPUT, singleton(classOutput));
+        fileManager.setLocation(SOURCE_OUTPUT, singleton(sourceOutput));
+
         this.compilerOptions = compilerOptions;
     }
     

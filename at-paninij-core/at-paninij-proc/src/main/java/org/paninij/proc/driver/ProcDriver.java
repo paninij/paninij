@@ -1,8 +1,13 @@
 package org.paninij.proc.driver;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static java.lang.System.getProperty;
 import static javax.tools.JavaFileObject.Kind.SOURCE;
+import static javax.tools.StandardLocation.CLASS_OUTPUT;
+import static javax.tools.StandardLocation.CLASS_PATH;
+import static javax.tools.StandardLocation.SOURCE_OUTPUT;
+import static javax.tools.StandardLocation.SOURCE_PATH;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +20,6 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 import javax.tools.JavaCompiler.CompilationTask;
-
-import org.paninij.proc.util.FileManagerFactory;
 
 
 public class ProcDriver
@@ -46,8 +49,6 @@ public class ProcDriver
         }
     }
     
-    public static final Settings DEFAULT_SETTINGS;
-
     static final List<File> DEFAULT_CLASS_PATH;
     static final List<File> DEFAULT_SOURCE_PATH = asList(
         new File("src/main/java"),
@@ -58,6 +59,8 @@ public class ProcDriver
     static final File DEFAULT_SOURCE_OUTPUT = new File("target/generated-sources");
     static final List<String> DEFAULT_OPTIONS = asList("-proc:only");
     
+    public static final Settings DEFAULT_SETTINGS;
+
     static {
         List<String> classPath = asList(getProperty("java.class.path").split(File.pathSeparator));
         DEFAULT_CLASS_PATH = new ArrayList<File>();
@@ -81,8 +84,12 @@ public class ProcDriver
         this.settings = settings;
 
         javaCompiler = ToolProvider.getSystemJavaCompiler();
-        fileManager = FileManagerFactory.make(javaCompiler, settings.classPath, settings.sourcePath,
-                                              settings.classOutput, settings.sourceOutput);
+
+        fileManager = javaCompiler.getStandardFileManager(null, null, null);
+        fileManager.setLocation(CLASS_PATH, settings.classPath);
+        fileManager.setLocation(SOURCE_PATH, settings.sourcePath);
+        fileManager.setLocation(CLASS_OUTPUT, singleton(settings.classOutput));
+        fileManager.setLocation(SOURCE_OUTPUT, singleton(settings.sourceOutput));
     }
     
     public void process(String... compilationUnits) throws IOException
@@ -92,15 +99,15 @@ public class ProcDriver
         task.call();
     }
     
-    private List<JavaFileObject> lookupCompilationUnits(String... templateNames) throws IOException
+    private List<JavaFileObject> lookupCompilationUnits(String... names) throws IOException
     {
-        List<JavaFileObject> compilationUnits = new ArrayList<JavaFileObject>(templateNames.length);
-        for (String templateName : templateNames)
+        List<JavaFileObject> compilationUnits = new ArrayList<JavaFileObject>(names.length);
+        for (String compilationUnit : names)
         {
             JavaFileObject template = fileManager.getJavaFileForInput(StandardLocation.SOURCE_PATH,
-                                                                      templateName, SOURCE);
+                                                                      compilationUnit, SOURCE);
             if (template == null) {
-                String msg = "Could not load the template source file object: " + templateName;
+                String msg = "Could not load the template source file object: " + compilationUnit;
                 throw new IllegalArgumentException(msg);
             }
 
