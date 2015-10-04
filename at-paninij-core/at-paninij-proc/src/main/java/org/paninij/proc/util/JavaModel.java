@@ -31,6 +31,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 
 import org.paninij.proc.PaniniProcessor;
 
@@ -150,6 +151,19 @@ public class JavaModel {
             return isFinalType((TypeElement) elem);
         }
     }
+    
+    public static boolean hasDefaultConstructor(TypeMirror type)
+    {
+    	if (type.getKind() != TypeKind.DECLARED)
+        {
+            return false;
+        }
+        else
+        {
+            Element elem = ((DeclaredType) type).asElement();
+            return hasDefaultConstructor((TypeElement) elem);
+        }
+    }
 
     public static boolean isFinalType(TypeElement type)
     {
@@ -179,6 +193,15 @@ public class JavaModel {
     public static boolean isArray(Element type)
     {
         return isArray(type.asType());
+    }
+    
+    public static boolean hasDefaultConstructor(Element type)
+    {
+    	List<ExecutableElement> constructors = ElementFilter.constructorsIn(type.getEnclosedElements());
+    	for (ExecutableElement constructor : constructors) {
+    		if (constructor.getParameters().isEmpty()) return true;
+    	}
+    	return false;
     }
 
     public static <A extends Annotation> boolean isAnnotatedBy(PaniniProcessor context,
