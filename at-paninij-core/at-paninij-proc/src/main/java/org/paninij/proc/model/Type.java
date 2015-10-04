@@ -109,7 +109,7 @@ public class Type
         return Category.NORMAL;
     }
 
-    public Duckability getDuckability(){
+    public Duckability getDuckability() {
         // TODO need to fully determine duckability!
         // see https://github.com/hridesh/panini/wiki/Enumerating-Consequences-of-a-Procedure's-Properties-Along-Three-Dimensions
 
