@@ -69,9 +69,21 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
         Set<String> imports = this.signature.getImports();
         imports.add("org.paninij.runtime.Capsule$Mockup");
         imports.add("org.paninij.lang.CapsuleMockup");
+
+        //1.7 compliant
+        List<String> importList = new ArrayList<String>();
+        for(String imp : imports)
+        {
+        	importList.add("import " + imp + ";");
+        }
+        return importList;
+        
+        //1.8 alternative
+        /*
         return imports.stream()
                       .map(i -> "import " + i + ";")
                       .collect(toList());
+        */
     }
 
 
@@ -115,11 +127,23 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
     protected List<String> generateProcedure(Procedure procedure)
     {
         MessageShape shape = new MessageShape(procedure);
+        
+        //1.7 compliant
+        String params = "";
+        List<String> varStrings = new ArrayList<String>();
+        for(Variable var : procedure.getParameters())
+        {
+        	varStrings.add(var.toString());
+        }
+        params = String.join(",", varStrings);
+        
+        //1.8 alternative
+        /*
         String params = procedure.getParameters()
                                  .stream()
                                  .map(v -> v.toString())
                                  .collect(joining(", "));
-
+		*/
         List<String> src = lines("@Override",
                                  "public #0 #1(#2) {",
                                  "    /* Do Nothing */",

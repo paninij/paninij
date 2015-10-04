@@ -1,6 +1,7 @@
 package org.paninij.runtime.check;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -237,8 +238,23 @@ public class DynamicOwnershipTransfer
          * A helper method just for `findUnsafe()` for getting all of the fields from a class.
          */
         private static List<Field> findUnsafe$getAllFields(Class<? extends Object> cls) {
+        	//1.7 compliant
+        	List<Field> fields = new ArrayList<Field>();
+        	for(Field f : cls.getFields())
+        	{
+        		fields.add(f);
+        	}
+        	for(Field f : cls.getDeclaredFields())
+        	{
+        		fields.add(f);
+        	}
+        	
+        	return fields;
+        	//1.8 feature
+        	/*
             return Stream.concat(Arrays.stream(cls.getFields()),
                                  Arrays.stream(cls.getDeclaredFields())).collect(Collectors.toList());
+        	*/
         }
         
         
