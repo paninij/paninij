@@ -23,7 +23,7 @@ public class Number
     double value;
     
     public Number() {
-    	this.value = 0;
+        this.value = 0;
     }
 
     public Number(double value) {

@@ -152,7 +152,7 @@ public class JavaModel {
         }
     }
     
-    public static boolean hasDefaultConstructor(TypeMirror type)
+    public static boolean hasZeroArgConstructor(TypeMirror type)
     {
     	if (type.getKind() != TypeKind.DECLARED)
         {
@@ -161,7 +161,7 @@ public class JavaModel {
         else
         {
             Element elem = ((DeclaredType) type).asElement();
-            return hasDefaultConstructor((TypeElement) elem);
+            return hasZeroArgConstructor((TypeElement) elem);
         }
     }
 
@@ -195,7 +195,7 @@ public class JavaModel {
         return isArray(type.asType());
     }
     
-    public static boolean hasDefaultConstructor(Element type)
+    public static boolean hasZeroArgConstructor(Element type)
     {
     	List<ExecutableElement> constructors = ElementFilter.constructorsIn(type.getEnclosedElements());
     	for (ExecutableElement constructor : constructors) {

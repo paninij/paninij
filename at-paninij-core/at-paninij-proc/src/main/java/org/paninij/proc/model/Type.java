@@ -133,7 +133,7 @@ public class Type
             return Duckability.UNDUCKABLE;
         }
         
-        if (!JavaModel.hasDefaultConstructor(this.mirror)) {
+        if (!JavaModel.hasZeroArgConstructor(this.mirror)) {
         	return Duckability.UNDUCKABLE;
         }
 
