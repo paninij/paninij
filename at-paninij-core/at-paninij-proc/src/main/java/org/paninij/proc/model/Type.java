@@ -132,6 +132,10 @@ public class Type
         if (JavaModel.isArray(this.mirror)) {
             return Duckability.UNDUCKABLE;
         }
+        
+        if (!JavaModel.hasZeroArgConstructor(this.mirror)) {
+        	return Duckability.UNDUCKABLE;
+        }
 
         return Duckability.DUCKABLE;
     }
