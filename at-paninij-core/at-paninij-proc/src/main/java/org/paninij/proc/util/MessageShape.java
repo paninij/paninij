@@ -117,7 +117,6 @@ public class MessageShape
         case ERROR:
             return "org.paninij.runtime.futures";
         case PREMADE:
-            // TODO return the exact premade class
             return "org.paninij.lang";
         case SIMPLE:
             return "org.paninij.runtime.messages";
