@@ -1,7 +1,5 @@
 package org.paninij.proc;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.joining;
 import static org.paninij.proc.util.Source.cat;
 import static org.paninij.proc.util.Source.format;
 import static org.paninij.proc.util.Source.formatAligned;
@@ -70,20 +68,12 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
         imports.add("org.paninij.runtime.Capsule$Mockup");
         imports.add("org.paninij.lang.CapsuleMockup");
 
-        //1.7 compliant
         List<String> importList = new ArrayList<String>();
         for(String imp : imports)
         {
         	importList.add("import " + imp + ";");
         }
         return importList;
-        
-        //1.8 alternative
-        /*
-        return imports.stream()
-                      .map(i -> "import " + i + ";")
-                      .collect(toList());
-        */
     }
 
 
@@ -128,22 +118,13 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
     {
         MessageShape shape = new MessageShape(procedure);
         
-        //1.7 compliant
-        String params = "";
         List<String> varStrings = new ArrayList<String>();
         for(Variable var : procedure.getParameters())
         {
         	varStrings.add(var.toString());
         }
-        params = String.join(",", varStrings);
+        String params = String.join(",", varStrings);
         
-        //1.8 alternative
-        /*
-        String params = procedure.getParameters()
-                                 .stream()
-                                 .map(v -> v.toString())
-                                 .collect(joining(", "));
-		*/
         List<String> src = lines("@Override",
                                  "public #0 #1(#2) {",
                                  "    /* Do Nothing */",

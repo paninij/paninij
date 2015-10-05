@@ -2,7 +2,6 @@ package org.paninij.proc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.lang.model.type.TypeKind;
 
@@ -197,17 +196,6 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected List<String> generateGetAllState()
     {
-    	
-    	//1.8 feature
-        /*
-    	List<String> states = capsule.getStateFields()
-                                     .stream()
-                                     .filter(s -> s.getKind() == TypeKind.ARRAY
-                                               || s.getKind() == TypeKind.DECLARED)
-                                     .map(s -> "panini$encapsulated." + s.getIdentifier())
-                                     .collect(Collectors.toList());
-		*/
-    	//1.7 compliant
     	List<String> states = new ArrayList<String>();
     	
     	for(Variable field : capsule.getStateFields())
@@ -217,8 +205,6 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
     			states.add("panini$encapsulated." + field.getIdentifier());
     		}
     	}
-    	
-    	
     	
         List<String> src = Source.lines("@Override",
                                         "public Object panini$getAllState()",
