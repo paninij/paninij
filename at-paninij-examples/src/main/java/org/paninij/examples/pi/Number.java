@@ -21,7 +21,7 @@ package org.paninij.examples.pi;
 public class Number
 {
     double value;
-
+    
     public Number() {
         this.value = 0;
     }
