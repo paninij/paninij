@@ -13,7 +13,7 @@ import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
-import org.paninij.soter.transfer.TransferAnalysis;
+import org.paninij.soter.transfer.SiteAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
 import org.paninij.soter.util.Sets;
@@ -37,7 +37,7 @@ public class TransferLiveAnalysis extends LoggingAnalysis
     // The analysis's dependencies:
     final protected CapsuleTemplate template;
     final protected LocalLiveAnalysisFactory llaFactory;
-    final protected TransferAnalysis ta;
+    final protected SiteAnalysis sa;
     final protected CallGraphAnalysis cga;
     final protected IClassHierarchy cha;
     
@@ -49,13 +49,13 @@ public class TransferLiveAnalysis extends LoggingAnalysis
 
     public TransferLiveAnalysis(CapsuleTemplate template,
                                 LocalLiveAnalysisFactory llaFactory,
-                                TransferAnalysis ta,
+                                SiteAnalysis sa,
                                 CallGraphAnalysis cga,
                                 IClassHierarchy cha)
     {
         this.template = template;
         this.llaFactory = llaFactory;
-        this.ta = ta;
+        this.sa = sa;
         this.cga = cga;
         this.cha = cha;
         
@@ -67,14 +67,14 @@ public class TransferLiveAnalysis extends LoggingAnalysis
     @Override
     public void performSubAnalyses()
     {
-        ta.perform();
+        sa.perform();
     }
     
 
     @Override
     public void performAnalysis()
     {
-        if (ta.getTransferringNodes().isEmpty()) {
+        if (sa.getTransferringNodes().isEmpty()) {
             // If there are no transferring nodes, that means that there are no transferring sites.
             return;
         }
@@ -82,18 +82,18 @@ public class TransferLiveAnalysis extends LoggingAnalysis
         // For each relevant site within the fake root, mark its (target) receiver variable live.
         // Note: If there are any transferring nodes, then the fake root node must be "reaching".
         CGNode fakeRootNode = cga.getCallGraph().getFakeRootNode();
-        for (AnalysisSite site: ta.getRelevantSites(fakeRootNode)) {
+        for (AnalysisSite site: sa.getRelevantSites(fakeRootNode)) {
             assert site instanceof AnalysisCallSite;
             addLiveVariablesForRelevantRootSite((AnalysisCallSite) site);
         }
         
-        for (CGNode node : ta.getReachingNodes())
+        for (CGNode node : sa.getReachingNodes())
         {
             if (fakeRootNode.equals(node)) {
                 continue;  // Skip the fake root node, since it's already been handled.
             }
 
-            Set<AnalysisSite> relevantSites = ta.getRelevantSites(node);
+            Set<AnalysisSite> relevantSites = sa.getRelevantSites(node);
             LocalLiveAnalysis localAnalysis = llaFactory.lookupOrMake(node);
             localAnalysis.perform();
             for (AnalysisSite site : relevantSites) {
@@ -193,8 +193,8 @@ public class TransferLiveAnalysis extends LoggingAnalysis
         // Check that the domain of `liveVariables` is equivalent to the union of all analysis sites
         // defined within the set of all reaching nodes.
         Set<AnalysisSite> domain = new HashSet<AnalysisSite>();
-        for (CGNode node: ta.getReachingNodes()) {
-            domain.addAll(ta.getRelevantSites(node));
+        for (CGNode node: sa.getReachingNodes()) {
+            domain.addAll(sa.getRelevantSites(node));
         }
         if (!Sets.isWellDefinedOverDomain(liveVariables, domain)) {
             return false;

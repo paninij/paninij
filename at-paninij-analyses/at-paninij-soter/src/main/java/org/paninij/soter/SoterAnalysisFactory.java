@@ -8,8 +8,8 @@ import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.live.TransferLiveAnalysisFactory;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.CapsuleTemplateFactory;
-import org.paninij.soter.transfer.TransferAnalysis;
-import org.paninij.soter.transfer.TransferAnalysisFactory;
+import org.paninij.soter.transfer.SiteAnalysis;
+import org.paninij.soter.transfer.SiteAnalysisFactory;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
@@ -25,7 +25,7 @@ public class SoterAnalysisFactory
     protected final AnalysisOptions options;
     protected final CapsuleTemplateFactory templateFactory;
     protected final CallGraphAnalysisFactory cgaFactory;
-    protected final TransferAnalysisFactory taFactory;
+    protected final SiteAnalysisFactory saFactory;
     protected final TransferLiveAnalysisFactory tlaFactory;
     protected final CallGraphLiveAnalysisFactory cglaFactory;
 
@@ -39,7 +39,7 @@ public class SoterAnalysisFactory
         
         templateFactory = new CapsuleTemplateFactory(cha);
         cgaFactory = new CallGraphAnalysisFactory(cha, options);
-        taFactory = new TransferAnalysisFactory(cha);
+        saFactory = new SiteAnalysisFactory(cha);
         tlaFactory = new TransferLiveAnalysisFactory(cha);
         cglaFactory = new CallGraphLiveAnalysisFactory(cha);
     }
@@ -51,10 +51,10 @@ public class SoterAnalysisFactory
     {
         CapsuleTemplate template = templateFactory.make(capsuleName);
         CallGraphAnalysis cga = cgaFactory.make(template);
-        TransferAnalysis ta = taFactory.make(template, cga);
-        TransferLiveAnalysis tla = tlaFactory.make(template, cga, ta);
-        CallGraphLiveAnalysis cgla = cglaFactory.make(template, cga, ta, tla);
+        SiteAnalysis sa = saFactory.make(template, cga);
+        TransferLiveAnalysis tla = tlaFactory.make(template, cga, sa);
+        CallGraphLiveAnalysis cgla = cglaFactory.make(template, cga, sa, tla);
 
-        return new SoterAnalysis(template, cga, ta, tla, cgla, cha);
+        return new SoterAnalysis(template, cga, sa, tla, cgla, cha);
     }
 }

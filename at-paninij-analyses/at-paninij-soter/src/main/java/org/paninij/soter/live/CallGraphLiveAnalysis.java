@@ -16,7 +16,7 @@ import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.site.CallSite;
-import org.paninij.soter.transfer.TransferAnalysis;
+import org.paninij.soter.transfer.SiteAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
 
@@ -50,7 +50,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
     // Analysis dependencies.
     protected final CapsuleTemplate template;
     protected final CallGraphAnalysis cga;
-    protected final TransferAnalysis ta;
+    protected final SiteAnalysis sa;
     protected final TransferLiveAnalysis tla;
     protected final IClassHierarchy cha;
     
@@ -64,12 +64,12 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
 
 
     public CallGraphLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
-                                 TransferAnalysis ta, TransferLiveAnalysis tla,
+                                 SiteAnalysis sa, TransferLiveAnalysis tla,
                                  IClassHierarchy cha)
     {
         this.template = template;
         this.cga = cga;
-        this.ta = ta;
+        this.sa = sa;
         this.tla = tla;
         this.cha = cha;
         
@@ -84,7 +84,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
     public void performSubAnalyses()
     {
         cga.perform();
-        ta.perform();
+        sa.perform();
         tla.perform();
     }
 
@@ -113,10 +113,10 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
      */
     protected void collectSubanalysisResults()
     {
-        for (CGNode node : ta.getReachingNodes())
+        for (CGNode node : sa.getReachingNodes())
         {
             Map<AnalysisSite, BitVector> nodeLiveVariables = new HashMap<AnalysisSite, BitVector>();
-            for (AnalysisSite site : ta.getRelevantSites(node))
+            for (AnalysisSite site : sa.getRelevantSites(node))
             {
                 BitVector siteLiveVariables = new BitVector();
 
@@ -187,7 +187,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
         @Override
         public UnaryOperator<BitVectorVariable> getEdgeTransferFunction(CGNode src, CGNode dest)
         {
-            if (! ta.getReachingNodes().contains(src) || ! ta.getReachingNodes().contains(dest)) {
+            if (! sa.getReachingNodes().contains(src) || ! sa.getReachingNodes().contains(dest)) {
                 return BitVectorIdentity.instance();
             }
             
@@ -196,7 +196,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
             // Make an operator which unions with any argument the union of all live variables of
             // those call sites which call `dest` from `src`.
             BitVector union = new BitVector();
-            for (CallSite site : ta.getRelevantCallers(dest))
+            for (CallSite site : sa.getRelevantCallers(dest))
             {
                 if (src.equals(site.getNode())) {
                     BitVector transferSiteBitVector = srcNodeLiveVariables.get(site);
@@ -264,7 +264,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
         private JsonArrayBuilder dataFlowSolverJson()
         {
             JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (CGNode node: ta.getReachingNodes()) {
+            for (CGNode node: sa.getReachingNodes()) {
                 builder.add(dataFlowSolverNodeJson(node));
             }
             return builder;
@@ -282,7 +282,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
         private JsonArrayBuilder liveVariablesAfterReachingNodesJson()
         {
             JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (CGNode node: ta.getReachingNodes()) {
+            for (CGNode node: sa.getReachingNodes()) {
                 builder.add(liveVariablesAfterNodeJson(node));
             }
             return builder;

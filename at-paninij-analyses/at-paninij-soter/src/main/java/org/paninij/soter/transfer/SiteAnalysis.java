@@ -42,7 +42,7 @@ import com.ibm.wala.util.intset.BitVectorIntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 
 
-public class TransferAnalysis extends LoggingAnalysis
+public class SiteAnalysis extends LoggingAnalysis
 {
     protected final CapsuleTemplate template;
     protected final CallGraphAnalysis cga;
@@ -84,7 +84,7 @@ public class TransferAnalysis extends LoggingAnalysis
 
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is known to be safe.
-    public TransferAnalysis(CapsuleTemplate template, CallGraphAnalysis cga, IClassHierarchy cha)
+    public SiteAnalysis(CapsuleTemplate template, CallGraphAnalysis cga, IClassHierarchy cha)
     {
         this.template = template;
         this.cga = cga;
@@ -322,7 +322,7 @@ public class TransferAnalysis extends LoggingAnalysis
     }
     
     /**
-     * @see TransferAnalysis.relevantSitesMap
+     * @see SiteAnalysis.relevantSitesMap
      */
     public Set<AnalysisSite> getRelevantSites(CGNode node)
     {

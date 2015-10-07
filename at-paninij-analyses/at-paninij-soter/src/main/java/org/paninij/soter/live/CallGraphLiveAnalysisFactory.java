@@ -2,7 +2,7 @@ package org.paninij.soter.live;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.transfer.TransferAnalysis;
+import org.paninij.soter.transfer.SiteAnalysis;
 
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 
@@ -16,8 +16,8 @@ public class CallGraphLiveAnalysisFactory
     }
 
     public CallGraphLiveAnalysis make(CapsuleTemplate template, CallGraphAnalysis cga,
-                                      TransferAnalysis ta, TransferLiveAnalysis tla)
+                                      SiteAnalysis sa, TransferLiveAnalysis tla)
     {
-        return new CallGraphLiveAnalysis(template, cga, ta, tla, cha);
+        return new CallGraphLiveAnalysis(template, cga, sa, tla, cha);
     }
 }

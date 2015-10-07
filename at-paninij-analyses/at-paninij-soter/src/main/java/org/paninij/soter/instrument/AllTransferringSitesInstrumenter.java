@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.paninij.soter.site.TransferringSite;
-import org.paninij.soter.transfer.TransferAnalysis;
+import org.paninij.soter.transfer.SiteAnalysis;
 import org.paninij.soter.util.Instrumenter;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -17,20 +17,20 @@ import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
 public class AllTransferringSitesInstrumenter extends Instrumenter
 {
-    TransferAnalysis ta;
+    SiteAnalysis sa;
     
     public AllTransferringSitesInstrumenter(ClassInstrumenter templateInstrumenter,
-                                            TransferAnalysis ta, String outDir)
+                                            SiteAnalysis sa, String outDir)
                                             throws InvalidClassFileException
     {
         super(templateInstrumenter, outDir + separator + templateInstrumenter.getReader().getName() + ".class");
-        this.ta = ta;
+        this.sa = sa;
     }
 
     @Override
     public void performInstrumentation() throws InvalidClassFileException
     {
-        assert ta.hasBeenPerformed();
+        assert sa.hasBeenPerformed();
         
         Map<String, Set<TransferringSite>> sitesToInstrument = getSitesToInstrument();
         if (sitesToInstrument.isEmpty()) {
@@ -44,10 +44,10 @@ public class AllTransferringSitesInstrumenter extends Instrumenter
         Map<String, Set<TransferringSite>> sitesToInstrument;
         sitesToInstrument = new HashMap<String, Set<TransferringSite>>();
         
-        for (CGNode node: ta.getTransferringNodes())
+        for (CGNode node: sa.getTransferringNodes())
         {
             String signature = "L" + node.getMethod().getSignature();
-            addAllInto(sitesToInstrument, signature, ta.getTransferringSites(node));
+            addAllInto(sitesToInstrument, signature, sa.getTransferringSites(node));
         }
 
         return sitesToInstrument;

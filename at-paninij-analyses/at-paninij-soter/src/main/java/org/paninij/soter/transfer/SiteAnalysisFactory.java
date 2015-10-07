@@ -5,17 +5,17 @@ import org.paninij.soter.model.CapsuleTemplate;
 
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 
-public class TransferAnalysisFactory
+public class SiteAnalysisFactory
 {
     protected final IClassHierarchy cha;
     
-    public TransferAnalysisFactory(IClassHierarchy cha)
+    public SiteAnalysisFactory(IClassHierarchy cha)
     {
         this.cha = cha;
     }
 
-    public TransferAnalysis make(CapsuleTemplate template, CallGraphAnalysis cga)
+    public SiteAnalysis make(CapsuleTemplate template, CallGraphAnalysis cga)
     {
-        return new TransferAnalysis(template, cga, cha);
+        return new SiteAnalysis(template, cga, cha);
     }
 }

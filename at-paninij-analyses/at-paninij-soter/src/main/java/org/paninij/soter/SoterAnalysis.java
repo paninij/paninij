@@ -21,7 +21,7 @@ import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.site.SiteFactory;
-import org.paninij.soter.transfer.TransferAnalysis;
+import org.paninij.soter.transfer.SiteAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
 
@@ -43,7 +43,7 @@ public class SoterAnalysis extends LoggingAnalysis
     // The analysis's dependencies:
     protected final CapsuleTemplate template;
     protected final CallGraphAnalysis cga;
-    protected final TransferAnalysis ta;
+    protected final SiteAnalysis sa;
     protected final TransferLiveAnalysis tla;
     protected final CallGraphLiveAnalysis cgla;
     protected final IClassHierarchy cha;
@@ -65,12 +65,12 @@ public class SoterAnalysis extends LoggingAnalysis
     protected final JsonResultsCreator jsonCreator;
 
 
-    public SoterAnalysis(CapsuleTemplate template, CallGraphAnalysis cga, TransferAnalysis ta,
+    public SoterAnalysis(CapsuleTemplate template, CallGraphAnalysis cga, SiteAnalysis ta,
                          TransferLiveAnalysis tla, CallGraphLiveAnalysis cgla, IClassHierarchy cha)
     {
         this.template = template;
         this.cga = cga;
-        this.ta = ta;
+        this.sa = ta;
         this.tla = tla;
         this.cgla = cgla;
         this.cha = cha;
@@ -88,7 +88,7 @@ public class SoterAnalysis extends LoggingAnalysis
     protected void performSubAnalyses()
     {
         cga.perform();
-        ta.perform();
+        sa.perform();
         tla.perform();
         cgla.perform();
     }
@@ -104,9 +104,9 @@ public class SoterAnalysis extends LoggingAnalysis
 
     protected void buildTransferSiteResultsMap()
     {
-        for (CGNode transferringNode : ta.getTransferringNodes())
+        for (CGNode transferringNode : sa.getTransferringNodes())
         {
-            for (TransferringSite transferSite : ta.getTransferringSites(transferringNode))
+            for (TransferringSite transferSite : sa.getTransferringSites(transferringNode))
             {
                 TransferSiteResults results = new TransferSiteResults();
 
@@ -227,10 +227,10 @@ public class SoterAnalysis extends LoggingAnalysis
     }
     
     
-    public TransferAnalysis getTransferAnalysis()
+    public SiteAnalysis getTransferAnalysis()
     {
         assert hasBeenPerformed;
-        return ta;
+        return sa;
     }
 
 
