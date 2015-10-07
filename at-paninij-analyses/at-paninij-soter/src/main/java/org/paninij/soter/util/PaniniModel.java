@@ -5,6 +5,8 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
+import static com.ibm.wala.types.ClassLoaderReference.Primordial;
+
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
@@ -28,7 +30,41 @@ public class PaniniModel
     private static final String CAPSULE_ANNOTATION_NAME = "Capsule";
     private static final String CAPSULE_INTERFACE_ANNOTATION_NAME = "CapsuleInterface";
     private static final String CAPSULE_MOCKUP_SUFFIX = "$Mockup";
+    
+    public static final TypeReference[] knownSafeTypesForTransfer =
+    {
+        // Primitives:
+        TypeReference.Boolean,
+        TypeReference.Byte,
+        TypeReference.Char,
+        TypeReference.Double,
+        TypeReference.Float,
+        TypeReference.Int,
+        TypeReference.Long,
+        TypeReference.Short,
 
+        // Primitive Box Types:
+        TypeReference.JavaLangBoolean,
+        TypeReference.JavaLangByte,
+        TypeReference.JavaLangCharacter,
+        TypeReference.JavaLangDouble,
+        TypeReference.JavaLangFloat,
+        TypeReference.JavaLangInteger,
+        TypeReference.JavaLangLong,
+        TypeReference.JavaLangShort,
+
+        // Misc:
+        TypeReference.JavaLangString,
+        TypeReference.Void,
+        lookupPrimordialTypeRef("L/java/lang/Void")
+    };
+    
+
+    // TODO: Move this helper function elsewhere?
+    private static final TypeReference lookupPrimordialTypeRef(String typeName)
+    {
+        return TypeReference.findOrCreate(Primordial, TypeName.string2TypeName(typeName));
+    }
 
     /**
      * @param clazz An arbitrary class.
@@ -189,8 +225,13 @@ public class PaniniModel
     
     public static boolean isKnownSafeTypeForTransfer(TypeReference typeRef)
     {
-        // TODO: Add String and primitive box types (e.g. Integer).
-        return typeRef.isPrimitiveType();
+        for (TypeReference safeTypeRef : knownSafeTypesForTransfer)
+        {
+            if (safeTypeRef.equals(typeRef)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
