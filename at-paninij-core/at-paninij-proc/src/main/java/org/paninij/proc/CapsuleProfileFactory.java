@@ -9,6 +9,7 @@ import javax.lang.model.type.TypeKind;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
+import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.Source;
 
 
@@ -62,7 +63,8 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected List<String> generateProcedure(Procedure procedure) {
         MessageShape shape = new MessageShape(procedure);
-
+        String encoding = PaniniModel.isPaniniCustom(shape.returnType.getMirror()) ? shape.returnType.raw() : shape.encoded;
+        
         List<String> source = Source.lines(
                 "@Override",
                 "#0",
@@ -74,9 +76,10 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
                 "    #4",
                 "}",
                 "");
+        
         return Source.formatAll(source,
                 this.generateProcedureDecl(shape),
-                shape.encoded,
+                encoding,
                 this.generateProcedureArguments(shape),
                 this.generateAssertSafeInvocationTransfer(),
                 this.generateProcedureReturn(shape));
