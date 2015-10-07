@@ -11,8 +11,10 @@ import javax.json.JsonObjectBuilder;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.site.AnalysisCallSite;
-import org.paninij.soter.site.AnalysisSite;
+import org.paninij.soter.site.CallSite;
+import org.paninij.soter.site.ICallSite;
+import org.paninij.soter.site.ISite;
+import org.paninij.soter.site.Site;
 import org.paninij.soter.site.SiteAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
@@ -42,7 +44,7 @@ public class TransferLiveAnalysis extends LoggingAnalysis
     final protected IClassHierarchy cha;
     
     // The results of the analysis:
-    protected final Map<AnalysisSite, Set<PointerKey>> liveVariables;
+    protected final Map<ISite, Set<PointerKey>> liveVariables;
 
     protected final JsonResultsCreator jsonCreator;
 
@@ -59,7 +61,7 @@ public class TransferLiveAnalysis extends LoggingAnalysis
         this.cga = cga;
         this.cha = cha;
         
-        liveVariables = new HashMap<AnalysisSite, Set<PointerKey>>();
+        liveVariables = new HashMap<ISite, Set<PointerKey>>();
 
         jsonCreator = new JsonResultsCreator();
     }
@@ -82,9 +84,9 @@ public class TransferLiveAnalysis extends LoggingAnalysis
         // For each relevant site within the fake root, mark its (target) receiver variable live.
         // Note: If there are any transferring nodes, then the fake root node must be "reaching".
         CGNode fakeRootNode = cga.getCallGraph().getFakeRootNode();
-        for (AnalysisSite site: sa.getRelevantSites(fakeRootNode)) {
-            assert site instanceof AnalysisCallSite;
-            addLiveVariablesForRelevantRootSite((AnalysisCallSite) site);
+        for (ISite site: sa.getRelevantSites(fakeRootNode)) {
+            assert site instanceof CallSite;
+            addLiveVariablesForRelevantRootSite((ICallSite) site);
         }
         
         for (CGNode node : sa.getReachingNodes())
@@ -93,16 +95,16 @@ public class TransferLiveAnalysis extends LoggingAnalysis
                 continue;  // Skip the fake root node, since it's already been handled.
             }
 
-            Set<AnalysisSite> relevantSites = sa.getRelevantSites(node);
+            Set<ISite> relevantSites = sa.getRelevantSites(node);
             LocalLiveAnalysis localAnalysis = llaFactory.lookupOrMake(node);
             localAnalysis.perform();
-            for (AnalysisSite site : relevantSites) {
+            for (ISite site : relevantSites) {
                 addLiveVariablesAfter(site);
             }
         }
     }
     
-    private void addLiveVariablesForRelevantRootSite(AnalysisCallSite site)
+    private void addLiveVariablesForRelevantRootSite(ICallSite site)
     {
         Set<PointerKey> liveVars = new HashSet<PointerKey>(1);
 
@@ -113,7 +115,7 @@ public class TransferLiveAnalysis extends LoggingAnalysis
         liveVariables.put(site, liveVars);
     }
     
-    protected void addLiveVariablesAfter(AnalysisSite site)
+    protected void addLiveVariablesAfter(ISite site)
     {
         CGNode node = site.getNode();
         assert cga.getCallGraph().containsNode(node);
@@ -134,7 +136,7 @@ public class TransferLiveAnalysis extends LoggingAnalysis
      *         which the analysis found to be live after the program point of the given transfer
      *         site.
      */
-    public Set<PointerKey> getLiveVariablesAfter(AnalysisSite site)
+    public Set<PointerKey> getLiveVariablesAfter(ISite site)
     {
         assert hasBeenPerformed;
         return liveVariables.get(site);
@@ -192,7 +194,7 @@ public class TransferLiveAnalysis extends LoggingAnalysis
     {
         // Check that the domain of `liveVariables` is equivalent to the union of all analysis sites
         // defined within the set of all reaching nodes.
-        Set<AnalysisSite> domain = new HashSet<AnalysisSite>();
+        Set<ISite> domain = new HashSet<ISite>();
         for (CGNode node: sa.getReachingNodes()) {
             domain.addAll(sa.getRelevantSites(node));
         }

@@ -4,18 +4,18 @@ import com.ibm.wala.util.intset.IntSet;
 
 public class SiteFactory
 {
-    public static TransferringSite copyWith(TransferringSite orig, IntSet transfers)
+    public static ITransferSite copyWith(ITransferSite orig, IntSet transfers)
     {
-        if (orig instanceof TransferringCallSite)
+        if (orig instanceof TransferCallSite)
         {
-            TransferringCallSite casted = (TransferringCallSite) orig;
-            return new TransferringCallSite(orig.getNode(), casted.getInvokeInstruction(),
+            TransferCallSite casted = (TransferCallSite) orig;
+            return new TransferCallSite(orig.getNode(), casted.getInvokeInstruction(),
                                             casted.getCallSite(), transfers);
         }
-        if (orig instanceof TransferringReturnSite)
+        if (orig instanceof TransferReturnSite)
         {
-            TransferringReturnSite casted = (TransferringReturnSite) orig;
-            return new TransferringReturnSite(orig.getNode(), casted.getReturnInstruction(),
+            TransferReturnSite casted = (TransferReturnSite) orig;
+            return new TransferReturnSite(orig.getNode(), casted.getReturnInstruction(),
                                               transfers);
         }
 

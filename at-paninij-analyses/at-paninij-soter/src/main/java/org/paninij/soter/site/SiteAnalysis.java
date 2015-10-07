@@ -47,7 +47,7 @@ public class SiteAnalysis extends LoggingAnalysis
      * A map whose domain is the set of transferring nodes. It maps from a given node to the set
      * of all transfer sites which were found to include some potentially unsafe transfers.
      */
-    protected final Map<CGNode, Set<TransferringSite>> transferringSitesMap;
+    protected final Map<CGNode, Set<ITransferSite>> transferringSitesMap;
     
     /**
      * The set of nodes which, by some finite sequence of calls in the CGA, reach a transferring
@@ -65,13 +65,13 @@ public class SiteAnalysis extends LoggingAnalysis
      *  3. a call site defined within the node which was found by the CGA to possibly target a
      *     reaching node.
      */
-    protected final Map<CGNode, Set<AnalysisSite>> relevantSitesMap;
+    protected final Map<CGNode, Set<ISite>> relevantSitesMap;
     
     /**
      * A map whose domain is the set of reaching nodes. It maps from a given node to the set of
      * all call site references which were found by the CGA to possibly target that node.
      */
-    protected final Map<CGNode, Set<AnalysisCallSite>> relevantCallersMap;
+    protected final Map<CGNode, Set<CallSite>> relevantCallersMap;
     
     
     protected final JsonResultsCreator jsonCreator;
@@ -85,9 +85,9 @@ public class SiteAnalysis extends LoggingAnalysis
         this.cga = cga;
         this.cha = cha;
         
-        transferringSitesMap = new HashMap<CGNode, Set<TransferringSite>>();
-        relevantSitesMap = new HashMap<CGNode, Set<AnalysisSite>>();
-        relevantCallersMap = new HashMap<CGNode, Set<AnalysisCallSite>>();
+        transferringSitesMap = new HashMap<CGNode, Set<ITransferSite>>();
+        relevantSitesMap = new HashMap<CGNode, Set<ISite>>();
+        relevantCallersMap = new HashMap<CGNode, Set<CallSite>>();
         
         jsonCreator = new JsonResultsCreator();
     }
@@ -127,7 +127,7 @@ public class SiteAnalysis extends LoggingAnalysis
         CallGraph cg = cga.getCallGraph();
         for (CGNode callee : reachingNodes)
         {
-            Set<AnalysisCallSite> callers = new HashSet<AnalysisCallSite>();
+            Set<CallSite> callers = new HashSet<CallSite>();
 
             Iterator<CGNode> predsIter = cg.getPredNodes(callee);
             while (predsIter.hasNext())
@@ -135,7 +135,7 @@ public class SiteAnalysis extends LoggingAnalysis
                 CGNode caller = predsIter.next();
                 Iterator<CallSiteReference> callSiteIter = cg.getPossibleSites(caller, callee);
                 while (callSiteIter.hasNext()) {
-                    callers.add(AnalysisCallSite.make(caller, callSiteIter.next()));
+                    callers.add(CallSite.make(caller, callSiteIter.next()));
                 }
             }
 
@@ -181,7 +181,7 @@ public class SiteAnalysis extends LoggingAnalysis
         MutableIntSet transfers = new BitVectorIntSet();
         int returnValueNumber = returnInstr.getUse(0);
         transfers.add(returnValueNumber);
-        addTransferringSite(node, new TransferringReturnSite(node, returnInstr, transfers));
+        addTransferringSite(node, new TransferReturnSite(node, returnInstr, transfers));
     }
 
     /**
@@ -210,18 +210,18 @@ public class SiteAnalysis extends LoggingAnalysis
         }
         
         if (! transfers.isEmpty()) {
-            addTransferringSite(node, TransferringCallSite.make(node, invokeInstr, transfers));
+            addTransferringSite(node, TransferCallSite.make(node, invokeInstr, transfers));
         }
     }
     
-    protected void addTransferringSite(CGNode node, TransferringSite transferSite)
+    protected void addTransferringSite(CGNode node, ITransferSite transferSite)
     {
         assert transferSite.getTransfers().isEmpty() == false;
 
-        Set<TransferringSite> sites = transferringSitesMap.get(node);
+        Set<ITransferSite> sites = transferringSitesMap.get(node);
         if (sites == null) {
             // This is the first transfer site from this `CGNode` to be added to `transferSitesMap`.
-            sites = new HashSet<TransferringSite>();
+            sites = new HashSet<ITransferSite>();
             transferringSitesMap.put(node, sites);
         }
         sites.add(transferSite);
@@ -235,8 +235,8 @@ public class SiteAnalysis extends LoggingAnalysis
         {
             // Create a new set to hold relevant analysis sites defined within `node`. Initially add
             // all transferring sites defined within `node`.
-            Set<AnalysisSite> relevantSites = new HashSet<AnalysisSite>();
-            Set<TransferringSite> transferringSites = transferringSitesMap.get(node);
+            Set<ISite> relevantSites = new HashSet<ISite>();
+            Set<ITransferSite> transferringSites = transferringSitesMap.get(node);
             List<CallSiteReference> alreadyAddedSites = new ArrayList<CallSiteReference>();
             if (transferringSites != null)
             {
@@ -247,10 +247,10 @@ public class SiteAnalysis extends LoggingAnalysis
                 // are not re-added as analysis sites below. (Note that we need not worry about
                 // re-adding a `ReturnTransferSite`, since we are not adding any returns sites
                 // below.)
-                for (TransferringSite ts: transferringSites)
+                for (ITransferSite ts: transferringSites)
                 {
-                    if (ts instanceof TransferringCallSite) {
-                        alreadyAddedSites.add(((TransferringCallSite) ts).getCallSite());
+                    if (ts instanceof TransferCallSite) {
+                        alreadyAddedSites.add(((TransferCallSite) ts).getCallSite());
                     }
                 }
             }
@@ -270,7 +270,7 @@ public class SiteAnalysis extends LoggingAnalysis
                 {
                     if (reachingNodes.contains(targetNode))
                     {
-                        AnalysisSite rs = AnalysisCallSite.make(node, callSite);
+                        Site rs = CallSite.make(node, callSite);
                         relevantSites.add(rs);
                         break;
                     }
@@ -287,7 +287,7 @@ public class SiteAnalysis extends LoggingAnalysis
      * 
      * @return Transferring sites defined within the given call graph node.
      */
-    public Set<TransferringSite> getTransferringSites(CGNode node)
+    public Set<ITransferSite> getTransferringSites(CGNode node)
     {
         assert hasBeenPerformed;
         assert reachingNodes.contains(node);
@@ -308,18 +308,18 @@ public class SiteAnalysis extends LoggingAnalysis
      * 
      * @return Relevant call sites which may (according to the CGA) target the given node.
      */
-    public Set<AnalysisCallSite> getRelevantCallers(CGNode node)
+    public Set<CallSite> getRelevantCallers(CGNode node)
     {
         assert hasBeenPerformed;
         assert reachingNodes.contains(node);
-        Set<AnalysisCallSite> retVal = relevantCallersMap.get(node);
-        return (retVal == null) ? new HashSet<AnalysisCallSite>() : retVal;
+        Set<CallSite> retVal = relevantCallersMap.get(node);
+        return (retVal == null) ? new HashSet<CallSite>() : retVal;
     }
     
     /**
      * @see SiteAnalysis.relevantSitesMap
      */
-    public Set<AnalysisSite> getRelevantSites(CGNode node)
+    public Set<ISite> getRelevantSites(CGNode node)
     {
         assert hasBeenPerformed;
         return relevantSitesMap.get(node);

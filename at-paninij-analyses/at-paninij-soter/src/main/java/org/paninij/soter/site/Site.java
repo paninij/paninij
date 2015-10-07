@@ -3,33 +3,41 @@ package org.paninij.soter.site;
 import static java.text.MessageFormat.format;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ssa.SSAInstruction;
 
 
-public abstract class AnalysisSite
+public abstract class Site implements ISite
 {
     protected final CGNode node;
     protected final SSAInstruction instr;
     
-    protected AnalysisSite(CGNode node, SSAInstruction instr)
+    protected Site(CGNode node, SSAInstruction instr)
     {
         assert node != null;
         assert instr != null;
+
         this.node = node;
         this.instr = instr;
     }
 
+    @Override
     public SSAInstruction getInstruction() {
         return instr;
     }
 
+    @Override
     public CGNode getNode() {
         return node;
     }
 
-    public abstract JsonObject toJson();
+    public JsonObject toJson() {
+        return toJsonBuilder().build();
+    }
+    
+    public abstract JsonObjectBuilder toJsonBuilder();
     
     @Override
     public String toString()
@@ -38,20 +46,17 @@ public abstract class AnalysisSite
         return format(fmt, node, instr);
     }
 
-    @Override
-    public int hashCode() {
-        throw new UnsupportedOperationException("Concrete subclasses must override `hashCode()`.");
-    }
+    public abstract int hashCode();
 
     @Override
     public boolean equals(Object o)
     {
-        if (o instanceof AnalysisSite == false) {
+        if (o instanceof Site == false) {
             return false;
         }
 
         // Note that the class definition asserts that all fields are non-null by construction.
-        AnalysisCallSite that = (AnalysisCallSite) o;
+        CallSite that = (CallSite) o;
         return node.equals(that.node)
             && instr.equals(that.instr);
     }

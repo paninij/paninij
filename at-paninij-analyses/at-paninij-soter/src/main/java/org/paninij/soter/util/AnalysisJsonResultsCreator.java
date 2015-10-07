@@ -15,7 +15,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 
-import org.paninij.soter.site.AnalysisSite;
+import org.paninij.soter.site.ISite;
 
 import com.ibm.wala.classLoader.NewSiteReference;
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -190,14 +190,14 @@ public abstract class AnalysisJsonResultsCreator
         return builder;
     }
     
-    protected <T extends AnalysisSite> JsonObjectBuilder toJsonBuilder(CGNode node, Set<T> sites)
+    protected <T extends ISite> JsonObjectBuilder toJsonBuilder(CGNode node, Set<T> sites)
     {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("node", toJsonBuilder(node));
         
         JsonArrayBuilder sitesArrayBuilder = Json.createArrayBuilder();
-        for (AnalysisSite site: sites) {
-            sitesArrayBuilder.add(site.toJson());
+        for (T site: sites) {
+            sitesArrayBuilder.add(site.toJsonBuilder());
         }
         builder.add("sites", sitesArrayBuilder);
         return builder;
@@ -213,7 +213,7 @@ public abstract class AnalysisJsonResultsCreator
         return builder;
     }
     
-    protected <T extends AnalysisSite> JsonArrayBuilder toJsonBuilder(Map<CGNode, Set<T>> map)
+    protected <T extends ISite> JsonArrayBuilder toJsonBuilder(Map<CGNode, Set<T>> map)
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         for (Entry<CGNode, Set<T>> entry: map.entrySet())
@@ -223,7 +223,7 @@ public abstract class AnalysisJsonResultsCreator
         return builder;
     }
     
-    protected <T extends AnalysisSite> JsonArrayBuilder ptrMapToJsonBuilder(Map<T, Set<PointerKey>> map)
+    protected <T extends ISite> JsonArrayBuilder ptrMapToJsonBuilder(Map<T, Set<PointerKey>> map)
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         for (Entry<T, Set<PointerKey>> entry: map.entrySet())
@@ -233,7 +233,7 @@ public abstract class AnalysisJsonResultsCreator
         return builder;
     }
     
-    protected JsonObjectBuilder toJsonBuilder(AnalysisSite site, Set<PointerKey> ptrs)
+    protected JsonObjectBuilder toJsonBuilder(ISite site, Set<PointerKey> ptrs)
     {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("site", site.toJson());

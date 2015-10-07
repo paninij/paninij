@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
-import org.paninij.soter.site.TransferringSite;
+import org.paninij.soter.site.ITransferSite;
 
 import com.ibm.wala.shrikeBT.DupInstruction;
 import com.ibm.wala.shrikeBT.InvokeInstruction;
@@ -21,7 +21,7 @@ class TransferringSiteInstrumenter implements MethodExaminer
     private static final InvokeInstruction ASSERT_SAFE_TRANFER_INSTR
                            = Util.makeInvoke(DynamicOwnershipTransfer.class, "assertSafeTransfer");
 
-    private final Map<String, Set<TransferringSite>> sitesToInstrument;
+    private final Map<String, Set<ITransferSite>> sitesToInstrument;
 
     /**
      * @param sitesToInstrument A map where each key is expected to be a method signature produced
@@ -29,7 +29,7 @@ class TransferringSiteInstrumenter implements MethodExaminer
      *                          is expected to be a set of `TransferringSites` defined within that
      *                          method.
      */
-    TransferringSiteInstrumenter(Map<String, Set<TransferringSite>> sitesToInstrument)
+    TransferringSiteInstrumenter(Map<String, Set<ITransferSite>> sitesToInstrument)
     {
         this.sitesToInstrument = sitesToInstrument;
     }
@@ -43,7 +43,7 @@ class TransferringSiteInstrumenter implements MethodExaminer
         // by clients.
         String signature = methodData.getClassType().replace('/', '.').replace(';', '.')
                          + methodData.getName() + methodData.getSignature();
-        Set<TransferringSite> sites = sitesToInstrument.get(signature);
+        Set<ITransferSite> sites = sitesToInstrument.get(signature);
 
         // Ignore any methods on the template in which there are no unsafe transfer sites.
         if (sites == null || sites.isEmpty()) {
@@ -52,11 +52,11 @@ class TransferringSiteInstrumenter implements MethodExaminer
         instrumentAllSitesWithinMethod(sites, methodData);
     }
     
-    private void instrumentAllSitesWithinMethod(Set<TransferringSite> sites, MethodData methodData)
+    private void instrumentAllSitesWithinMethod(Set<ITransferSite> sites, MethodData methodData)
     {
         MethodEditor methodEditor = new MethodEditor(methodData);
         methodEditor.beginPass();
-        for (TransferringSite site : sites) {
+        for (ITransferSite site : sites) {
             patchSiteWithinMethod(site, methodEditor);
         }
         methodEditor.applyPatches();
@@ -66,7 +66,7 @@ class TransferringSiteInstrumenter implements MethodExaminer
     /**
      * Assumes that the `beginPass()` has been called on the given `methodEditor`.
      */
-    private void patchSiteWithinMethod(TransferringSite site, MethodEditor methodEditor)
+    private void patchSiteWithinMethod(ITransferSite site, MethodEditor methodEditor)
     {
         methodEditor.insertBefore(site.getInstruction().iindex, new Patch()
         {

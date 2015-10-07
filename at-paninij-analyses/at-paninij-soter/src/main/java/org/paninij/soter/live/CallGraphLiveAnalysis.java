@@ -13,8 +13,8 @@ import javax.json.JsonObjectBuilder;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.site.AnalysisSite;
-import org.paninij.soter.site.CallSite;
+import org.paninij.soter.site.ISite;
+import org.paninij.soter.site.ICallSite;
 import org.paninij.soter.site.SiteAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
@@ -54,7 +54,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
     protected final IClassHierarchy cha;
     
     protected final OrdinalSetMapping<PointerKey> globalLatticeValues;
-    protected final Map<CGNode, Map<AnalysisSite, BitVector>> liveVariables;
+    protected final Map<CGNode, Map<ISite, BitVector>> liveVariables;
     protected final ITransferFunctionProvider<CGNode, BitVectorVariable> transferFunctionProvider;
     BitVectorFramework<CGNode, PointerKey> dataFlowFramework;
     BitVectorSolver<CGNode> dataFlowSolver;
@@ -73,7 +73,7 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
         this.cha = cha;
         
         globalLatticeValues = MutableMapping.make();
-        liveVariables = new HashMap<CGNode, Map<AnalysisSite, BitVector>>();
+        liveVariables = new HashMap<CGNode, Map<ISite, BitVector>>();
         transferFunctionProvider = new TransferFunctionProvider();
         
         jsonCreator = new JsonResultsCreator();
@@ -114,8 +114,8 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
     {
         for (CGNode node : sa.getReachingNodes())
         {
-            Map<AnalysisSite, BitVector> nodeLiveVariables = new HashMap<AnalysisSite, BitVector>();
-            for (AnalysisSite site : sa.getRelevantSites(node))
+            Map<ISite, BitVector> nodeLiveVariables = new HashMap<ISite, BitVector>();
+            for (ISite site : sa.getRelevantSites(node))
             {
                 BitVector siteLiveVariables = new BitVector();
 
@@ -190,12 +190,12 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
                 return BitVectorIdentity.instance();
             }
             
-            Map<AnalysisSite, BitVector> srcNodeLiveVariables = liveVariables.get(src);
+            Map<ISite, BitVector> srcNodeLiveVariables = liveVariables.get(src);
             
             // Make an operator which unions with any argument the union of all live variables of
             // those call sites which call `dest` from `src`.
             BitVector union = new BitVector();
-            for (CallSite site : sa.getRelevantCallers(dest))
+            for (ICallSite site : sa.getRelevantCallers(dest))
             {
                 if (src.equals(site.getNode())) {
                     BitVector transferSiteBitVector = srcNodeLiveVariables.get(site);
@@ -304,13 +304,13 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
         private JsonArrayBuilder liveVariablesJson()
         {
             JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (Entry<CGNode, Map<AnalysisSite, BitVector>> entry : liveVariables.entrySet()) {
+            for (Entry<CGNode, Map<ISite, BitVector>> entry : liveVariables.entrySet()) {
                 builder.add(liveVariablesEntryJson(entry.getKey(), entry.getValue()));
             }
             return builder;
         }
         
-        private JsonObjectBuilder liveVariablesEntryJson(CGNode node, Map<AnalysisSite, BitVector> map)
+        private JsonObjectBuilder liveVariablesEntryJson(CGNode node, Map<ISite, BitVector> map)
         {
             JsonObjectBuilder builder = Json.createObjectBuilder();
             builder.add("node", toJsonBuilder(node));
@@ -318,10 +318,10 @@ public class CallGraphLiveAnalysis extends LoggingAnalysis
             return builder;
         }
         
-        private JsonArrayBuilder liveVariablesSubMapJson(Map<AnalysisSite, BitVector> map)
+        private JsonArrayBuilder liveVariablesSubMapJson(Map<ISite, BitVector> map)
         {
             JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (Entry<AnalysisSite, BitVector> entry: map.entrySet())
+            for (Entry<ISite, BitVector> entry: map.entrySet())
             {
                 builder.add(Json.createObjectBuilder()
                                 .add("site", entry.getKey().toJson())

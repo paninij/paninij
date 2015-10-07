@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.paninij.soter.site.TransferringSite;
+import org.paninij.soter.site.ITransferSite;
 import org.paninij.soter.transfer.SoterAnalysis;
 import org.paninij.soter.util.Instrumenter;
 
@@ -32,19 +32,19 @@ public class SoterInstrumenter extends Instrumenter
     {
         assert sa.hasBeenPerformed();
         
-        Map<String, Set<TransferringSite>> sitesToInstrument = getSitesToInstrument();
+        Map<String, Set<ITransferSite>> sitesToInstrument = getSitesToInstrument();
         if (sitesToInstrument.isEmpty()) {
             return;  // Return early if there are no sites that need instrumentation.
         }
         walaInstrumenter.visitMethods(new TransferringSiteInstrumenter(sitesToInstrument));
     }
     
-    protected Map<String, Set<TransferringSite>> getSitesToInstrument()
+    protected Map<String, Set<ITransferSite>> getSitesToInstrument()
     {
-        Map<String, Set<TransferringSite>> sitesToInstrument;
-        sitesToInstrument = new HashMap<String, Set<TransferringSite>>();
+        Map<String, Set<ITransferSite>> sitesToInstrument;
+        sitesToInstrument = new HashMap<String, Set<ITransferSite>>();
 
-        for (Entry<IMethod, Set<TransferringSite>> entry : sa.getUnsafeTransferSitesMap().entrySet())
+        for (Entry<IMethod, Set<ITransferSite>> entry : sa.getUnsafeTransferSitesMap().entrySet())
         {
             String signature = "L" + entry.getKey().getSignature();
             sitesToInstrument.put(signature, entry.getValue());
