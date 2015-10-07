@@ -1,4 +1,4 @@
-package org.paninij.soter;
+package org.paninij.soter.transfer;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.cga.CallGraphAnalysisFactory;
@@ -8,8 +8,6 @@ import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.live.TransferLiveAnalysisFactory;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.CapsuleTemplateFactory;
-import org.paninij.soter.transfer.SiteAnalysis;
-import org.paninij.soter.transfer.SiteAnalysisFactory;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;

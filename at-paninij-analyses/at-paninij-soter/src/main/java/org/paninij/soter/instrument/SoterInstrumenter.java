@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.paninij.soter.SoterAnalysis;
 import org.paninij.soter.site.TransferringSite;
+import org.paninij.soter.transfer.SoterAnalysis;
 import org.paninij.soter.util.Instrumenter;
 
 import com.ibm.wala.classLoader.IMethod;

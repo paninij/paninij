@@ -1,4 +1,4 @@
-package org.paninij.soter;
+package org.paninij.soter.transfer;
 
 import static org.paninij.soter.util.SoterUtil.makePointsToClosure;
 
@@ -21,7 +21,6 @@ import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.TransferringSite;
 import org.paninij.soter.site.SiteFactory;
-import org.paninij.soter.transfer.SiteAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
 

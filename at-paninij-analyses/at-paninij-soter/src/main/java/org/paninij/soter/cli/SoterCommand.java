@@ -8,11 +8,11 @@ import static org.paninij.soter.util.Log.warning;
 
 import java.nio.file.Paths;
 
-import org.paninij.soter.SoterAnalysis;
-import org.paninij.soter.SoterAnalysisFactory;
 import org.paninij.soter.instrument.AllTransferringSitesInstrumenter;
 import org.paninij.soter.instrument.SoterInstrumenter;
 import org.paninij.soter.instrument.TemplateInstrumenterFactory;
+import org.paninij.soter.transfer.SoterAnalysis;
+import org.paninij.soter.transfer.SoterAnalysisFactory;
 import org.paninij.soter.util.Command;
 import org.paninij.soter.util.Log;
 import org.paninij.soter.util.WalaUtil;
