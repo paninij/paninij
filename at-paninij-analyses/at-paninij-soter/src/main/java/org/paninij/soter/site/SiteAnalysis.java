@@ -1,4 +1,4 @@
-package org.paninij.soter.transfer;
+package org.paninij.soter.site;
 
 import static org.paninij.soter.util.PaniniModel.isProcedure;
 import static org.paninij.soter.util.PaniniModel.isRemoteProcedure;
@@ -19,11 +19,6 @@ import javax.json.JsonObjectBuilder;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.site.TransferringSite;
-import org.paninij.soter.site.TransferringCallSite;
-import org.paninij.soter.site.AnalysisCallSite;
-import org.paninij.soter.site.AnalysisSite;
-import org.paninij.soter.site.TransferringReturnSite;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
 import org.paninij.soter.util.Sets;

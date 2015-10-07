@@ -13,7 +13,7 @@ import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
-import org.paninij.soter.transfer.SiteAnalysis;
+import org.paninij.soter.site.SiteAnalysis;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;
 import org.paninij.soter.util.Sets;

@@ -1,4 +1,4 @@
-package org.paninij.soter.transfer;
+package org.paninij.soter.site;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;

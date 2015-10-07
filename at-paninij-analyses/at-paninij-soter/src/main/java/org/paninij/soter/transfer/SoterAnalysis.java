@@ -20,6 +20,7 @@ import org.paninij.soter.live.CallGraphLiveAnalysis;
 import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.site.TransferringSite;
+import org.paninij.soter.site.SiteAnalysis;
 import org.paninij.soter.site.SiteFactory;
 import org.paninij.soter.util.AnalysisJsonResultsCreator;
 import org.paninij.soter.util.LoggingAnalysis;

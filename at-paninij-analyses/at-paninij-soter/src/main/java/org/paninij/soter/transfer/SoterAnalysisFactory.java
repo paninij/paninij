@@ -8,6 +8,8 @@ import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.live.TransferLiveAnalysisFactory;
 import org.paninij.soter.model.CapsuleTemplate;
 import org.paninij.soter.model.CapsuleTemplateFactory;
+import org.paninij.soter.site.SiteAnalysis;
+import org.paninij.soter.site.SiteAnalysisFactory;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;

@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.paninij.soter.site.SiteAnalysis;
 import org.paninij.soter.site.TransferringSite;
-import org.paninij.soter.transfer.SiteAnalysis;
 import org.paninij.soter.util.Instrumenter;
 
 import com.ibm.wala.ipa.callgraph.CGNode;

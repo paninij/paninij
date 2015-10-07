@@ -2,7 +2,7 @@ package org.paninij.soter.live;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.transfer.SiteAnalysis;
+import org.paninij.soter.site.SiteAnalysis;
 
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 
