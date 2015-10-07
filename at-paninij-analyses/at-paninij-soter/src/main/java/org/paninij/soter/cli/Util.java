@@ -1,7 +1,6 @@
 package org.paninij.soter.cli;
 
 import static java.io.File.pathSeparator;
-import static org.paninij.soter.util.Log.note;
 import static org.paninij.soter.util.Log.warning;
 
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 
 /**
  * Some simple static utility methods to enable some functionality of the `SoterCommand`.

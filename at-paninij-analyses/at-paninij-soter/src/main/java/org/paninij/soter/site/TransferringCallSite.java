@@ -2,14 +2,11 @@ package org.paninij.soter.site;
 
 import static java.text.MessageFormat.format;
 
-import java.util.Iterator;
-
 import javax.json.Json;
 import javax.json.JsonObject;
 
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.ipa.callgraph.CGNode;
-import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.util.intset.IntSet;
 

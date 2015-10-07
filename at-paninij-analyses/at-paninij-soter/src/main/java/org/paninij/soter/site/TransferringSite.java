@@ -1,9 +1,7 @@
 package org.paninij.soter.site;
 
 import com.ibm.wala.ipa.callgraph.CGNode;
-import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAInstruction;
-import com.ibm.wala.ssa.SSAReturnInstruction;
 import com.ibm.wala.util.intset.IntSet;
 
 public abstract class TransferringSite extends AnalysisSite

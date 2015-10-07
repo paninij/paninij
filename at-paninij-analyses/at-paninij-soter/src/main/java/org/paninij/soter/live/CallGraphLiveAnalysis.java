@@ -13,7 +13,6 @@ import javax.json.JsonObjectBuilder;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.site.AnalysisCallSite;
 import org.paninij.soter.site.AnalysisSite;
 import org.paninij.soter.site.CallSite;
 import org.paninij.soter.site.SiteAnalysis;

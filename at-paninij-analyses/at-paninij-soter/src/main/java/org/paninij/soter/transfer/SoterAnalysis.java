@@ -13,7 +13,6 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-import org.paninij.runtime.util.IdentitySet;
 import org.paninij.runtime.util.IntMap;
 import org.paninij.soter.cga.CallGraphAnalysis;
 import org.paninij.soter.live.CallGraphLiveAnalysis;

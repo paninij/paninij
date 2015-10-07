@@ -8,7 +8,6 @@ import static org.paninij.soter.util.PaniniModel.isProcedure;
 import static org.paninij.soter.util.SoterUtil.isKnownToBeEffectivelyImmutable;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.paninij.soter.util.Log;
 import org.paninij.soter.util.PaniniModel;
@@ -21,7 +20,6 @@ import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.impl.AbstractRootMethod;
 import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint;
 import com.ibm.wala.shrikeBT.IInvokeInstruction;
-import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSANewInstruction;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.collections.HashSetFactory;

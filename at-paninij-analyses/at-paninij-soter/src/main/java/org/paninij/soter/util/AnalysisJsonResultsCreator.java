@@ -15,7 +15,6 @@ import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 
-import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.site.AnalysisSite;
 
 import com.ibm.wala.classLoader.NewSiteReference;
