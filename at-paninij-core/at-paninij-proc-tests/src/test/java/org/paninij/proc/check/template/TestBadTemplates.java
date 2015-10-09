@@ -57,6 +57,16 @@ public class TestBadTemplates
         testBadTemplate("HasMainTemplate");
     }
     
+    @Test
+    public void testInitDeclCheck() {
+        testBadTemplate("init.NonVoidInitTemplate");
+        testBadTemplate("init.PrivateInitTemplate");
+        testBadTemplate("init.ProtectedInitTemplate");
+        testBadTemplate("init.StaticInitTemplate");
+        testBadTemplate("init.TooManyInitDeclsTemplate");
+        testBadTemplate("init.TypeParamsInitTemplate");
+    }
+    
     private void testBadTemplate(String badTemplate)
     {
         try {
