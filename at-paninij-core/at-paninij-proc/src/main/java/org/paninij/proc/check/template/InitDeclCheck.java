@@ -51,7 +51,7 @@ public class InitDeclCheck implements TemplateCheck
                 if (init == null) {
                     init = method;
                 } else {
-                    String err = "Capsule templates must contain zero or one `init()` methods, "
+                    String err = "A capsule template must contain zero or one `init()` methods, "
                                + "but two such methods were found in `{0}`.";
                     err = format(err, template.getSimpleName().toString());
                     return new Error(err, ERROR_SOURCE);
@@ -67,7 +67,7 @@ public class InitDeclCheck implements TemplateCheck
         
         if (init.getReturnType().getKind() != TypeKind.VOID)
         {
-            String err = "A capsule template's `init()` method must have void return type, "
+            String err = "The `init()` method of a capsule template must have void return type, "
                        + "but a non-void `init()` method was found in `{0}`.";
             err = format(err, template.getSimpleName());
             return new Error(err, ERROR_SOURCE);
@@ -75,7 +75,7 @@ public class InitDeclCheck implements TemplateCheck
 
         if (!init.getTypeParameters().isEmpty())
         {
-            String err = "A capsule template's `init()` method cannot have type paramters, "
+            String err = "The `init()` method of a capsule template cannot have type parameters, "
                        + "but such a method was found in `{0}`.";
             err = format(err, template.getSimpleName());
             return new Error(err, ERROR_SOURCE);
@@ -85,9 +85,9 @@ public class InitDeclCheck implements TemplateCheck
         {
             if (isIllegalModifier(modifier))
             {
-                String err = "A capsule template's `init()` method cannot be declared `{0}`,"
+                String err = "The `init()` method of a capsule template cannot be declared `{0}`, "
                            + "but such a method was found in `{1}`.";
-                err = format(err, illegalModifier.toString(), template.getSimpleName());
+                err = format(err, modifier, template.getSimpleName());
                 return new Error(err, ERROR_SOURCE);
             }
         }
