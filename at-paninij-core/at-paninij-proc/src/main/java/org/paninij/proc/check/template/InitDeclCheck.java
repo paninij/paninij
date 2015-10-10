@@ -2,7 +2,6 @@ package org.paninij.proc.check.template;
 
 import static java.text.MessageFormat.format;
 import static javax.lang.model.element.Modifier.PRIVATE;
-import static javax.lang.model.element.Modifier.PROTECTED;
 import static javax.lang.model.element.Modifier.STATIC;
 
 import static org.paninij.proc.check.Result.ok;
@@ -26,8 +25,11 @@ import org.paninij.proc.check.Result.Error;
  */
 public class InitDeclCheck implements TemplateCheck
 {
-    public final static String ERROR_SOURCE = NoMainCheck.class.getName();
-    public final static Modifier ILLEGAL_MODIFIERS[] = { STATIC, PRIVATE, PROTECTED };
+    public final static String ERROR_SOURCE = InitDeclCheck.class.getName();
+    public final static Modifier ILLEGAL_MODIFIERS[] = {
+        STATIC,
+        PRIVATE,
+    };
     
     @Override
     public Result check(TypeElement template)
@@ -79,9 +81,9 @@ public class InitDeclCheck implements TemplateCheck
             return new Error(err, ERROR_SOURCE);
         }
 
-        for (Modifier illegalModifier : ILLEGAL_MODIFIERS)
+        for (Modifier modifier : init.getModifiers())
         {
-            if (init.getModifiers().contains(illegalModifier))
+            if (isIllegalModifier(modifier))
             {
                 String err = "A capsule template's `init()` method cannot be declared `{0}`,"
                            + "but such a method was found in `{1}`.";
@@ -91,6 +93,17 @@ public class InitDeclCheck implements TemplateCheck
         }
         
         return ok;
+    }
+    
+    private static boolean isIllegalModifier(Modifier modifier)
+    {
+        for (Modifier illegal : ILLEGAL_MODIFIERS) {
+            if (modifier == illegal) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     private static boolean isNamedInit(ExecutableElement exec)
