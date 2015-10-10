@@ -39,13 +39,15 @@ public class TemplateChecker
         this.env = new TemplateCheckEnvironment(procEnv);
         this.failureBehavior = errorBehavior;
         
-        templateChecks = new TemplateCheck[] {
+        templateChecks = new TemplateCheck[]
+        {
             new SuffixCheck(),
             new NotSubclassCheck(env),
             new NoVariadicMethodsCheck(),
             new OnlyZeroArgConstructorsCheck(),
             new NoMainCheck(),
-            new InitDeclCheck()
+            new InitDeclCheck(),
+            new NoNestedTypesCheck()
         };
     }
     
