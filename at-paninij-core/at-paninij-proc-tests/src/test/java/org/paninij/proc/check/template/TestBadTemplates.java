@@ -58,13 +58,48 @@ public class TestBadTemplates
     }
     
     @Test
-    public void testInitDeclCheck() {
+    public void testInitDeclCheck1() {
         testBadTemplate("init.NonVoidInitTemplate");
+    }
+    
+    @Test
+    public void testInitDeclCheck2() {
         testBadTemplate("init.PrivateInitTemplate");
-        testBadTemplate("init.ProtectedInitTemplate");
+    }
+
+    @Test
+    public void testInitDeclCheck3() {
         testBadTemplate("init.StaticInitTemplate");
+    }
+
+    @Test
+    public void testInitDeclCheck4() {
         testBadTemplate("init.TooManyInitDeclsTemplate");
+    }
+
+    @Test
+    public void testInitDeclCheck5() {
         testBadTemplate("init.TypeParamsInitTemplate");
+    }
+    
+    @Test
+    public void testNoNestedTypesCheck1() {
+        testBadTemplate("nested.NestedAnnotationTemplate");
+    }
+    
+    @Test
+    public void testNoNestedTypesCheck2() {
+        testBadTemplate("nested.NestedClassTemplate");
+    }
+    
+    @Test
+    public void testNoNestedTypesCheck3() {
+        testBadTemplate("nested.NestedEnumTemplate");
+    }
+    
+    @Test
+    public void testNoNestedTypesCheck4() {
+        testBadTemplate("nested.NestedInterfaceTemplate");
     }
     
     private void testBadTemplate(String badTemplate)
