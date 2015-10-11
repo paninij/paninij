@@ -57,7 +57,7 @@ class Util
 
         Runtime runtime = Runtime.getRuntime();
         Process proc = runtime.exec(cmd);
-        Path path = Paths.get(logDir, qualifiedClassName);
+        Path path = Paths.get(logDir, qualifiedClassName + ".jasm");
 
         proc.waitFor();
         if (proc.exitValue() > 0)
