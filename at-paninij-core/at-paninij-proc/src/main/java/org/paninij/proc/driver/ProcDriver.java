@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -89,8 +90,19 @@ public class ProcDriver
         fileManager = javaCompiler.getStandardFileManager(null, null, null);
         fileManager.setLocation(CLASS_PATH, settings.classPath);
         fileManager.setLocation(SOURCE_PATH, settings.sourcePath);
+        
+        ensureDirExists(settings.classOutput);
         fileManager.setLocation(CLASS_OUTPUT, singleton(settings.classOutput));
+
+        ensureDirExists(settings.sourceOutput);
         fileManager.setLocation(SOURCE_OUTPUT, singleton(settings.sourceOutput));
+    }
+    
+    public void process(List<String> compilationUnits) throws IOException
+    {
+        String[] arr = new String[compilationUnits.size()];
+        arr = compilationUnits.toArray(arr);
+        process(arr);
     }
     
     public void process(String... compilationUnits) throws IOException
@@ -115,5 +127,12 @@ public class ProcDriver
             compilationUnits.add(template);
         }
         return compilationUnits;
+    }
+    
+    private static void ensureDirExists(File dir) throws IOException
+    {
+        if (dir.mkdir() == false && dir.isDirectory() == false) {
+            throw new IOException("Could not ensure that the directory exists: " + dir);
+        }
     }
 }

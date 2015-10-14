@@ -3,15 +3,14 @@ package org.paninij.soter;
 import org.junit.Test;
 
 
-public class TestApsp extends AbstractTest
+public class TestMisc extends AbstractTest
 {
     @Override
     protected String[] getCapsules()
     {
         return new String[] {
-            "edu.rice.habanero.benchmarks.apsp.Master",
-            "edu.rice.habanero.benchmarks.apsp.Worker",
-            "edu.rice.habanero.benchmarks.apsp.Apsp"
+            "org.paninij.soter.NoTransfers",
+            "org.paninij.soter.TwoPathsToTransfer",
         };
     }
 
