@@ -78,7 +78,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
 
         for (Procedure p : this.capsule.getProcedures()) {
             MessageShape shape = new MessageShape(p);
-            imports.add(shape.getPackage() + "." +shape.encoded);
+            imports.add(shape.fullLocation());
         }
 
         imports.addAll(this.capsule.getImports());
@@ -127,6 +127,8 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
     protected List<String> generateProcedure(Procedure procedure) {
         MessageShape shape = new MessageShape(procedure);
         String doBlock = shape.behavior == Behavior.BLOCKED_FUTURE || shape.behavior == Behavior.BLOCKED_PREMADE ? "panini$emptyQueue();" : "";
+        String encoding = PaniniModel.isPaniniCustom(shape.returnType.getMirror()) ? shape.returnType.raw() : shape.encoded;
+        
         List<String> source = Source.lines(
                 "@Override",
                 "#0",
@@ -140,7 +142,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                 "");
         return Source.formatAll(source,
                 this.generateProcedureDecl(shape),
-                shape.encoded,
+                encoding,
                 this.generateProcedureArguments(shape),
                 doBlock,
                 this.generateProcedureReturn(shape));

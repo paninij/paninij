@@ -88,7 +88,7 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
 
         for (Procedure p : this.capsule.getProcedures()) {
             MessageShape shape = new MessageShape(p);
-            imports.add(shape.getPackage() + "." + shape.encoded);
+            imports.add(shape.fullLocation());
         }
 
         imports.addAll(this.capsule.getImports());
