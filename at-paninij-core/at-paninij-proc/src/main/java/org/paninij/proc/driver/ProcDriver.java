@@ -26,26 +26,29 @@ public class ProcDriver
 {
     public static class Settings
     {
-        final Iterable<File> classPath;
-        final Iterable<File> sourcePath;
-        final File classOutput;
-        final File sourceOutput;
-        final Iterable<String> options;
+        public Iterable<File> classPath;
+        public Iterable<File> sourcePath;
+        public File classOutput;
+        public File sourceOutput;
+        public Iterable<String> options;
         
         public Settings(Iterable<File> classPath, Iterable<File> sourcePath, File classOutput,
                         File sourceOutput, Iterable<String> options)
         {
-            assert classPath != null
-                && sourcePath != null
-                && classOutput != null
-                && sourceOutput != null
-                && options != null;
-            
             this.classPath = classPath;
             this.sourcePath = sourcePath;
             this.classOutput = classOutput;
             this.sourceOutput = sourceOutput;
             this.options = options;
+        }
+        
+        public boolean isWellFormed()
+        {
+            return classPath != null
+                && sourcePath != null
+                && classOutput != null
+                && sourceOutput != null
+                && options != null;
         }
     }
     
@@ -75,6 +78,10 @@ public class ProcDriver
     
     public ProcDriver(Settings settings) throws IOException
     {
+        if (!settings.isWellFormed()) {
+            throw new IllegalArgumentException("The given settings were not well-formed.");
+        }
+
         this.settings = settings;
 
         javaCompiler = ToolProvider.getSystemJavaCompiler();
