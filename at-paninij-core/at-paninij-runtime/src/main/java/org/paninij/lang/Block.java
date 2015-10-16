@@ -18,4 +18,17 @@
  */
 package org.paninij.lang;
 
+/**
+ * The @Block annotation changes the behind-the-scenes behavior of a 
+ * procedure by making it block when called.
+ * <br />
+ * This annotation is one of the three which can define the behavior
+ * of a procedure. They are:
+ * <ul>
+ * <li>@Block - blocking behavior</li>
+ * <li>@Future - futurized behvaior</li>
+ * <li>@Duck - ducked behavior</li>
+ * </ul>
+ *
+ */
 public @interface Block { }
