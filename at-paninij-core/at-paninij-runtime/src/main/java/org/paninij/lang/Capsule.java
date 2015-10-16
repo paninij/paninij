@@ -21,5 +21,11 @@ package org.paninij.lang;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * The @Capsule annotation is used to create a CapsuleTemplate.
+ *
+ * @author ddmills
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Capsule { }
+public @interface Capsule {}
