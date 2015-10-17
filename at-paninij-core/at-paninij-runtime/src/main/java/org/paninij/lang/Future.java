@@ -21,7 +21,7 @@ package org.paninij.lang;
 /**
  * The @Future annotation changes the behind-the-scenes behavior of a 
  * procedure by making it return a java.util.concurrent.Future when called.
- * <br />
+ * <br>
  * This annotation is one of the three which can define the behavior
  * of a procedure. They are:
  * <ul>
@@ -31,4 +31,4 @@ package org.paninij.lang;
  * </ul>
  *
  */
-public @interface Future { }
+public @interface Future {}

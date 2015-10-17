@@ -21,7 +21,7 @@ package org.paninij.lang;
 /**
  * The @Block annotation changes the behind-the-scenes behavior of a 
  * procedure by making it block when called.
- * <br />
+ * <br>
  * This annotation is one of the three which can define the behavior
  * of a procedure. They are:
  * <ul>
