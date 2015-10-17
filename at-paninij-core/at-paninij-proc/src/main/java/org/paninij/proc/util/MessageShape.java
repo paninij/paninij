@@ -94,6 +94,7 @@ public class MessageShape
         case DUCKFUTURE:
             return this.returnType.encodeFull() + "$Duck$" + this.encodeParameters();
         case PREMADE:
+        	return this.returnType.encodeFull();
         default:
             // premade still get encoded so we can keep track of all ducks used in the system
             return this.returnType.encodeFull() + "$Premade$" + this.encodeParameters();
@@ -116,14 +117,18 @@ public class MessageShape
         case ERROR:
             return "org.paninij.runtime.futures";
         case PREMADE:
-            // TODO return the exact premade class
-            return "org.paninij.lang.*";
+            return "org.paninij.lang";
         case SIMPLE:
             return "org.paninij.runtime.messages";
         default:
             break;
         }
         throw new IllegalArgumentException("Message does not have a category, so it cannot fit into a package.");
+    }
+    
+    public String fullLocation() {
+    	if (this.category == Category.PREMADE) return this.returnType.raw();
+    	return this.getPackage() + "." + this.encoded;
     }
 
     private String getRealReturn() {

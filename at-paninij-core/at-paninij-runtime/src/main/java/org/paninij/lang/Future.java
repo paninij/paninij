@@ -18,4 +18,17 @@
  */
 package org.paninij.lang;
 
-public @interface Future { }
+/**
+ * The @Future annotation changes the behind-the-scenes behavior of a 
+ * procedure by making it return a java.util.concurrent.Future when called.
+ * <br>
+ * This annotation is one of the three which can define the behavior
+ * of a procedure. They are:
+ * <ul>
+ * <li>@Block - blocking behavior</li>
+ * <li>@Future - futurized behvaior</li>
+ * <li>@Duck - ducked behavior</li>
+ * </ul>
+ *
+ */
+public @interface Future {}
