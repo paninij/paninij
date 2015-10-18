@@ -28,7 +28,7 @@ public abstract class DeclCheck implements TemplateCheck
     
     public abstract String getDeclName();
     
-    public abstract boolean hasValidParameters(ExecutableElement decl);
+    public abstract boolean hasValidParameters(TypeElement template, ExecutableElement decl);
 
     
     @Override
@@ -65,7 +65,7 @@ public abstract class DeclCheck implements TemplateCheck
             return new Error(err, getErrorSource());
         }
         
-        if (!hasValidParameters(init))
+        if (!hasValidParameters(template, init))
         {
             String err = "The {0} declaration of the `{1}` capsule template has invalid parameters.";
             err = format(err, getDeclName(), template.getSimpleName());
