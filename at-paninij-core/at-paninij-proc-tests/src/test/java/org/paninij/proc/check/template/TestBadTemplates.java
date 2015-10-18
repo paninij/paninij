@@ -132,6 +132,16 @@ public class TestBadTemplates
         testBadTemplate("modifiers.VolatileFieldTemplate");
     } 
     
+    @Test
+    public void testProceduresCheck1() {
+        testBadTemplate("procedures.ProcedureOnActiveTemplate");
+    }
+
+    @Test
+    public void testProceduresCheck2() {
+        testBadTemplate("procedures.NonPublicProcedureTemplate");
+    }    
+
     private void testBadTemplate(String badTemplate)
     {
         try {

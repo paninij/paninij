@@ -49,7 +49,8 @@ public class TemplateChecker
             new InitDeclCheck(),
             new NoNestedTypesCheck(),
             new NoTypeParamCheck(),
-            new NoIllegalModifiersCheck()
+            new NoIllegalModifiersCheck(),
+            new ProceduresCheck()
         };
     }
     
