@@ -18,6 +18,9 @@
  */
 package org.paninij.examples.pi;
 
+import static org.paninij.examples.pi.Config.SAMPLE_SIZE;
+import static org.paninij.examples.pi.Config.WORKER_COUNT;
+
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
@@ -29,12 +32,6 @@ import org.paninij.lang.Local;
 @Capsule
 public class PiTemplate
 {
-    // how many samples to run for computing pi
-    static int SAMPLE_SIZE = 100000;
-
-    // how many worker capsules
-    static int WORKER_COUNT = 10;
-
     // an array of worker capsules
     @Local Worker[] workers = new Worker[WORKER_COUNT];
 

@@ -82,7 +82,9 @@ public class EchoServerTemplate
 
     // TODO this should not be necessary since the children are
     // active.
+    /*
     public void run() {
 
     }
+    */
 }
