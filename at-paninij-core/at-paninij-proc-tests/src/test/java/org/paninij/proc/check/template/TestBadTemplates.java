@@ -112,6 +112,26 @@ public class TestBadTemplates
         testBadTemplate("HasTypeParamTemplate");
     }
     
+    @Test
+    public void testNoIllegalModifiersCheck1() {
+        testBadTemplate("modifiers.AbstractTemplate");
+    }
+
+    @Test
+    public void testNoIllegalModifiersCheck2() {
+        testBadTemplate("modifiers.PrivateConstructorTemplate");
+    } 
+
+    @Test
+    public void testNoIllegalModifiersCheck3() {
+        testBadTemplate("modifiers.SynchronizedMethodTemplate");
+    } 
+
+    @Test
+    public void testNoIllegalModifiersCheck4() {
+        testBadTemplate("modifiers.VolatileFieldTemplate");
+    } 
+    
     private void testBadTemplate(String badTemplate)
     {
         try {

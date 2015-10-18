@@ -48,7 +48,8 @@ public class TemplateChecker
             new NoMainCheck(),
             new InitDeclCheck(),
             new NoNestedTypesCheck(),
-            new NoTypeParamCheck()
+            new NoTypeParamCheck(),
+            new NoIllegalModifiersCheck()
         };
     }
     
