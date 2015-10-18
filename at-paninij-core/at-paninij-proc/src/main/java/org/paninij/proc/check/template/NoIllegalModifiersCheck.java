@@ -43,11 +43,34 @@ public class NoIllegalModifiersCheck implements TemplateCheck
 
     public final static Modifier[] ILLEGAL_METHOD_MODIFIERS = {
         ABSTRACT,
-        DEFAULT,
         SYNCHRONIZED,
         NATIVE,
     };
     
+    public final static Modifier[] ILLEGAL_RUN_DECL_MODIFIERS = {
+        ABSTRACT,
+        SYNCHRONIZED,
+        NATIVE,
+        STATIC,
+        PRIVATE,
+    };
+    
+    public final static Modifier[] ILLEGAL_INIT_DECL_MODIFIERS = {
+        ABSTRACT,
+        SYNCHRONIZED,
+        NATIVE,
+        STATIC,
+        PRIVATE,
+    };
+
+    public final static Modifier[] ILLEGAL_DESIGN_DECL_MODIFIERS = {
+        ABSTRACT,
+        SYNCHRONIZED,
+        NATIVE,
+        STATIC,
+        PRIVATE,
+    };
+
     @Override
     public Result check(TypeElement template)
     {
@@ -68,8 +91,9 @@ public class NoIllegalModifiersCheck implements TemplateCheck
             if (illegalModifier != null)
             {
                 String err = "A member of a capsule template, `{0}`, has an illegal modifier: "
-                           + "a {1} includes the `{2}` modifier.";
-                err = format(err, template.getQualifiedName(), member.getKind(), illegalModifier);
+                           + "a {1} named `{2}` includes the `{3}` modifier.";
+                err = format(err, template.getQualifiedName(), member.getKind(),
+                                  member.getSimpleName(), illegalModifier);
                 return new Error(err, ERROR_SOURCE);
             }
         }
@@ -105,7 +129,16 @@ public class NoIllegalModifiersCheck implements TemplateCheck
         case FIELD:
             return ILLEGAL_FIELD_MODIFIERS;
         case METHOD:
-            return ILLEGAL_METHOD_MODIFIERS;
+            switch (member.getSimpleName().toString()) {
+            case "init":
+                return ILLEGAL_INIT_DECL_MODIFIERS;
+            case "design":
+                return ILLEGAL_DESIGN_DECL_MODIFIERS;
+            case "run":
+                return ILLEGAL_RUN_DECL_MODIFIERS;
+            default:
+                return ILLEGAL_METHOD_MODIFIERS;
+            }
         default:
             return EMPTY;
         }

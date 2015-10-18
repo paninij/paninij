@@ -30,6 +30,8 @@ public class TestBadTemplates
     {
         expected.expect(RuntimeException.class);
         expected.expectCause(instanceOf(TemplateCheckException.class));
+        // TODO: Figure out if we can specify the expected error source (i.e. the check from which
+        // the exception was originally thrown).
     }
     
     @Test
@@ -66,16 +68,7 @@ public class TestBadTemplates
     public void testInitDeclCheck1() {
         testBadTemplate("init.NonVoidInitTemplate");
     }
-    
-    @Test
-    public void testInitDeclCheck2() {
-        testBadTemplate("init.PrivateInitTemplate");
-    }
 
-    @Test
-    public void testInitDeclCheck3() {
-        testBadTemplate("init.StaticInitTemplate");
-    }
 
     @Test
     public void testInitDeclCheck4() {
@@ -131,6 +124,16 @@ public class TestBadTemplates
     public void testNoIllegalModifiersCheck4() {
         testBadTemplate("modifiers.VolatileFieldTemplate");
     } 
+    
+    @Test
+    public void testNoIllegalModifiersCheck5() {
+        testBadTemplate("modifiers.PrivateInitTemplate");
+    }
+
+    @Test
+    public void testNoIllegalModifiersCheck6() {
+        testBadTemplate("modifiers.StaticInitTemplate");
+    }
     
     @Test
     public void testProceduresCheck1() {
