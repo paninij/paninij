@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.paninij.lang.Capsule;
 
 @SuppressWarnings("serial")
+@BadTemplate
 @Capsule
 public class IsSubclassTemplate extends ArrayList<String>
 {
