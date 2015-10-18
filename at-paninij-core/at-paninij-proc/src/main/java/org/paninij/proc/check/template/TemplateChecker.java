@@ -46,6 +46,7 @@ public class TemplateChecker
             new NoVariadicMethodsCheck(),
             new OnlyZeroArgConstructorsCheck(),
             new NoMainCheck(),
+            new NotTooManyDeclsCheck(),
             new InitDeclCheck(),
             new NoNestedTypesCheck(),
             new NoTypeParamCheck(),

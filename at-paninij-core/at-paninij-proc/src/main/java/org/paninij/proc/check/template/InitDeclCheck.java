@@ -36,20 +36,11 @@ public class InitDeclCheck implements TemplateCheck
             }
         }
 
-        // Find the init method, or error if there is more than one.
+        // Find the init method if there is one.
         ExecutableElement init = null;
-        for (ExecutableElement method: methods)
-        {
-            if (isNamedInit(method))
-            {
-                if (init == null) {
-                    init = method;
-                } else {
-                    String err = "A capsule template must contain zero or one `init()` methods, "
-                               + "but two such methods were found in `{0}`.";
-                    err = format(err, template.getSimpleName().toString());
-                    return new Error(err, ERROR_SOURCE);
-                }
+        for (ExecutableElement method: methods) {
+            if (isNamedInit(method)) {
+                init = method;
             }
         }
         return (init == null) ? ok : check(template, init);

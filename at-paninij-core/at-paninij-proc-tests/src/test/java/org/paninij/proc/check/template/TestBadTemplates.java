@@ -60,23 +60,18 @@ public class TestBadTemplates
     }
     
     @Test
-    public void testInitDeclCheck0() {
+    public void testInitDeclCheck1() {
         testBadTemplate("init.ParamsInitTemplate");
     }
 
     @Test
-    public void testInitDeclCheck1() {
+    public void testInitDeclCheck2() {
         testBadTemplate("init.NonVoidInitTemplate");
     }
 
 
     @Test
-    public void testInitDeclCheck4() {
-        testBadTemplate("init.TooManyInitDeclsTemplate");
-    }
-
-    @Test
-    public void testInitDeclCheck5() {
+    public void testInitDeclCheck3() {
         testBadTemplate("init.TypeParamsInitTemplate");
     }
     
@@ -143,7 +138,22 @@ public class TestBadTemplates
     @Test
     public void testProceduresCheck2() {
         testBadTemplate("procedures.NonPublicProcedureTemplate");
-    }    
+    }
+    
+    @Test
+    public void testNotTooManyDeclsCheck1() {
+        testBadTemplate("toomany.TooManyInitDeclsTemplate");
+    }
+    
+    @Test
+    public void testNotTooManyDeclsCheck2() {
+        testBadTemplate("toomany.TooManyRunDeclsTemplate");
+    }
+    
+    @Test
+    public void testNotTooManyDeclsCheck3() {
+        testBadTemplate("toomany.TooManyDesignDeclsTemplate");
+    }
 
     private void testBadTemplate(String badTemplate)
     {
