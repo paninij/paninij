@@ -34,7 +34,7 @@ public class InitDeclCheck implements TemplateCheck
     @Override
     public Result check(TypeElement template)
     {
-        // Collect list casted references to each of the template's methods.
+        // Collect list of the casted references to the template's methods.
         List<ExecutableElement> methods = new ArrayList<ExecutableElement>();
         for (Element enclosed: template.getEnclosedElements()) {
             if (enclosed.getKind() == ElementKind.METHOD) {
@@ -69,6 +69,14 @@ public class InitDeclCheck implements TemplateCheck
         {
             String err = "The `init()` method of a capsule template must have void return type, "
                        + "but a non-void `init()` method was found in `{0}`.";
+            err = format(err, template.getSimpleName());
+            return new Error(err, ERROR_SOURCE);
+        }
+        
+        if (!init.getParameters().isEmpty())
+        {
+            String err = "The `init()` method of a capsule template cannot have any parameters, "
+                       + "but such a method was found in `{0}`.";
             err = format(err, template.getSimpleName());
             return new Error(err, ERROR_SOURCE);
         }

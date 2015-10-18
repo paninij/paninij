@@ -58,6 +58,11 @@ public class TestBadTemplates
     }
     
     @Test
+    public void testInitDeclCheck0() {
+        testBadTemplate("init.ParamsInitTemplate");
+    }
+
+    @Test
     public void testInitDeclCheck1() {
         testBadTemplate("init.NonVoidInitTemplate");
     }
