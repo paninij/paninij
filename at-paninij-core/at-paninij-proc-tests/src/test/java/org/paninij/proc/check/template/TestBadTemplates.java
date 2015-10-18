@@ -107,6 +107,11 @@ public class TestBadTemplates
         testBadTemplate("nested.NestedInterfaceTemplate");
     }
     
+    @Test
+    public void testNoTypeParams() {
+        testBadTemplate("HasTypeParamTemplate");
+    }
+    
     private void testBadTemplate(String badTemplate)
     {
         try {

@@ -47,7 +47,8 @@ public class TemplateChecker
             new OnlyZeroArgConstructorsCheck(),
             new NoMainCheck(),
             new InitDeclCheck(),
-            new NoNestedTypesCheck()
+            new NoNestedTypesCheck(),
+            new NoTypeParamCheck()
         };
     }
     
