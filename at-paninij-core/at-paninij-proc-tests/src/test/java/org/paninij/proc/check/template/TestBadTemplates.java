@@ -108,7 +108,7 @@ public class TestBadTemplates
     }
     
     @Test
-    public void testNoTypeParams() {
+    public void testNoTypeParamsCheck() {
         testBadTemplate("HasTypeParamTemplate");
     }
     
