@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template.init;
+package org.paninij.proc.check.template.decls;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.paninij.proc.check.template.BadTemplate;
 
 @BadTemplate
 @Capsule
-public class TypeParamsInitTemplate
+public class TypeParamsRunTemplate
 {
     <T> void init(List<T> list) {
         // Nothing

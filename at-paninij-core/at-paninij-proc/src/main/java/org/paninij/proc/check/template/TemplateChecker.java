@@ -48,6 +48,7 @@ public class TemplateChecker
             new NoMainCheck(),
             new NotTooManyDeclsCheck(),
             new InitDeclCheck(),
+            new RunDeclCheck(),
             new NoNestedTypesCheck(),
             new NoTypeParamCheck(),
             new NoIllegalModifiersCheck(),

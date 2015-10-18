@@ -1,13 +1,14 @@
-package org.paninij.proc.check.template.init;
+package org.paninij.proc.check.template.decls;
 
 import org.paninij.lang.Capsule;
 import org.paninij.proc.check.template.BadTemplate;
 
 @BadTemplate
 @Capsule
-public class ParamsInitTemplate
+public class BadParamsRunTemplate
 {
-    public void init(Object param) {
+    public void run(Object param) {
         // Nothing
     }
 }
+

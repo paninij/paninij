@@ -61,18 +61,32 @@ public class TestBadTemplates
     
     @Test
     public void testInitDeclCheck1() {
-        testBadTemplate("init.ParamsInitTemplate");
+        testBadTemplate("decls.BadParamsInitTemplate");
     }
 
     @Test
     public void testInitDeclCheck2() {
-        testBadTemplate("init.NonVoidInitTemplate");
+        testBadTemplate("decls.NonVoidInitTemplate");
     }
-
 
     @Test
     public void testInitDeclCheck3() {
-        testBadTemplate("init.TypeParamsInitTemplate");
+        testBadTemplate("decls.TypeParamsInitTemplate");
+    }
+    
+    @Test
+    public void testRunDeclCheck1() {
+        testBadTemplate("decls.BadParamsRunTemplate");
+    }
+
+    @Test
+    public void testRunDeclCheck2() {
+        testBadTemplate("decls.NonVoidRunTemplate");
+    }
+
+    @Test
+    public void testRunDeclCheck3() {
+        testBadTemplate("decls.TypeParamsRunTemplate");
     }
     
     @Test

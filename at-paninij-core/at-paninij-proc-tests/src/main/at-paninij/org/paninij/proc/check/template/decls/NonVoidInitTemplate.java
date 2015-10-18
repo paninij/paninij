@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template.init;
+package org.paninij.proc.check.template.decls;
 
 import org.paninij.lang.Capsule;
 import org.paninij.proc.check.template.BadTemplate;
@@ -7,7 +7,7 @@ import org.paninij.proc.check.template.BadTemplate;
 @Capsule
 public class NonVoidInitTemplate
 {
-    protected Object init(int i) {
+    protected Object init() {
         return null;
     }
 }
