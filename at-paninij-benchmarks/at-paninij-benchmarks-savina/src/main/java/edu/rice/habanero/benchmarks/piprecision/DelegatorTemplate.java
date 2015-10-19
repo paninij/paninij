@@ -9,11 +9,11 @@ import org.paninij.lang.Local;
 {
     @Local Worker[] workers = new Worker[PiPrecisionConfig.NUM_WORKERS];
 
-    public BigDecimal pi = BigDecimal.ZERO;
-    public final BigDecimal tolerance = BigDecimal.ONE.movePointLeft(PiPrecisionConfig.PRECISION);
+    BigDecimal pi = BigDecimal.ZERO;
+    final BigDecimal tolerance = BigDecimal.ONE.movePointLeft(PiPrecisionConfig.PRECISION);
 
-    public int numTermsRequested = 0;
-    public int numTermsReceived = 0;
+    int numTermsRequested = 0;
+    int numTermsReceived = 0;
 
     public void design(Delegator self) {
         for (int i = 0; i < workers.length; i++) {
