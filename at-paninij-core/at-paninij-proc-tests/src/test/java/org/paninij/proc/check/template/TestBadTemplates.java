@@ -143,7 +143,12 @@ public class TestBadTemplates
     public void testNoIllegalModifiersCheck6() {
         testBadTemplate("modifiers.StaticInitTemplate");
     }
-    
+
+    @Test
+    public void testNoIllegalModifiersCheck7() {
+        testBadTemplate("modifiers.PrivateFieldTemplate");
+    } 
+
     @Test
     public void testProceduresCheck1() {
         testBadTemplate("procedures.ProcedureOnActiveTemplate");

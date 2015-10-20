@@ -22,8 +22,8 @@ import org.paninij.lang.Capsule;
 
 @Capsule
 public class ShipTemplate {
-    private short state;
-    private int x;
+    short state;
+    int x;
 
     protected void init() {
         this.state = 0;

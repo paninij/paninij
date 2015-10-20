@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
 @Capsule public class PingTemplate {
-    private int pings = PingPongConfig.N;
+    int pings = PingPongConfig.N;
     @Imports Pong pong;
 
     public void doPing() {

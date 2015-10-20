@@ -5,7 +5,8 @@ import org.paninij.proc.check.template.BadTemplate;
 
 @BadTemplate
 @Capsule
-public class VolatileFieldTemplate
+public class PrivateFieldTemplate
 {
-    volatile int field = 0;
+    @SuppressWarnings("unused")
+    private Object field = 0;
 }

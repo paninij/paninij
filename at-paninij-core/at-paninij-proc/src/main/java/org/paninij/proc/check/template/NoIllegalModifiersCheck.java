@@ -35,6 +35,7 @@ public class NoIllegalModifiersCheck implements TemplateCheck
     public final static Modifier[] ILLEGAL_FIELD_MODIFIERS = {
         PUBLIC,
         PROTECTED,
+        PRIVATE,   // A capsule needs to be able to access fields of its encapsulated template.
         ABSTRACT,
         STATIC,
         TRANSIENT,
