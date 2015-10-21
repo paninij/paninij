@@ -33,26 +33,26 @@ public class CapsuleSystem
     /**
      * Starts a capsule system from the given root capsule using the default execution profile.
      * 
-     * @param capsule  The fully-qualified name of a capsule which will act as the root capsule.
-     * @param args     The arguments to be passed into the root capsule's `main()` method.
+     * @param root  The fully-qualified name of a capsule which will act as the root capsule.
+     * @param args  The arguments to be passed into the root capsule's `main()` method.
      */
-    public static void start(String capsule, String[] args)
+    public static void start(String root, String[] args)
     {
-        start(capsule, DEFAULT_EXECUTION_PROFILE, args);
+        start(root, DEFAULT_EXECUTION_PROFILE, args);
     }
 
     
     /**
      * Starts a capsule system from the given root capsule using the given execution profile.
      * 
-     * @param capsule  The fully-qualified name of a capsule which will act as the root capsule.
+     * @param root     The fully-qualified name of a capsule which will act as the root capsule.
      * @param profile  The execution profile with which the capsule system will run.
      * @param args     The arguments to be passed into the root capsule's `main()` method.
      */
-    public static void start(String capsuleName, ExecutionProfile profile, String[] args)
+    public static void start(String root, ExecutionProfile profile, String[] args)
     {
         try {
-            CapsuleFactory capsuleFactory = new CapsuleFactory(capsuleName);
+            CapsuleFactory capsuleFactory = new CapsuleFactory(root);
             Class<? extends Panini$Capsule> clazz = capsuleFactory.getInstantiableClass(profile);
             Method main = clazz.getDeclaredMethod("main", String[].class);
             main.invoke(null, (Object) args);
