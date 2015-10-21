@@ -1,6 +1,7 @@
 package org.paninij.examples.matmul;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
 
 @Capsule public class MatMulTemplate {
@@ -15,4 +16,7 @@ import org.paninij.lang.Local;
         master.start();
     }
 
+    public static void main(String[] args) {
+        CapsuleSystem.start(MatMul.class.getName(), args);
+    }
 }

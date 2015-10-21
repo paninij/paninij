@@ -22,6 +22,7 @@ import java.io.*;
 import java.net.*;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 
 @Capsule
 public class EchoClientTemplate {
@@ -70,5 +71,9 @@ public class EchoClientTemplate {
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }
+    }
+    
+    public static void main(String[] args) {
+        CapsuleSystem.start(EchoClient.class.getName(), args);
     }
 }

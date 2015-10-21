@@ -23,6 +23,7 @@
 package org.paninij.examples.histogram;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
 
 @Capsule public class HistogramTemplate
@@ -45,5 +46,9 @@ import org.paninij.lang.Local;
 
     public void run() {
         reader.read(filenames);
+    }
+    
+    public static void main(String[] args) {
+        CapsuleSystem.start(Histogram.class.getName(), args);
     }
 }

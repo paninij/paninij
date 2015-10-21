@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
 
 @Capsule public class RayTracerTemplate {
@@ -34,4 +35,7 @@ import org.paninij.lang.Local;
         ui.draw(img);
     }
 
+    public static void main(String[] args) {
+        CapsuleSystem.start(RayTracer.class.getName(), args);
+    }
 }

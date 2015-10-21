@@ -20,6 +20,7 @@ package org.paninij.examples.echo;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
 
 import java.io.IOException;
@@ -79,10 +80,8 @@ public class EchoServerTemplate
         }
         return s;
     }
-
-    // TODO this should not be necessary since the children are
-    // active.
-    public void run() {
-
+    
+    public static void main(String[] args) {
+        CapsuleSystem.start(EchoServer.class.getName(), args);
     }
 }
