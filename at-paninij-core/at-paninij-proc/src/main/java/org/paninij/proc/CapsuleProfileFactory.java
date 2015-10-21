@@ -267,6 +267,9 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected boolean deservesMain()
     {
+        return true;  // TODO: Test that this works.
+
+        /*
         // if the capsule has external dependencies, it does
         // not deserve a main
         if (!this.capsule.getImportFields().isEmpty()) return false;
@@ -286,6 +289,7 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
             // if no local is active, this does not deserve a main
             return false;
         }
+        */
     }
 
     protected List<String> generateMain()
