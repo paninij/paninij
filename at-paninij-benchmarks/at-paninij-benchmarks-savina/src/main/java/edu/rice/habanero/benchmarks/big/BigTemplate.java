@@ -2,8 +2,12 @@ package edu.rice.habanero.benchmarks.big;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class BigTemplate {
+@Root
+@Capsule
+public class BigTemplate
+{
     @Local Sink sink;
     @Local Node[] nodes = new Node[BigConfig.W];
 

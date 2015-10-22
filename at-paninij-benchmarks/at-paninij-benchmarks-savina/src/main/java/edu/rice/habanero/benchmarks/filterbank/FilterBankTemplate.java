@@ -2,8 +2,11 @@ package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class FilterBankTemplate {
+@Root
+@Capsule public class FilterBankTemplate
+{
     @Local Producer producer;
     @Local Source source;
     @Local Branches branches;

@@ -2,8 +2,12 @@ package edu.rice.habanero.benchmarks.barber;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class SleepingBarberTemplate {
+@Root
+@Capsule
+public class SleepingBarberTemplate
+{
     @Local CustomerFactory factory;
     @Local Barber barber;
     @Local WaitingRoom room;
