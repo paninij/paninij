@@ -3,8 +3,11 @@ package org.paninij.examples.matmul;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class MatMulTemplate {
+@Root
+@Capsule
+public class MatMulTemplate {
     @Local Master master;
     @Local MatrixData data;
 

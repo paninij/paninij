@@ -21,12 +21,14 @@ package org.paninij.examples.pi;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
 /***
  * Calculation of Pi using the Panini language
  *
  * This computation uses the Monte Carlo Method.
  */
+@Root
 @Capsule
 public class PiTemplate
 {

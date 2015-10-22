@@ -3,7 +3,9 @@ package org.paninij.examples.helloworld;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 class HelloWorldTemplate
 {

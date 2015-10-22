@@ -25,7 +25,9 @@ import org.paninij.lang.Local;
 
 import java.io.IOException;
 import java.net.*;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 public class EchoServerTemplate
 {

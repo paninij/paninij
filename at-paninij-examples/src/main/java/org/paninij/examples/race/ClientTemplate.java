@@ -3,8 +3,11 @@ package org.paninij.examples.race;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class ClientTemplate
+@Root
+@Capsule
+public class ClientTemplate
 {
     @Local Server server;
     @Local Relay relay;

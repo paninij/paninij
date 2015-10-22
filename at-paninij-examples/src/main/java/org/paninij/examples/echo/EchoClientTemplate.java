@@ -23,7 +23,9 @@ import java.net.*;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleSystem;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 public class EchoClientTemplate {
     Socket echoSocket;

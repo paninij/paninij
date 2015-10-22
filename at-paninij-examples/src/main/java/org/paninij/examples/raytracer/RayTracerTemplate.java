@@ -6,8 +6,11 @@ import java.util.List;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class RayTracerTemplate {
+@Root
+@Capsule
+public class RayTracerTemplate {
     @Local Renderer renderer;
     @Local UserInterface ui;
 

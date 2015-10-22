@@ -25,8 +25,11 @@ package org.paninij.examples.histogram;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class HistogramTemplate
+@Root
+@Capsule
+public class HistogramTemplate
 {
     @Local Printer printer;
     @Local Reader reader;
