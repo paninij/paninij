@@ -4,8 +4,11 @@ import java.util.Random;
 
 import org.paninij.soter.LeakyServer;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 public class GossipyClientTemplate
 {
@@ -45,5 +48,9 @@ public class GossipyClientTemplate
         importantServer.giveSecret(superSecret);
 
         System.out.println("Stopping `GossipyClient`.");
+    }
+    
+    public static void main(String[] args) {
+        CapsuleSystem.start(GossipyClient.class.getName(), args);
     }
 }

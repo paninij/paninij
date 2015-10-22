@@ -2,14 +2,15 @@ package edu.rice.habanero.benchmarks.trapezoid;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
 import edu.rice.habanero.benchmarks.trapezoid.TrapezoidalConfig;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 public class TrapezoidTemplate
 {

@@ -1,9 +1,14 @@
 package org.paninij.examples.pingpong;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class PingPongTemplate {
+@Root
+@Capsule
+public class PingPongTemplate
+{
     @Local Ping ping;
     @Local Pong pong;
 
@@ -16,4 +21,7 @@ import org.paninij.lang.Local;
         ping.ping();
     }
 
+    public static void main(String[] args) {
+        CapsuleSystem.start(PingPong.class.getName(), args);
+    }
 }

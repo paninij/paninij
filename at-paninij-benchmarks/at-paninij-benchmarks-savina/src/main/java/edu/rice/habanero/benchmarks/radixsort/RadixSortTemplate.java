@@ -1,17 +1,18 @@
 package edu.rice.habanero.benchmarks.radixsort;
 
-import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class RadixSortTemplate {
+@Root
+@Capsule
+public class RadixSortTemplate
+{
     int sortCount = (int) (Math.log(RadixSortConfig.M) / Math.log(2));
 
     @Local Validation validator;
     @Local IntSource source;
     @Local Sort[] sorters = new Sort[sortCount];
-
-    FlagFuture wait;
 
     public void design(RadixSort self) {
         long radix = RadixSortConfig.M /2;

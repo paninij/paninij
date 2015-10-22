@@ -1,7 +1,6 @@
-package org.paninij.examples.helloworld;
+package org.paninij.lang.helloworld;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
 import org.paninij.lang.Root;
 
@@ -19,9 +18,5 @@ class HelloWorldTemplate
     void run() {
         int ret2 = g.greetBlock();
         System.out.println("Greet has blocked and returned: " + ret2);
-    }
-    
-    public static void main(String[] args) {
-        CapsuleSystem.start(HelloWorld.class.getName(), args);
     }
 }

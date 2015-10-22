@@ -2,8 +2,12 @@ package edu.rice.habanero.benchmarks.logmap;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class LogisticMapTemplate {
+@Root
+@Capsule
+public class LogisticMapTemplate
+{
     int numTerms = LogisticMapConfig.numTerms;
     int numWorkers = LogisticMapConfig.numSeries;
 
@@ -31,5 +35,4 @@ import org.paninij.lang.Local;
 
         System.out.println("Terms sum: " + termsSum);
     }
-
 }
