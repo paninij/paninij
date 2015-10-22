@@ -8,8 +8,6 @@ import org.paninij.lang.Local;
     long solutionsLimit = NQueensConfig.SOLUTIONS_LIMIT;
     int numWorkers = NQueensConfig.NUM_WORKERS;
 
-    static long RESULT;
-
     @Local Worker[] workers = new Worker[numWorkers];
 
     int numWorkersTerminated = 0;
@@ -53,11 +51,10 @@ import org.paninij.lang.Local;
     }
 
     private void goalReached() {
-        RESULT = resultCounter;
+        Result.RESULT = resultCounter;
         for (Worker w : workers) {
             w.terminate();
             w.exit();
         }
     }
-
 }

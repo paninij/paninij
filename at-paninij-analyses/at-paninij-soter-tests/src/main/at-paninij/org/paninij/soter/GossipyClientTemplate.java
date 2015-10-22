@@ -4,14 +4,17 @@ import java.util.Random;
 
 import org.paninij.soter.LeakyServer;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 public class GossipyClientTemplate
 {
-    private static final int NUM_GOSSIPS = 17;
-    private static final int NUM_SERVERS = 10;
-    private static final int NUM_SECRETS = 42;
+    final int NUM_GOSSIPS = 17;
+    final int NUM_SERVERS = 10;
+    final int NUM_SECRETS = 42;
 
 
     @Local LeakyServer servers[] = new LeakyServer[NUM_SERVERS];
@@ -45,5 +48,9 @@ public class GossipyClientTemplate
         importantServer.giveSecret(superSecret);
 
         System.out.println("Stopping `GossipyClient`.");
+    }
+    
+    public static void main(String[] args) {
+        CapsuleSystem.start(GossipyClient.class.getName(), args);
     }
 }

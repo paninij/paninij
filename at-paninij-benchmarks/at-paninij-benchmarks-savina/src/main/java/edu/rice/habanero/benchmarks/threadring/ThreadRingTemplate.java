@@ -2,8 +2,12 @@ package edu.rice.habanero.benchmarks.threadring;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class ThreadRingTemplate {
+@Root
+@Capsule
+public class ThreadRingTemplate
+{
     @Local Node[] nodes = new Node[ThreadRingConfig.N];
 
     public void design(ThreadRing self) {

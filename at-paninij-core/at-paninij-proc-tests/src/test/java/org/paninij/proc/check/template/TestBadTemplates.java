@@ -30,6 +30,8 @@ public class TestBadTemplates
     {
         expected.expect(RuntimeException.class);
         expected.expectCause(instanceOf(TemplateCheckException.class));
+        // TODO: Figure out if we can specify the expected error source (i.e. the check from which
+        // the exception was originally thrown).
     }
     
     @Test
@@ -53,33 +55,33 @@ public class TestBadTemplates
     }
 
     @Test
-    public void testNoMainCheck() {
-        testBadTemplate("HasMainTemplate");
-    }
-    
-    @Test
     public void testInitDeclCheck1() {
-        testBadTemplate("init.NonVoidInitTemplate");
+        testBadTemplate("decls.BadParamsInitTemplate");
     }
-    
+
     @Test
     public void testInitDeclCheck2() {
-        testBadTemplate("init.PrivateInitTemplate");
+        testBadTemplate("decls.NonVoidInitTemplate");
     }
 
     @Test
     public void testInitDeclCheck3() {
-        testBadTemplate("init.StaticInitTemplate");
+        testBadTemplate("decls.TypeParamsInitTemplate");
+    }
+    
+    @Test
+    public void testRunDeclCheck1() {
+        testBadTemplate("decls.BadParamsRunTemplate");
     }
 
     @Test
-    public void testInitDeclCheck4() {
-        testBadTemplate("init.TooManyInitDeclsTemplate");
+    public void testRunDeclCheck2() {
+        testBadTemplate("decls.NonVoidRunTemplate");
     }
 
     @Test
-    public void testInitDeclCheck5() {
-        testBadTemplate("init.TypeParamsInitTemplate");
+    public void testRunDeclCheck3() {
+        testBadTemplate("decls.TypeParamsRunTemplate");
     }
     
     @Test
@@ -102,6 +104,71 @@ public class TestBadTemplates
         testBadTemplate("nested.NestedInterfaceTemplate");
     }
     
+    @Test
+    public void testNoTypeParamsCheck() {
+        testBadTemplate("HasTypeParamTemplate");
+    }
+    
+    @Test
+    public void testNoIllegalModifiersCheck1() {
+        testBadTemplate("modifiers.AbstractTemplate");
+    }
+
+    @Test
+    public void testNoIllegalModifiersCheck2() {
+        testBadTemplate("modifiers.PrivateConstructorTemplate");
+    } 
+
+    @Test
+    public void testNoIllegalModifiersCheck3() {
+        testBadTemplate("modifiers.SynchronizedMethodTemplate");
+    } 
+
+    @Test
+    public void testNoIllegalModifiersCheck4() {
+        testBadTemplate("modifiers.VolatileFieldTemplate");
+    } 
+    
+    @Test
+    public void testNoIllegalModifiersCheck5() {
+        testBadTemplate("modifiers.PrivateInitTemplate");
+    }
+
+    @Test
+    public void testNoIllegalModifiersCheck6() {
+        testBadTemplate("modifiers.StaticInitTemplate");
+    }
+
+    @Test
+    public void testNoIllegalModifiersCheck7() {
+        testBadTemplate("modifiers.PrivateFieldTemplate");
+    } 
+
+    @Test
+    public void testProceduresCheck1() {
+        testBadTemplate("procedures.ProcedureOnActiveTemplate");
+    }
+
+    @Test
+    public void testProceduresCheck2() {
+        testBadTemplate("procedures.NonPublicProcedureTemplate");
+    }
+    
+    @Test
+    public void testNotTooManyDeclsCheck1() {
+        testBadTemplate("toomany.TooManyInitDeclsTemplate");
+    }
+    
+    @Test
+    public void testNotTooManyDeclsCheck2() {
+        testBadTemplate("toomany.TooManyRunDeclsTemplate");
+    }
+    
+    @Test
+    public void testNotTooManyDeclsCheck3() {
+        testBadTemplate("toomany.TooManyDesignDeclsTemplate");
+    }
+
     private void testBadTemplate(String badTemplate)
     {
         try {

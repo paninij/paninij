@@ -1,12 +1,13 @@
-package org.paninij.proc.maingen;
+package org.paninij.proc.activepassive;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
 @Capsule
-public class ActiveLocalTemplate {
+public class ZTemplate {
 
-    @Imports PassiveLocal p;
+    @Imports X x;
+    @Imports Y y;
 
     public void run() {
         System.out.println("Hello world");

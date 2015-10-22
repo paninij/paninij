@@ -26,6 +26,7 @@ public interface Capsule extends Signature
     public List<Variable> getImportFields();
     public List<Variable> getStateFields();
     public List<String> getSignatures();
+    public boolean isRoot();
     public boolean hasInit();
     public boolean hasRun();
     public boolean hasDesign();

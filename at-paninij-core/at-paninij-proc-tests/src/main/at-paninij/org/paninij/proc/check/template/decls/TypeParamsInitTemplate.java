@@ -1,9 +1,11 @@
-package org.paninij.proc.check.template.init;
+package org.paninij.proc.check.template.decls;
 
 import java.util.List;
 
 import org.paninij.lang.Capsule;
+import org.paninij.proc.check.template.BadTemplate;
 
+@BadTemplate
 @Capsule
 public class TypeParamsInitTemplate
 {

@@ -2,8 +2,12 @@ package edu.rice.habanero.benchmarks.pingpong;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class PingPongTemplate {
+@Root
+@Capsule
+public class PingPongTemplate
+{
     @Local Ping ping;
     @Local Pong pong;
 

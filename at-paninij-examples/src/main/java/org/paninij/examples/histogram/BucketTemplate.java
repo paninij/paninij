@@ -36,12 +36,12 @@ import org.paninij.lang.Imports;
         count = 0;
     }
 
-    void bump() {
+    public void bump() {
         count++;
     }
 
     @Block
-    void finish(int index) {
+    public void finish(int index) {
         p.print("" + index + "(" + (char) index + "):" + count);
     }
 }
