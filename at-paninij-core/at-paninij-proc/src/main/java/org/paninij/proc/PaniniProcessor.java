@@ -109,7 +109,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         // Collect all Capsule models
-        TemplateChecker templateChecker = new TemplateChecker(processingEnv, failureBehavior);
+        TemplateChecker templateChecker = new TemplateChecker(processingEnv, roundEnv, failureBehavior);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
             if (templateChecker.check(this, elem)) {

@@ -1,7 +1,7 @@
 package org.paninij.proc.check.template.toomany;
 
+import org.paninij.lang.BadTemplate;
 import org.paninij.lang.Capsule;
-import org.paninij.proc.check.template.BadTemplate;
 
 @BadTemplate
 @Capsule

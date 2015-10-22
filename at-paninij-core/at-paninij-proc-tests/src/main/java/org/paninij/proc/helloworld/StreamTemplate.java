@@ -1,4 +1,4 @@
-package org.paninij.lang.helloworld;
+package org.paninij.proc.helloworld;
 
 import org.paninij.lang.Signature;
 import org.paninij.lang.String;

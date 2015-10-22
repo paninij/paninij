@@ -7,8 +7,8 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class XTemplate {
-
+public class XTemplate
+{
     @Local Y y;
 
     public void design(X self) {

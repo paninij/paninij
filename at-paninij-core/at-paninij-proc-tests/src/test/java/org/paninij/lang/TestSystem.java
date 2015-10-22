@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class TestSystem
 {
-    private static String PACKAGE_PREFIX = "org.paninij.lang.helloworld.";
+    private static String PACKAGE_PREFIX = "org.paninij.proc.helloworld.";
     private static ExecutionProfile[] RUNNABLE_EXECUTION_PROFILES = {
         MONITOR,
         SERIAL,

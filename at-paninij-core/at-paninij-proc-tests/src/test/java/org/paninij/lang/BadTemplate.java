@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.lang;
 
 /**
  * Indicates that a capsule template is "bad" in the sense that it violates some check. These

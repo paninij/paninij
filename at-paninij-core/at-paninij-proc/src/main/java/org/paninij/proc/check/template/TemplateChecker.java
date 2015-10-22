@@ -18,11 +18,15 @@
  */
 package org.paninij.proc.check.template;
 
+import static java.text.MessageFormat.format;
+
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.lang.Capsule;
 import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.check.FailureBehavior;
 import org.paninij.proc.check.Result;
@@ -34,10 +38,11 @@ public class TemplateChecker
     protected final TemplateCheckEnvironment env;
     protected final FailureBehavior failureBehavior;
     
-    public TemplateChecker(ProcessingEnvironment procEnv, FailureBehavior errorBehavior)
+    public TemplateChecker(ProcessingEnvironment procEnv, RoundEnvironment roundEnv,
+                           FailureBehavior failureBehavior)
     {
-        this.env = new TemplateCheckEnvironment(procEnv);
-        this.failureBehavior = errorBehavior;
+        this.env = new TemplateCheckEnvironment(procEnv, roundEnv);
+        this.failureBehavior = failureBehavior;
         
         templateChecks = new TemplateCheck[]
         {
@@ -52,7 +57,8 @@ public class TemplateChecker
             new NoNestedTypesCheck(),
             new NoTypeParamCheck(),
             new NoIllegalModifiersCheck(),
-            new ProceduresCheck()
+            new ProceduresCheck(),
+            new FieldsCheck(env),
         };
     }
     
@@ -63,11 +69,21 @@ public class TemplateChecker
      */
     public boolean check(PaniniProcessor context, Element template)
     {
+        if (template.getAnnotation(Capsule.class) == null) {
+            String err = "Tried to check an element as a capsule template though it is not "
+                       + "annotated with `@Capsule`: " + template;
+            throw new IllegalArgumentException(err);
+        }
+        
         if (template.getKind() != ElementKind.CLASS)
         {
             // TODO: Make this error message a bit clearer.
             // TODO: Switch between error behaviors.
-            context.error("A capsule template must be a class, but an element annotated with `@Capsule` is of kind " + template.getKind());
+            String err = "A capsule template must be a class, but an element annotated with "
+                       + "`@Capsule` named `{0}` is of kind {1}.";
+            err = format(err, template, template.getKind());
+            context.error(err);
+
             return false;
         }
 

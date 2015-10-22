@@ -168,6 +168,31 @@ public class TestBadTemplates
     public void testNotTooManyDeclsCheck3() {
         testBadTemplate("toomany.TooManyDesignDeclsTemplate");
     }
+    
+    @Test
+    public void testFieldsCheck1() {
+        testBadTemplate("fields.BothAnnotationsTemplate");
+    }
+
+    @Test
+    public void testFieldsCheck2() {
+        testBadTemplate("fields.LocalStateTemplate");
+    }
+
+    @Test
+    public void testFieldsCheck3() {
+        testBadTemplate("fields.MissingAnnotationTemplate");
+    }
+    
+    @Test
+    public void testFieldsCheck4() {
+        testBadTemplate("fields.TemplateFieldTemplate");
+    }
+
+    @Test
+    public void testFieldsCheck5() {
+        testBadTemplate("fields.TwoDimensionalArrayTemplate");
+    }
 
     private void testBadTemplate(String badTemplate)
     {

@@ -1,4 +1,4 @@
-package org.paninij.lang.helloworld;
+package org.paninij.proc.helloworld;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
@@ -6,7 +6,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-class HelloWorldTemplate
+public class HelloWorldTemplate
 {
     @Local Console c;
     @Local Greeter g;

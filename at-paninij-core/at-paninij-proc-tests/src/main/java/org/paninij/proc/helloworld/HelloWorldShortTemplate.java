@@ -1,4 +1,4 @@
-package org.paninij.lang.helloworld;
+package org.paninij.proc.helloworld;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Root;
