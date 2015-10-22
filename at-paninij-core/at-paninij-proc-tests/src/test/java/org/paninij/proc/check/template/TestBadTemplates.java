@@ -55,11 +55,6 @@ public class TestBadTemplates
     }
 
     @Test
-    public void testNoMainCheck() {
-        testBadTemplate("HasMainTemplate");
-    }
-    
-    @Test
     public void testInitDeclCheck1() {
         testBadTemplate("decls.BadParamsInitTemplate");
     }

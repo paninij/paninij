@@ -18,8 +18,7 @@ public class TestGoodTemplates
     @Test
     public void testMainGen()
     {
-        testGoodTemplates("org.paninij.proc.maingen", "ActiveLocalTemplate", "PassiveLocalTemplate",
-                          "PassiveRootTemplate");
+        testGoodTemplates("org.paninij.proc.activepassive", "XTemplate", "YTemplate", "ZTemplate");
     }
 
     private void testGoodTemplates(String pkg, String... templates)

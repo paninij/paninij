@@ -2,8 +2,12 @@ package edu.rice.habanero.benchmarks.concdict;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-@Capsule public class DictTemplate {
+@Root
+@Capsule
+public class DictTemplate
+{
     @Local Master master;
 
     public void run() {

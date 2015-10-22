@@ -8,6 +8,7 @@ import javax.lang.model.type.TypeKind;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
+import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.Source;
 
 
@@ -61,7 +62,8 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected List<String> generateProcedure(Procedure procedure) {
         MessageShape shape = new MessageShape(procedure);
-
+        String encoding = PaniniModel.isPaniniCustom(shape.returnType.getMirror()) ? shape.returnType.raw() : shape.encoded;
+        
         List<String> source = Source.lines(
                 "@Override",
                 "#0",
@@ -73,9 +75,10 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
                 "    #4",
                 "}",
                 "");
+        
         return Source.formatAll(source,
                 this.generateProcedureDecl(shape),
-                shape.encoded,
+                encoding,
                 this.generateProcedureArguments(shape),
                 this.generateAssertSafeInvocationTransfer(),
                 this.generateProcedureReturn(shape));
@@ -266,25 +269,7 @@ public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
 
     protected boolean deservesMain()
     {
-        // if the capsule has external dependencies, it does
-        // not deserve a main
-        if (!this.capsule.getImportFields().isEmpty()) return false;
-
-        if (this.capsule.isActive()) {
-            // if the capsule is active and has no external deps,
-            // it deserves a main
-            return true;
-        } else {
-            // if the capsule has no locals, it does not need a main
-            // (this is a bogus/dull scenario)
-            if (this.capsule.getLocalFields().isEmpty()) return false;
-
-            // check if any ancestor capsules are active
-            if (this.capsule.hasActiveAncestor()) return true;
-
-            // if no local is active, this does not deserve a main
-            return false;
-        }
+        return capsule.isRoot();
     }
 
     protected List<String> generateMain()

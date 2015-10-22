@@ -45,7 +45,6 @@ public class TemplateChecker
             new NotSubclassCheck(env),
             new NoVariadicMethodsCheck(),
             new OnlyZeroArgConstructorsCheck(),
-            new NoMainCheck(),
             new NotTooManyDeclsCheck(),
             new InitDeclCheck(),
             new RunDeclCheck(),
