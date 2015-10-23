@@ -175,4 +175,14 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testFieldsCheck5() {
         testBadTemplate("fields.TwoDimensionalArrayTemplate");
     }
+    
+    @Test
+    public void testImplementedInterfaces1() {
+        testBadTemplate("implemented.ImplementsSignatureTemplate");
+    }
+    
+    @Test
+    public void testImplementedInterfaces2() {
+        testBadTemplate("implemented.ImplementsNormalTemplate");
+    }
 }

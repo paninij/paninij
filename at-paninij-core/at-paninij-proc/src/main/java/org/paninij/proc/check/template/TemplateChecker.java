@@ -59,6 +59,7 @@ public class TemplateChecker
             new NoIllegalModifiersCheck(),
             new ProceduresCheck(),
             new FieldsCheck(env),
+            new ImplementedSignaturesCheck(env),
         };
     }
     
