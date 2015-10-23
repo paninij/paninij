@@ -4,7 +4,7 @@ public class TemplateCheckException extends RuntimeException
 {
     private static final long serialVersionUID = -4278404329262452302L;
     
-    public TemplateCheckException(String msg) {
-        super(msg);
+    public TemplateCheckException(String err) {
+        super(err);
     }
 }

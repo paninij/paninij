@@ -45,7 +45,7 @@ import javax.lang.model.util.Types;
 
 import org.paninij.proc.check.CapsuleTestChecker;
 import org.paninij.proc.check.FailureBehavior;
-import org.paninij.proc.check.SignatureChecker;
+import org.paninij.proc.check.signature.SignatureChecker;
 import org.paninij.proc.check.template.TemplateChecker;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
@@ -97,12 +97,10 @@ public class PaniniProcessor extends AbstractProcessor
         Set<Capsule> capsuleTests = new HashSet<Capsule>();
 
         // Collect all Signature models
+        SignatureChecker signatureChecker = new SignatureChecker(processingEnv, roundEnv, failureBehavior);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Signature.class))
         {
-            // Note: `getElementsAnnotatedWith()` even returns elements which inherit `@Signature`.
-            //       This includes capsule artifacts generated in a prior round which implement a
-            //       user-defined signature.
-            if (elem.getAnnotation(org.paninij.lang.Signature.class) != null && SignatureChecker.check(this, elem)) {
+            if (signatureChecker.check(this, elem)) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
             }

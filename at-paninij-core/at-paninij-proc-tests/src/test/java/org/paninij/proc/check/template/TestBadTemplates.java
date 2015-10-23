@@ -1,37 +1,19 @@
 package org.paninij.proc.check.template;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.paninij.proc.driver.ProcDriver.makeDefaultSettings;
-
-import java.io.IOException;
-
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.paninij.proc.check.AbstractTestBadTemplates;
 
-import org.paninij.proc.driver.ProcDriver;
 
-public class TestBadTemplates
+public class TestBadTemplates extends AbstractTestBadTemplates
 {
-    private static final String badTemplatePackage = "org.paninij.proc.check.template";
-    
-    private final ProcDriver driver;
-    
-    public TestBadTemplates() throws IOException {
-        driver = new ProcDriver(makeDefaultSettings());
+    @Override
+    protected String getBadTemplatePackage() {
+        return "org.paninij.proc.check.template";
     }
-    
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
 
-    @Before
-    public void setUp()
-    {
-        expected.expect(RuntimeException.class);
-        expected.expectCause(instanceOf(TemplateCheckException.class));
-        // TODO: Figure out if we can specify the expected error source (i.e. the check from which
-        // the exception was originally thrown).
+    @Override
+    protected Class<?> getExpectedCause() {
+        return TemplateCheckException.class;
     }
     
     @Test
@@ -192,14 +174,5 @@ public class TestBadTemplates
     @Test
     public void testFieldsCheck5() {
         testBadTemplate("fields.TwoDimensionalArrayTemplate");
-    }
-
-    private void testBadTemplate(String badTemplate)
-    {
-        try {
-            driver.process(badTemplatePackage + "." + badTemplate);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 }
