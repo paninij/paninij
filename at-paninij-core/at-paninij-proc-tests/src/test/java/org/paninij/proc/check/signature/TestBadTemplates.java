@@ -25,4 +25,9 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testBadModifier() {
         testBadTemplate("BadModifierTemplate");
     }
+    
+    @Test
+    public void testBadName() {
+        testBadTemplate("BadNameTemplate");
+    }
 }

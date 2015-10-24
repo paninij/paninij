@@ -46,6 +46,7 @@ public class SignatureChecker
         {
             new SuffixCheck(),
             new NoIllegalModifiersCheck(),
+            new NoIllegalNamesCheck(),
         };
     }
     
