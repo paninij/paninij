@@ -45,6 +45,7 @@ public class SignatureChecker
         signatureChecks = new SignatureCheck[]
         {
             new SuffixCheck(),
+            new NoIllegalModifiersCheck(),
         };
     }
     

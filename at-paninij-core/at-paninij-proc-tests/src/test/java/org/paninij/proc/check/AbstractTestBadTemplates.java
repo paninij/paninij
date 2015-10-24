@@ -40,6 +40,10 @@ public abstract class AbstractTestBadTemplates
     {
         try {
             driver.process(getBadTemplatePackage() + "." + badTemplate);
+        } catch (RuntimeException ex) {
+            // TODO: Log error messages from checks better.
+            //System.err.println(ex.getMessage());  // For logging check messages
+            throw ex;
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
