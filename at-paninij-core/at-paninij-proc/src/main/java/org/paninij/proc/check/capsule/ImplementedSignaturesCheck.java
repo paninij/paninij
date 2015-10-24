@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -18,18 +18,18 @@ import org.paninij.proc.check.Result.Error;
 /**
  * Check that a template only implements interfaces which seem to be signature templates.
  */
-public class ImplementedSignaturesCheck implements TemplateCheck
+public class ImplementedSignaturesCheck implements CapsuleCheck
 {
     private static final String ERROR_SOURCE = ImplementedSignaturesCheck.class.getName();
     
-    private final TemplateCheckEnvironment env;
+    private final CapsuleCheckEnvironment env;
     
-    public ImplementedSignaturesCheck(TemplateCheckEnvironment env) {
+    public ImplementedSignaturesCheck(CapsuleCheckEnvironment env) {
         this.env = env;
     }
     
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         for (TypeMirror type : template.getInterfaces())
         {

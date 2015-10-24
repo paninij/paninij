@@ -45,8 +45,8 @@ import javax.lang.model.util.Types;
 
 import org.paninij.proc.check.CapsuleTestChecker;
 import org.paninij.proc.check.FailureBehavior;
+import org.paninij.proc.check.capsule.CapsuleChecker;
 import org.paninij.proc.check.signature.SignatureChecker;
-import org.paninij.proc.check.template.TemplateChecker;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
 import org.paninij.proc.model.Procedure;
@@ -107,7 +107,7 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         // Collect all Capsule models
-        TemplateChecker templateChecker = new TemplateChecker(processingEnv, roundEnv, failureBehavior);
+        CapsuleChecker templateChecker = new CapsuleChecker(processingEnv, roundEnv, failureBehavior);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
             if (templateChecker.check(this, elem)) {

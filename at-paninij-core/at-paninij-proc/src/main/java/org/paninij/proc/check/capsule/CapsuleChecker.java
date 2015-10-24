@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
  */
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -32,19 +32,19 @@ import org.paninij.proc.check.FailureBehavior;
 import org.paninij.proc.check.Result;
 
 
-public class TemplateChecker
+public class CapsuleChecker
 {
-    protected final TemplateCheck templateChecks[];
-    protected final TemplateCheckEnvironment env;
+    protected final CapsuleCheck capsuleChecks[];
+    protected final CapsuleCheckEnvironment env;
     protected final FailureBehavior failureBehavior;
     
-    public TemplateChecker(ProcessingEnvironment procEnv, RoundEnvironment roundEnv,
+    public CapsuleChecker(ProcessingEnvironment procEnv, RoundEnvironment roundEnv,
                            FailureBehavior failureBehavior)
     {
-        this.env = new TemplateCheckEnvironment(procEnv, roundEnv);
+        this.env = new CapsuleCheckEnvironment(procEnv, roundEnv);
         this.failureBehavior = failureBehavior;
         
-        templateChecks = new TemplateCheck[]
+        capsuleChecks = new CapsuleCheck[]
         {
             new SuffixCheck(),
             new NotSubclassCheck(env),
@@ -76,6 +76,7 @@ public class TemplateChecker
             throw new IllegalArgumentException(err);
         }
         
+        // Check to see if we can cast the given element to a type element.
         if (template.getKind() != ElementKind.CLASS)
         {
             // TODO: Make this error message a bit clearer.
@@ -88,9 +89,9 @@ public class TemplateChecker
             return false;
         }
 
-        for (TemplateCheck check: templateChecks)
+        for (CapsuleCheck check: capsuleChecks)
         {
-            Result result = check.check((TypeElement) template);
+            Result result = check.checkCapsule((TypeElement) template);
             if (!result.ok())
             {
                 switch (failureBehavior) {
@@ -99,7 +100,7 @@ public class TemplateChecker
                     context.error("Error Source: " + result.source());
                     break;
                 case EXCEPTION:
-                    throw new TemplateCheckException(result.err());
+                    throw new CapsuleCheckException(result.err());
                 }
             }
         }

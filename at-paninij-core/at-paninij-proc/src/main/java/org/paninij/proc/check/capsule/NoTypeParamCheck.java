@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -10,12 +10,12 @@ import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
 
-public class NoTypeParamCheck implements TemplateCheck
+public class NoTypeParamCheck implements CapsuleCheck
 {
     public final static String ERROR_SOURCE = NoTypeParamCheck.class.getName();
     
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         if (!template.getTypeParameters().isEmpty())
         {

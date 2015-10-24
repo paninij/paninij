@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -22,7 +22,7 @@ import org.paninij.proc.check.Result.Error;
  * template's declarations is well-formed one. (`NotTooManyDeclsCheck` should probably be run before
  * running any checks which extend this class.)
  */
-public abstract class DeclCheck implements TemplateCheck
+public abstract class DeclCheck implements CapsuleCheck
 {
     public abstract String getErrorSource();
     
@@ -32,7 +32,7 @@ public abstract class DeclCheck implements TemplateCheck
 
     
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         // Collect list of the casted references to the template's methods.
         List<ExecutableElement> methods = new ArrayList<ExecutableElement>();

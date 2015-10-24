@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import javax.lang.model.element.TypeElement;
 
@@ -10,12 +10,12 @@ import org.paninij.proc.util.Source;
 /**
  * Checks that a capsule template is named with the appropriate suffix.
  */
-public class SuffixCheck implements TemplateCheck
+public class SuffixCheck implements CapsuleCheck
 {
     public static String errorSource = SuffixCheck.class.getName();
 
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         String templateName = template.getSimpleName().toString();
         String err = null;

@@ -2,6 +2,7 @@ package org.paninij.proc.check.template;
 
 import org.junit.Test;
 import org.paninij.proc.check.AbstractTestBadTemplates;
+import org.paninij.proc.check.capsule.CapsuleCheckException;
 
 
 public class TestBadTemplates extends AbstractTestBadTemplates
@@ -13,7 +14,7 @@ public class TestBadTemplates extends AbstractTestBadTemplates
 
     @Override
     protected Class<?> getExpectedCause() {
-        return TemplateCheckException.class;
+        return CapsuleCheckException.class;
     }
     
     @Test

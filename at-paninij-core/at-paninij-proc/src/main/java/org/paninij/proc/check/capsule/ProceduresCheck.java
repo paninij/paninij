@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -23,7 +23,7 @@ import org.paninij.proc.check.Result.Error;
  * If given an active capsule, then this check ensures that the template has no procedures.
  * Otherwise, if given a passive capsule, this check ensures that every procedure is well-formed.
  */
-public class ProceduresCheck implements TemplateCheck
+public class ProceduresCheck implements CapsuleCheck
 {
     public final static String ERROR_SOURCE = ProceduresCheck.class.getName();
     
@@ -34,7 +34,7 @@ public class ProceduresCheck implements TemplateCheck
     };
 
     @Override
-    public Result check(TypeElement template) {
+    public Result checkCapsule(TypeElement template) {
         return isActive(template) ? checkActiveTemplate(template) : checkPassiveTemplate(template);
     }
     

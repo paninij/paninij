@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -18,7 +18,7 @@ import org.paninij.proc.check.Result.Error;
  * checks related to specific template declarations (e.g. `init()`, whose checks are in
  * `InitDeclCheck`).
  */
-public class NoIllegalModifiersCheck implements TemplateCheck
+public class NoIllegalModifiersCheck implements CapsuleCheck
 {
     public final static String ERROR_SOURCE = NoIllegalModifiersCheck.class.getName();
     
@@ -73,7 +73,7 @@ public class NoIllegalModifiersCheck implements TemplateCheck
     };
 
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         Modifier illegalModifier = getIllegalModifier(template, ILLEGAL_TEMPLATE_MODIFIERS);
         if (illegalModifier != null) {

@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import java.text.MessageFormat;
 
@@ -12,12 +12,12 @@ import org.paninij.proc.check.Result;
 /**
  * Checks that any capsule template constructor only has zero arguments.
  */
-public class OnlyZeroArgConstructorsCheck implements TemplateCheck
+public class OnlyZeroArgConstructorsCheck implements CapsuleCheck
 {
     public static String errorSource = OnlyZeroArgConstructorsCheck.class.getName();
 
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         // Ideally, this would be checking that there are no constructors except for the implicit
         // default constructor. However, I don't know how to use the `javax.lang.model` API to

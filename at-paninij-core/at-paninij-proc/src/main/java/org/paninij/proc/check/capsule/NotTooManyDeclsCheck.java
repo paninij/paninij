@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 import static javax.lang.model.element.ElementKind.METHOD;
@@ -15,12 +15,12 @@ import org.paninij.proc.check.Result.Error;
  * For each of the three `@PaniniJ` declarations kinds (`run()`, `init()`, and `design()`) this
  * checks that there are only zero or one of declaration of that kind in a capsule template.
  */
-public class NotTooManyDeclsCheck implements TemplateCheck
+public class NotTooManyDeclsCheck implements CapsuleCheck
 {
     private static String ERROR_SOURCE = NotTooManyDeclsCheck.class.getName();
     
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         int run = 0;
         int init = 0;

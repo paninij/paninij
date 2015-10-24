@@ -52,7 +52,7 @@ public class SignatureChecker
     
 
     /**
-     * @param signature
+     * @param  signature  The type element of the signature template to be checked.
      * @return `true` if and only if `template` is can be processed as a valid signature template.
      */
     public boolean check(PaniniProcessor context, Element signature)
@@ -63,10 +63,11 @@ public class SignatureChecker
             throw new IllegalArgumentException(err);
         }
         
+        // Check to see if we can cast the given element to a type element.
         if (signature.getKind() != ElementKind.INTERFACE)
         {
             // TODO: Switch between error behaviors.
-            String err = "A signature template must be a class, but an element annotated with "
+            String err = "A signature template must be an interface, but an element annotated with "
                        + "`@Capsule` named `{0}` is of kind {1}.";
             err = format(err, signature, signature.getKind());
             context.error(err);

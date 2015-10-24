@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -21,7 +21,7 @@ import org.paninij.proc.check.Result.Error;
  * Checks that a capsule template declaration does not declare any nested types, i.e. classes,
  * interfaces, enums, and annotations.
  */
-public class NoNestedTypesCheck implements TemplateCheck
+public class NoNestedTypesCheck implements CapsuleCheck
 {
     public final static String ERROR_SOURCE = NoNestedTypesCheck.class.getName();
     
@@ -43,7 +43,7 @@ public class NoNestedTypesCheck implements TemplateCheck
     }
 
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         for (Element enclosed : template.getEnclosedElements())
         {

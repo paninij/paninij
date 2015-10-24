@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
@@ -29,17 +29,17 @@ import org.paninij.proc.check.Result.Error;
  * Implements various checks related to a capsule template's fields, especially related to the
  * `@Local` and `@Imports` annotations.
  */
-public class FieldsCheck implements TemplateCheck
+public class FieldsCheck implements CapsuleCheck
 {
     private final static String ERROR_SOURCE = FieldsCheck.class.toString();
-    private final TemplateCheckEnvironment env;
+    private final CapsuleCheckEnvironment env;
 
-    public FieldsCheck(TemplateCheckEnvironment env) {
+    public FieldsCheck(CapsuleCheckEnvironment env) {
         this.env = env;
     }
 
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         for (Element elem: template.getEnclosedElements()) {
             if (elem.getKind() == FIELD) {

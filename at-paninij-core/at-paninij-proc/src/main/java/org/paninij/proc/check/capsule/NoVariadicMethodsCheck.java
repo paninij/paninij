@@ -1,4 +1,4 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.capsule;
 
 import java.text.MessageFormat;
 
@@ -13,12 +13,12 @@ import org.paninij.proc.check.Result;
  * Checks that a capsule template does not contain a method which is variadic (i.e. has a variable
  * number of arguments).
  */
-public class NoVariadicMethodsCheck implements TemplateCheck
+public class NoVariadicMethodsCheck implements CapsuleCheck
 {
     public static String errorSource = NoVariadicMethodsCheck.class.getName();
 
     @Override
-    public Result check(TypeElement template)
+    public Result checkCapsule(TypeElement template)
     {
         for (Element elem: template.getEnclosedElements())
         {
