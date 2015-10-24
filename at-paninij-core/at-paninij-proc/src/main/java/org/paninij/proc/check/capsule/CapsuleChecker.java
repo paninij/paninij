@@ -28,20 +28,24 @@ import javax.lang.model.element.TypeElement;
 
 import org.paninij.lang.Capsule;
 import org.paninij.proc.PaniniProcessor;
+import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.FailureBehavior;
+import org.paninij.proc.check.NoNestedTypesCheck;
+import org.paninij.proc.check.NoTypeParamCheck;
+import org.paninij.proc.check.NotSubclassCheck;
 import org.paninij.proc.check.Result;
 
 
 public class CapsuleChecker
 {
     protected final CapsuleCheck capsuleChecks[];
-    protected final CapsuleCheckEnvironment env;
+    protected final CheckEnvironment env;
     protected final FailureBehavior failureBehavior;
     
     public CapsuleChecker(ProcessingEnvironment procEnv, RoundEnvironment roundEnv,
                            FailureBehavior failureBehavior)
     {
-        this.env = new CapsuleCheckEnvironment(procEnv, roundEnv);
+        this.env = new CheckEnvironment(procEnv, roundEnv);
         this.failureBehavior = failureBehavior;
         
         capsuleChecks = new CapsuleCheck[]

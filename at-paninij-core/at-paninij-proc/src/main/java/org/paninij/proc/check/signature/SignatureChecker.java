@@ -28,23 +28,32 @@ import javax.lang.model.element.TypeElement;
 
 import org.paninij.lang.Signature;
 import org.paninij.proc.PaniniProcessor;
+import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.FailureBehavior;
+import org.paninij.proc.check.NoNestedTypesCheck;
+import org.paninij.proc.check.NoTypeParamCheck;
+import org.paninij.proc.check.NotSubclassCheck;
 import org.paninij.proc.check.Result;
 
 
 public class SignatureChecker
 {
     protected final SignatureCheck signatureChecks[];
+    protected final CheckEnvironment env;
     protected final FailureBehavior failureBehavior;
     
     public SignatureChecker(ProcessingEnvironment procEnv, RoundEnvironment roundEnv,
-                           FailureBehavior failureBehavior)
+                            FailureBehavior failureBehavior)
     {
+        this.env = new CheckEnvironment(procEnv, roundEnv);
         this.failureBehavior = failureBehavior;
         
         signatureChecks = new SignatureCheck[]
         {
             new SuffixCheck(),
+            new NoNestedTypesCheck(),
+            new NotSubclassCheck(env),
+            new NoTypeParamCheck(),
             new NoIllegalModifiersCheck(),
             new NoIllegalNamesCheck(),
         };

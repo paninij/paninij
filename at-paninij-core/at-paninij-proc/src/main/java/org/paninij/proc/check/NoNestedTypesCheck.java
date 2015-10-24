@@ -1,4 +1,4 @@
-package org.paninij.proc.check.capsule;
+package org.paninij.proc.check;
 
 import static java.text.MessageFormat.format;
 
@@ -13,7 +13,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
-import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
 
@@ -21,7 +20,7 @@ import org.paninij.proc.check.Result.Error;
  * Checks that a capsule template declaration does not declare any nested types, i.e. classes,
  * interfaces, enums, and annotations.
  */
-public class NoNestedTypesCheck implements CapsuleCheck
+public class NoNestedTypesCheck extends AbstractTemplateCheck
 {
     public final static String ERROR_SOURCE = NoNestedTypesCheck.class.getName();
     
@@ -43,15 +42,16 @@ public class NoNestedTypesCheck implements CapsuleCheck
     }
 
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkTemplate(String templateType, TypeElement template)
     {
         for (Element enclosed : template.getEnclosedElements())
         {
             ElementKind kind = enclosed.getKind();
             if (isIllegalKind(kind)) {
-                String err = "Capsule templates must not contain a nested {0}, but one named `{1}` "
-                           + "was found in `{2}`.";
-                err = format(err, kind, enclosed.getSimpleName(), template.getSimpleName());
+                String err = "{0} templates must not contain a nested {1}, but one named `{2}` "
+                           + "was found in `{3}`.";
+                err = format(err, templateType, kind, enclosed.getSimpleName(),
+                                  template.getSimpleName());
                 return new Error(err, ERROR_SOURCE);
             }
         }

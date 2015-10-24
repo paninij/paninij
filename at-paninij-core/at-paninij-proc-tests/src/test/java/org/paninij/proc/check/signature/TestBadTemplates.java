@@ -30,4 +30,19 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testBadName() {
         testBadTemplate("BadNameTemplate");
     }
+    
+    @Test
+    public void testIsSubinterface() {
+        testBadTemplate("IsSubinterfaceTemplate");
+    }
+    
+    @Test
+    public void testHasTypeParamTemplate() {
+        testBadTemplate("HasTypeParamTemplate");
+    }
+    
+    @Test
+    public void testHasNestedTypeTemplate() {
+        testBadTemplate("HasNestedTypeTemplate");
+    }
 }

@@ -8,6 +8,6 @@ import org.paninij.lang.Capsule;
 public class NestedEnumTemplate
 {
     public enum Nested {
-        
+        // Nothing needed here.
     }
 }

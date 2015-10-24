@@ -12,6 +12,7 @@ import javax.lang.model.type.TypeMirror;
 
 import org.paninij.lang.Signature;
 import org.paninij.lang.SignatureInterface;
+import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
@@ -22,9 +23,9 @@ public class ImplementedSignaturesCheck implements CapsuleCheck
 {
     private static final String ERROR_SOURCE = ImplementedSignaturesCheck.class.getName();
     
-    private final CapsuleCheckEnvironment env;
+    private final CheckEnvironment env;
     
-    public ImplementedSignaturesCheck(CapsuleCheckEnvironment env) {
+    public ImplementedSignaturesCheck(CheckEnvironment env) {
         this.env = env;
     }
     

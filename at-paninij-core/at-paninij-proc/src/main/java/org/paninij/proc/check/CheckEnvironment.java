@@ -1,4 +1,4 @@
-package org.paninij.proc.check.capsule;
+package org.paninij.proc.check;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -7,12 +7,12 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-public class CapsuleCheckEnvironment
+public class CheckEnvironment
 {
     private final ProcessingEnvironment procEnv;
     private final RoundEnvironment roundEnv;
     
-    public CapsuleCheckEnvironment(ProcessingEnvironment procEnv, RoundEnvironment roundEnv)
+    public CheckEnvironment(ProcessingEnvironment procEnv, RoundEnvironment roundEnv)
     {
         this.procEnv = procEnv;
         this.roundEnv = roundEnv;

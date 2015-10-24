@@ -21,6 +21,7 @@ import org.paninij.lang.Imports;
 import org.paninij.lang.Local;
 import org.paninij.lang.Signature;
 import org.paninij.lang.SignatureInterface;
+import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
@@ -32,9 +33,9 @@ import org.paninij.proc.check.Result.Error;
 public class FieldsCheck implements CapsuleCheck
 {
     private final static String ERROR_SOURCE = FieldsCheck.class.toString();
-    private final CapsuleCheckEnvironment env;
+    private final CheckEnvironment env;
 
-    public FieldsCheck(CapsuleCheckEnvironment env) {
+    public FieldsCheck(CheckEnvironment env) {
         this.env = env;
     }
 
