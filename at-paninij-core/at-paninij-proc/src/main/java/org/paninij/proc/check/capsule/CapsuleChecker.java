@@ -20,6 +20,8 @@ package org.paninij.proc.check.capsule;
 
 import static java.text.MessageFormat.format;
 
+import static org.paninij.proc.check.Result.ok;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -29,25 +31,24 @@ import javax.lang.model.element.TypeElement;
 import org.paninij.lang.Capsule;
 import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.check.CheckEnvironment;
-import org.paninij.proc.check.FailureBehavior;
 import org.paninij.proc.check.NoNestedTypesCheck;
 import org.paninij.proc.check.NoTypeParamCheck;
 import org.paninij.proc.check.NotSubclassCheck;
 import org.paninij.proc.check.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.Result;
+import org.paninij.proc.check.Result.Error;
 
 
 public class CapsuleChecker
 {
+    private static final String ERROR_SOURCE = CapsuleChecker.class.getName();
+    
     protected final CapsuleCheck capsuleChecks[];
     protected final CheckEnvironment env;
-    protected final FailureBehavior failureBehavior;
     
-    public CapsuleChecker(ProcessingEnvironment procEnv, RoundEnvironment roundEnv,
-                           FailureBehavior failureBehavior)
+    public CapsuleChecker(ProcessingEnvironment procEnv, RoundEnvironment roundEnv)
     {
         this.env = new CheckEnvironment(procEnv, roundEnv);
-        this.failureBehavior = failureBehavior;
         
         capsuleChecks = new CapsuleCheck[]
         {
@@ -74,7 +75,7 @@ public class CapsuleChecker
      * @param template
      * @return `true` if and only if `template` is can be processed as a valid capsule template.
      */
-    public boolean check(PaniniProcessor context, Element template)
+    public Result check(PaniniProcessor context, Element template)
     {
         if (template.getAnnotation(Capsule.class) == null) {
             String err = "Tried to check an element as a capsule template though it is not "
@@ -85,32 +86,20 @@ public class CapsuleChecker
         // Check to see if we can cast the given element to a type element.
         if (template.getKind() != ElementKind.CLASS)
         {
-            // TODO: Make this error message a bit clearer.
-            // TODO: Switch between error behaviors.
             String err = "A capsule template must be a class, but an element annotated with "
                        + "`@Capsule` named `{0}` is of kind {1}.";
             err = format(err, template, template.getKind());
-            context.error(err);
-
-            return false;
+            return new Error(err, ERROR_SOURCE);
         }
 
         for (CapsuleCheck check: capsuleChecks)
         {
             Result result = check.checkCapsule((TypeElement) template);
-            if (!result.ok())
-            {
-                switch (failureBehavior) {
-                case LOGGING:
-                    context.error(result.err());
-                    context.error("Error Source: " + result.source());
-                    break;
-                case EXCEPTION:
-                    throw new CapsuleCheckException(result.err());
-                }
+            if (!result.ok()) {
+                return result;
             }
         }
 
-        return true;
+        return ok;
     }
 }

@@ -45,7 +45,10 @@ import javax.lang.model.util.Types;
 
 import org.paninij.proc.check.CapsuleTestChecker;
 import org.paninij.proc.check.FailureBehavior;
+import org.paninij.proc.check.Result;
+import org.paninij.proc.check.capsule.CapsuleCheckException;
 import org.paninij.proc.check.capsule.CapsuleChecker;
+import org.paninij.proc.check.signature.SignatureCheckException;
 import org.paninij.proc.check.signature.SignatureChecker;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
@@ -91,33 +94,51 @@ public class PaniniProcessor extends AbstractProcessor
     {
         this.roundEnv = roundEnv;
         
-        // Sets which contain models
+        // Sets which contain models.
         Set<Capsule> capsules = new HashSet<Capsule>();
         Set<Signature> signatures = new HashSet<Signature>();
         Set<Capsule> capsuleTests = new HashSet<Capsule>();
 
-        // Collect all Signature models
-        SignatureChecker signatureChecker = new SignatureChecker(processingEnv, roundEnv, failureBehavior);
+        // Check each signature template, and make its `Signature` model.
+        SignatureChecker signatureChecker = new SignatureChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Signature.class))
         {
-            if (signatureChecker.check(this, elem)) {
+            Result checkResult = signatureChecker.check(this, elem);
+            if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
+            } else {
+                switch (failureBehavior) {
+                case EXCEPTION:
+                    throw new SignatureCheckException(checkResult.err());
+                case LOGGING:
+                default:
+                    error(checkResult.err());
+                }
             }
         }
 
-        // Collect all Capsule models
-        CapsuleChecker templateChecker = new CapsuleChecker(processingEnv, roundEnv, failureBehavior);
+        // Check each capsule template, and make its `Capsule` model.
+        CapsuleChecker templateChecker = new CapsuleChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
-            if (templateChecker.check(this, elem)) {
+            Result checkResult = templateChecker.check(this, elem);
+            if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
                 artifactMaker.add(new UserArtifact(template.getQualifiedName().toString()));
+            } else {
+                switch (failureBehavior) {
+                case EXCEPTION:
+                    throw new CapsuleCheckException(checkResult.err());
+                case LOGGING:
+                default:
+                    error(checkResult.err());
+                }
             }
         }
 
-        // Collect all CapsuleTest capsule models
+        // Check each capsule test template, and make its capsule model.
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.CapsuleTest.class))
         {
             if (CapsuleTestChecker.check(this, elem)) {
@@ -126,11 +147,12 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
         
+        // End early if appropriate.
         if (capsules.isEmpty() && signatures.isEmpty() && capsuleTests.isEmpty()) {
             return false;
         }
 
-        // Artifact factories
+        // Make artifact factories.
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
         CapsuleInterfaceFactory capsuleInterfaceFactory = new CapsuleInterfaceFactory();
@@ -141,57 +163,47 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleMonitorFactory monitorCapsuleFactory = new CapsuleMonitorFactory();
         CapsuleTaskFactory taskCapsuleFactory = new CapsuleTaskFactory();
 
-        // Generate artifacts from signature model
+        // Generate artifacts from each `Signature` model.
         for (Signature signature : signatures)
         {
-            // Generate Messages
+            // Generate messages.
             for (Procedure procedure : signature.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
 
-            // Generate the mangled signature.
+            // Generate the mangled signature interface.
             artifactMaker.add(signatureFactory.make(signature));
             
-            // Generate mockup capsule implementing the signature.
+            // Generate a mockup capsule implementing the signature interface.
             artifactMaker.add(capsuleMockupFactory.make(signature));
         }
         
-        // Generate capsule artifacts
+        // Generate artifacts from each `Capsule` model.
         for (Capsule capsule : capsules)
         {
-            // Generate Messages
+            // Generate messages.
             for (Procedure procedure : capsule.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
 
-            // Generate capsule interface
+            // Generate the mangled capsule interface.
             artifactMaker.add(capsuleInterfaceFactory.make(capsule));
             
             // Generate mockup capsule implementing the capsule interface.
             artifactMaker.add(capsuleMockupFactory.make(capsule));
-        }
-        
-        for (Capsule capsule : capsules)
-        {
-            // Generate capsule thread profile
+
+            // Generate the capsules with four different thread profiles
             artifactMaker.add(threadCapsuleFactory.make(capsule));
-
-            // Generate capsule serial profile
             artifactMaker.add(serialCapsuleFactory.make(capsule));
-
-            // Generate capsule monitor profile
             artifactMaker.add(monitorCapsuleFactory.make(capsule));
-
-            // Generate capsule task profile
             artifactMaker.add(taskCapsuleFactory.make(capsule));
         }
         
         // Generate capsule test artifacts
         for (Capsule capsuleTest : capsuleTests)
         {
-            // Generate Messages
-            for (Procedure procedure : capsuleTest.getProcedures())
-            {
+            // Generate messages.
+            for (Procedure procedure : capsuleTest.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
 
@@ -201,7 +213,7 @@ public class PaniniProcessor extends AbstractProcessor
             // Generate the capsule test's `$Thread` artifact.
             artifactMaker.add(threadCapsuleFactory.make(capsuleTest));
 
-            // Generate capsule test artifact
+            // Generate capsule test artifact itself.
             artifactMaker.add(capsuleTestFactory.make(capsuleTest));
         }
         
@@ -265,13 +277,8 @@ public class PaniniProcessor extends AbstractProcessor
         System.out.println("~~~ PaniniProcessor: " + msg);
     }
 
-    public void error(String msg)
-    {
-        /*
-        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR,
-                                                 "!!! PaniniProcessor: " + msg);
-        */
-        System.out.println("!!! PaniniProcessor: " + msg);
+    public void error(String msg) {
+        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, "!!! " + msg);
     }
 
     public Types getTypeUtils() {
