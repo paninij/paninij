@@ -199,6 +199,11 @@ public class TestBadTemplates extends AbstractTestBadTemplates
 
     @Test
     public void testDuckability3() {
-        testBadTemplate("duckability.ProcWithFinalReturnTypeTemplate");
+        testBadTemplate("duckability.ReturnTypeHasFinalMethodTemplate");
+    }
+
+    @Test
+    public void testDuckability4() {
+        testBadTemplate("duckability.ReturnTypeIsFinalTemplate");
     }
 }
