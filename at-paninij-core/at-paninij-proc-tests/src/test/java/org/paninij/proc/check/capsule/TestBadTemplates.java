@@ -194,6 +194,11 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     
     @Test
     public void testDuckability2() {
+        testBadTemplate("duckability.kind.PrimitiveKindTemplate");
+    }
+
+    @Test
+    public void testDuckability3() {
         testBadTemplate("duckability.ProcWithFinalReturnTypeTemplate");
     }
 }
