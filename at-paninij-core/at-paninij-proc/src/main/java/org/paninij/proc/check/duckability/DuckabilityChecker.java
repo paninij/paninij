@@ -22,6 +22,7 @@ public class DuckabilityChecker
         this.env = env;
         this.checks = new DuckabilityCheck[] {
             new FinalModifierCheck(),
+            new FieldsCheck(),
         };
     }
     
