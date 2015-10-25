@@ -1,4 +1,4 @@
-package org.paninij.proc.messageshapes;
+package org.paninij.proc.shapes;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
