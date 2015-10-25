@@ -5,6 +5,8 @@ import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 public class DesignDeclCheck extends DeclCheck
 {
@@ -28,15 +30,15 @@ public class DesignDeclCheck extends DeclCheck
             return false;
         }
 
-        // TODO: Fix this hack.
-        VariableElement self = params.get(0);
-        String actual = self.asType().toString() + "Template";
-        String expected = template.getSimpleName().toString();
-        if (!actual.equals(expected)) {
-            return false;
-        }
+        // Note that `self` is usually `NONE` type kind, which indicates that a capsule interface
+        // artifact has yet not been generated. However, if there is already a capsule interface
+        // type around, then we will have fully qualified type information. This is why we compare
+        // the `actual` with the suffix of the `expected`.
+        TypeMirror self = params.get(0).asType();
+        String actual = self.toString() + "Template";
+        String expected = template.getQualifiedName().toString();
 
-        return true;
+        return expected.endsWith(actual);
     }
 
 }
