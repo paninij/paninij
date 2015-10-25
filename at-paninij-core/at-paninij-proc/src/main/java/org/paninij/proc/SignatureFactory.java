@@ -38,6 +38,7 @@ public class SignatureFactory extends SignatureArtifactFactory
                 "##",
                 "",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
+                "@SignatureInterface",
                 "public interface #1",
                 "{",
                 "    ##",
@@ -54,6 +55,7 @@ public class SignatureFactory extends SignatureArtifactFactory
 
     protected List<String> generateImports() {
         Set<String> imports = new HashSet<String>();
+        imports.add("org.paninij.lang.SignatureInterface");
 
         for (Procedure p : this.signature.getProcedures()) {
             MessageShape shape = new MessageShape(p);

@@ -6,7 +6,8 @@ import org.paninij.lang.Future;
 
 
 @Capsule
-public class VoidTemplate {
+public class VoidTemplate
+{
     public void foo(Object o) {
 
     }

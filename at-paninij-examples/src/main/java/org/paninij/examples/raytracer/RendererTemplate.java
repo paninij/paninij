@@ -3,6 +3,7 @@ package org.paninij.examples.raytracer;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
@@ -29,7 +30,13 @@ import org.paninij.lang.Local;
         BufferedImage image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         List<Pixel[]> chunks = new ArrayList<Pixel[]>();
 
-        for (Tracer tracer : tracers) chunks.add(tracer.renderChunk(scene));
+        try {
+            for (Tracer tracer : tracers) {
+                chunks.add(tracer.renderChunk(scene).get());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
 
         for (Pixel[] chunk : chunks) {
             for (int i = 0; i < chunk.length; i ++) {

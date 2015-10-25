@@ -20,6 +20,7 @@ package org.paninij.examples.asteroids;
 
 import java.util.Random;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule
@@ -40,7 +41,8 @@ public class GameTemplate
         this.prng = new Random();
     }
 
-    public int step(int shipPos, boolean isFiring) {
+    @Block
+    public Integer step(int shipPos, boolean isFiring) {
         int result = 0;
 
         if (asteroidPos == lastFired) {
@@ -54,6 +56,7 @@ public class GameTemplate
         return result;
     }
 
+    @Block
     private int nextAsteroid() {
         for (int i = Constants.WIDTH - 1; i > 0; i--) {
             asteroidPositions[i] = asteroidPositions[i-1];
@@ -62,10 +65,12 @@ public class GameTemplate
         return asteroidPositions[Constants.WIDTH - 1];
     }
 
+    @Block
     public int getLastFired() {
         return this.lastFired;
     }
 
+    @Block
     public short getAsteroidPosition(int index) {
         return this.asteroidPositions[index];
     }

@@ -1,6 +1,7 @@
 package org.paninij.examples.raytracer;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.Future;
 import org.paninij.lang.Imports;
 
 @Capsule public class TracerTemplate {
@@ -10,6 +11,7 @@ import org.paninij.lang.Imports;
     @Imports int screenWidth;
     @Imports int screenHeight;
 
+    @Future
     public Pixel[] renderChunk(Scene scene) {
         int pixelCount = chunkHeight * screenWidth;
         int startHeight = chunk * chunkHeight;
