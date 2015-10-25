@@ -16,8 +16,7 @@ public class TestApsp extends AbstractTest
     }
 
     @Test
-    public void smokeTest() throws Exception
-    {
+    public void smokeTest() {
         defaultSmokeTest();
     }
 }

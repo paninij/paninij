@@ -1,5 +1,6 @@
 package org.paninij.soter;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule
@@ -7,6 +8,7 @@ public class LeakyServerTemplate
 {
     Secret serverSecret = new Secret();
     
+    @Block
     public Integer getInteger() {
         return new Integer(9);
     }
@@ -23,6 +25,7 @@ public class LeakyServerTemplate
         return serverSecret;
     }
     
+    @Block
     public LeakyServerTemplate getTemplateReference() {
         return this;
     }

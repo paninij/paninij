@@ -83,12 +83,16 @@ public abstract class AbstractTest
      * 
      * @throws Exception
      */
-    public abstract void smokeTest() throws Exception;
+    public abstract void smokeTest();
     
-    protected void defaultSmokeTest() throws Exception
+    protected void defaultSmokeTest()
     {
-        ProcDriver driver = new ProcDriver(makeProcSettings());
-        driver.process(getCapsuleTemplates());
-        org.paninij.soter.Main.main(getSoterArgs()); 
+        try {
+            ProcDriver driver = new ProcDriver(makeProcSettings());
+            driver.process(getCapsuleTemplates());
+            org.paninij.soter.Main.main(getSoterArgs()); 
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
