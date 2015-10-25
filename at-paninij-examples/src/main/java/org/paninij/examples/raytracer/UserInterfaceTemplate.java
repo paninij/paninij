@@ -17,7 +17,7 @@ import org.paninij.lang.Capsule;
     }
 
     public void draw(Image img) {
-        frame.setImage(img.buffered());
+        frame.setImage(img.bufferedImage());
     }
 
 }
