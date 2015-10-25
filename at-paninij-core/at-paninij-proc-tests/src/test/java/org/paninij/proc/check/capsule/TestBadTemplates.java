@@ -186,4 +186,14 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testImplementedInterfaces2() {
         testBadTemplate("implemented.ImplementsNormalTemplate");
     }
+    
+    @Test
+    public void testDuckability1() {
+        testBadTemplate("duckability.kind.ArrayKindTemplate");
+    }
+    
+    @Test
+    public void testDuckability2() {
+        testBadTemplate("duckability.ProcWithFinalReturnTypeTemplate");
+    }
 }

@@ -22,10 +22,6 @@ public class AnnotationsTemplate {
 
     }
 
-    public String unannotatedFinal(int some, boolean other) {
-        return "Hello World!";
-    }
-
     @Block
     public String atBlockFinal() {
         return "I'm blocked";
@@ -36,9 +32,14 @@ public class AnnotationsTemplate {
         return "I'm a future";
     }
 
+    @Future
+    public String atFutureFinalArgs(int some, boolean other) {
+        return "Hello World!";
+    }
 
-    public boolean unannotatedPrimitive() {
-        return true;
+    @Future
+    public String atBlockFinalArgs(int some, boolean other) {
+        return "Hello World!";
     }
 
     @Future

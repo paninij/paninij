@@ -33,6 +33,7 @@ import org.paninij.proc.check.FailureBehavior;
 import org.paninij.proc.check.NoNestedTypesCheck;
 import org.paninij.proc.check.NoTypeParamCheck;
 import org.paninij.proc.check.NotSubclassCheck;
+import org.paninij.proc.check.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.Result;
 
 
@@ -56,6 +57,7 @@ public class SignatureChecker
             new NoTypeParamCheck(),
             new NoIllegalModifiersCheck(),
             new NoIllegalNamesCheck(),
+            new ProcReturnTypesDuckabilityCheck(env),
         };
     }
     

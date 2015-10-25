@@ -33,6 +33,7 @@ import org.paninij.proc.check.FailureBehavior;
 import org.paninij.proc.check.NoNestedTypesCheck;
 import org.paninij.proc.check.NoTypeParamCheck;
 import org.paninij.proc.check.NotSubclassCheck;
+import org.paninij.proc.check.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.Result;
 
 
@@ -64,6 +65,7 @@ public class CapsuleChecker
             new ProceduresCheck(),
             new FieldsCheck(env),
             new ImplementedSignaturesCheck(env),
+            new ProcReturnTypesDuckabilityCheck(env),
         };
     }
     
