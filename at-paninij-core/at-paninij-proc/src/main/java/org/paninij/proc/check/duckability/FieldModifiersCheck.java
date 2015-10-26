@@ -16,11 +16,12 @@ import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
 /**
- * Check that all fields of a type to be ducked are either `private` or `static`.
+ * Check that all fields of a type to be ducked have valid field modifiers (i.e. check that every
+ * field is either `private` or `static`).
  */
-public class FieldsCheck implements DuckabilityCheck
+public class FieldModifiersCheck implements DuckabilityCheck
 {
-    private static final String ERROR_SOURCE = FieldsCheck.class.getName();
+    private static final String ERROR_SOURCE = FieldModifiersCheck.class.getName();
     
     @Override
     public Result checkDuckability(TypeElement toDuck)

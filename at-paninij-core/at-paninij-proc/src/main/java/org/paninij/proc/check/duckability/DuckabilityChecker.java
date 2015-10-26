@@ -21,8 +21,8 @@ public class DuckabilityChecker
     public DuckabilityChecker(CheckEnvironment env) {
         this.env = env;
         this.checks = new DuckabilityCheck[] {
-            new FinalModifierCheck(),
-            new FieldsCheck(),
+            new FieldModifiersCheck(),
+            new MethodModifiersCheck(),
         };
     }
     
