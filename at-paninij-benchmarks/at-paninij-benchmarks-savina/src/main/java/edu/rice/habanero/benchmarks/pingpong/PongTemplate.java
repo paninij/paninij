@@ -5,7 +5,7 @@ import org.paninij.lang.Imports;
 
 @Capsule public class PongTemplate {
     @Imports Ping ping;
-    private int pongs = 0;
+    int pongs = 0;
 
     public void doPong() {
         pongs++;

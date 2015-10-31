@@ -139,7 +139,11 @@ public class Source
         final String fmtSuffix = fmt.substring(hashEndIndex);
 
         // Note that the `linePrefix` is used to separate each stringified line.
-        String[] strings = Arrays.stream(lines).toArray(String[]::new);
+        String[] strings = new String[lines.length];
+        for(int i = 0; i < lines.length; i++)
+        {
+        	strings[i] = lines[i].toString();
+        }
         return fmtPrefix + String.join("\n" + linePrefix, strings) + fmtSuffix;
     }
     

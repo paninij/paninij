@@ -3,6 +3,7 @@ package edu.rice.habanero.benchmarks.apsp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
@@ -51,6 +52,7 @@ import org.paninij.lang.Imports;
         }
     }
 
+    @Block
     private boolean storeIterationData(int iteration, int sourceId, long[][] dataArray) {
         neighborDataPerIteration.put(sourceId, dataArray);
         return neighborDataPerIteration.size() == numNeighbors;
@@ -71,6 +73,7 @@ import org.paninij.lang.Imports;
 
     }
 
+    @Block
     private long elementAt(int row, int col, int srcIter, long[][] prevIterData) {
         int destBlockId = ((row / blockSize) * numBlocksInSingleDim) + (col / blockSize);
         int localRow = row % blockSize;

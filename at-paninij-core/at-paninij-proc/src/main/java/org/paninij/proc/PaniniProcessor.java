@@ -18,12 +18,15 @@
  */
 package org.paninij.proc;
 
+import static org.paninij.proc.check.FailureBehavior.LOGGING;
+import static org.paninij.proc.check.FailureBehavior.EXCEPTION;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -40,9 +43,13 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-import org.paninij.proc.check.CapsuleChecker;
 import org.paninij.proc.check.CapsuleTestChecker;
-import org.paninij.proc.check.SignatureChecker;
+import org.paninij.proc.check.FailureBehavior;
+import org.paninij.proc.check.Result;
+import org.paninij.proc.check.capsule.CapsuleCheckException;
+import org.paninij.proc.check.capsule.CapsuleChecker;
+import org.paninij.proc.check.signature.SignatureCheckException;
+import org.paninij.proc.check.signature.SignatureChecker;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
 import org.paninij.proc.model.Procedure;
@@ -60,57 +67,78 @@ import org.paninij.proc.util.UserArtifact;
 @SupportedAnnotationTypes({"org.paninij.lang.Capsule",
                            "org.paninij.lang.Signature",
                            "org.paninij.lang.CapsuleTester"})
-@SupportedOptions("panini.capsuleListFile")
+@SupportedOptions({"panini.capsuleListFile",
+                   "panini.exceptOnFailedChecks"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PaniniProcessor extends AbstractProcessor
 {
     protected RoundEnvironment roundEnv;
     protected ArtifactMaker artifactMaker;
     protected String capsuleListFile;
+    protected FailureBehavior failureBehavior;
     
     @Override
-    public void init(ProcessingEnvironment procEnv)
+    public void init(ProcessingEnvironment processingEnv)
     {
-        super.init(procEnv);
+        super.init(processingEnv);
 
-        capsuleListFile = procEnv.getOptions().get("panini.capsuleListFile");
-        artifactMaker = new ArtifactFiler(procEnv.getFiler()) ;
+        Map<String,String> options = processingEnv.getOptions();
+        capsuleListFile = options.get("panini.capsuleListFile");
+        failureBehavior = options.containsKey("panini.exceptOnFailedChecks") ? EXCEPTION : LOGGING;
+        
+        artifactMaker = new ArtifactFiler(processingEnv.getFiler()) ;
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
-        note("Starting a round of processing for annotations: " + annotations.toString());
         this.roundEnv = roundEnv;
         
-        // Sets which contain models
+        // Sets which contain models.
         Set<Capsule> capsules = new HashSet<Capsule>();
         Set<Signature> signatures = new HashSet<Signature>();
         Set<Capsule> capsuleTests = new HashSet<Capsule>();
 
-        // Collect all Signature models
+        // Check each signature template, and make its `Signature` model.
+        SignatureChecker signatureChecker = new SignatureChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Signature.class))
         {
-            // Note: `getElementsAnnotatedWith()` even returns elements which inherit `@Signature`.
-            //       This includes capsule artifacts generated in a prior round which implement a
-            //       user-defined signature.
-            if (elem.getAnnotation(org.paninij.lang.Signature.class) != null && SignatureChecker.check(this, elem)) {
+            Result checkResult = signatureChecker.check(this, elem);
+            if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
+            } else {
+                switch (failureBehavior) {
+                case EXCEPTION:
+                    throw new SignatureCheckException(checkResult.err());
+                case LOGGING:
+                default:
+                    error(checkResult.err(), elem);
+                }
             }
         }
 
-        // Collect all Capsule models
+        // Check each capsule template, and make its `Capsule` model.
+        CapsuleChecker templateChecker = new CapsuleChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
-            if (CapsuleChecker.check(this, elem)) {
+            Result checkResult = templateChecker.check(this, elem);
+            if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
                 artifactMaker.add(new UserArtifact(template.getQualifiedName().toString()));
+            } else {
+                switch (failureBehavior) {
+                case EXCEPTION:
+                    throw new CapsuleCheckException(checkResult.err());
+                case LOGGING:
+                default:
+                    error(checkResult.err(), elem);
+                }
             }
         }
 
-        // Collect all CapsuleTest capsule models
+        // Check each capsule test template, and make its capsule model.
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.CapsuleTest.class))
         {
             if (CapsuleTestChecker.check(this, elem)) {
@@ -119,11 +147,12 @@ public class PaniniProcessor extends AbstractProcessor
             }
         }
         
+        // End early if appropriate.
         if (capsules.isEmpty() && signatures.isEmpty() && capsuleTests.isEmpty()) {
             return false;
         }
 
-        // Artifact factories
+        // Make artifact factories.
         MessageFactory messageFactory = new MessageFactory();
         SignatureFactory signatureFactory = new SignatureFactory();
         CapsuleInterfaceFactory capsuleInterfaceFactory = new CapsuleInterfaceFactory();
@@ -134,57 +163,47 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleMonitorFactory monitorCapsuleFactory = new CapsuleMonitorFactory();
         CapsuleTaskFactory taskCapsuleFactory = new CapsuleTaskFactory();
 
-        // Generate artifacts from signature model
+        // Generate artifacts from each `Signature` model.
         for (Signature signature : signatures)
         {
-            // Generate Messages
+            // Generate messages.
             for (Procedure procedure : signature.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
 
-            // Generate the mangled signature.
+            // Generate the mangled signature interface.
             artifactMaker.add(signatureFactory.make(signature));
             
-            // Generate mockup capsule implementing the signature.
+            // Generate a mockup capsule implementing the signature interface.
             artifactMaker.add(capsuleMockupFactory.make(signature));
         }
         
-        // Generate capsule artifacts
+        // Generate artifacts from each `Capsule` model.
         for (Capsule capsule : capsules)
         {
-            // Generate Messages
+            // Generate messages.
             for (Procedure procedure : capsule.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
 
-            // Generate capsule interface
+            // Generate the mangled capsule interface.
             artifactMaker.add(capsuleInterfaceFactory.make(capsule));
             
             // Generate mockup capsule implementing the capsule interface.
             artifactMaker.add(capsuleMockupFactory.make(capsule));
-        }
-        
-        for (Capsule capsule : capsules)
-        {
-            // Generate capsule thread profile
+
+            // Generate the capsules with four different thread profiles
             artifactMaker.add(threadCapsuleFactory.make(capsule));
-
-            // Generate capsule serial profile
             artifactMaker.add(serialCapsuleFactory.make(capsule));
-
-            // Generate capsule monitor profile
             artifactMaker.add(monitorCapsuleFactory.make(capsule));
-
-            // Generate capsule task profile
             artifactMaker.add(taskCapsuleFactory.make(capsule));
         }
         
         // Generate capsule test artifacts
         for (Capsule capsuleTest : capsuleTests)
         {
-            // Generate Messages
-            for (Procedure procedure : capsuleTest.getProcedures())
-            {
+            // Generate messages.
+            for (Procedure procedure : capsuleTest.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
 
@@ -194,7 +213,7 @@ public class PaniniProcessor extends AbstractProcessor
             // Generate the capsule test's `$Thread` artifact.
             artifactMaker.add(threadCapsuleFactory.make(capsuleTest));
 
-            // Generate capsule test artifact
+            // Generate capsule test artifact itself.
             artifactMaker.add(capsuleTestFactory.make(capsuleTest));
         }
         
@@ -206,7 +225,6 @@ public class PaniniProcessor extends AbstractProcessor
         }
 
         this.roundEnv = null;  // Release reference, so that the `roundEnv` can potentially be GC'd.
-        note("Finished a round of processing.");
 
         return false;
     }
@@ -214,8 +232,6 @@ public class PaniniProcessor extends AbstractProcessor
     
     protected void makeCapsuleListFile(Set<Capsule> capsules)
     {
-        note("Making capsule list file: " + capsuleListFile);
-
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(capsuleListFile, false));
             for (Capsule capsule : capsules) {
@@ -262,8 +278,11 @@ public class PaniniProcessor extends AbstractProcessor
     }
 
     public void error(String msg) {
-        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR,
-                                                 "!!! PaniniProcessor: " + msg);
+        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, "!!! " + msg);
+    }
+
+    public void error(String msg, Element elem) {
+        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, msg, elem);
     }
 
     public Types getTypeUtils() {

@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Scene implements Serializable {
+public class Scene implements Serializable
+{
     private static final long serialVersionUID = -7075103757217435908L;
     private List<SceneObject> things;
     private List<Light> lights;
