@@ -113,7 +113,7 @@ public class PaniniProcessor extends AbstractProcessor
                     throw new SignatureCheckException(checkResult.err());
                 case LOGGING:
                 default:
-                    error(checkResult.err());
+                    error(checkResult.err(), elem);
                 }
             }
         }
@@ -133,7 +133,7 @@ public class PaniniProcessor extends AbstractProcessor
                     throw new CapsuleCheckException(checkResult.err());
                 case LOGGING:
                 default:
-                    error(checkResult.err());
+                    error(checkResult.err(), elem);
                 }
             }
         }
@@ -279,6 +279,10 @@ public class PaniniProcessor extends AbstractProcessor
 
     public void error(String msg) {
         processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, "!!! " + msg);
+    }
+
+    public void error(String msg, Element elem) {
+        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, msg, elem);
     }
 
     public Types getTypeUtils() {
