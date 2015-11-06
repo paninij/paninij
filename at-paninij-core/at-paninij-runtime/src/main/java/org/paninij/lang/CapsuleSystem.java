@@ -40,6 +40,11 @@ public class CapsuleSystem
     {
         start(root, DEFAULT_EXECUTION_PROFILE, args);
     }
+    
+    public static void start(Class<? extends Panini$Capsule> root, String[] args)
+    {
+        start(root, DEFAULT_EXECUTION_PROFILE, args);
+    }
 
     
     /**
@@ -60,6 +65,20 @@ public class CapsuleSystem
         catch (ClassNotFoundException | NoSuchMethodException    | SecurityException |
                IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
         {
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    public static void start(Class<? extends Panini$Capsule> root, ExecutionProfile profile, String[] args)
+    {
+        try {
+            CapsuleFactory capsuleFactory = new CapsuleFactory(root);
+            Class<? extends Panini$Capsule> clazz = capsuleFactory.getInstantiableClass(profile);
+            Method main = clazz.getDeclaredMethod("main", String[].class);
+            main.invoke(null, (Object) args);
+        }
+        catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+               IllegalAccessException  ex) {
             throw new RuntimeException(ex);
         }
     }
