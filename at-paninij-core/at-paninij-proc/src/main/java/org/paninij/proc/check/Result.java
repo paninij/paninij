@@ -21,7 +21,7 @@ public interface Result
             return null;
         }
         public Element offender() {
-        	return null;
+            return null;
         }
         
     }
@@ -41,9 +41,9 @@ public interface Result
         }
         
         public Error(String err, String source, Element offender) {
-        	this.err = err;
-        	this.source = source;
-        	this.offender = offender;
+            this.err = err;
+            this.source = source;
+            this.offender = offender;
         }
         
         @Override
@@ -63,7 +63,7 @@ public interface Result
         
         @Override
         public Element offender() {
-        	return offender;
+            return offender;
         }
     }
 }

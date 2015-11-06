@@ -113,11 +113,11 @@ public class PaniniProcessor extends AbstractProcessor
                     throw new SignatureCheckException(checkResult.err());
                 case LOGGING:
                 default:
-                	if(checkResult.offender() == null) {
-                		error(checkResult.err(), elem);
-                	} else {
-                		error(checkResult);
-                	}
+                    if(checkResult.offender() == null) {
+                        error(checkResult.err(), elem);
+                    } else {
+                        error(checkResult);
+                    }
                 }
             }
         }
@@ -137,11 +137,11 @@ public class PaniniProcessor extends AbstractProcessor
                     throw new CapsuleCheckException(checkResult.err());
                 case LOGGING:
                 default:
-                	if(checkResult.offender() == null) {
-                		error(checkResult.err(), elem);
-                	} else {
-                		error(checkResult);
-                	}
+                    if(checkResult.offender() == null) {
+                        error(checkResult.err(), elem);
+                    } else {
+                        error(checkResult);
+                    }
                 }
             }
         }
