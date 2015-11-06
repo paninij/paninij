@@ -31,6 +31,7 @@ public class CapsuleSystem
     
 
     /**
+     * @deprecated
      * Starts a capsule system from the given root capsule using the default execution profile.
      * 
      * @param root  The fully-qualified name of a capsule which will act as the root capsule.
@@ -41,6 +42,12 @@ public class CapsuleSystem
         start(root, DEFAULT_EXECUTION_PROFILE, args);
     }
     
+    /** 
+     * Starts a capsule system from the given root capsule using the default execution profile.
+     * 
+     * @param root The class of the capsule which will act as the root capsule.
+     * @param args The arguments to be passed into the root capsule's `main()` method.
+     */
     public static void start(Class<? extends Panini$Capsule> root, String[] args)
     {
         start(root, DEFAULT_EXECUTION_PROFILE, args);
@@ -48,6 +55,7 @@ public class CapsuleSystem
 
     
     /**
+     * @deprecated
      * Starts a capsule system from the given root capsule using the given execution profile.
      * 
      * @param root     The fully-qualified name of a capsule which will act as the root capsule.
@@ -69,6 +77,13 @@ public class CapsuleSystem
         }
     }
     
+    /**
+     * Starts a capsule system from the given root capsule using the given execution profile.
+     * 
+     * @param root The class of the capsule which will act as the root capsule.
+     * @param profile The execution profile with which the capsule system will run.
+     * @param args The arguments to be passed into the root capsule's `main()` method.
+     */
     public static void start(Class<? extends Panini$Capsule> root, ExecutionProfile profile, String[] args)
     {
         try {
