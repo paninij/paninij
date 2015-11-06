@@ -30,25 +30,6 @@ public class CapsuleFactory
     public final Class<Capsule$Thread>  capsuleThread;
 
 
-    @SuppressWarnings("unchecked")
-    public CapsuleFactory(String capsuleName) throws ClassNotFoundException
-    {
-        Class<?> clazz = Class.forName(capsuleName);
-
-        if (!isCapsuleInterface(clazz)) {
-            String err = "`{0}` is not a valid capsule.";
-            throw new IllegalArgumentException(format(err, clazz.getName()));
-        } 
-
-        capsuleInterface = (Class<Panini$Capsule>)  clazz;
-
-        // TODO: Consider refactoring this class to instead perform these class lookups lazily.
-        capsuleMockup    = (Class<Capsule$Mockup>)  Class.forName(clazz.getName() + "$Mockup");
-        capsuleMonitor   = (Class<Capsule$Monitor>) Class.forName(clazz.getName() + "$Monitor");
-        capsuleSerial    = (Class<Capsule$Serial>)  Class.forName(clazz.getName() + "$Serial");
-        capsuleTask      = (Class<Capsule$Task>)    Class.forName(clazz.getName() + "$Task");
-        capsuleThread    = (Class<Capsule$Thread>)  Class.forName(clazz.getName() + "$Thread");
-    }
     
     @SuppressWarnings("unchecked")
     public CapsuleFactory(Class<?> clazz) throws ClassNotFoundException

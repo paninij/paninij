@@ -5,6 +5,7 @@ import static org.paninij.lang.ExecutionProfile.*;
 import java.lang.String;  // Needed to prevent unintended use of `org.paninij.lang.String`.
 
 import org.junit.Test;
+import org.paninij.runtime.Panini$Capsule;
 
 
 public class TestSystem
@@ -51,6 +52,11 @@ public class TestSystem
     }
     
     private static void run(String capsuleName, ExecutionProfile profile) {
-        CapsuleSystem.start(PACKAGE_PREFIX + capsuleName, profile, new String[] { /* no args */ });
+        try {
+            Class<?> clazz = Class.forName(PACKAGE_PREFIX + capsuleName);
+            CapsuleSystem.start((Class<? extends Panini$Capsule>) clazz, profile, new String[] { /* no args */ });
+        } catch (ClassNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

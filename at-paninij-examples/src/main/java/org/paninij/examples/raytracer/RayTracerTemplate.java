@@ -39,6 +39,6 @@ public class RayTracerTemplate {
     }
 
     public static void main(String[] args) {
-        CapsuleSystem.start(RayTracer.class.getName(), args);
+        CapsuleSystem.start(RayTracer.class, args);
     }
 }

@@ -63,6 +63,6 @@ public class AsteroidsTemplate {
 
 
     public static void main(String[] args) {
-        CapsuleSystem.start(Asteroids.class.getName(), args);
+        CapsuleSystem.start(Asteroids.class, args);
     }
 }
