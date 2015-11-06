@@ -1,10 +1,13 @@
 package org.paninij.proc.check;
 
+import javax.lang.model.element.Element;
+
 public interface Result
 {
     boolean ok();
     String err();
     String source();
+    Element offender();
     
     public static class Ok implements Result
     {
@@ -17,6 +20,10 @@ public interface Result
         public String source() {
             return null;
         }
+        public Element offender() {
+        	return null;
+        }
+        
     }
     
     public static Result ok = new Ok();
@@ -25,10 +32,18 @@ public interface Result
     {
         private final String err;
         private final String source;
+        private final Element offender;
         
         public Error(String err, String source) {
             this.err = err;
             this.source = source;
+            this.offender = null;
+        }
+        
+        public Error(String err, String source, Element offender) {
+        	this.err = err;
+        	this.source = source;
+        	this.offender = offender;
         }
         
         @Override
@@ -44,6 +59,11 @@ public interface Result
         @Override
         public String source() {
             return source;
+        }
+        
+        @Override
+        public Element offender() {
+        	return offender;
         }
     }
 }
