@@ -61,6 +61,6 @@ public class NotTooManyDeclsCheck implements CapsuleCheck
         String err = "A capsule template must contain either 0 or 1 `{0}()` methods (a.k.a. {0} "
                    + "declarations), but {1} `{0}()` methods were found in capsule template `{2}`.";
         err = format(err, decl, numFound, template.getSimpleName().toString());
-        return new Error(err, ERROR_SOURCE);
+        return new Error(err, ERROR_SOURCE, template);
     }
 }

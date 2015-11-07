@@ -38,7 +38,7 @@ public class NotSubclassCheck implements CapsuleCheck, SignatureCheck
         if (!interfaces.isEmpty()) {
             String err = "Signature templates must not be subinterfaces, but `{0}` extends `{1}`.";
             err = format(err, template.getQualifiedName(), interfaces.get(0));
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, ERROR_SOURCE, template);
         }
         return ok;
     }
@@ -53,7 +53,7 @@ public class NotSubclassCheck implements CapsuleCheck, SignatureCheck
             String err = "Capsule templates must not extend anything except `java.lang.Object`, "
                        + "but `{0}` extends `{1}`.";
             err = format(err, template.getQualifiedName(), elem.getQualifiedName());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, ERROR_SOURCE, template);
         }
 
         return ok;

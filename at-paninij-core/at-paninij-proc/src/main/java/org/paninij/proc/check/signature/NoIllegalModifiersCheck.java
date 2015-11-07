@@ -55,7 +55,7 @@ public class NoIllegalModifiersCheck implements SignatureCheck
                     String err = "A signature template, `{0}`, includes a method, `{1}()`, which "
                                + "has an illegal modifier: {2}";
                     err = format(err, signature, e.getSimpleName(), illegalModifier);
-                    return new Error(err, ERROR_SOURCE);
+                    return new Error(err, ERROR_SOURCE, e);
                 }
             }
         }

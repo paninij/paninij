@@ -28,6 +28,6 @@ public class SuffixCheck implements SignatureCheck
             err = Source.format(err, name);
         }
 
-        return (err == null) ? Result.ok : new Result.Error(err, errorSource);
+        return (err == null) ? Result.ok : new Result.Error(err, errorSource, signature);
     }
 }

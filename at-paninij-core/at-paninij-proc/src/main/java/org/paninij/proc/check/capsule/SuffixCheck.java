@@ -32,6 +32,6 @@ public class SuffixCheck implements CapsuleCheck
             err = Source.format(err, templateName);
         }
 
-        return (err == null) ? Result.ok : new Result.Error(err, errorSource);
+        return (err == null) ? Result.ok : new Result.Error(err, errorSource, template);
     }
 }

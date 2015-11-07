@@ -36,7 +36,7 @@ public class NoVariadicMethodsCheck implements CapsuleCheck
                                + "was found: `{0}.{1}(...)`";
                     err = MessageFormat.format(err, templateName, methodName);
 
-                    return new Result.Error(err, errorSource);
+                    return new Result.Error(err, errorSource, execElem);
                 }
             }
         }

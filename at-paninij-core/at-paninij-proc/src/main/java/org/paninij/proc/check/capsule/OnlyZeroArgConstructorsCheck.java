@@ -34,7 +34,7 @@ public class OnlyZeroArgConstructorsCheck implements CapsuleCheck
                     String err = "A capsule template must not contain any constructors, but a "
                                + "constructor was found in `{0}`.";
                     err = MessageFormat.format(err, template.getQualifiedName().toString());
-                    return new Result.Error(err, errorSource);
+                    return new Result.Error(err, errorSource, elem);
                 }
             }
         }

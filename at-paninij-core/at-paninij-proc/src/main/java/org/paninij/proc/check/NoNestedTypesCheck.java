@@ -52,7 +52,7 @@ public class NoNestedTypesCheck extends AbstractTemplateCheck
                            + "was found in `{3}`.";
                 err = format(err, templateType, kind, enclosed.getSimpleName(),
                                   template.getSimpleName());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, ERROR_SOURCE, enclosed);
             }
         }
 

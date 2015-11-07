@@ -44,7 +44,7 @@ public class ProcReturnTypesDuckabilityCheck extends AbstractTemplateCheck
                     String err = "{0} template `{1}` has a procedure named `{2}` whose return type "
                                + "cannot not be ducked. {3}";
                     err = format(err, templateType, template, elem.getSimpleName(), result.err());
-                    return new Error(err, ERROR_SOURCE);
+                    return new Error(err, ERROR_SOURCE, elem);
                 }
             }
         }

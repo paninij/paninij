@@ -21,7 +21,7 @@ public class NoTypeParamCheck extends AbstractTemplateCheck
             String err = "{0} templates must not have any type parameters, but such a "
                        + "template was found: `{1}`";
             err = format(err, templateType, template.getQualifiedName());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, ERROR_SOURCE, template);
         }
         return ok;
     }

@@ -39,14 +39,14 @@ public class ImplementedSignaturesCheck implements CapsuleCheck
                            + "seems to be a signature interface, but capsule templates should only "
                            + "implement signature templates.";
                 err = format(err, template.getQualifiedName(), type.toString());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, ERROR_SOURCE, template);
             }
 
             if (!isSignatureType(type)) {
                 String err = "Capsule template `{0}` implements the interface `{1}`, but that type "
                            + "does not seem to correspond to a signature.";
                 err = format(err, template.getQualifiedName(), type.toString());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, ERROR_SOURCE, template);
             }
         }
         return ok;

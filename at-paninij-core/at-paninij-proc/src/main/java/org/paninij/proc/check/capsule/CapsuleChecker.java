@@ -89,7 +89,7 @@ public class CapsuleChecker
             String err = "A capsule template must be a class, but an element annotated with "
                        + "`@Capsule` named `{0}` is of kind {1}.";
             err = format(err, template, template.getKind());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, ERROR_SOURCE, template);
         }
 
         for (CapsuleCheck check: capsuleChecks)

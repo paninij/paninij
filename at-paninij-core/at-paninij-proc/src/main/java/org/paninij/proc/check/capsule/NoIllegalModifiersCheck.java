@@ -79,7 +79,7 @@ public class NoIllegalModifiersCheck implements CapsuleCheck
         if (illegalModifier != null) {
             String err = "Capsule template `{0}` has an illegal modifier: `{1}`.";
             err = format(err, template.getQualifiedName(), illegalModifier);
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, ERROR_SOURCE, template);
         }
         
         for (Element member : template.getEnclosedElements())
@@ -95,7 +95,7 @@ public class NoIllegalModifiersCheck implements CapsuleCheck
                            + "a {1} named `{2}` includes the `{3}` modifier.";
                 err = format(err, template.getQualifiedName(), member.getKind(),
                                   member.getSimpleName(), illegalModifier);
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, ERROR_SOURCE, member);
             }
         }
         return ok;

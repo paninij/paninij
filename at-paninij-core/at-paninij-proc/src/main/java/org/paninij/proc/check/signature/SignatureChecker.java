@@ -81,7 +81,7 @@ public class SignatureChecker
             String err = "A signature template must be an interface, but an element annotated with "
                        + "`@Capsule` named `{0}` is of kind {1}.";
             err = format(err, signature, signature.getKind());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, ERROR_SOURCE, signature);
         }
 
         for (SignatureCheck check: signatureChecks)
