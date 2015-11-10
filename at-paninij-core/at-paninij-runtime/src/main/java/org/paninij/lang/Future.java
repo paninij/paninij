@@ -19,6 +19,8 @@
 package org.paninij.lang;
 
 /**
+ * <p>
+ * Used to declare a procedure as 'futurized' behavior.
  * <h3>Purpose</h3>
  * The &#64;Future annotation specifies that a procedure will return a result that implements the Future{@literal <}T{@literal >} interface 
  * where T is the type specified by the template method's return type.

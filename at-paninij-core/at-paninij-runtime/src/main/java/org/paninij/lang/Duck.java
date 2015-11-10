@@ -19,6 +19,8 @@
 package org.paninij.lang;
 
 /**
+ * <p>
+ * Used to declare a procedure as 'ducked' behavior.
  * <h3>Purpose</h3>
  * The @Duck annotation specifies that a procedure will return a duckified result.
  * <h3>Details</h3>

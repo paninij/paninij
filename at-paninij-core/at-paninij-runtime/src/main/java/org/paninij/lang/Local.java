@@ -18,6 +18,8 @@
  */
 package org.paninij.lang;
 /**
+ * <p>
+ * Used to declare local fields on a capsule.
  * <h3>Purpose</h3>
  * The purpose of this annotation is to allow one capsule to hold a reference to another capsule and enable the calling of procedures on that other capsule.
  * 

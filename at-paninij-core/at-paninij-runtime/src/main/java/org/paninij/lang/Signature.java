@@ -18,6 +18,8 @@
  */
 package org.paninij.lang;
 /**
+ * <p>
+ * Used to designate a java interface as a template for a signature.
  * <h3>Purpose</h3>
  * The purpose of this annotation is to designate a java interface to act as a template for a signature.
  * 

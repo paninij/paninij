@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * <p>
+ * Used to designate a java class as a template for a capsule.
  * <h3>Purpose</h3>
  * The purpose of this annotation is to designate a java class to act as a template for a capsule.
  * 

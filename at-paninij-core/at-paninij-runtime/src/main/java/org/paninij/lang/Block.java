@@ -19,6 +19,8 @@
 package org.paninij.lang;
 
 /**
+ * <p>
+ * Used to declare a procedure as 'blocking' behavior.
  * <h3>Purpose</h3>
  * <p>
  * This annotation is used to specify the behavior of the procedure that it annotates. When a procedure is annotated with @Block it will not be futurized and instead will stop
