@@ -16,19 +16,20 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 
-public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
+public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
 {
     @Override
     protected String getQualifiedName()
@@ -44,16 +45,18 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "@CapsuleInterface",
-                "public interface #1 extends #2",
+                "public interface #2 extends #3",
                 "{",
-                "    #3",
+                "    #4",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
+                PaniniProcessor.getGeneratedAnno(CapsuleInterfaceFactory.class),
                 this.capsule.getSimpleName(),
                 this.generateInterfaces(),
                 this.generateImportDecl());
@@ -92,7 +95,7 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
         }
 
         imports.addAll(this.capsule.getImports());
-
+        imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.lang.CapsuleInterface");
         imports.add("org.paninij.runtime.Panini$Capsule");

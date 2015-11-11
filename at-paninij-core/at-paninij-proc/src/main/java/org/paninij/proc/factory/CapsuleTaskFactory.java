@@ -16,13 +16,14 @@
  *
  * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Behavior;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Type;
@@ -49,14 +50,16 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "public class #1 extends Capsule$Task implements #2",
+                "public class #2 extends Capsule$Task implements #3",
                 "{",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
+                PaniniProcessor.getGeneratedAnno(CapsuleTaskFactory.class),
                 this.generateClassName(),
                 this.capsule.getSimpleName());
 
@@ -82,7 +85,8 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
         }
 
         imports.addAll(this.capsule.getImports());
-
+        
+        imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.runtime.Capsule$Task");
         imports.add("org.paninij.runtime.Panini$Capsule");

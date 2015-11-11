@@ -16,11 +16,12 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.model.Type.Category;
@@ -28,9 +29,9 @@ import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 import org.paninij.proc.util.SourceFile;
 
-public class FutureMessageSource extends MessageSource
+public class FutureMessageFactory extends AbstractMessageFactory
 {
-    public FutureMessageSource() {
+    public FutureMessageFactory() {
         this.context = null;
     }
 
@@ -38,7 +39,7 @@ public class FutureMessageSource extends MessageSource
      * Create a new Source file (name and content)
      */
     @Override
-    public SourceFile generate(Procedure procedure) {
+    public SourceFile make(Procedure procedure) {
         this.context = procedure;
         this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
@@ -53,11 +54,12 @@ public class FutureMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"all\")",  // Suppress unused imports.
-                "public class #1 implements Panini$Message, Panini$Future<#2>, Future<#2>", //TODO drop the panini$future
+                "public class #2 implements Panini$Message, Panini$Future<#3>, Future<#3>", //TODO drop the panini$future
                 "{",
                 "    public final int panini$procID;",
-                "    private #2 panini$result = null;",
+                "    private #3 panini$result = null;",
                 "    protected boolean panini$isResolved = false;",
                 "",
                 "    ##",
@@ -70,7 +72,7 @@ public class FutureMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#2 result) {",
+                "    public void panini$resolve(#3 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
@@ -80,7 +82,7 @@ public class FutureMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 panini$get() {",
+                "    public #3 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -92,12 +94,12 @@ public class FutureMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 get() {",
+                "    public #3 get() {",
                 "        return this.panini$get();",
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 get(long timeout, TimeUnit unit)",
+                "    public #3 get(long timeout, TimeUnit unit)",
                 "            throws InterruptedException, ExecutionException, TimeoutException {",
                 "        //TODO throw error or implement timeout",
                 "        return this.panini$get();",
@@ -122,6 +124,7 @@ public class FutureMessageSource extends MessageSource
 
         src = Source.format(src,
                 this.shape.getPackage(),
+                PaniniProcessor.getGeneratedAnno(FutureMessageFactory.class),
                 this.shape.encoded,
                 this.context.getReturnType().wrapped());
 
@@ -136,6 +139,7 @@ public class FutureMessageSource extends MessageSource
     @Override
     protected List<String> buildImports() {
         List<String> packs = new ArrayList<String>();
+        packs.add("javax.annotation.Generated");
         packs.add("java.util.concurrent.Future");
         packs.add("java.util.concurrent.ExecutionException");
         packs.add("java.util.concurrent.TimeUnit");

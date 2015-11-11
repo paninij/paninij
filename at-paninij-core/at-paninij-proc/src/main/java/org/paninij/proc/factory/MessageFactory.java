@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.util.MessageShape;
@@ -25,19 +25,19 @@ import org.paninij.proc.util.SourceFile;
 import java.util.HashSet;
 
 
-public class MessageFactory
+public class MessageFactory implements ArtifactFactory<Procedure>
 {
     private HashSet<String> generated;
 
-    private FutureMessageSource futureSource;
-    private SimpleMessageSource simpleSource;
-    private DuckMessageSource duckSource;
+    private FutureMessageFactory futureMessageFactory;
+    private SimpleMessageFactory simpleMessageFactory;
+    private DuckMessageFactory duckMessageFactory;
 
     public MessageFactory() {
         this.generated = new HashSet<String>();
-        this.futureSource = new FutureMessageSource();
-        this.simpleSource = new SimpleMessageSource();
-        this.duckSource = new DuckMessageSource();
+        this.futureMessageFactory = new FutureMessageFactory();
+        this.simpleMessageFactory = new SimpleMessageFactory();
+        this.duckMessageFactory = new DuckMessageFactory();
     }
 
     public SourceFile make(Procedure procedure) {
@@ -48,19 +48,18 @@ public class MessageFactory
         {
             switch (shape.category) {
             case DUCKFUTURE:
-                return this.duckSource.generate(procedure);
+                return this.duckMessageFactory.make(procedure);
             case FUTURE:
-                return this.futureSource.generate(procedure);
+                return this.futureMessageFactory.make(procedure);
             case PREMADE:
                 // premade are already created
                 return null;
             case SIMPLE:
-                return this.simpleSource.generate(procedure);
+                return this.simpleMessageFactory.make(procedure);
             case ERROR:
             default:
-                // TODO throw error here?
-                System.out.println("Unhandled message kind");
-                break;
+                String err = "Procedure has unknown message kind: " + shape.category;
+                throw new IllegalArgumentException(err);
             }
         }
         return null;
