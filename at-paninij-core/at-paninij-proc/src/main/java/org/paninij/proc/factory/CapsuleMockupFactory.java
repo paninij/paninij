@@ -1,4 +1,4 @@
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import static org.paninij.proc.util.Source.cat;
 import static org.paninij.proc.util.Source.format;
@@ -10,19 +10,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.AnnotationKind;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.Procedure;
+import org.paninij.proc.model.Signature;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
+import org.paninij.proc.util.SourceFile;
 
-public class CapsuleMockupFactory extends SignatureArtifactFactory
+// TODO: Also implement ArtifactFactory<Capsule>
+public class CapsuleMockupFactory implements ArtifactFactory<Signature>
 {
     public static final String CAPSULE_MOCKUP_SUFFIX = "$Mockup";
-
     
-    @Override
+    Signature signature;
+
+    public SourceFile make(Signature signature)
+    {
+        this.signature = signature;
+        return new SourceFile(this.getQualifiedName(), this.generateContent());
+    }
+    
     protected String getQualifiedName()
     {
         return signature.getQualifiedName() + CAPSULE_MOCKUP_SUFFIX;
@@ -33,7 +43,6 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
         return signature.getSimpleName() + CAPSULE_MOCKUP_SUFFIX;
     }
     
-    @Override
     protected String generateContent()
     {
         String src = cat(
@@ -53,7 +62,7 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
 
         src = format(src,
         		this.signature.getPackage(),
-        		PaniniProcessor.getGeneratedAnno("CapsuleMockupFactory"),
+        		PaniniProcessor.getGeneratedAnno(CapsuleMockupFactory.class),
         		this.getSimpleName(),
         		this.signature.getSimpleName());
 

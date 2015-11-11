@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.model.Type.Category;
@@ -36,14 +37,14 @@ import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 import org.paninij.proc.util.SourceFile;
 
-public class DuckMessageSource extends MessageSource
+public class DuckMessageFactory extends AbstractMessageFactory
 {
-    public DuckMessageSource() {
+    public DuckMessageFactory() {
         this.context = null;
     }
 
     @Override
-    protected SourceFile generate(Procedure procedure) {
+    public SourceFile make(Procedure procedure) {
         this.context = procedure;
         this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
@@ -107,7 +108,7 @@ public class DuckMessageSource extends MessageSource
 
         src = Source.format(src,
         		this.shape.getPackage(),
-        		PaniniProcessor.getGeneratedAnno("DuckMessageSource"),
+        		PaniniProcessor.getGeneratedAnno(DuckMessageFactory.class),
         		this.shape.encoded,
         		this.shape.returnType.wrapped());
 
@@ -171,7 +172,7 @@ public class DuckMessageSource extends MessageSource
                 "}");
 
         src = Source.format(src, this.shape.getPackage(),
-        		PaniniProcessor.getGeneratedAnno("DuckMessageSource"),
+        		PaniniProcessor.getGeneratedAnno(DuckMessageFactory.class),
         		this.shape.encoded,
         		this.shape.returnType.wrapped());
         

@@ -16,13 +16,14 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Type;
 import org.paninij.proc.model.Variable;
@@ -30,16 +31,15 @@ import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.Source;
 
-
-public class CapsuleSerialFactory extends CapsuleProfileFactory
+public class CapsuleMonitorFactory extends CapsuleProfileFactory
 {
 
-    public static final String CAPSULE_PROFILE_SERIAL_SUFFIX = "$Serial";
+    public static final String CAPSULE_PROFILE_MONITOR_SUFFIX = "$Monitor";
 
     @Override
     protected String getQualifiedName()
     {
-        return this.capsule.getQualifiedName() + CAPSULE_PROFILE_SERIAL_SUFFIX;
+        return this.capsule.getQualifiedName() + CAPSULE_PROFILE_MONITOR_SUFFIX;
     }
 
     @Override
@@ -52,14 +52,14 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                 "",
                 "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "public class #2 extends Capsule$Serial implements #3",
+                "public class #2 extends Capsule$Monitor implements #3",
                 "{",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
-                PaniniProcessor.getGeneratedAnno("CapsuleSerialFactory"),
+                PaniniProcessor.getGeneratedAnno(CapsuleMonitorFactory.class),
                 this.generateClassName(),
                 this.capsule.getSimpleName());
 
@@ -72,7 +72,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
     @Override
     protected String generateClassName()
     {
-        return this.capsule.getSimpleName() + CAPSULE_PROFILE_SERIAL_SUFFIX;
+        return this.capsule.getSimpleName() + CAPSULE_PROFILE_MONITOR_SUFFIX;
     }
 
     private List<String> generateImports()
@@ -85,10 +85,9 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         }
 
         imports.addAll(this.capsule.getImports());
-        
         imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
-        imports.add("org.paninij.runtime.Capsule$Serial");
+        imports.add("org.paninij.runtime.Capsule$Monitor");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
@@ -109,6 +108,19 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
                 this.capsule.getQualifiedName() + PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
+    }
+
+    @Override
+    protected String generateProcedureDecl(MessageShape shape) {
+        List<String> argDecls = this.generateProcArgumentDecls(shape.procedure);
+        String argDeclString = String.join(", ", argDecls);
+        String declaration = Source.format("public synchronized #0 #1(#2)",
+                shape.realReturn,
+                shape.procedure.getName(),
+                argDeclString);
+        List<String> thrown = shape.procedure.getThrown();
+        declaration += (thrown.isEmpty()) ? "" : " throws " + String.join(", ", thrown);
+        return declaration;
     }
 
     @Override
@@ -196,13 +208,13 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                         lines,
                         local.getIdentifier(),
                         local.getEncapsulatedType(),
-                        CAPSULE_PROFILE_SERIAL_SUFFIX));
+                        CAPSULE_PROFILE_MONITOR_SUFFIX));
             } else {
                 source.add(Source.format(
                         "panini$encapsulated.#0 = new #1#2();",
                         local.getIdentifier(),
                         local.raw(),
-                        CAPSULE_PROFILE_SERIAL_SUFFIX));
+                        CAPSULE_PROFILE_MONITOR_SUFFIX));
             }
         }
 

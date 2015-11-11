@@ -16,17 +16,17 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 import org.paninij.proc.util.SourceFile;
 
-public class SimpleMessageSource extends MessageSource
+public class SimpleMessageFactory extends AbstractMessageFactory
 {
-
-    public SimpleMessageSource() {
+    public SimpleMessageFactory() {
         this.context = null;
     }
 
@@ -34,7 +34,7 @@ public class SimpleMessageSource extends MessageSource
      * Create a new Source file (name and content)
      */
     @Override
-    public SourceFile generate(Procedure procedure) {
+    public SourceFile make(Procedure procedure) {
         this.context = procedure;
         this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
@@ -65,7 +65,9 @@ public class SimpleMessageSource extends MessageSource
                 "    }",
                 "}");
 
-        src = Source.format(src, this.shape.getPackage(), PaniniProcessor.getGeneratedAnno("SimpleMessageSource"), this.shape.encoded);
+        src = Source.format(src, this.shape.getPackage(),
+                                 PaniniProcessor.getGeneratedAnno(SimpleMessageFactory.class),
+                                 this.shape.encoded);
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());
         return src;

@@ -54,6 +54,16 @@ import org.paninij.proc.check.capsule.CapsuleCheckException;
 import org.paninij.proc.check.capsule.CapsuleChecker;
 import org.paninij.proc.check.signature.SignatureCheckException;
 import org.paninij.proc.check.signature.SignatureChecker;
+import org.paninij.proc.factory.ArtifactFactory;
+import org.paninij.proc.factory.CapsuleInterfaceFactory;
+import org.paninij.proc.factory.CapsuleMockupFactory;
+import org.paninij.proc.factory.CapsuleMonitorFactory;
+import org.paninij.proc.factory.CapsuleSerialFactory;
+import org.paninij.proc.factory.CapsuleTaskFactory;
+import org.paninij.proc.factory.CapsuleTestFactory;
+import org.paninij.proc.factory.CapsuleThreadFactory;
+import org.paninij.proc.factory.MessageFactory;
+import org.paninij.proc.factory.SignatureFactory;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
 import org.paninij.proc.model.Procedure;
@@ -297,7 +307,7 @@ public class PaniniProcessor extends AbstractProcessor
         return processingEnv.getElementUtils();
     }
     
-    public static String getGeneratedAnno(String clazz) {
+    public static String getGeneratedAnno(Class<? extends ArtifactFactory<?>> clazz) {
     	TimeZone tz = TimeZone.getTimeZone("UTC");
     	DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
     	df.setTimeZone(tz);

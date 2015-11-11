@@ -16,21 +16,37 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
+import org.paninij.proc.model.Signature;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
+import org.paninij.proc.util.SourceFile;
 
-public class SignatureFactory extends SignatureArtifactFactory
+public class SignatureFactory implements ArtifactFactory<Signature>
 {
+    Signature signature;
+	
     @Override
+    public SourceFile make(Signature signature)
+    {
+        this.signature = signature;
+        return new SourceFile(this.getQualifiedName(), this.generateContent());
+    }
+    
+    protected String getQualifiedName()
+    {
+        return signature.getQualifiedName();
+    }
+	
     protected String generateContent() {
         String src = Source.cat(
                 "package #0;",
@@ -47,7 +63,7 @@ public class SignatureFactory extends SignatureArtifactFactory
 
         src = Source.format(src,
                 this.signature.getPackage(),
-                PaniniProcessor.getGeneratedAnno("SignatureFactory"),
+                PaniniProcessor.getGeneratedAnno(SignatureFactory.class),
                 this.signature.getSimpleName());
         src = Source.formatAligned(src, this.generateImports());
         src = Source.formatAligned(src, this.generateFacades());
@@ -104,11 +120,5 @@ public class SignatureFactory extends SignatureArtifactFactory
                 argDeclString);
 
         return declaration;
-    }
-
-    @Override
-    protected String getQualifiedName()
-    {
-        return signature.getQualifiedName();
     }
 }

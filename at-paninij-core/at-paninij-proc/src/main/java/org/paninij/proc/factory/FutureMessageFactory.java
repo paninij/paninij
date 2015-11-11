@@ -16,11 +16,12 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.model.Type.Category;
@@ -28,9 +29,9 @@ import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 import org.paninij.proc.util.SourceFile;
 
-public class FutureMessageSource extends MessageSource
+public class FutureMessageFactory extends AbstractMessageFactory
 {
-    public FutureMessageSource() {
+    public FutureMessageFactory() {
         this.context = null;
     }
 
@@ -38,7 +39,7 @@ public class FutureMessageSource extends MessageSource
      * Create a new Source file (name and content)
      */
     @Override
-    public SourceFile generate(Procedure procedure) {
+    public SourceFile make(Procedure procedure) {
         this.context = procedure;
         this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
@@ -123,7 +124,7 @@ public class FutureMessageSource extends MessageSource
 
         src = Source.format(src,
                 this.shape.getPackage(),
-                PaniniProcessor.getGeneratedAnno("FutureMessageSource"),
+                PaniniProcessor.getGeneratedAnno(FutureMessageFactory.class),
                 this.shape.encoded,
                 this.context.getReturnType().wrapped());
 
