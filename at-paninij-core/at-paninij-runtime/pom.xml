@@ -11,6 +11,12 @@
   <artifactId>at-paninij-runtime</artifactId>
   <packaging>jar</packaging>
 
+  <description>
+    The @PaniniJ runtime classes, which are the classes needed to run all capsule systems. Aside
+    from user dependencies, this is the sole @PaniniJ dependency needed to run an @PaniniJ capsule
+    system.
+  </description>
+
   <name>@PaniniJ Runtime</name>
 
   <properties>

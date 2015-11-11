@@ -7,30 +7,52 @@
   <artifactId>at-paninij-examples</artifactId>
   <name>@PaniniJ Examples</name>
   <packaging>jar</packaging>
+
+  <description>
+    Various simple @PaniniJ example programs.
+  </description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <gen.src.dir>${project.build.directory}/generated-sources</gen.src.dir>
   </properties>
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
         <configuration>
+          <!-- Specify Java version. -->
           <source>1.8</source>
           <target>1.8</target>
-          <generatedSourcesDirectory>
-            ${project.build.directory}/generated-sources
-          </generatedSourcesDirectory>
-          <!--
-          <generatedTestSourcesDirectory>
-            ${project.build.directory}/generated-test-sources
-          </generatedTestSourcesDirectory>
-          -->
+          <!-- Specify where the proc-generated source artifacts are put. -->
+          <generatedSourcesDirectory>${gen.src.dir}</generatedSourcesDirectory>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <!-- Add the generated src dir so that Eclipse will automatically find it. -->
+                <source>${gen.src.dir}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
@@ -45,10 +67,5 @@
       <artifactId>at-paninij-runtime</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
-    <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.11</version>
-      </dependency>
   </dependencies>
 </project>

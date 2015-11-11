@@ -13,29 +13,56 @@
 
   <name>@PaniniJ SOTER Example</name>
   <description>
-    An example of how to integrate the `soter` tool into a Maven build of
-    @PaniniJ capsule templates.
+    An example which integrates the `soter` tool into a Maven build of @PaniniJ capsule templates.
   </description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <generated.sources.directory>
-      ${project.build.directory}/generated-sources
-    </generated.sources.directory>
-    <generated.test.sources.directory>
-      ${project.build.directory}/generated-test-sources
-    </generated.test.sources.directory>
-    <generated.dependenciesFile>
-      ${project.build.directory}/dependencies.txt
-    </generated.dependenciesFile>
-    <panini.capsuleListFile>
-      ${project.build.directory}/capsule_list.txt
-    </panini.capsuleListFile>
+    <gen.src.dir>${project.build.directory}/generated-sources</gen.src.dir>
+    <gen.test.src.dir>${project.build.directory}/generated-test-sources</gen.test.src.dir>
+    <gen.dependencies.file>${project.build.directory}/dependencies.txt</gen.dependencies.file>
+    <gen.panini.capsules.file>${project.build.directory}/capsule_list.txt</gen.panini.capsules.file>
   </properties>
 
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <generatedSourcesDirectory>${gen.src.dir}</generatedSourcesDirectory>
+          <generatedTestSourcesDirectory>${gen.test.src.dir}</generatedTestSourcesDirectory>
+          <fork>true</fork>
+          <compilerArgs>
+            <arg>-Apanini.capsuleListFile=${gen.panini.capsules.file}</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <!-- Add the generated source directory so that Eclipse will find it. -->
+                <source>${gen.src.dir}</source>
+                <source>${gen.test.src.dir}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -49,7 +76,7 @@
               <goal>build-classpath</goal>
             </goals>
             <configuration>
-              <outputFile>${generated.dependenciesFile}</outputFile>
+              <outputFile>${gen.dependencies.file}</outputFile>
             </configuration>
           </execution>
         </executions>
@@ -74,32 +101,14 @@
             <argument>-classPath</argument>
             <argument>${project.build.outputDirectory}</argument>
             <argument>-classPathFile</argument>
-            <argument>${generated.dependenciesFile}</argument>
+            <argument>${gen.dependencies.file}</argument>
             <argument>-classOutput</argument>
             <argument>${project.build.outputDirectory}</argument>
-            <argument>@${panini.capsuleListFile}</argument>
+            <argument>@${gen.panini.capsules.file}</argument>
           </arguments>
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-          <generatedSourcesDirectory>
-            ${generated.sources.directory}
-          </generatedSourcesDirectory>
-          <generatedTestSourcesDirectory>
-            ${generated.test.sources.directory}
-          </generatedTestSourcesDirectory>
-          <fork>true</fork>
-          <compilerArgs>
-            <arg>-Apanini.capsuleListFile=${panini.capsuleListFile}</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 

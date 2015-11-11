@@ -9,6 +9,10 @@
   <packaging>pom</packaging>
   <name>@PaniniJ Core</name>
 
+  <description>
+    Contains the most important and user-facing components of @PaniniJ.
+  </description>
+
   <build>
     <pluginManagement>
       <plugins>
