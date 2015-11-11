@@ -21,6 +21,6 @@ public class TestProcDriver
     
     @Test
     public void processNormalTemplate() throws IOException {
-        driver.process("org.paninij.proc.shapes.normal.NormalTemplate");
+        driver.process("org.paninij.proc.shapes.NormalTemplate");
     }
 }

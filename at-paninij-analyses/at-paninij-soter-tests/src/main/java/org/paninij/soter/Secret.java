@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Secret
 {
-    int secret = 42;
+    private int secret = 42;
     /*
     List<String> messages = new ArrayList<String>();
 

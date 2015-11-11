@@ -2,8 +2,11 @@ package org.paninij.soter;
 
 import org.paninij.soter.LeakyServer;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 public class ActiveClientTemplate
 {
@@ -30,5 +33,9 @@ public class ActiveClientTemplate
         Secret s = server.getSecret();
 
         System.out.println("Stopping `ActiveClient`.");
+    }
+    
+    public static void main(String[] args) {
+        CapsuleSystem.start(ActiveClient.class.getName(), args);
     }
 }

@@ -1,5 +1,6 @@
 package org.paninij.examples.matmul;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule public class MatrixDataTemplate {
@@ -26,6 +27,7 @@ import org.paninij.lang.Capsule;
     /*
      * Check if `C` is equal to `A` multiplied by `B`
      */
+    @Block
     public boolean valid() {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
@@ -47,6 +49,7 @@ import org.paninij.lang.Capsule;
     /*
      * Get `A[i][j]`
      */
+    @Block
     public double getA(int i, int j) {
         return A[i][j];
     }
@@ -54,6 +57,7 @@ import org.paninij.lang.Capsule;
     /*
      * Get `B[i][j]`
      */
+    @Block
     public double getB(int i, int j) {
         return B[i][j];
     }
@@ -61,6 +65,7 @@ import org.paninij.lang.Capsule;
     /*
      * Get the dimenion of the matrix
      */
+    @Block
     public int dimension() {
         return length;
     }

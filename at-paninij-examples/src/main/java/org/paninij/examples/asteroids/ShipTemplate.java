@@ -18,12 +18,13 @@
  */
 package org.paninij.examples.asteroids;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule
 public class ShipTemplate {
-    private short state;
-    private int x;
+    short state;
+    int x;
 
     protected void init() {
         this.state = 0;
@@ -38,10 +39,12 @@ public class ShipTemplate {
         this.state = 1;
     }
 
+    @Block
     public boolean isAlive() {
         return state != 2;
     }
 
+    @Block
     public boolean isFiring() {
         if (this.state == 1) {
             this.state = 0;
@@ -50,6 +53,7 @@ public class ShipTemplate {
         return false;
     }
 
+    @Block
     public int getPosition() { return this.x; }
     public void moveLeft() { if (this.x > 0) this.x--; }
     public void moveRight() { if (this.x < Constants.WIDTH) this.x++; }

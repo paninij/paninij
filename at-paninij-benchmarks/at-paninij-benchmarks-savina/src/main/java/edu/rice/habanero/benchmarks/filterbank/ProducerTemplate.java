@@ -1,5 +1,6 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
+import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule public class ProducerTemplate {
@@ -7,7 +8,7 @@ import org.paninij.lang.Capsule;
     int numMessagesSent = 0;
     int numSimulations = FilterBankConfig.NUM_SIMULATIONS;
 
-    public boolean produce() {
+    @Block public boolean produce() {
         if (numMessagesSent >= numSimulations) {
             return false;
         } else {

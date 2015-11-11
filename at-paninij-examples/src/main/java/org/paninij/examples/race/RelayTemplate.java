@@ -6,7 +6,7 @@ import org.paninij.lang.Imports;
 @Capsule public class RelayTemplate {
     @Imports Server server;
 
-    void sayHello() {
+    public void sayHello() {
         server.sayHello("Relay");
     }
 

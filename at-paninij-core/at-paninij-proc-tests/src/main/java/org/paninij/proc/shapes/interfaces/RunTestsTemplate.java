@@ -1,6 +1,5 @@
 package org.paninij.proc.shapes.interfaces;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.paninij.lang.Capsule;
@@ -28,6 +27,5 @@ public class RunTestsTemplate
         {
             throw new RuntimeException(ex);
         }
-
     }
 }

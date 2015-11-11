@@ -19,8 +19,11 @@
 package org.paninij.examples.asteroids;
 
 import org.paninij.lang.Capsule;
+import org.paninij.lang.CapsuleSystem;
 import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
+@Root
 @Capsule
 public class AsteroidsTemplate {
 
@@ -59,5 +62,7 @@ public class AsteroidsTemplate {
     }
 
 
-
+    public static void main(String[] args) {
+        CapsuleSystem.start(Asteroids.class.getName(), args);
+    }
 }

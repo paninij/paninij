@@ -15,7 +15,7 @@ public class NQueensAtPaniniJBenchmark
 
         @Override
         public void cleanupIteration(boolean arg0, double arg1) {
-            MasterTemplate.RESULT = 0;
+            Result.RESULT = 0;
         }
 
         @Override
@@ -39,7 +39,7 @@ public class NQueensAtPaniniJBenchmark
             }
 
             long expSolution = NQueensConfig.SOLUTIONS[NQueensConfig.SIZE - 1];
-            long actSolution = MasterTemplate.RESULT;
+            long actSolution = Result.RESULT;
             int solutionsLimit = NQueensConfig.SOLUTIONS_LIMIT;
             boolean valid = actSolution >= solutionsLimit && actSolution <= expSolution;
 

@@ -28,6 +28,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.lang.Root;
 import org.paninij.proc.CapsuleTemplateVisitor;
 import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.TypeCollector;
@@ -139,6 +140,11 @@ public class CapsuleElement implements Capsule
             sigs.add(name);
         }
         return sigs;
+    }
+    
+    @Override
+    public boolean isRoot() {
+        return this.element.getAnnotation(Root.class) != null;
     }
 
     @Override
