@@ -16,16 +16,17 @@
  *     }
  *     
  *     public static void main(String[] args) {
- *         CapsuleSystem.start("example.HelloWorld", args);
+ *         CapsuleSystem.start(HelloWorld.class, args);
  *     }
  * }
  * </pre></blockquote></p>
  * 
- * <p>Example 1 creates a Capsule Template called HelloWorld. A capsule is a 
- * modular component that encapsulates state and behavior. A Capsule is not 
+ * <p>Example 1 creates a Capsule Template called HelloWorldTemplate. &#64PaniniJ will
+ * see the annotation <code>&64;Capsule</code> and will auto-generate a class called "HelloWorld"
+ * which represents the Capsule. A capsule is a modular component that encapsulates state and behavior. A Capsule is not 
  * allowed to share it's state with others. Because of the <code>&#64;Root
  * </code> annotation and the <code>run</code> method, this is an
- * <em>active</em> capsule. The <code>run</code> method is the main point of
+ * <em>active</em> capsule, and we can start it by calling <code>CapsuleSystem.start(HelloWorld.class, args);</code>. The <code>run</code> method is the main point of
  * entry for this system.</p>
  * 
  * <h2>Example 2: A system of capsules</h2>
@@ -59,41 +60,63 @@
  *     }
  *     
  *     public static void main(String[] args) {
- *         CapsuleSystem.start("example.Greeter", args);
+ *         CapsuleSystem.start(Greeter.class, args);
  *     }
  * }
  * </pre></blockquote></p>
  * 
- * <p>Example 2 creates two capsules, Greeter and Console. The Console
+ * <p>Example 2 creates two capsules: Greeter and Console. The Console
  * capsule has one <em>procedure</em> called <code>say</code>. The
- * Greeter capsule creates a Console called "console" (<code>&#64;Local
- * Console console</code>). Note that the Greeter capsule is an
+ * Greeter capsule has an instance of Console called "console" (<code>&#64;Local
+ * Console console</code>). Notice that console isn't initialized anywhere. This is done automatically by &#64;Local. Note that the Greeter capsule is an
  * <em>active</em> capsule because it contains a <code>run</code>
  * method. Inside the <code>run</code> method, we invoke the <code>say
- * </code> procedure on the instance of <code>Console</code>with a
- * message.</p>
+ * </code> procedure on the instance of <code>Console</code> with a
+ * message.
  * 
- * <p>The primary driver behind @PaniniJ is the annotations within this
- * package.</p>
  * 
- * <h3>Annotations used to declare a Capsule Template:</h3>
- * <ul>
- * <li>org.paninij.lang.Capsule - to create a Capsule Template</li>
- * </ul>
+ * <h2>Definitions</h2>
+ * <dl>
+ * <dt>Capsule Template</dt>
+ * <dd>
+ * 		<p>User-written code to define a capsule. See
+ * </dd>
+ * <dt>Capsule</dt>
+ * <dd>
+ * 		<p>A modular component that encapsulates state and behavior.
+ * </dd>
+ * <dt>Capsule System</dt>
+ * <dd>
+ * 		<p>A collection of capsules which work together, and has one <em>root</em> capsule.
+ * </dd>
+ * <dt>Active Capsule</dt>
+ * <dd>
+ * 		<p>A Capsule which contains a <code>run</code> method and no other procedures. This capsule is a driver behind other capsules.
+ * </dd>
+ * <dt>Passive Capsule</dt>
+ * <dd>
+ * 		<p>A non-active capsule.
+ * </dd>
+ * <dt>Root Capsule</dt>
+ * <dd>
+ * 		<p>The primary capsule in the system, typically also an Active capsule. This capsule cannot have any dependencies (IE, no <code>&#64;Imports</code> fields)
+ * </dd>
+ * <dt>Procedure</dt>
+ * <dd>
+ * 		<p>A non-special* method on a Capsule, these are defined in the Capsule Template. Capsules can invoke procedures on eachother.
+ * </dd>
+ * <dt>Signature</dt>
+ * <dd>
+ * 		<p>An Interface for Capsules.
+ * </dd>
+ * </dl>
  * 
- * <h3>Annotation used to declare a Signature Template:</h3>
- * <ul>
- * <li>org.paninij.lang.Signature - to create a Signature Template</li>
- * </ul>
+ * <p><em>*non-special: Meaning not <code>run</code>, <code>init</code>, <code>design</code>, or <code>imports</code></em></p>
  * 
- * <h3>Annotations used on fields in a Capsule Template:</h3>
- * <ul>
- * <li>org.paninij.lang.Imports - to declare imported fields on a capsule</li>
- * <li>org.paninij.lang.Local - to declare local fields on a capsule</li>
- * <li>org.paninij.lang.Block - to declare a procedure as 'blocking' behavior</li>
- * <li>org.paninij.lang.Future - to declare a procedure as 'futurized' behavior</li>
- * <li>org.paninij.lang.Duck - to declare a procedure as 'ducked' behavior</li>
- * </ul>
+ * 
+ * 
+ * <p>The primary driver behind &#64;PaniniJ is the annotations within this
+ * package.
  * 
  */
 package org.paninij.lang;
