@@ -41,18 +41,21 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "@CapsuleMockup",
-                "public class #1 extends Capsule$Mockup implements #2",
+                "public class #2 extends Capsule$Mockup implements #3",
                 "{",
                 "    ##",
                 "",
                 "    ##",
                 "}");
 
-        src = format(src, this.signature.getPackage(),
-                          this.getSimpleName(),
-                          this.signature.getSimpleName());
+        src = format(src,
+        		this.signature.getPackage(),
+        		PaniniProcessor.getGeneratedAnno("CapsuleMockupFactory"),
+        		this.getSimpleName(),
+        		this.signature.getSimpleName());
 
         src = formatAligned(src, this.generateImports());
         src = formatAligned(src, this.generateImportsMethod());
@@ -65,6 +68,7 @@ public class CapsuleMockupFactory extends SignatureArtifactFactory
     protected List<String> generateImports()
     {
         Set<String> imports = this.signature.getImports();
+        imports.add("javax.annotation.Generated");
         imports.add("org.paninij.runtime.Capsule$Mockup");
         imports.add("org.paninij.lang.CapsuleMockup");
 

@@ -62,11 +62,12 @@ public class DuckMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"all\")",  // Suppress unused imports.
-                "public class #1 implements #2, Panini$Message, Panini$Future<#2>",
+                "public class #2 implements #3, Panini$Message, Panini$Future<#3>",
                 "{",
                 "    public final int panini$procID;",
-                "    private #2 panini$result = null;",
+                "    private #3 panini$result = null;",
                 "    boolean panini$isResolved = false;",
                 "",
                 "    ##",
@@ -79,7 +80,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#2 result) {",
+                "    public void panini$resolve(#3 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
@@ -89,7 +90,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 panini$get() {",
+                "    public #3 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -100,13 +101,15 @@ public class DuckMessageSource extends MessageSource
                 "         return panini$result;",
                 "    }",
                 "",
-                "    /* The following implement the methods of `#2` */",
+                "    /* The following implement the methods of `#3` */",
                 "    ##",
                 "}");
 
-        src = Source.format(src, this.shape.getPackage(),
-                                 this.shape.encoded,
-                                 this.shape.returnType.wrapped());
+        src = Source.format(src,
+        		this.shape.getPackage(),
+        		PaniniProcessor.getGeneratedAnno("DuckMessageSource"),
+        		this.shape.encoded,
+        		this.shape.returnType.wrapped());
 
         src = Source.formatAligned(src, this.buildImports());
         src = Source.formatAligned(src, this.buildParameterFields());
@@ -124,11 +127,12 @@ public class DuckMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"all\")",  // Suppress unused imports.
-                "public class #1 extends #2 implements Panini$Message, Panini$Future<#2>",
+                "public class #2 extends #3 implements Panini$Message, Panini$Future<#3>",
                 "{",
                 "    public final int panini$procID;",
-                "    private #2 panini$result = null;",
+                "    private #3 panini$result = null;",
                 "    boolean panini$isResolved = false;",
                 "",
                 "    ##",
@@ -141,7 +145,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#2 result) {",
+                "    public void panini$resolve(#3 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
@@ -151,7 +155,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 panini$get() {",
+                "    public #3 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -162,14 +166,15 @@ public class DuckMessageSource extends MessageSource
                 "         return panini$result;",
                 "    }",
                 "",
-                "    /* The following override the methods of `#2` */",
+                "    /* The following override the methods of `#3` */",
                 "    ##",
                 "}");
 
         src = Source.format(src, this.shape.getPackage(),
-                                 this.shape.encoded,
-                                 this.shape.returnType.wrapped());
-
+        		PaniniProcessor.getGeneratedAnno("DuckMessageSource"),
+        		this.shape.encoded,
+        		this.shape.returnType.wrapped());
+        
         src = Source.formatAligned(src, this.buildImports());
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());

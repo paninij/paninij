@@ -48,8 +48,10 @@ public class SimpleMessageSource extends MessageSource
                 "package #0;",
                 "",
                 "import org.paninij.runtime.Panini$Message;",
+                "import javax.annotation.Generated;",
                 "",
-                "public class #1 implements Panini$Message",
+                "#1",
+                "public class #2 implements Panini$Message",
                 "{",
                 "    public final int panini$procID;",
                 "",
@@ -63,7 +65,7 @@ public class SimpleMessageSource extends MessageSource
                 "    }",
                 "}");
 
-        src = Source.format(src, this.shape.getPackage(), this.shape.encoded);
+        src = Source.format(src, this.shape.getPackage(), PaniniProcessor.getGeneratedAnno("SimpleMessageSource"), this.shape.encoded);
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());
         return src;

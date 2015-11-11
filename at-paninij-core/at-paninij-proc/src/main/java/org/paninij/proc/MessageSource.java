@@ -68,7 +68,7 @@ public abstract class MessageSource
         TypeKind kind = ret.getKind();
 
         List<String> packs = new ArrayList<String>(extra);
-
+        packs.add("javax.annotation.Generated");
         packs.add("org.paninij.runtime.Panini$Future");
         packs.add("org.paninij.runtime.Panini$Message");
         packs.add(ret.packed());

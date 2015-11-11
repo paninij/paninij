@@ -44,16 +44,18 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "@CapsuleInterface",
-                "public interface #1 extends #2",
+                "public interface #2 extends #3",
                 "{",
-                "    #3",
+                "    #4",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
+                PaniniProcessor.getGeneratedAnno("CapsuleInterfaceFactory"),
                 this.capsule.getSimpleName(),
                 this.generateInterfaces(),
                 this.generateImportDecl());
@@ -92,7 +94,7 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
         }
 
         imports.addAll(this.capsule.getImports());
-
+        imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.lang.CapsuleInterface");
         imports.add("org.paninij.runtime.Panini$Capsule");

@@ -49,14 +49,16 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "public class #1 extends Capsule$Monitor implements #2",
+                "public class #2 extends Capsule$Monitor implements #3",
                 "{",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
+                PaniniProcessor.getGeneratedAnno("CapsuleMonitorFactory"),
                 this.generateClassName(),
                 this.capsule.getSimpleName());
 
@@ -82,7 +84,7 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
         }
 
         imports.addAll(this.capsule.getImports());
-
+        imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.runtime.Capsule$Monitor");
         imports.add("org.paninij.runtime.Panini$Capsule");

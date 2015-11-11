@@ -53,11 +53,12 @@ public class FutureMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"all\")",  // Suppress unused imports.
-                "public class #1 implements Panini$Message, Panini$Future<#2>, Future<#2>", //TODO drop the panini$future
+                "public class #2 implements Panini$Message, Panini$Future<#3>, Future<#3>", //TODO drop the panini$future
                 "{",
                 "    public final int panini$procID;",
-                "    private #2 panini$result = null;",
+                "    private #3 panini$result = null;",
                 "    protected boolean panini$isResolved = false;",
                 "",
                 "    ##",
@@ -70,7 +71,7 @@ public class FutureMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#2 result) {",
+                "    public void panini$resolve(#3 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
@@ -80,7 +81,7 @@ public class FutureMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 panini$get() {",
+                "    public #3 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -92,12 +93,12 @@ public class FutureMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 get() {",
+                "    public #3 get() {",
                 "        return this.panini$get();",
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 get(long timeout, TimeUnit unit)",
+                "    public #3 get(long timeout, TimeUnit unit)",
                 "            throws InterruptedException, ExecutionException, TimeoutException {",
                 "        //TODO throw error or implement timeout",
                 "        return this.panini$get();",
@@ -122,6 +123,7 @@ public class FutureMessageSource extends MessageSource
 
         src = Source.format(src,
                 this.shape.getPackage(),
+                PaniniProcessor.getGeneratedAnno("FutureMessageSource"),
                 this.shape.encoded,
                 this.context.getReturnType().wrapped());
 
@@ -136,6 +138,7 @@ public class FutureMessageSource extends MessageSource
     @Override
     protected List<String> buildImports() {
         List<String> packs = new ArrayList<String>();
+        packs.add("javax.annotation.Generated");
         packs.add("java.util.concurrent.Future");
         packs.add("java.util.concurrent.ExecutionException");
         packs.add("java.util.concurrent.TimeUnit");

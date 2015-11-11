@@ -48,15 +48,17 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "@CapsuleThread",
-                "public class #1 extends Capsule$Thread implements #2",
+                "public class #2 extends Capsule$Thread implements #3",
                 "{",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
+                PaniniProcessor.getGeneratedAnno("CapsuleThreadFactory"),
                 this.generateClassName(),
                 this.capsule.getSimpleName());
 
@@ -82,7 +84,8 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         }
 
         imports.addAll(this.capsule.getImports());
-
+        
+        imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.lang.CapsuleThread");
         imports.add("org.paninij.runtime.Capsule$Thread");

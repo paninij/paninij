@@ -37,15 +37,17 @@ public class SignatureFactory extends SignatureArtifactFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
                 "@SignatureInterface",
-                "public interface #1",
+                "public interface #2",
                 "{",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.signature.getPackage(),
+                PaniniProcessor.getGeneratedAnno("SignatureFactory"),
                 this.signature.getSimpleName());
         src = Source.formatAligned(src, this.generateImports());
         src = Source.formatAligned(src, this.generateFacades());
@@ -56,6 +58,7 @@ public class SignatureFactory extends SignatureArtifactFactory
     protected List<String> generateImports() {
         Set<String> imports = new HashSet<String>();
         imports.add("org.paninij.lang.SignatureInterface");
+        imports.add("javax.annotation.Generated");
 
         for (Procedure p : this.signature.getProcedures()) {
             MessageShape shape = new MessageShape(p);
