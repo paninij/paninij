@@ -29,7 +29,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.lang.Root;
-import org.paninij.proc.CapsuleTemplateVisitor;
 import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.TypeCollector;
 

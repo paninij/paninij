@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +30,12 @@ import org.paninij.proc.model.Type;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
-import org.paninij.proc.util.SourceFile;
 
-public abstract class MessageSource
+public abstract class AbstractMessageFactory implements ArtifactFactory<Procedure>
 {
-
     protected Procedure context;
     protected MessageShape shape;
 
-    protected abstract SourceFile generate(Procedure procedure);
     protected abstract String generateContent();
 
     protected void setContext(Procedure procedure) {
@@ -68,7 +65,7 @@ public abstract class MessageSource
         TypeKind kind = ret.getKind();
 
         List<String> packs = new ArrayList<String>(extra);
-
+        packs.add("javax.annotation.Generated");
         packs.add("org.paninij.runtime.Panini$Future");
         packs.add("org.paninij.runtime.Panini$Message");
         packs.add(ret.packed());
