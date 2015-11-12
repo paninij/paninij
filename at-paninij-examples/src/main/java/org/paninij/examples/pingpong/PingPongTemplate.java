@@ -22,6 +22,6 @@ public class PingPongTemplate
     }
 
     public static void main(String[] args) {
-        CapsuleSystem.start(PingPong.class.getName(), args);
+        CapsuleSystem.start(PingPong.class, args);
     }
 }

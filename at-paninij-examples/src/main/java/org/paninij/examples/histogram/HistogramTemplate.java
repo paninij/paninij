@@ -52,6 +52,6 @@ public class HistogramTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(Histogram.class.getName(), args);
+        CapsuleSystem.start(Histogram.class, args);
     }
 }

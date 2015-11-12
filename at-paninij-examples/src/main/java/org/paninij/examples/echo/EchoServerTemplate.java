@@ -84,6 +84,6 @@ public class EchoServerTemplate
     }
 
     public static void main(String[] args) {
-        CapsuleSystem.start(EchoServer.class.getName(), args);
+        CapsuleSystem.start(EchoServer.class, args);
     }
 }

@@ -70,7 +70,11 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
     protected String generateInterfaces()
     {
         List<String> interfaces = this.capsule.getSignatures();
-        interfaces.add("Panini$Capsule");
+        if (capsule.isRoot()) {
+            interfaces.add("Panini$Capsule$Root");
+        } else {
+            interfaces.add("Panini$Capsule");
+        }
         return String.join(", ", interfaces);
     }
 
@@ -99,6 +103,7 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.lang.CapsuleInterface");
         imports.add("org.paninij.runtime.Panini$Capsule");
+        imports.add("org.paninij.runtime.Panini$Capsule$Root");
 
         List<String> prefixedImports = new ArrayList<String>();
 

@@ -48,6 +48,6 @@ public class GossipyClientTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(GossipyClient.class.getName(), args);
+        CapsuleSystem.start(GossipyClient.class, args);
     }
 }

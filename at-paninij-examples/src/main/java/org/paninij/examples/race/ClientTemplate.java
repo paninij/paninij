@@ -45,6 +45,6 @@ public class ClientTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(Client.class.getName(), args);
+        CapsuleSystem.start(Client.class, args);
     }
 }

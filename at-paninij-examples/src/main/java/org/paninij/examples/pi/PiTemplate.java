@@ -58,6 +58,6 @@ public class PiTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(Pi.class.getName(), args);
+        CapsuleSystem.start(Pi.class, args);
     }
 }
