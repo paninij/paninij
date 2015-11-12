@@ -30,6 +30,6 @@ public class ActiveClientTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(ActiveClient.class.getName(), args);
+        CapsuleSystem.start(ActiveClient.class, args);
     }
 }

@@ -16,6 +16,6 @@ public class XTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(X.class.getName(), args);
+        CapsuleSystem.start(X.class, args);
     }
 }
