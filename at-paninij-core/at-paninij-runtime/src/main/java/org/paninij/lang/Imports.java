@@ -44,6 +44,7 @@ package org.paninij.lang;
  * that the Greeter wants to call procedures of a Console capsule, but does not want to create the instance of the capsule. By using @Imports, it specifies that the parent capsule of the Greeter
  * must supply the reference to the Console capsule. This is shown in the HelloWorldTemplate in the design method where g.imports is called and the reference to the Console capsule is passed as
  * a parameter.  
+ * <h4>ConsoleTemplate.java</h4>
  * <blockquote><pre>
  * &#64;Capsule
  * public class ConsoleTemplate {
@@ -54,6 +55,7 @@ package org.paninij.lang;
  *     }
  * }
  * </pre></blockquote>
+ * <h4>GreeterTemplate.java</h4>
  * <blockquote><pre>
  * &#64;Capsule
  * public class GreeterTemplate {
@@ -71,6 +73,7 @@ package org.paninij.lang;
  *     }
  * }
  * </pre></blockquote>
+ * <h4>HelloWorldTemplate.java</h4>
  * <blockquote><pre>
  * &#64;Capsule
  * public class HelloWorldTemplate {
@@ -86,9 +89,7 @@ package org.paninij.lang;
  *     }
  * }
  * </pre></blockquote>
- * <h3>Internal Notes</h3>
- * <p>
- * None
+ * 
  * <h3>Associated Annotations</h3>
  * <p>
  * This annotation and {@link org.paninij.lang.Local @Local} are used to define capsule state and connections between capsules in a system.
