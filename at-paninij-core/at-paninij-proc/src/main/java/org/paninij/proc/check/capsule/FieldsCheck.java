@@ -32,7 +32,6 @@ import org.paninij.proc.check.Result.Error;
  */
 public class FieldsCheck implements CapsuleCheck
 {
-    private final static String ERROR_SOURCE = FieldsCheck.class.toString();
     private final CheckEnvironment env;
 
     public FieldsCheck(CheckEnvironment env) {
@@ -65,7 +64,7 @@ public class FieldsCheck implements CapsuleCheck
             String err = "Found a field `{0} {1}` in `{2}` which is annotated with both `@Local`"
                        + "and `@Imports`.";
             err = format(err, field.asType(), field, template.getQualifiedName());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, FieldsCheck.class, field);
         }
         
         if (isCapsuleTemplateField(field))
@@ -73,7 +72,7 @@ public class FieldsCheck implements CapsuleCheck
             String err = "Found a field `{0} {1}` in `{2}` which is a capsule template or a "
                        + "signature template. Use the generated capsule or signature instead.";
             err = format(err, field.asType(), field, template.getQualifiedName());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, FieldsCheck.class, field);
         }
 
         if (seemsToBeCapsuleField(field))
@@ -82,14 +81,14 @@ public class FieldsCheck implements CapsuleCheck
                 String err = "Found a field named `{0} {1}` in `{2}` whose type seems to be a "
                            + "capsule, but it is not annotated with either `@Local` or `@Imports`.";
                 err = format(err, field.asType(), field, template.getQualifiedName());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, FieldsCheck.class, field);
             }
             
             if (isMultiDimensionalArrayField(field)) {
                 String err = "Found a field named `{0} {1}` in `{2}` whose type seems to be a "
                            + "multi-dimensional array of capsule. This is not yet supported.";
                 err = format(err, field.asType(), field, template.getQualifiedName());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, FieldsCheck.class, field);
             }
             
             // TODO: Check that @Local and @Imports fields don't have initializers.
@@ -100,7 +99,7 @@ public class FieldsCheck implements CapsuleCheck
                 String err = "Found a field `{0} {1}` in `{2}` which is annotated with `@Local`, "
                            + "but its type seems to not be a capsule.";
                 err = format(err, field.asType(), field, template.getQualifiedName());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, FieldsCheck.class, field);
             }
         }
         

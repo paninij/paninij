@@ -2,9 +2,10 @@ package org.paninij.proc.check.duckability;
 
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.proc.check.Check;
 import org.paninij.proc.check.Result;
 
-public interface DuckabilityCheck
+public interface DuckabilityCheck extends Check
 {
     /**
      * @param   toDuck  A type element representing some type to be ducked.

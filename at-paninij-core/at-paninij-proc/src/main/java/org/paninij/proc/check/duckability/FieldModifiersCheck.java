@@ -21,8 +21,6 @@ import org.paninij.proc.check.Result.Error;
  */
 public class FieldModifiersCheck implements DuckabilityCheck
 {
-    private static final String ERROR_SOURCE = FieldModifiersCheck.class.getName();
-    
     @Override
     public Result checkDuckability(TypeElement toDuck)
     {
@@ -31,7 +29,7 @@ public class FieldModifiersCheck implements DuckabilityCheck
                 String err = "Type `{0}` has a field `{1}` which is not declared either `private` "
                            + "or `static`.";
                 err = format(err, toDuck, elem.getSimpleName());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, FieldModifiersCheck.class, elem);
             }
         }
         return ok;

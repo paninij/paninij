@@ -23,8 +23,6 @@ import org.paninij.proc.check.Result.Error;
  */
 public class MethodModifiersCheck implements DuckabilityCheck
 {
-    private static final String ERROR_SOURCE = MethodModifiersCheck.class.getName();
-    
     // Currently, these ignored names are the `final` methods in `java.lang.Object`.
     private static final String[] IGNORED_METHOD_NAMES = {
         "getClass",
@@ -45,7 +43,7 @@ public class MethodModifiersCheck implements DuckabilityCheck
 
         if (toDuck.getModifiers().contains(FINAL)) {
             String err = format("Type `{0}` is final.", toDuck.getQualifiedName());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, MethodModifiersCheck.class, toDuck);
         }
         
         result = checkForIllegalFinalMethod(toDuck);
@@ -73,7 +71,7 @@ public class MethodModifiersCheck implements DuckabilityCheck
             if (isIllegalFinalMethod(elem)) {
                 String err = "Type `{0}` has a non-private final method: {1}().";
                 err = format(err, toDuck.getQualifiedName(), elem.getSimpleName());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, MethodModifiersCheck.class, elem);
             }
         }
         return ok;
@@ -107,7 +105,7 @@ public class MethodModifiersCheck implements DuckabilityCheck
             String err = "Cannot duck type `{0}` because it is both in a protected package and has "
                        + "a method with package-private visibility (a.k.a. default visibility).";
             err = format(err, toDuck.getQualifiedName());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, MethodModifiersCheck.class, toDuck);
         }
         return ok;
     }

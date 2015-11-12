@@ -22,8 +22,6 @@ import org.paninij.proc.check.Result.Error;
  */
 public class NoNestedTypesCheck extends AbstractTemplateCheck
 {
-    public final static String ERROR_SOURCE = NoNestedTypesCheck.class.getName();
-    
     public static final ElementKind[] ILLEGAL_NESTED_KINDS = {
         CLASS,
         INTERFACE,
@@ -52,7 +50,7 @@ public class NoNestedTypesCheck extends AbstractTemplateCheck
                            + "was found in `{3}`.";
                 err = format(err, templateType, kind, enclosed.getSimpleName(),
                                   template.getSimpleName());
-                return new Error(err, ERROR_SOURCE);
+                return new Error(err, NoNestedTypesCheck.class, enclosed);
             }
         }
 

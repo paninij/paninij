@@ -3,13 +3,13 @@ package org.paninij.proc.check.capsule;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.proc.check.Check;
+
 public class InitDeclCheck extends DeclCheck
 {
-    private final static String ERROR_SOURCE = InitDeclCheck.class.toString();
-    
     @Override
-    public String getErrorSource() {
-        return ERROR_SOURCE;
+    public Class<? extends Check> getErrorSource() {
+        return InitDeclCheck.class;
     }
 
     @Override

@@ -12,8 +12,6 @@ import org.paninij.proc.util.Source;
  */
 public class SuffixCheck implements CapsuleCheck
 {
-    public static String errorSource = SuffixCheck.class.getName();
-
     @Override
     public Result checkCapsule(TypeElement template)
     {
@@ -32,6 +30,6 @@ public class SuffixCheck implements CapsuleCheck
             err = Source.format(err, templateName);
         }
 
-        return (err == null) ? Result.ok : new Result.Error(err, errorSource);
+        return (err == null) ? Result.ok : new Result.Error(err, SuffixCheck.class, template);
     }
 }
