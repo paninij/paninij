@@ -25,8 +25,6 @@ import org.paninij.proc.check.Result.Error;
  */
 public class ProceduresCheck implements CapsuleCheck
 {
-    public final static String ERROR_SOURCE = ProceduresCheck.class.getName();
-    
     private final static String[] DECLARATION_NAMES = {
         "init",
         "design",
@@ -58,7 +56,7 @@ public class ProceduresCheck implements CapsuleCheck
                 String err = "Active templates cannot have procedures, but a procedure named `{0}` "
                            + "was found in active template `{1}`.";
                 err = format(err, elem.getSimpleName(), template.getSimpleName());
-                return new Error(err, ERROR_SOURCE, elem);
+                return new Error(err, ProceduresCheck.class, elem);
             }
         }
         return ok;
@@ -89,7 +87,7 @@ public class ProceduresCheck implements CapsuleCheck
             String err = "Procedures must be declared `public`, but a procedure named `{0}` in the "
                        + "capsule template `{1}` is not declared `public`.";
             err = format(err, procedure.getSimpleName(), template.getSimpleName());
-            return new Error(err, ERROR_SOURCE, procedure);
+            return new Error(err, ProceduresCheck.class, procedure);
         }
         return ok;
     }

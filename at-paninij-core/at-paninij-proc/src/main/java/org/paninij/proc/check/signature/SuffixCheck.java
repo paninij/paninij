@@ -8,8 +8,6 @@ import org.paninij.proc.util.Source;
 
 public class SuffixCheck implements SignatureCheck
 {
-    public static String errorSource = SuffixCheck.class.getName();
-
     @Override
     public Result checkSignature(TypeElement signature)
     {
@@ -28,6 +26,6 @@ public class SuffixCheck implements SignatureCheck
             err = Source.format(err, name);
         }
 
-        return (err == null) ? Result.ok : new Result.Error(err, errorSource, signature);
+        return (err == null) ? Result.ok : new Result.Error(err, SuffixCheck.class, signature);
     }
 }

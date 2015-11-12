@@ -21,8 +21,6 @@ import org.paninij.proc.check.Result.Error;
  */
 public class ImplementedSignaturesCheck implements CapsuleCheck
 {
-    private static final String ERROR_SOURCE = ImplementedSignaturesCheck.class.getName();
-    
     private final CheckEnvironment env;
     
     public ImplementedSignaturesCheck(CheckEnvironment env) {
@@ -39,14 +37,14 @@ public class ImplementedSignaturesCheck implements CapsuleCheck
                            + "seems to be a signature interface, but capsule templates should only "
                            + "implement signature templates.";
                 err = format(err, template.getQualifiedName(), type.toString());
-                return new Error(err, ERROR_SOURCE, template);
+                return new Error(err, ImplementedSignaturesCheck.class, template);
             }
 
             if (!isSignatureType(type)) {
                 String err = "Capsule template `{0}` implements the interface `{1}`, but that type "
                            + "does not seem to correspond to a signature.";
                 err = format(err, template.getQualifiedName(), type.toString());
-                return new Error(err, ERROR_SOURCE, template);
+                return new Error(err, ImplementedSignaturesCheck.class, template);
             }
         }
         return ok;

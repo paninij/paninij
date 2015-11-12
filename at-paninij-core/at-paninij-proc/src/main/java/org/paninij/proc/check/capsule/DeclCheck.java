@@ -13,6 +13,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
+import org.paninij.proc.check.Check;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
@@ -24,7 +25,7 @@ import org.paninij.proc.check.Result.Error;
  */
 public abstract class DeclCheck implements CapsuleCheck
 {
-    public abstract String getErrorSource();
+    public abstract Class<? extends Check> getErrorSource();
     
     public abstract String getDeclName();
     

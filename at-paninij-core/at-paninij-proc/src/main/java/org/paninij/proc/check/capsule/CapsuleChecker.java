@@ -30,6 +30,7 @@ import javax.lang.model.element.TypeElement;
 
 import org.paninij.lang.Capsule;
 import org.paninij.proc.PaniniProcessor;
+import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.NoNestedTypesCheck;
 import org.paninij.proc.check.NoTypeParamCheck;
@@ -39,10 +40,8 @@ import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
 
-public class CapsuleChecker
+public class CapsuleChecker implements Check
 {
-    private static final String ERROR_SOURCE = CapsuleChecker.class.getName();
-    
     protected final CapsuleCheck capsuleChecks[];
     protected final CheckEnvironment env;
     
@@ -75,7 +74,7 @@ public class CapsuleChecker
      * @param template
      * @return `true` if and only if `template` is can be processed as a valid capsule template.
      */
-    public Result check(PaniniProcessor context, Element template)
+    public Result check(Element template)
     {
         if (template.getAnnotation(Capsule.class) == null) {
             String err = "Tried to check an element as a capsule template though it is not "
@@ -89,7 +88,7 @@ public class CapsuleChecker
             String err = "A capsule template must be a class, but an element annotated with "
                        + "`@Capsule` named `{0}` is of kind {1}.";
             err = format(err, template, template.getKind());
-            return new Error(err, ERROR_SOURCE, template);
+            return new Error(err, CapsuleChecker.class, template);
         }
 
         for (CapsuleCheck check: capsuleChecks)

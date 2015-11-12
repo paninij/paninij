@@ -15,8 +15,6 @@ import org.paninij.proc.check.Result;
  */
 public class NoVariadicMethodsCheck implements CapsuleCheck
 {
-    public static String errorSource = NoVariadicMethodsCheck.class.getName();
-
     @Override
     public Result checkCapsule(TypeElement template)
     {
@@ -36,7 +34,7 @@ public class NoVariadicMethodsCheck implements CapsuleCheck
                                + "was found: `{0}.{1}(...)`";
                     err = MessageFormat.format(err, templateName, methodName);
 
-                    return new Result.Error(err, errorSource, execElem);
+                    return new Result.Error(err, NoVariadicMethodsCheck.class, execElem);
                 }
             }
         }

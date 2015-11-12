@@ -117,7 +117,7 @@ public class PaniniProcessor extends AbstractProcessor
         SignatureChecker signatureChecker = new SignatureChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Signature.class))
         {
-            Result checkResult = signatureChecker.check(this, elem);
+            Result checkResult = signatureChecker.check(elem);
             if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
@@ -140,7 +140,7 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleChecker templateChecker = new CapsuleChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
-            Result checkResult = templateChecker.check(this, elem);
+            Result checkResult = templateChecker.check(elem);
             if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));

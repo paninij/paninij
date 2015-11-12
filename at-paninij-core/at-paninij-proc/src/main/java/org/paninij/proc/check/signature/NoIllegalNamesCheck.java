@@ -15,8 +15,6 @@ import org.paninij.proc.check.Result.Error;
 
 public class NoIllegalNamesCheck implements SignatureCheck
 {
-    private static final String ERROR_SOURCE = NoIllegalNamesCheck.class.getName();
-    
     private static final String[] ILLEGAL_METHOD_NAMES = {
         "init",
         "design",
@@ -51,7 +49,7 @@ public class NoIllegalNamesCheck implements SignatureCheck
         if (illegalMethod != null) {
             String err = "Signature template `{0}` includes a method with an illegal name: {1}()";
             err = format(err, signature.getSimpleName(), illegalMethod.getSimpleName().toString());
-            return new Error(err, ERROR_SOURCE, illegalMethod);
+            return new Error(err, NoIllegalNamesCheck.class, illegalMethod);
         }
         return ok;
     }
