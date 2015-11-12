@@ -328,5 +328,11 @@
  * 
  * <p><em>*A special method is a method with one of the following names:
  * <code>run()</code>, <code>init()</code>, <code>design()</code>, and <code>imports()</code></em>.
+ * 
+ * <h2>Academic References</h2>
+ * <ol>
+ * <li>H. Rajan, S. M. Kautz, E. Lin, S. L. Mooney, Y. Long, and G. Upadhyaya, "Capsule-oriented programming in the Panini language," Iowa State University, Tech. Rep. 14-08, 2014.</li>
+ * <li>H. Rajan, "Capsule-oriented Programming," ICSE'15: The 37th International Conference on Software Engineering, Florence, Italy, May 2015.</li>
+ * </ol>
  */
 package org.paninij.lang;

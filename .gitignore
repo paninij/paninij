@@ -6,6 +6,6 @@
 .classpath
 .settings
 bin/
-/doc/
+doc/
 /target/
 wala.properties
