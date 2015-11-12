@@ -1,10 +1,10 @@
 /**
  * <p>The <code>org.paninij.lang</code> package offers various classes and annotations which are used by a
- * developer to create an &#64;PaniniJ program.</p>
+ * developer to create an &#64;PaniniJ program. &#64;PaniniJ is an annotation-based realization of capsule-oriented programming in Java. Capsule-oriented programming is an implicitly concurrent programming model.
  * 
  * <p>The annotations defined within this package are needed to define a &#64;PaniniJ program. The
  * user writes a set of Java class definitions, but they are annotated in such a way that they can
- * be <em>interpreted</em> as a valid &#64;PaniniJ program.</p>
+ * be <em>interpreted</em> as a valid &#64;PaniniJ program.
  * 
  * 
  * <h2>Example 1: Defining a Capsule</h2>
