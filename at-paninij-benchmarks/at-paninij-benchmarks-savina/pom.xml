@@ -9,15 +9,19 @@
   
   <artifactId>at-paninij-benchmarks-savina</artifactId>
   <name>@PaniniJ Savina Benchmarks</name>
-  <description>Savina benchmarks written in at-paninij</description>
+  <description>
+    The Savina benchmarks written in @PaniniJ.
+  </description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.logsDirectory>${project.basedir}/logs</project.logsDirectory>
+    <gen.src.dir>${project.build.directory}/generated-sources</gen.src.dir>
   </properties>
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -25,16 +29,30 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
-          <generatedSourcesDirectory>
-            ${project.build.directory}/generated-sources
-          </generatedSourcesDirectory>
-          <!--
-          <generatedTestSourcesDirectory>
-            ${project.build.directory}/generated-test-sources
-          </generatedTestSourcesDirectory>
-          -->
+          <generatedSourcesDirectory>${gen.src.dir}</generatedSourcesDirectory>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <!-- Add the generated source directory so that Eclipse will find it. -->
+                <source>${gen.src.dir}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
 
     </plugins>
   </build>

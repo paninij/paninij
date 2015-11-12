@@ -44,7 +44,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
     <packaging>jar</packaging>
 
     <name>@PaniniJ Benchmarking Harness</name>
-    <description>Benchmarking harness for at-paninij using JMH suite</description>
+    <description>Benchmarking harness for @PaniniJ using the OpenJDK's JMH suite.</description>
 
     <prerequisites>
         <maven>3.0</maven>

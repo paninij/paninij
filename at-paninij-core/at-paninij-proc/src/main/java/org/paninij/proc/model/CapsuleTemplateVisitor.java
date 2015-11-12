@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.model;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -26,8 +26,6 @@ import javax.lang.model.util.SimpleElementVisitor8;
 
 import org.paninij.lang.Local;
 import org.paninij.lang.Imports;
-import org.paninij.proc.model.CapsuleElement;
-import org.paninij.proc.model.Variable;
 
 /**
  * The Template visitor as the main visitor for all capsule templates. This class is used by

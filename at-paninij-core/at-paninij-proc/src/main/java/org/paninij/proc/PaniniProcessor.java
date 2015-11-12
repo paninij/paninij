@@ -25,9 +25,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -50,6 +54,16 @@ import org.paninij.proc.check.capsule.CapsuleCheckException;
 import org.paninij.proc.check.capsule.CapsuleChecker;
 import org.paninij.proc.check.signature.SignatureCheckException;
 import org.paninij.proc.check.signature.SignatureChecker;
+import org.paninij.proc.factory.ArtifactFactory;
+import org.paninij.proc.factory.CapsuleInterfaceFactory;
+import org.paninij.proc.factory.CapsuleMockupFactory;
+import org.paninij.proc.factory.CapsuleMonitorFactory;
+import org.paninij.proc.factory.CapsuleSerialFactory;
+import org.paninij.proc.factory.CapsuleTaskFactory;
+import org.paninij.proc.factory.CapsuleTestFactory;
+import org.paninij.proc.factory.CapsuleThreadFactory;
+import org.paninij.proc.factory.MessageFactory;
+import org.paninij.proc.factory.SignatureFactory;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
 import org.paninij.proc.model.Procedure;
@@ -303,5 +317,14 @@ public class PaniniProcessor extends AbstractProcessor
 
     public Elements getElementUtils() {
         return processingEnv.getElementUtils();
+    }
+    
+    public static String getGeneratedAnno(Class<? extends ArtifactFactory<?>> clazz) {
+    	TimeZone tz = TimeZone.getTimeZone("UTC");
+    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+    	df.setTimeZone(tz);
+    	String iso = df.format(new Date());
+    	String stamp = "@Generated(value = \"org.paninij.proc." + clazz + "\", date = \"" + iso +"\")";
+    	return stamp;
     }
 }

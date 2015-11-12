@@ -7,7 +7,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
-import org.paninij.proc.SignatureTemplateVisitor;
 import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.TypeCollector;
 

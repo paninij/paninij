@@ -13,33 +13,49 @@
 
   <name>@PaniniJ Annotation Processor Tests</name>
   <description>
-    @PaniniJ capsule templates to test the `proc` package (i.e. @PaniniJ's
-    annotation processing and code generation features).
+    A package for testing `proc` with various @PaniniJ programs.
   </description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <generated.sources.directory>
-      ${project.build.directory}/generated-sources
-    </generated.sources.directory>
-    <generated.test.sources.directory>
-      ${project.build.directory}/generated-test-sources
-    </generated.test.sources.directory>
+    <gen.src.dir>${project.build.directory}/generated-sources</gen.src.dir>
+    <gen.test.src.dir>${project.build.directory}/generated-test-sources</gen.test.src.dir>
   </properties>
-
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+          <!-- Specify Java version. -->
           <source>1.8</source>
           <target>1.8</target>
-          <generatedSourcesDirectory>${generated.sources.directory}</generatedSourcesDirectory>
-          <generatedTestSourcesDirectory>${generated.test.sources.directory}</generatedTestSourcesDirectory>
+          <!-- Specify where the proc-generated source artifacts are put. -->
+          <generatedSourcesDirectory>${gen.src.dir}</generatedSourcesDirectory>
+          <generatedTestSourcesDirectory>${gen.test.src.dir}</generatedTestSourcesDirectory>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <!-- Add the generated source directories so that Eclipse will find them. -->
+                <source>${gen.src.dir}</source>
+                <source>${gen.test.src.dir}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

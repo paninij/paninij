@@ -10,6 +10,11 @@
   <artifactId>at-paninij-proc</artifactId>
   <name>@PaniniJ Annotation Processor</name>
 
+  <description>
+    The @PaniniJ annotation processor, which is responsible for processing templates, checking
+    that they are valid, and generating various appropriate source artifacts.
+  </description>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
