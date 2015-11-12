@@ -22,6 +22,6 @@ class HelloWorldTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(HelloWorld.class.getName(), args);
+        CapsuleSystem.start(HelloWorld.class, args);
     }
 }

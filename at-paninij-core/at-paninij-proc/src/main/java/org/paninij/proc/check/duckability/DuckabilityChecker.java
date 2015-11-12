@@ -7,14 +7,13 @@ import static org.paninij.proc.check.Result.ok;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
-public class DuckabilityChecker
+public class DuckabilityChecker implements Check
 {
-    private static final String ERROR_SOURCE = DuckabilityChecker.class.getName();
-    
     private final CheckEnvironment env;
     private final DuckabilityCheck[] checks;
     
@@ -40,7 +39,7 @@ public class DuckabilityChecker
         default:
             String err = "Cannot duck type `{0}` because it has type kind {1}";
             err = format(err, toDuck, toDuck.getKind());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, DuckabilityChecker.class, null);
         }
     }
     

@@ -76,6 +76,6 @@ public class EchoClientTemplate {
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start(EchoClient.class.getName(), args);
+        CapsuleSystem.start(EchoClient.class, args);
     }
 }

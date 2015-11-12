@@ -30,6 +30,7 @@ import javax.lang.model.element.TypeElement;
 
 import org.paninij.lang.Signature;
 import org.paninij.proc.PaniniProcessor;
+import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.NoNestedTypesCheck;
 import org.paninij.proc.check.NoTypeParamCheck;
@@ -39,10 +40,8 @@ import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
 
-public class SignatureChecker
+public class SignatureChecker implements Check
 {
-    private static final String ERROR_SOURCE = SignatureChecker.class.getName();
-    
     protected final SignatureCheck signatureChecks[];
     protected final CheckEnvironment env;
     
@@ -67,7 +66,7 @@ public class SignatureChecker
      * @param  signature  The type element of the signature template to be checked.
      * @return `true` if and only if `template` is can be processed as a valid signature template.
      */
-    public Result check(PaniniProcessor context, Element signature)
+    public Result check(Element signature)
     {
         if (signature.getAnnotation(Signature.class) == null) {
             String err = "Tried to check an element as a signature template though it is not "
@@ -81,7 +80,7 @@ public class SignatureChecker
             String err = "A signature template must be an interface, but an element annotated with "
                        + "`@Capsule` named `{0}` is of kind {1}.";
             err = format(err, signature, signature.getKind());
-            return new Error(err, ERROR_SOURCE);
+            return new Error(err, SignatureChecker.class, signature);
         }
 
         for (SignatureCheck check: signatureChecks)

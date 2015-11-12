@@ -18,6 +18,8 @@
  */
 package org.paninij.proc;
 
+import static java.text.MessageFormat.format;
+
 import static org.paninij.proc.check.FailureBehavior.LOGGING;
 import static org.paninij.proc.check.FailureBehavior.EXCEPTION;
 
@@ -25,9 +27,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -50,6 +56,16 @@ import org.paninij.proc.check.capsule.CapsuleCheckException;
 import org.paninij.proc.check.capsule.CapsuleChecker;
 import org.paninij.proc.check.signature.SignatureCheckException;
 import org.paninij.proc.check.signature.SignatureChecker;
+import org.paninij.proc.factory.ArtifactFactory;
+import org.paninij.proc.factory.CapsuleInterfaceFactory;
+import org.paninij.proc.factory.CapsuleMockupFactory;
+import org.paninij.proc.factory.CapsuleMonitorFactory;
+import org.paninij.proc.factory.CapsuleSerialFactory;
+import org.paninij.proc.factory.CapsuleTaskFactory;
+import org.paninij.proc.factory.CapsuleTestFactory;
+import org.paninij.proc.factory.CapsuleThreadFactory;
+import org.paninij.proc.factory.MessageFactory;
+import org.paninij.proc.factory.SignatureFactory;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.CapsuleElement;
 import org.paninij.proc.model.Procedure;
@@ -103,7 +119,7 @@ public class PaniniProcessor extends AbstractProcessor
         SignatureChecker signatureChecker = new SignatureChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Signature.class))
         {
-            Result checkResult = signatureChecker.check(this, elem);
+            Result checkResult = signatureChecker.check(elem);
             if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 signatures.add(SignatureElement.make(template));
@@ -113,7 +129,11 @@ public class PaniniProcessor extends AbstractProcessor
                     throw new SignatureCheckException(checkResult.err());
                 case LOGGING:
                 default:
-                    error(checkResult.err(), elem);
+                    if(checkResult.offender() == null) {
+                        error(checkResult.err(), elem);
+                    } else {
+                        error(checkResult);
+                    }
                 }
             }
         }
@@ -122,7 +142,7 @@ public class PaniniProcessor extends AbstractProcessor
         CapsuleChecker templateChecker = new CapsuleChecker(processingEnv, roundEnv);
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class))
         {
-            Result checkResult = templateChecker.check(this, elem);
+            Result checkResult = templateChecker.check(elem);
             if (checkResult.ok()) {
                 TypeElement template = (TypeElement) elem;
                 capsules.add(CapsuleElement.make(template));
@@ -133,7 +153,11 @@ public class PaniniProcessor extends AbstractProcessor
                     throw new CapsuleCheckException(checkResult.err());
                 case LOGGING:
                 default:
-                    error(checkResult.err(), elem);
+                    if(checkResult.offender() == null) {
+                        error(checkResult.err(), elem);
+                    } else {
+                        error(checkResult);
+                    }
                 }
             }
         }
@@ -281,8 +305,12 @@ public class PaniniProcessor extends AbstractProcessor
         processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, "!!! " + msg);
     }
 
-    public void error(String msg, Element elem) {
-        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, msg, elem);
+    public void error(String err, Element elem) {
+        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, err, elem);
+    }
+    
+    public void error(Result error) {
+        processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR, error.err(), error.offender());
     }
 
     public Types getTypeUtils() {
@@ -291,5 +319,13 @@ public class PaniniProcessor extends AbstractProcessor
 
     public Elements getElementUtils() {
         return processingEnv.getElementUtils();
+    }
+    
+    public static String getGeneratedAnno(Class<? extends ArtifactFactory<?>> clazz) {
+    	TimeZone tz = TimeZone.getTimeZone("UTC");
+    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+    	df.setTimeZone(tz);
+    	String iso = df.format(new Date());
+    	return format("@Generated(value = \"{0}\", date = \"{1}\")", clazz.getName(), iso);
     }
 }

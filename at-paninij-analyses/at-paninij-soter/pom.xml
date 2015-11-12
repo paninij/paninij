@@ -11,9 +11,8 @@
   <artifactId>at-paninij-soter</artifactId>
   <name>@PaniniJ SOTER</name>
   <description>
-    Libraries and an executable tool for checking whether ownership transfers
-    between @PaniniJ capsules are safe. It has been directly inspired by
-    `edu.illinois.soter`.
+    Libraries and an executable tool for checking whether ownership transfers between @PaniniJ
+    capsules are safe. It has been directly inspired by `edu.illinois.soter`.
   </description>
 
   <properties>

@@ -9,7 +9,9 @@
 
   <artifactId>at-paninij-benchmarks-savina-harness</artifactId>
   <name>@PaniniJ Savina Benchmarks Using Savina Harness</name>
-  <description>Benchmark classes which pair @PaniniJ benchmarks with Savina harness</description>
+  <description>
+    Benchmark classes which pair @PaniniJ benchmarks with the Savina benchmarking harness.
+  </description>
 
   <dependencies>
     <dependency>

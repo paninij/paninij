@@ -16,86 +16,72 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
+import org.paninij.proc.model.Signature;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
+import org.paninij.proc.util.SourceFile;
 
-public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
+public class SignatureFactory implements ArtifactFactory<Signature>
 {
+    Signature signature;
+	
     @Override
-    protected String getQualifiedName()
+    public SourceFile make(Signature signature)
     {
-        return capsule.getQualifiedName();
+        this.signature = signature;
+        return new SourceFile(this.getQualifiedName(), this.generateContent());
     }
     
-    @Override
-    protected String generateContent()
+    protected String getQualifiedName()
     {
+        return signature.getQualifiedName();
+    }
+	
+    protected String generateContent() {
         String src = Source.cat(
                 "package #0;",
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "@CapsuleInterface",
-                "public interface #1 extends #2",
+                "@SignatureInterface",
+                "public interface #2",
                 "{",
-                "    #3",
                 "    ##",
                 "}");
 
         src = Source.format(src,
-                this.capsule.getPackage(),
-                this.capsule.getSimpleName(),
-                this.generateInterfaces(),
-                this.generateImportDecl());
-
+                this.signature.getPackage(),
+                PaniniProcessor.getGeneratedAnno(SignatureFactory.class),
+                this.signature.getSimpleName());
         src = Source.formatAligned(src, this.generateImports());
         src = Source.formatAligned(src, this.generateFacades());
 
         return src;
     }
 
-    protected String generateInterfaces()
-    {
-        List<String> interfaces = this.capsule.getSignatures();
-        interfaces.add("Panini$Capsule");
-        return String.join(", ", interfaces);
-    }
-
-    protected String generateImportDecl()
-    {
-        List<String> decls = new ArrayList<String>();
-
-        for (Variable v : this.capsule.getImportFields()) {
-            decls.add(v.toString());
-        }
-
-        return decls.isEmpty() ? "" : Source.format("public void imports(#0);", String.join(", ", decls));
-    }
-
-    protected List<String> generateImports()
-    {
+    protected List<String> generateImports() {
         Set<String> imports = new HashSet<String>();
+        imports.add("org.paninij.lang.SignatureInterface");
+        imports.add("javax.annotation.Generated");
 
-        for (Procedure p : this.capsule.getProcedures()) {
+        for (Procedure p : this.signature.getProcedures()) {
             MessageShape shape = new MessageShape(p);
-            imports.add(shape.fullLocation());
+            imports.add(shape.getPackage() + "." +shape.encoded);
         }
 
-        imports.addAll(this.capsule.getImports());
-
-        imports.add("java.util.concurrent.Future");
-        imports.add("org.paninij.lang.CapsuleInterface");
-        imports.add("org.paninij.runtime.Panini$Capsule");
+        imports.addAll(this.signature.getImports());
 
         List<String> prefixedImports = new ArrayList<String>();
 
@@ -106,11 +92,10 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
         return prefixedImports;
     }
 
-    protected List<String> generateFacades()
-    {
+    protected List<String> generateFacades() {
         List<String> facades =  new ArrayList<String>();
 
-        for (Procedure p : this.capsule.getProcedures()) {
+        for (Procedure p : this.signature.getProcedures()) {
             facades.add(this.generateFacade(p));
             facades.add("");
         }
@@ -118,8 +103,7 @@ public class CapsuleInterfaceFactory extends CapsuleArtifactFactory
         return facades;
     }
 
-    protected String generateFacade(Procedure p)
-    {
+    protected String generateFacade(Procedure p) {
         MessageShape shape = new MessageShape(p);
 
         List<String> argDecls = new ArrayList<String>();

@@ -20,6 +20,6 @@ public class MatMulTemplate {
     }
 
     public static void main(String[] args) {
-        CapsuleSystem.start(MatMul.class.getName(), args);
+        CapsuleSystem.start(MatMul.class, args);
     }
 }

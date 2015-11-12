@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.paninij.runtime.Panini$Capsule;
+import org.paninij.runtime.Panini$Capsule$Root;
 
 public class CapsuleSystem
 {
@@ -19,24 +20,37 @@ public class CapsuleSystem
      * @param args     The root capsule's name followed by the arguments to be passed into the root
      *                 capsule's `main()` method.
      */
-    public static void main(String[] args)
+    @SuppressWarnings("unchecked")
+	public static void main(String[] args)
     {
         if (args.length == 0) {
             String err = "Must give a fully qualified capsule name as the first argument.";
             throw new IllegalArgumentException(err);
         }
         
-        start(args[0], Arrays.copyOfRange(args, 1, args.length));
+        try {
+            Class<?> clazz = Class.forName(args[0]);
+            if(Panini$Capsule$Root.class.isAssignableFrom(clazz)) {
+                start((Class<? extends Panini$Capsule$Root>) clazz,
+                      Arrays.copyOfRange(args, 1, args.length));
+            } else {
+                String err = "Must give a fully qualified capsule name as the first argument.";
+                throw new IllegalArgumentException(err);
+            }
+        } catch (ClassNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
     }
     
 
-    /**
+    
+    /** 
      * Starts a capsule system from the given root capsule using the default execution profile.
      * 
-     * @param root  The fully-qualified name of a capsule which will act as the root capsule.
-     * @param args  The arguments to be passed into the root capsule's `main()` method.
+     * @param root The class of the capsule which will act as the root capsule.
+     * @param args The arguments to be passed into the root capsule's `main()` method.
      */
-    public static void start(String root, String[] args)
+    public static void start(Class<? extends Panini$Capsule$Root> root, String[] args)
     {
         start(root, DEFAULT_EXECUTION_PROFILE, args);
     }
@@ -45,11 +59,11 @@ public class CapsuleSystem
     /**
      * Starts a capsule system from the given root capsule using the given execution profile.
      * 
-     * @param root     The fully-qualified name of a capsule which will act as the root capsule.
-     * @param profile  The execution profile with which the capsule system will run.
-     * @param args     The arguments to be passed into the root capsule's `main()` method.
+     * @param root The class of the capsule which will act as the root capsule.
+     * @param profile The execution profile with which the capsule system will run.
+     * @param args The arguments to be passed into the root capsule's `main()` method.
      */
-    public static void start(String root, ExecutionProfile profile, String[] args)
+    public static void start(Class<? extends Panini$Capsule$Root> root, ExecutionProfile profile, String[] args)
     {
         try {
             CapsuleFactory capsuleFactory = new CapsuleFactory(root);
@@ -57,9 +71,8 @@ public class CapsuleSystem
             Method main = clazz.getDeclaredMethod("main", String[].class);
             main.invoke(null, (Object) args);
         }
-        catch (ClassNotFoundException | NoSuchMethodException    | SecurityException |
-               IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
-        {
+        catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+               IllegalAccessException  ex) {
             throw new RuntimeException(ex);
         }
     }

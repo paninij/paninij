@@ -5,16 +5,15 @@ import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+
+import org.paninij.proc.check.Check;
 
 public class DesignDeclCheck extends DeclCheck
 {
-    private final static String ERROR_SOURCE = DesignDeclCheck.class.toString();
-
     @Override
-    public String getErrorSource() {
-        return ERROR_SOURCE;
+    public Class<? extends Check> getErrorSource() {
+        return DesignDeclCheck.class;
     }
 
     @Override

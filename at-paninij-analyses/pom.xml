@@ -9,6 +9,10 @@
   <packaging>pom</packaging>
   <name>@PaniniJ Analyses</name>
 
+  <description>
+    Libraries and tools for performing static analyses over @PaniniJ capsules.
+  </description>
+
   <build>
     <pluginManagement>
       <plugins>

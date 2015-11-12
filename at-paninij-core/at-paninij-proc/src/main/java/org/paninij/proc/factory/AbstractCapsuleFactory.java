@@ -1,4 +1,4 @@
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.util.SourceFile;
@@ -6,7 +6,7 @@ import org.paninij.proc.util.SourceFile;
 /**
  * An abstract class used to make `SourceFile` artifacts from a given `Capsule` model.
  */
-public abstract class CapsuleArtifactFactory
+public abstract class AbstractCapsuleFactory implements ArtifactFactory<Capsule>
 {
     Capsule capsule;
 

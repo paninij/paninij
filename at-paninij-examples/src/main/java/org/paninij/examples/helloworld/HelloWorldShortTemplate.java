@@ -13,6 +13,6 @@ public class HelloWorldShortTemplate
     }
     
     public static void main(String[] args) {
-        CapsuleSystem.start("org.paninij.examples.helloworld.HelloWorldShort", args);
+        CapsuleSystem.start(HelloWorldShort.class, args);
     }
 }

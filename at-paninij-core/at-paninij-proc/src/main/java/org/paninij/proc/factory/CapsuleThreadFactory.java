@@ -14,15 +14,16 @@
  * For more details and the latest version of this code please see
  * http://paninij.org
  *
- * Contributor(s): Dalton Mills
+ * Contributor(s): Dalton Mills, David Johnston, Trey Erenberger
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Type;
 import org.paninij.proc.model.Variable;
@@ -30,16 +31,14 @@ import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.Source;
 
-
-public class CapsuleSerialFactory extends CapsuleProfileFactory
+public class CapsuleThreadFactory extends CapsuleProfileFactory
 {
-
-    public static final String CAPSULE_PROFILE_SERIAL_SUFFIX = "$Serial";
+    public static final String CAPSULE_PROFILE_THREAD_SUFFIX = "$Thread";
 
     @Override
     protected String getQualifiedName()
     {
-        return this.capsule.getQualifiedName() + CAPSULE_PROFILE_SERIAL_SUFFIX;
+        return this.capsule.getQualifiedName() + CAPSULE_PROFILE_THREAD_SUFFIX;
     }
 
     @Override
@@ -50,14 +49,17 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "public class #1 extends Capsule$Serial implements #2",
+                "@CapsuleThread",
+                "public class #2 extends Capsule$Thread implements #3",
                 "{",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
+                PaniniProcessor.getGeneratedAnno(CapsuleThreadFactory.class),
                 this.generateClassName(),
                 this.capsule.getSimpleName());
 
@@ -70,7 +72,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
     @Override
     protected String generateClassName()
     {
-        return this.capsule.getSimpleName() + CAPSULE_PROFILE_SERIAL_SUFFIX;
+        return this.capsule.getSimpleName() + CAPSULE_PROFILE_THREAD_SUFFIX;
     }
 
     private List<String> generateImports()
@@ -83,13 +85,16 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         }
 
         imports.addAll(this.capsule.getImports());
-
+        
+        imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
-        imports.add("org.paninij.runtime.Capsule$Serial");
+        imports.add("org.paninij.lang.CapsuleThread");
+        imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
+        imports.add("org.paninij.runtime.check.DynamicOwnershipTransfer");
         imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -108,62 +113,20 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                 this.capsule.getQualifiedName() + PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
     }
 
-    @Override
-    protected List<String> generateProcedure(Procedure procedure) {
-        MessageShape shape = new MessageShape(procedure);
-
-        List<String> source = Source.lines(
-                "@Override",
-                "#0",
-                "{",
-                "   ##",
-                "}",
-                "");
-        source = Source.formatAll(source,
-                this.generateProcedureDecl(shape));
-
-        return Source.formatAlignedFirst(source, this.generateEncapsulatedMethodCall(shape));
-    }
-
-    private List<String> generateEncapsulatedMethodCall(MessageShape shape)
+    private List<String> generateProcedureIDs()
     {
-        List<String> encap = new ArrayList<String>();
-        List<String> argNames = this.generateProcArgumentNames(shape.procedure);
-        String args = String.join(", ", argNames);
-        String call = "panini$encapsulated." + shape.procedure.getName() + "(" + args + ")";
-        switch(shape.behavior) {
-        case UNBLOCKED_DUCK:
-        case BLOCKED_FUTURE:
-            String ret = shape.returnType.isVoid() ? "" : "return ";
-            encap.add(ret + call + ";");
-            return encap;
-        case UNBLOCKED_PREMADE:
-        case BLOCKED_PREMADE:
-            encap.add("return " + call + ";");
-            return encap;
-        case ERROR:
-            break;
-        case UNBLOCKED_FUTURE:
-            argNames.add(0, "-1");
-            args = String.join(", ", argNames);
-            encap.add(shape.encoded + " msg = new " + shape.encoded + "(" + args + ");");
-            Type r = shape.procedure.getReturnType();
-            if (r.isVoid()) {
-                encap.add(call + ";");
-                encap.add("msg.panini$resolve(null);");
-            } else {
-                encap.add(r.wrapped() + " result = " + call + ";");
-                encap.add("msg.panini$resolve(result);");
-            }
-            encap.add("return msg;");
-            return encap;
-        case UNBLOCKED_SIMPLE:
-            encap.add(call + ";");
-            return encap;
-        default:
-            break;
+        ArrayList<String> decls = new ArrayList<String>();
+        int currID = 0;
+
+        for (Procedure p : this.capsule.getProcedures()) {
+            decls.add(Source.format("public static final int #0 = #1;",
+                    generateProcedureID(p),
+                    currID++));
         }
-        return encap;
+
+        decls.add("");
+
+        return decls;
     }
 
     private List<String> generateProcedures()
@@ -193,13 +156,13 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                         lines,
                         local.getIdentifier(),
                         local.getEncapsulatedType(),
-                        CAPSULE_PROFILE_SERIAL_SUFFIX));
+                        CAPSULE_PROFILE_THREAD_SUFFIX));
             } else {
                 source.add(Source.format(
                         "panini$encapsulated.#0 = new #1#2();",
                         local.getIdentifier(),
                         local.raw(),
-                        CAPSULE_PROFILE_SERIAL_SUFFIX));
+                        CAPSULE_PROFILE_THREAD_SUFFIX));
             }
         }
 
@@ -254,6 +217,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
             return Source.lines(
                     "@Override",
                     "public void run() {",
+                    "    Panini$System.self.set(this);",
                     "    try {",
                     "        panini$checkRequiredFields();",
                     "        panini$initLocals();",
@@ -273,19 +237,145 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
                     "");
         }
 
-        return Source.lines(
+        List<String> src = Source.lines(
                 "@Override",
                 "@SuppressWarnings(\"unchecked\")",
                 "public void run() {",
+                "    Panini$System.self.set(this);",
                 "    try {",
                 "        panini$checkRequiredFields();",
                 "        panini$initLocals();",
                 "        panini$initState();",
+                "",
+                "        boolean terminated = false;",
+                "        while (!terminated) {",
+                "            Panini$Message msg = panini$nextMessage();",
+                "            ##",
+                "        }",
                 "    } catch (Throwable thrown) {",
                 "        panini$errors.add(thrown);",
                 "    }",
+                "    try {",
+                "       Panini$System.threads.countDown();",
+                "    } catch (InterruptedException e) {",
+                "        e.printStackTrace();",
+                "    }",
                 "}",
                 "");
+
+        return Source.formatAlignedFirst(src, generateRunSwitch());
+    }
+
+    private List<String> generateRunSwitch()
+    {
+        List<String> lines = new ArrayList<String>();
+        lines.add("switch(msg.panini$msgID()) {");
+
+        // add a case statement for each procedure wrapper.
+        for (Procedure p : this.capsule.getProcedures()) {
+            lines.addAll(this.generateRunSwitchCase(p));
+        }
+
+        // add case statements for when a capsule shuts down and for EXIT command
+        lines.addAll(Source.lines(
+                "case PANINI$CLOSE_LINK:",
+                "    panini$onCloseLink();",
+                "    break;",
+                "case PANINI$TERMINATE:",
+                "    panini$onTerminate();",
+                "    terminated = true;",
+                "    break;",
+                "}"));
+        return lines;
+    }
+
+    private List<String> generateRunSwitchCase(Procedure procedure)
+    {
+        MessageShape shape = new MessageShape(procedure);
+
+        // `duck` will need to be resolved if and only if `procedure` has a return value.
+        if (shape.category == MessageShape.Category.SIMPLE) {
+            // Simply call the template isntance's method with the args encapsulated in the duck.
+            List<String> src = Source.lines(
+                    "case #0:",
+                    "    #1;",
+                    "    break;");
+
+            return Source.formatAll(src,
+                    this.generateProcedureID(procedure),
+                    this.generateEncapsulatedMethodCall(shape));
+        }
+
+        Type r = procedure.getReturnType();
+        // A void wrapper cannot be instantiated, so we have to resolve with null
+        if (r.isVoid()) {
+            // Call the template instance's method and resolve the duck using null.
+            List<String> src = Source.lines("case #0:",
+                                            "    #1;",
+                                            "    ((Panini$Future<#2>) msg).panini$resolve(null);",
+                                            "    break;");
+            return Source.formatAll(src,
+                    this.generateProcedureID(procedure),
+                    this.generateEncapsulatedMethodCall(shape),
+                    procedure.getReturnType().wrapped());
+        } else {
+            // Call the template instance's method and resolve the duck using the result.
+            List<String> src = Source.lines("case #0: {",
+                                            "    #1 result = #2;",
+                                            "    #3;",
+                                            "    ((Panini$Future<#1>) msg).panini$resolve(result);",
+                                            "    break;",
+                                            "}");
+            return Source.formatAll(src,
+                    this.generateProcedureID(procedure),
+                    procedure.getReturnType().wrapped(),
+                    this.generateEncapsulatedMethodCall(shape),
+                    this.generateAssertSafeResultTransfer());
+        }
+    }
+
+    private String generateEncapsulatedMethodCall(MessageShape shape)
+    {
+        List<String> args = new ArrayList<String>();
+
+        // Generate the list of types defined on the `method`. The `null` value is used to
+        // represent a parameter type whenever that type is primitive.
+        List<String> paramTypes = new ArrayList<String>();
+        for (Variable v : shape.procedure.getParameters()) {
+            paramTypes.add(v.isPrimitive() ? null : v.raw());
+        }
+
+        // Extract each argument held in the duck. For each of these extractions, one type cast is
+        // used to convert the `Panini$Message` to a concrete duck type. If the duck is storing
+        // an object in an `Object` box, then another type cast is used to convert that argument to
+        // its original type.
+        for (int i = 0; i < paramTypes.size(); i++) {
+            String paramType = paramTypes.get(i);
+            args.add(Source.format(
+                    "#0((#1) msg).panini$arg#2",
+                     paramType == null ? "" : "(" + paramType + ") ",
+                     shape.encoded,
+                     i));
+        }
+
+        return Source.format(
+                "panini$encapsulated.#0(#1)",
+                shape.procedure.getName(),
+                String.join(", ", args));
+    }
+
+    private String generateAssertSafeResultTransfer()
+    {
+        // TODO: Clean this up!
+        /**
+        return Source.format(
+                "assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2) : #3",
+                PaniniProcessor.dynamicOwnershipTransferKind,
+                "result",
+                "panini$getAllState()",
+                "\"Procedure return attempted unsafe ownership transfer.\"");
+        */
+        return "";
     }
 
     private List<String> generateCapsuleBody()
@@ -293,6 +383,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         List<String> src = new ArrayList<String>();
 
         src.add(this.generateEncapsulatedDecl());
+        src.addAll(this.generateProcedureIDs());
         src.addAll(this.generateProcedures());
         src.addAll(this.generateCheckRequiredFields());
         src.addAll(this.generateExport());
