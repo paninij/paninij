@@ -5,7 +5,7 @@
 .project
 .classpath
 .settings
-/bin/
+bin/
 /doc/
 /target/
 wala.properties
