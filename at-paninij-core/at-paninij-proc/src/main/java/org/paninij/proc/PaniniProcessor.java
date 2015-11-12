@@ -18,6 +18,8 @@
  */
 package org.paninij.proc;
 
+import static java.text.MessageFormat.format;
+
 import static org.paninij.proc.check.FailureBehavior.LOGGING;
 import static org.paninij.proc.check.FailureBehavior.EXCEPTION;
 
@@ -324,7 +326,6 @@ public class PaniniProcessor extends AbstractProcessor
     	DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
     	df.setTimeZone(tz);
     	String iso = df.format(new Date());
-    	String stamp = "@Generated(value = \"org.paninij.proc." + clazz + "\", date = \"" + iso +"\")";
-    	return stamp;
+    	return format("@Generated(value = \"{0}\", date = \"{1}\")", clazz.getName(), iso);
     }
 }
