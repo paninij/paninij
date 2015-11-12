@@ -8,7 +8,8 @@
  * 
  * 
  * <h2>Example 1: Defining a Capsule</h2>
- * <p><blockquote><pre>
+ * <h3>HelloWorldTemplate.java</h3>
+ * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
@@ -25,7 +26,7 @@
  *         CapsuleSystem.start(HelloWorld.class, args);
  *     }
  * }
- * </pre></blockquote></p>
+ * </pre></blockquote>
  * 
  * 
  * <p>Example 1 creates a <em>capsule template</em> named <code>HelloWorldTemplate</code>. The
@@ -57,8 +58,8 @@
  * 
  * 
  * <h2>Example 2: A System of Capsules</h2>
- * <h4>ConsoleTemplate.java</h4>
- * <p><blockquote><pre>
+ * <h3>ConsoleTemplate.java</h3>
+ * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
@@ -69,10 +70,10 @@
  *         System.out.println(message);
  *     }
  * }
- * </pre></blockquote></p>
+ * </pre></blockquote>
  * 
- * <h4>GreeterTemplate.java</h4>
- * <p><blockquote><pre>
+ * <h3>GreeterTemplate.java</h3>
+ * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
@@ -91,7 +92,7 @@
  *         CapsuleSystem.start(Greeter.class, args);
  *     }
  * }
- * </pre></blockquote></p>
+ * </pre></blockquote>
  * 
  * 
  * <p>Example 2 gives an example of how to make a system with two capsules, <code>Greeter</code> and
@@ -142,8 +143,8 @@
  * 
  * 
  * <h2>Example 3: Ping-Pong</h2>
- * <h4>PingTemplate.java</h4>
- * <p><blockquote><pre>
+ * <h3>PingTemplate.java</h3>
+ * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
@@ -167,10 +168,10 @@
  *         }
  *     }
  * }
- * </pre></blockquote></p>
+ * </pre></blockquote>
  * 
- * <h4>PongTemplate.java</h4>
- * <p><blockquote><pre>
+ * <h3>PongTemplate.java</h3>
+ * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
@@ -188,10 +189,10 @@
  *         }
  *     }
  * }
- * </pre></blockquote></p>
+ * </pre></blockquote>
  *
- * <h4>PingPongTemplate.java</h4>
- * <p><blockquote><pre>
+ * <h3>PingPongTemplate.java</h3>
+ * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
@@ -222,7 +223,7 @@
  *         CapsuleSystem.start(PingPong.class, args);
  *     }
  * }
- * </pre></blockquote></p>
+ * </pre></blockquote>
  *
  * <p>Example 3 creates three capsules: <code>Ping</code>, <code>Pong</code>, and
  * <code>PingPong</code>. Notice that the <code>Ping</code> and <code>Pong</code> capsules rely on

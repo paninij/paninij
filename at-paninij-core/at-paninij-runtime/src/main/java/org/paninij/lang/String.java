@@ -33,10 +33,7 @@ import org.paninij.runtime.Panini$Future;
 import org.paninij.runtime.Panini$Message;
 
 /**
- * The {@code Long} class wraps a value of the primitive type {@code
- * long} in an object. An object of type {@code Long} contains a
- * single field value whose type is {@code long}. Adapted from
- * {@link java.lang.Long} to act like a Long and provide the
+ * Adapted from {@link java.lang.String} to act like a String and provide the
  * 'duck' behavior required by capsules.
  */
 public class String extends Object implements CharSequence,
@@ -45,8 +42,6 @@ public class String extends Object implements CharSequence,
                                               Panini$Future<java.lang.String>,
                                               Panini$Message
 {
-
-    
     /**
      * Returns the string representation of the <code>Object</code> argument.
      *
@@ -222,7 +217,7 @@ public class String extends Object implements CharSequence,
      * This value is filled when either:
      * <ol>
      * <li> an {@code org.paninij.lang.String} is constructed with the actual value</li>
-     * <li> the {@link #panini$finish(String)} method is called. </li>
+     * <li> the {@link #panini$resolve(String)} method is called. </li>
      * </ol>
      * @serial
      */
@@ -238,7 +233,7 @@ public class String extends Object implements CharSequence,
     /**
      * Boolean indicating whether or not the actual value has been set.
      * Should only be set in either a constructor that has an actual value
-     * or when the {@link #panini$finish(String)} method is called.
+     * or when the {@link #panini$resolve(String)} method is called.
      */
     private boolean panini$resolved;
 
@@ -259,8 +254,8 @@ public class String extends Object implements CharSequence,
     
     /**
      * Save the value and notify listeners the value is available.
-     * This is a duplicate of panini$finish only used by string lambdas because the 
-     * panini$finish method will be overwritten
+     * This is a duplicate of {@link #panini$resolve(String)} only used by string lambdas because
+     * the {@link #panini$resolve(String)} method will be overwritten.
      * @param s    {@code java.lang.String} to use as a value. Method will pull
      *             the wrapped {@code String} out as the value.
      */
@@ -879,9 +874,10 @@ public class String extends Object implements CharSequence,
      * <code>srcEnd-srcBegin</code>). The characters are copied into the
      * subarray of <code>dst</code> starting at index <code>dstBegin</code>
      * and ending at index:
+     * 
      * <p><blockquote><pre>
      *     dstbegin + (srcEnd-srcBegin) - 1
-     * </pre></blockquote>
+     * </pre></blockquote></p>
      *
      * @param      srcBegin   index of the first character in the string
      *                        to copy.

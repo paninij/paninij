@@ -13,8 +13,8 @@ import org.paninij.runtime.Panini$Capsule;
 
 
 /**
- * Helper class for looking up various capsule-related `Class<?>` objects and instantiating
- * capsule instances.
+ * Helper class for looking up various capsule-related <code>Class&lt;?&gt;</code> objects and
+ * instantiating capsule instances.
  */
 public class CapsuleFactory
 {
