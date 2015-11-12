@@ -1,4 +1,4 @@
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.paninij.proc.util.PaniniModel;
 import org.paninij.proc.util.Source;
 
 
-public abstract class CapsuleProfileFactory extends CapsuleArtifactFactory
+public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 {
     protected abstract String generateClassName();
 

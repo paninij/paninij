@@ -16,7 +16,7 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.model.Type.Category;
@@ -36,14 +37,14 @@ import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 import org.paninij.proc.util.SourceFile;
 
-public class DuckMessageSource extends MessageSource
+public class DuckMessageFactory extends AbstractMessageFactory
 {
-    public DuckMessageSource() {
+    public DuckMessageFactory() {
         this.context = null;
     }
 
     @Override
-    protected SourceFile generate(Procedure procedure) {
+    public SourceFile make(Procedure procedure) {
         this.context = procedure;
         this.shape = new MessageShape(procedure);
         String name = this.buildQualifiedClassName();
@@ -62,11 +63,12 @@ public class DuckMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"all\")",  // Suppress unused imports.
-                "public class #1 implements #2, Panini$Message, Panini$Future<#2>",
+                "public class #2 implements #3, Panini$Message, Panini$Future<#3>",
                 "{",
                 "    public final int panini$procID;",
-                "    private #2 panini$result = null;",
+                "    private #3 panini$result = null;",
                 "    boolean panini$isResolved = false;",
                 "",
                 "    ##",
@@ -79,7 +81,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#2 result) {",
+                "    public void panini$resolve(#3 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
@@ -89,7 +91,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 panini$get() {",
+                "    public #3 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -100,13 +102,15 @@ public class DuckMessageSource extends MessageSource
                 "         return panini$result;",
                 "    }",
                 "",
-                "    /* The following implement the methods of `#2` */",
+                "    /* The following implement the methods of `#3` */",
                 "    ##",
                 "}");
 
-        src = Source.format(src, this.shape.getPackage(),
-                                 this.shape.encoded,
-                                 this.shape.returnType.wrapped());
+        src = Source.format(src,
+        		this.shape.getPackage(),
+        		PaniniProcessor.getGeneratedAnno(DuckMessageFactory.class),
+        		this.shape.encoded,
+        		this.shape.returnType.wrapped());
 
         src = Source.formatAligned(src, this.buildImports());
         src = Source.formatAligned(src, this.buildParameterFields());
@@ -124,11 +128,12 @@ public class DuckMessageSource extends MessageSource
                 "",
                 "##",
                 "",
+                "#1",
                 "@SuppressWarnings(\"all\")",  // Suppress unused imports.
-                "public class #1 extends #2 implements Panini$Message, Panini$Future<#2>",
+                "public class #2 extends #3 implements Panini$Message, Panini$Future<#3>",
                 "{",
                 "    public final int panini$procID;",
-                "    private #2 panini$result = null;",
+                "    private #3 panini$result = null;",
                 "    boolean panini$isResolved = false;",
                 "",
                 "    ##",
@@ -141,7 +146,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public void panini$resolve(#2 result) {",
+                "    public void panini$resolve(#3 result) {",
                 "        synchronized (this) {",
                 "            panini$result = result;",
                 "            panini$isResolved = true;",
@@ -151,7 +156,7 @@ public class DuckMessageSource extends MessageSource
                 "    }",
                 "",
                 "    @Override",
-                "    public #2 panini$get() {",
+                "    public #3 panini$get() {",
                 "        while (panini$isResolved == false) {",
                 "            try {",
                 "                synchronized (this) {",
@@ -162,14 +167,15 @@ public class DuckMessageSource extends MessageSource
                 "         return panini$result;",
                 "    }",
                 "",
-                "    /* The following override the methods of `#2` */",
+                "    /* The following override the methods of `#3` */",
                 "    ##",
                 "}");
 
         src = Source.format(src, this.shape.getPackage(),
-                                 this.shape.encoded,
-                                 this.shape.returnType.wrapped());
-
+        		PaniniProcessor.getGeneratedAnno(DuckMessageFactory.class),
+        		this.shape.encoded,
+        		this.shape.returnType.wrapped());
+        
         src = Source.formatAligned(src, this.buildImports());
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());

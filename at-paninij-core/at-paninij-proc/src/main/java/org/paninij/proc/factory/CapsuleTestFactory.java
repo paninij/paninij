@@ -16,18 +16,19 @@
  *
  * Contributor(s): Dalton Mills, David Johnston
  */
-package org.paninij.proc;
+package org.paninij.proc.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 
-public class CapsuleTestFactory extends CapsuleArtifactFactory
+public class CapsuleTestFactory extends AbstractCapsuleFactory
 {
     public static final String CAPSULE_TEST_SUFFIX = "$Test";
 
@@ -43,13 +44,15 @@ public class CapsuleTestFactory extends CapsuleArtifactFactory
                 "",
                 "##",
                 "",
-                "public class #1",
+                "#1",
+                "public class #2",
                 "{",
                 "    ##",
                 "}");
 
         src = Source.format(src,
                 this.capsule.getPackage(),
+                PaniniProcessor.getGeneratedAnno(CapsuleTestFactory.class),
                 this.generateClassName());
         src = Source.formatAligned(src, generateImports());
         src = Source.formatAligned(src, generateTests());
@@ -72,7 +75,8 @@ public class CapsuleTestFactory extends CapsuleArtifactFactory
         }
 
         imports.addAll(this.capsule.getImports());
-
+        
+        imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.TimeUnit");
         imports.add("org.junit.Test");
         imports.add("org.paninij.runtime.Capsule$Thread");

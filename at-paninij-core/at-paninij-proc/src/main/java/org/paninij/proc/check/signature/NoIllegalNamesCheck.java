@@ -15,8 +15,6 @@ import org.paninij.proc.check.Result.Error;
 
 public class NoIllegalNamesCheck implements SignatureCheck
 {
-    private static final String ERROR_SOURCE = NoIllegalNamesCheck.class.getName();
-    
     private static final String[] ILLEGAL_METHOD_NAMES = {
         "init",
         "design",
@@ -34,11 +32,11 @@ public class NoIllegalNamesCheck implements SignatureCheck
         return false;
     }
     
-    private static String getIllegalMethodNameIfAny(TypeElement signature)
+    private static Element getIllegalMethodNameIfAny(TypeElement signature)
     {
         for (Element e : signature.getEnclosedElements()) {
             if (e.getKind() == METHOD && hasIllegalName((ExecutableElement) e)) {
-                return e.getSimpleName().toString();
+                return e;
             }
         }
         return null;
@@ -47,11 +45,11 @@ public class NoIllegalNamesCheck implements SignatureCheck
     @Override
     public Result checkSignature(TypeElement signature)
     {
-        String illegalName = getIllegalMethodNameIfAny(signature);
-        if (illegalName != null) {
+        Element illegalMethod = getIllegalMethodNameIfAny(signature);
+        if (illegalMethod != null) {
             String err = "Signature template `{0}` includes a method with an illegal name: {1}()";
-            err = format(err, signature.getSimpleName(), illegalName);
-            return new Error(err, ERROR_SOURCE);
+            err = format(err, signature.getSimpleName(), illegalMethod.getSimpleName().toString());
+            return new Error(err, NoIllegalNamesCheck.class, illegalMethod);
         }
         return ok;
     }

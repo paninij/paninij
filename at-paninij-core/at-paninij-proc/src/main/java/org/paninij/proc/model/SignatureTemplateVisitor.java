@@ -16,14 +16,12 @@
  *
  * Contributor(s): Dalton Mills
  */
-package org.paninij.proc;
+package org.paninij.proc.model;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.SimpleElementVisitor8;
-
-import org.paninij.proc.model.SignatureElement;
 
 /**
  * The Template visitor as the main visitor for all capsule templates. This class is used by

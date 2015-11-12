@@ -24,8 +24,6 @@ import org.paninij.proc.check.duckability.DuckabilityChecker;
  */
 public class ProcReturnTypesDuckabilityCheck extends AbstractTemplateCheck
 {
-    private static final String ERROR_SOURCE = ProcReturnTypesDuckabilityCheck.class.getName();
-    
     private final DuckabilityChecker checker;
 
     public ProcReturnTypesDuckabilityCheck(CheckEnvironment env) {
@@ -44,7 +42,7 @@ public class ProcReturnTypesDuckabilityCheck extends AbstractTemplateCheck
                     String err = "{0} template `{1}` has a procedure named `{2}` whose return type "
                                + "cannot not be ducked. {3}";
                     err = format(err, templateType, template, elem.getSimpleName(), result.err());
-                    return new Error(err, ERROR_SOURCE);
+                    return new Error(err, ProcReturnTypesDuckabilityCheck.class, elem);
                 }
             }
         }
