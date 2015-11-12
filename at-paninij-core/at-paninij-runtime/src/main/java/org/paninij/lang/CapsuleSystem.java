@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.paninij.runtime.Panini$Capsule;
+import org.paninij.runtime.Panini$Capsule$Root;
 
 public class CapsuleSystem
 {
@@ -29,8 +30,9 @@ public class CapsuleSystem
         
         try {
             Class<?> clazz = Class.forName(args[0]);
-            if(Panini$Capsule.class.isAssignableFrom(clazz)) {
-                start((Class<? extends Panini$Capsule>) clazz, Arrays.copyOfRange(args, 1, args.length));
+            if(Panini$Capsule$Root.class.isAssignableFrom(clazz)) {
+                start((Class<? extends Panini$Capsule$Root>) clazz,
+                      Arrays.copyOfRange(args, 1, args.length));
             } else {
                 String err = "Must give a fully qualified capsule name as the first argument.";
                 throw new IllegalArgumentException(err);
@@ -48,7 +50,7 @@ public class CapsuleSystem
      * @param root The class of the capsule which will act as the root capsule.
      * @param args The arguments to be passed into the root capsule's `main()` method.
      */
-    public static void start(Class<? extends Panini$Capsule> root, String[] args)
+    public static void start(Class<? extends Panini$Capsule$Root> root, String[] args)
     {
         start(root, DEFAULT_EXECUTION_PROFILE, args);
     }
@@ -61,7 +63,7 @@ public class CapsuleSystem
      * @param profile The execution profile with which the capsule system will run.
      * @param args The arguments to be passed into the root capsule's `main()` method.
      */
-    public static void start(Class<? extends Panini$Capsule> root, ExecutionProfile profile, String[] args)
+    public static void start(Class<? extends Panini$Capsule$Root> root, ExecutionProfile profile, String[] args)
     {
         try {
             CapsuleFactory capsuleFactory = new CapsuleFactory(root);

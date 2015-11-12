@@ -5,11 +5,13 @@ import static org.paninij.lang.ExecutionProfile.*;
 import java.lang.String;  // Needed to prevent unintended use of `org.paninij.lang.String`.
 
 import org.junit.Test;
-import org.paninij.runtime.Panini$Capsule;
+import org.paninij.runtime.Panini$Capsule$Root;
 
 
 public class TestSystem
 {
+    private static final String[] NO_ARGS = {};
+    
     private static String PACKAGE_PREFIX = "org.paninij.proc.helloworld.";
     private static ExecutionProfile[] RUNNABLE_EXECUTION_PROFILES = {
         MONITOR,
@@ -52,11 +54,15 @@ public class TestSystem
     }
     
     private static void run(String capsuleName, ExecutionProfile profile) {
-        try {
-            Class<?> clazz = Class.forName(PACKAGE_PREFIX + capsuleName);
-            CapsuleSystem.start((Class<? extends Panini$Capsule>) clazz, profile, new String[] { /* no args */ });
+        CapsuleSystem.start(getRootClass(PACKAGE_PREFIX + capsuleName), profile, NO_ARGS);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static Class<? extends Panini$Capsule$Root> getRootClass(String root) {
+         try {
+            return (Class<? extends Panini$Capsule$Root>) Class.forName(root);
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
-        }
+        }       
     }
 }
