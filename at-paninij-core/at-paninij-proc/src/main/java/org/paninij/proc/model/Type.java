@@ -30,6 +30,15 @@ import org.paninij.proc.util.PaniniModel;
 
 public class Type
 {
+	public enum UnduckableReason {
+		NONE,
+		IN_DEFAULT_PACKAGE,
+		IS_FINAL,
+		IS_VOID,
+		IS_PRIMITIVE,
+		IS_ARRAY,
+		NO_ZERO_ARG_CONSTRUCTOR
+	}
 
     public enum Duckability {
         UNDUCKABLE,
@@ -117,28 +126,42 @@ public class Type
             return Duckability.DUCKED;
         }
 
-        if (JavaModel.isFinalType(this.mirror)) {
-            return Duckability.UNDUCKABLE;
-        }
-
-        if (JavaModel.isVoidType(this.mirror)) {
-            return Duckability.UNDUCKABLE;
-        }
-
-        if (JavaModel.isPrimitive(this.mirror)) {
-            return Duckability.UNDUCKABLE;
-        }
-
-        if (JavaModel.isArray(this.mirror)) {
-            return Duckability.UNDUCKABLE;
-        }
-        
-        if (!JavaModel.hasZeroArgConstructor(this.mirror)) {
+        if (whyUnduckable() != UnduckableReason.NONE) {
         	return Duckability.UNDUCKABLE;
         }
 
         return Duckability.DUCKABLE;
     }
+    
+    public UnduckableReason whyUnduckable() {
+    	if (JavaModel.isFinalType(this.mirror)) {
+            return UnduckableReason.IS_FINAL;
+        }
+
+        if (JavaModel.isVoidType(this.mirror)) {
+            return UnduckableReason.IS_VOID;
+        }
+
+        if (JavaModel.isPrimitive(this.mirror)) {
+            return UnduckableReason.IS_PRIMITIVE;
+        }
+
+        if (JavaModel.isArray(this.mirror)) {
+            return UnduckableReason.IS_ARRAY;
+        }
+        
+        if (!JavaModel.hasZeroArgConstructor(this.mirror)) {
+        	return UnduckableReason.NO_ZERO_ARG_CONSTRUCTOR;
+        }
+        
+        if (!JavaModel.getPackage(this.mirror).equals("")) {
+        	return UnduckableReason.IN_DEFAULT_PACKAGE;
+        }
+        
+        return UnduckableReason.NONE;
+    }
+    
+    
 
     public String wrapped() {
         switch (this.kind) {

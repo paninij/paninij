@@ -34,6 +34,7 @@ import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 import org.paninij.proc.check.template.NoBadMethodNamesCheck;
+import org.paninij.proc.check.template.NoDefaultPackageCheck;
 import org.paninij.proc.check.template.NoNestedTypesCheck;
 import org.paninij.proc.check.template.NoTypeParamCheck;
 import org.paninij.proc.check.template.NotSubclassCheck;
@@ -53,6 +54,7 @@ public class SignatureChecker implements Check
         signatureChecks = new SignatureCheck[]
         {
             new SuffixCheck(),
+            new NoDefaultPackageCheck(),
             new NoNestedTypesCheck(),
             new NoRootAnnotationCheck(),
             new NotSubclassCheck(env),

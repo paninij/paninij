@@ -50,4 +50,9 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testHasRootAnnotationTemplate() {
         testBadTemplate("HasRootAnnotationTemplate");
     }
+    
+    @Test
+    public void testNoDefaultPackageCheck() {
+    	testBadTemplate("SignatureInDefaultTemplate", "");
+    }
 }

@@ -38,8 +38,14 @@ public abstract class AbstractTestBadTemplates
     
     protected void testBadTemplate(String badTemplate)
     {
+    	testBadTemplate(badTemplate, getBadTemplatePackage());
+    }
+    
+    protected void testBadTemplate(String badTemplate, String pack)
+    {
         try {
-            driver.process(getBadTemplatePackage() + "." + badTemplate);
+        	String full = pack.equals("") ? badTemplate : pack + "." + badTemplate;
+            driver.process(full);
         } catch (RuntimeException ex) {
             // TODO: Log error messages from checks better.
             //System.err.println(ex.getMessage());  // For logging check messages

@@ -221,4 +221,9 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testNoBadMethodNamesCheck() {
         testBadTemplate("HasBadMethodNameTemplate");
     }
+    
+    @Test
+    public void testNoDefaultPackageCheck() {
+    	testBadTemplate("CapsuleInDefaultDemplate", "");
+    }
 }

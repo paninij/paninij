@@ -32,6 +32,7 @@ import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 import org.paninij.proc.check.template.NoBadMethodNamesCheck;
+import org.paninij.proc.check.template.NoDefaultPackageCheck;
 import org.paninij.proc.check.template.NoNestedTypesCheck;
 import org.paninij.proc.check.template.NoTypeParamCheck;
 import org.paninij.proc.check.template.NotSubclassCheck;
@@ -51,6 +52,7 @@ public class CapsuleChecker implements Check
         capsuleChecks = new CapsuleCheck[]
         {
             new SuffixCheck(),
+            new NoDefaultPackageCheck(),
             new NotSubclassCheck(env),
             new NoVarargsMethodsCheck(),
             new OnlyZeroArgConstructorsCheck(),
