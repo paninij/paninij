@@ -66,6 +66,7 @@ public class CapsuleChecker implements Check
             new FieldsCheck(env),
             new ImplementedSignaturesCheck(env),
             new ProcReturnTypesDuckabilityCheck(env),
+            new NoImportedFieldsOnRootCheck(),
         };
     }
     

@@ -211,4 +211,9 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testDuckability5() {
         testBadTemplate("duckability.ReturnTypeHasExposedFieldsTemplate");
     }
+    
+    @Test
+    public void testNoImportedFieldsOnRootCheck() {
+        testBadTemplate("HasImportedFieldsOnRootTemplate");
+    }
 }
