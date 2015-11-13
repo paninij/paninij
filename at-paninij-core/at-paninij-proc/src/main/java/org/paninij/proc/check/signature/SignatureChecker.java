@@ -32,6 +32,7 @@ import org.paninij.lang.Signature;
 import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
+import org.paninij.proc.check.NoBadMethodNamesCheck;
 import org.paninij.proc.check.NoNestedTypesCheck;
 import org.paninij.proc.check.NoTypeParamCheck;
 import org.paninij.proc.check.NotSubclassCheck;
@@ -59,6 +60,7 @@ public class SignatureChecker implements Check
             new NoIllegalModifiersCheck(),
             new NoIllegalNamesCheck(),
             new ProcReturnTypesDuckabilityCheck(env),
+            new NoBadMethodNamesCheck(),
         };
     }
     

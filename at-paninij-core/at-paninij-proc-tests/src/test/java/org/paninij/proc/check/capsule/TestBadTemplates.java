@@ -216,4 +216,9 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testNoImportedFieldsOnRootCheck() {
         testBadTemplate("HasImportedFieldsOnRootTemplate");
     }
+    
+    @Test
+    public void testNoBadMethodNamesCheck() {
+        testBadTemplate("HasBadMethodNameTemplate");
+    }
 }

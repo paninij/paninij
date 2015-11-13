@@ -32,6 +32,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
+import org.paninij.proc.check.NoBadMethodNamesCheck;
 import org.paninij.proc.check.NoNestedTypesCheck;
 import org.paninij.proc.check.NoTypeParamCheck;
 import org.paninij.proc.check.NotSubclassCheck;
@@ -67,6 +68,7 @@ public class CapsuleChecker implements Check
             new ImplementedSignaturesCheck(env),
             new ProcReturnTypesDuckabilityCheck(env),
             new NoImportedFieldsOnRootCheck(),
+            new NoBadMethodNamesCheck(),
         };
     }
     
