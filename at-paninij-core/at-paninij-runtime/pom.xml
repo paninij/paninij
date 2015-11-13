@@ -19,8 +19,7 @@
   <description>
     The @PaniniJ runtime classes. These are the classes needed to run any
     @PaniniJ capsule systems. Aside from user dependencies, this is the sole
-    @PaniniJ dependency needed to run an @PaniniJ capsule system. It is also
-    used by the @PaniniJ processor itself.
+    @PaniniJ dependency needed to run an @PaniniJ capsule system.
   </description>
 
   <build>

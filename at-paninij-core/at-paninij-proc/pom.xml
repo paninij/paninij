@@ -22,14 +22,30 @@
 
   <build>
     <plugins>
+
+      <!-- Prevent the compiler from trying to use the processor which it is compiling. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <!-- Prevent the compiler from trying to use processor it is compiling. -->
           <proc>none</proc>
         </configuration>
       </plugin>
+
+      <!-- Make sure that the runtime is included along with the processor. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 

@@ -57,10 +57,6 @@ THE POSSIBILITY OF SUCH DAMAGE.
     <dependencies>
         <dependency>
             <groupId>org.paninij</groupId>
-            <artifactId>at-paninij-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.paninij</groupId>
             <artifactId>at-paninij-benchmarks-savina</artifactId>
         </dependency>
         <dependency>
