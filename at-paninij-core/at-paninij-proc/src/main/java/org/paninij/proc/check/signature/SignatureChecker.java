@@ -53,6 +53,7 @@ public class SignatureChecker implements Check
         {
             new SuffixCheck(),
             new NoNestedTypesCheck(),
+            new NoRootAnnotationCheck(),
             new NotSubclassCheck(env),
             new NoTypeParamCheck(),
             new NoIllegalModifiersCheck(),

@@ -45,4 +45,9 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testHasNestedTypeTemplate() {
         testBadTemplate("HasNestedTypeTemplate");
     }
+    
+    @Test
+    public void testHasRootAnnotationTemplate() {
+        testBadTemplate("HasRootAnnotationTemplate");
+    }
 }
