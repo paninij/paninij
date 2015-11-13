@@ -71,7 +71,7 @@
   <modules>
     <module>at-paninij-core</module>
     <module>at-paninij-examples</module>
-    <module>at-paninij-analyses</module>
+    <!-- <module>at-paninij-analyses</module> --> <!-- Disabled until fixed on Windows. -->
     <module>at-paninij-benchmarks</module>
   </modules>
 
