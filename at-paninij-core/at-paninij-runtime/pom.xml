@@ -1,5 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -9,19 +13,24 @@
   </parent>
 
   <artifactId>at-paninij-runtime</artifactId>
+  <name>@PaniniJ Runtime</name>
   <packaging>jar</packaging>
 
   <description>
-    The @PaniniJ runtime classes, which are the classes needed to run all capsule systems. Aside
-    from user dependencies, this is the sole @PaniniJ dependency needed to run an @PaniniJ capsule
-    system.
+    The @PaniniJ runtime classes. These are the classes needed to run any
+    @PaniniJ capsule systems. Aside from user dependencies, this is the sole
+    @PaniniJ dependency needed to run an @PaniniJ capsule system. It is also
+    used by the @PaniniJ processor itself.
   </description>
 
-  <name>@PaniniJ Runtime</name>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>

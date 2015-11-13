@@ -1,2 +1,3 @@
-# at-paninij-benchmarks
-Benchmarks programs and harness for @PaniniJ
+# `at-paninij-benchmarks`
+
+Benchmark programs and harnesses for @PaniniJ.

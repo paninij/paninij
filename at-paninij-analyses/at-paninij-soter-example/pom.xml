@@ -1,5 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -13,17 +17,14 @@
 
   <name>@PaniniJ SOTER Example</name>
   <description>
-    An example which integrates the `soter` tool into a Maven build of @PaniniJ capsule templates.
+    An example which integrates the `soter` tool into a Maven build of @PaniniJ
+    capsule templates.
   </description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <gen.src.dir>${project.build.directory}/generated-sources</gen.src.dir>
-    <gen.test.src.dir>${project.build.directory}/generated-test-sources</gen.test.src.dir>
     <gen.dependencies.file>${project.build.directory}/dependencies.txt</gen.dependencies.file>
     <gen.panini.capsules.file>${project.build.directory}/capsule_list.txt</gen.panini.capsules.file>
   </properties>
-
 
   <build>
     <plugins>
@@ -32,10 +33,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+          <!-- Use older version of Java for compatibility. -->
           <source>1.6</source>
           <target>1.6</target>
-          <generatedSourcesDirectory>${gen.src.dir}</generatedSourcesDirectory>
-          <generatedTestSourcesDirectory>${gen.test.src.dir}</generatedTestSourcesDirectory>
           <fork>true</fork>
           <compilerArgs>
             <arg>-Apanini.capsuleListFile=${gen.panini.capsules.file}</arg>
@@ -47,6 +47,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
+          <!-- Add the generated source directory so that Eclipse will find it. -->
           <execution>
             <id>add-source</id>
             <phase>generate-sources</phase>
@@ -55,9 +56,8 @@
             </goals>
             <configuration>
               <sources>
-                <!-- Add the generated source directory so that Eclipse will find it. -->
-                <source>${gen.src.dir}</source>
-                <source>${gen.test.src.dir}</source>
+                <source>${panini.gen.src.dir}</source>
+                <source>${panini.gen.test.src.dir}</source>
               </sources>
             </configuration>
           </execution>
@@ -68,6 +68,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>2.10</version>
+        <!-- Build a file containing all of this project's (transitive) dependencies so that the
+             soter analysis can make use of the list. -->
         <executions>
           <execution>
             <id>generate-dependencies-file</id>
@@ -82,6 +84,7 @@
         </executions>
       </plugin>
 
+      <!-- Invoke the soter executable tool during the `process-classes` phase. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -124,11 +127,6 @@
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-soter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

@@ -1,4 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
@@ -13,30 +18,13 @@
     The Savina benchmarks written in @PaniniJ.
   </description>
   
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.logsDirectory>${project.basedir}/logs</project.logsDirectory>
-    <gen.src.dir>${project.build.directory}/generated-sources</gen.src.dir>
-  </properties>
-
   <build>
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <generatedSourcesDirectory>${gen.src.dir}</generatedSourcesDirectory>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
+          <!-- Add the generated source directory so that Eclipse will find it. -->
           <execution>
             <id>add-source</id>
             <phase>generate-sources</phase>
@@ -45,15 +33,12 @@
             </goals>
             <configuration>
               <sources>
-                <!-- Add the generated source directory so that Eclipse will find it. -->
-                <source>${gen.src.dir}</source>
+                <source>${panini.gen.src.dir}</source>
               </sources>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
-
     </plugins>
   </build>
   

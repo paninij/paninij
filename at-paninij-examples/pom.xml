@@ -1,5 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
     
   <groupId>org.paninij</groupId>
@@ -9,12 +13,13 @@
   <packaging>jar</packaging>
 
   <description>
-    Various simple @PaniniJ example programs.
+    Various simple @PaniniJ example programs. Also includes an example Maven
+    POM to illustrate one way of using the @PaniniJ annotation processor.
   </description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <gen.src.dir>${project.build.directory}/generated-sources</gen.src.dir>
+    <panini.gen.src.dir>${project.build.directory}/generated-sources/panini</panini.gen.src.dir>
   </properties>
 
   <build>
@@ -28,15 +33,17 @@
           <!-- Specify Java version. -->
           <source>1.8</source>
           <target>1.8</target>
-          <!-- Specify where the proc-generated source artifacts are put. -->
-          <generatedSourcesDirectory>${gen.src.dir}</generatedSourcesDirectory>
+          <!-- Specify where the panini-generated source artifacts are put. -->
+          <generatedSourcesDirectory>${panini.gen.src.dir}</generatedSourcesDirectory>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.9.1</version>
         <executions>
+          <!-- Add the generated src dir so that Eclipse will automatically find it. -->
           <execution>
             <id>add-source</id>
             <phase>generate-sources</phase>
@@ -45,8 +52,7 @@
             </goals>
             <configuration>
               <sources>
-                <!-- Add the generated src dir so that Eclipse will automatically find it. -->
-                <source>${gen.src.dir}</source>
+                <source>${panini.gen.src.dir}</source>
               </sources>
             </configuration>
           </execution>
