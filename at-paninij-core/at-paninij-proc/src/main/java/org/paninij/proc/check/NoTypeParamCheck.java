@@ -12,13 +12,12 @@ import org.paninij.proc.check.Result.Error;
 public class NoTypeParamCheck extends AbstractTemplateCheck
 {
     @Override
-    public Result checkTemplate(String templateType, TypeElement template)
+    public Result checkTemplate(TemplateKind templateKind, TypeElement template)
     {
         if (!template.getTypeParameters().isEmpty())
         {
-            String err = "{0} templates must not have any type parameters, but such a "
-                       + "template was found: `{1}`";
-            err = format(err, templateType, template.getQualifiedName());
+            String err = "{0} templates must not have any type parameters.";
+            err = format(err, templateKind);
             return new Error(err, NoTypeParamCheck.class, template);
         }
         return ok;

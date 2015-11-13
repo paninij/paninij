@@ -31,7 +31,7 @@ public class ProcReturnTypesDuckabilityCheck extends AbstractTemplateCheck
     }
 
     @Override
-    protected Result checkTemplate(String templateType, TypeElement template)
+    protected Result checkTemplate(TemplateKind templateKind, TypeElement template)
     {
         // Iterate over all methods, and for those which are `@Duck` procedures (either explicitly
         // or implicitly), check their return type's duckability.
@@ -39,9 +39,9 @@ public class ProcReturnTypesDuckabilityCheck extends AbstractTemplateCheck
             if (isDuckProcedure(elem)) {
                 Result result = checker.check(((ExecutableElement) elem).getReturnType());
                 if (! result.ok()) {
-                    String err = "{0} template `{1}` has a procedure named `{2}` whose return type "
-                               + "cannot not be ducked. {3}";
-                    err = format(err, templateType, template, elem.getSimpleName(), result.err());
+                    String err = "{0} template has a procedure named whose return type cannot be"
+                               + "ducked. {1}";
+                    err = format(err, templateKind, result.err());
                     return new Error(err, ProcReturnTypesDuckabilityCheck.class, elem);
                 }
             }

@@ -7,15 +7,32 @@ import org.paninij.proc.check.signature.SignatureCheck;
 
 public abstract class AbstractTemplateCheck implements CapsuleCheck, SignatureCheck
 {
+    public enum TemplateKind
+    {
+        CAPSULE,
+        SIGNATURE;
+        
+        public String toString() {
+            switch (this) {
+            case CAPSULE:
+                return "Capsule";
+            case SIGNATURE:
+                return "Signature";
+            default:
+                throw new IllegalStateException();
+            }
+        }
+    }
+    
     @Override
     public Result checkCapsule(TypeElement template) {
-        return checkTemplate("Capsule", template);
+        return checkTemplate(TemplateKind.CAPSULE, template);
     }
 
     @Override
     public Result checkSignature(TypeElement template) {
-        return checkTemplate("Signature", template);
+        return checkTemplate(TemplateKind.SIGNATURE, template);
     }
     
-    protected abstract Result checkTemplate(String templateType, TypeElement template);
+    protected abstract Result checkTemplate(TemplateKind templateKind, TypeElement template);
 }

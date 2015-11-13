@@ -18,11 +18,11 @@ public class NoBadMethodNamesCheck extends AbstractTemplateCheck
     };
     
     @Override
-    protected Result checkTemplate(String templateType, TypeElement template) {
+    protected Result checkTemplate(TemplateKind kind, TypeElement template) {
         for (Element elem : template.getEnclosedElements()) {
             if (isMethodWithBadName(elem)) {
                 String err = "{0} templates cannot declare a method named `{1}()`.";
-                err = format(err, templateType, elem.getSimpleName().toString());
+                err = format(err, kind, elem.getSimpleName());
                 return new Error(err, NoBadMethodNamesCheck.class, elem);
             }
         }

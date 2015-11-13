@@ -29,7 +29,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.lang.Capsule;
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.NoBadMethodNamesCheck;
@@ -39,6 +38,7 @@ import org.paninij.proc.check.NotSubclassCheck;
 import org.paninij.proc.check.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
+import org.paninij.proc.check.SuffixCheck;
 
 
 public class CapsuleChecker implements Check

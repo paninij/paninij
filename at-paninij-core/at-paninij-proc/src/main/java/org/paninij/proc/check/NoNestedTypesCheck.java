@@ -40,15 +40,14 @@ public class NoNestedTypesCheck extends AbstractTemplateCheck
     }
 
     @Override
-    public Result checkTemplate(String templateType, TypeElement template)
+    public Result checkTemplate(TemplateKind templateKind, TypeElement template)
     {
         for (Element enclosed : template.getEnclosedElements())
         {
             ElementKind kind = enclosed.getKind();
             if (isIllegalKind(kind)) {
-                String err = "{0} templates must not contain a nested {1}, but one named `{2}` "
-                           + "was found in `{3}`.";
-                err = format(err, templateType, kind, enclosed.getSimpleName(),
+                String err = "{0} templates must not contain a nested {1}.";
+                err = format(err, templateKind, kind, enclosed.getSimpleName(),
                                   template.getSimpleName());
                 return new Error(err, NoNestedTypesCheck.class, enclosed);
             }
