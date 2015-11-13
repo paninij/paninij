@@ -20,7 +20,8 @@
 
 # For mac: 
 java_runtime_dir = /Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib
-# For windows, it may look like: java_runtime_dir = C:/Program Files/Java/jdk1.8.0_51/jre/lib
+# For windows, it may look like:
+#java_runtime_dir = C:/Program Files/Java/jdk1.8.0_51/jre/lib
 
 ################### Mandatory settings with default value ######################
 
