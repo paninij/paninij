@@ -20,6 +20,31 @@
     that they are valid, and generating various appropriate source artifacts.
   </description>
 
+  <url>http://hridesh.github.io/panini/</url>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 2</name>
+      <url>http://opensource.org/licenses/GPL-2.0</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>David Johnston</name>
+      <email>dwtj@iastate.edu</email>
+      <url>https://github.com/dwtj</url>
+      <organization>ISU Laboratory for Software Design</organization>
+      <organizationUrl>http://design.cs.iastate.edu/</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:hridesh/panini.git</connection>
+    <developerConnection>scm:git:git@github.com:hridesh/panini.git</developerConnection>
+    <url>git@github.com:hridesh/panini.git</url>
+  </scm>
+
   <build>
     <plugins>
 
@@ -44,6 +69,38 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- Generate source jar. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Generate Javadoc jar. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- Disable Javadoc lint, because Javadocs are currently malformed and cause errors. -->
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
       </plugin>
 
     </plugins>

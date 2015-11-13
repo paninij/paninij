@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This POM's purposes are three-fold:
+    
+       1. To aggregate the modules directly under it.
+       2. To provide some default configs to be inherited by POMs below it.
+       3. To hold much of the required info for publication on Maven central.
+
+     Notice that even though this root POM includes `examples`, that project
+     does not identify `at-paninij` as its parent. This is to allow for
+     `examples` to be a stand-alone example.
+
+     For a description of the distinction between project aggregation and
+     project inheritance, see:
+     
+         https://maven.apache.org/guides/introduction/introduction-to-the-pom.html
+
+     For more information on the requirements to publish to Maven central, see:
+
+         http://central.sonatype.org/pages/requirements.html
+
+     Unfortunately, it seems that these tags (e.g. `<licenses>`, `<developers>)
+     are not inherited, so this information needs to be manually adapted to
+     other submodules in the repo.
+-->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -18,20 +43,30 @@
     programming model.
   </description>
 
-  <!-- This POM's purpose is two-fold:
-    
-         1. To aggregate the modules directly under it.
-         2. To provide some default configs to be inherited by POMs below it.
+  <url>http://hridesh.github.io/panini/</url>
 
-       Notice that even though this root POM includes `examples`, that project
-       does not identify `at-paninij` as its parent. This is to allow for
-       `examples` to be a stand-alone example.
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 2</name>
+      <url>http://opensource.org/licenses/GPL-2.0</url>
+    </license>
+  </licenses>
 
-       For a description of the distinction between project aggregation and
-       project inheritance, see:
-       
-         https://maven.apache.org/guides/introduction/introduction-to-the-pom.html
-  -->
+  <developers>
+    <developer>
+      <name>David Johnston</name>
+      <email>dwtj@iastate.edu</email>
+      <url>https://github.com/dwtj</url>
+      <organization>ISU Laboratory for Software Design</organization>
+      <organizationUrl>http://design.cs.iastate.edu/</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:hridesh/panini.git</connection>
+    <developerConnection>scm:git:git@github.com:hridesh/panini.git</developerConnection>
+    <url>git@github.com:hridesh/panini.git</url>
+  </scm>
 
   <modules>
     <module>at-paninij-core</module>
@@ -127,6 +162,7 @@
     </pluginManagement>
 
   </build>
+
 
   <dependencyManagement>
     <dependencies>
