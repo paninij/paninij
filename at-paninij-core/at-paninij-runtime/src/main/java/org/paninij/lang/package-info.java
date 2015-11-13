@@ -1,14 +1,15 @@
 /**
  * <p>The <code>org.paninij.lang</code> package offers various classes and annotations which are used by a
- * developer to create an &#64;PaniniJ program.</p>
+ * developer to create an &#64;PaniniJ program. &#64;PaniniJ is an annotation-based realization of capsule-
+ * oriented programming in Java. Capsule-oriented programming is an implicitly concurrent programming model.
  * 
  * <p>The annotations defined within this package are needed to define a &#64;PaniniJ program. The
  * user writes a set of Java class definitions, but they are annotated in such a way that they can
- * be <em>interpreted</em> as a valid &#64;PaniniJ program.</p>
+ * be <em>interpreted</em> as a valid &#64;PaniniJ program.
  * 
  * 
  * <h2>Example 1: Defining a Capsule</h2>
- * <h3>HelloWorldTemplate.java</h3>
+ * <h4>HelloWorldTemplate.java</h4>
  * <blockquote><pre>
  * package example;
  * 
@@ -58,7 +59,7 @@
  * 
  * 
  * <h2>Example 2: A System of Capsules</h2>
- * <h3>ConsoleTemplate.java</h3>
+ * <h4>ConsoleTemplate.java</h4>
  * <blockquote><pre>
  * package example;
  * 
@@ -72,7 +73,7 @@
  * }
  * </pre></blockquote>
  * 
- * <h3>GreeterTemplate.java</h3>
+ * <h4>GreeterTemplate.java</h4>
  * <blockquote><pre>
  * package example;
  * 
@@ -143,7 +144,7 @@
  * 
  * 
  * <h2>Example 3: Ping-Pong</h2>
- * <h3>PingTemplate.java</h3>
+ * <h4>PingTemplate.java</h4>
  * <blockquote><pre>
  * package example;
  * 
@@ -170,7 +171,7 @@
  * }
  * </pre></blockquote>
  * 
- * <h3>PongTemplate.java</h3>
+ * <h4>PongTemplate.java</h4>
  * <blockquote><pre>
  * package example;
  * 
@@ -191,7 +192,7 @@
  * }
  * </pre></blockquote>
  *
- * <h3>PingPongTemplate.java</h3>
+ * <h4>PingPongTemplate.java</h4>
  * <blockquote><pre>
  * package example;
  * 
@@ -278,7 +279,9 @@
  * </dd>
  * <dt>public void exit()</dt>
  * <dd>
- * 		<p>TODO</p>
+ * 		<p>This method is used to manually send a shut-down message to another capsule. This is
+ * 				sometimes necessary in capsule systems with circular dependencies. (See the PingPong
+ * 				example above).</p>
  * </dd>
  * </dl>
  * 
@@ -311,9 +314,9 @@
  * </dd>
  * <dt>Root Capsule</dt>
  * <dd>
- * 		<p>A capsule from which a capsule system system can be started. (Often also an
- *              active capsule.) These capsules cannot have any <code>&#64;Imports</code> fields
- *              (i.e. they cannot have any dependencies).
+ * 		<p>A capsule from which a capsule system can be started. (often also an
+ *              active capsule.) A root capsule cannot have any <code>&#64;Imports</code> fields
+ *              (i.e. it cannot have any dependencies).
  * </dd>
  * <dt>Procedure</dt>
  * <dd>
@@ -327,6 +330,15 @@
  * </dl>
  * 
  * <p><em>*A special method is a method with one of the following names:
- * <code>run()</code>, <code>init()</code>, <code>design()</code>, and <code>imports()</code></em>.
+ * <code>run()</code>, <code>init()</code>, <code>design()</code>, and <code>imports()</code>.
+ * See above for details of each method.</em>
+ * 
+ * <h2>Academic References</h2>
+ * <ol>
+ * <li>H. Rajan, S. M. Kautz, E. Lin, S. L. Mooney, Y. Long, and G. Upadhyaya, "Capsule-oriented 
+ * programming in the Panini language," Iowa State University, Tech. Rep. 14-08, 2014.</li>
+ * <li>H. Rajan, "Capsule-oriented Programming," ICSE'15: The 37th International Conference on 
+ * Software Engineering, Florence, Italy, May 2015.</li>
+ * </ol>
  */
 package org.paninij.lang;

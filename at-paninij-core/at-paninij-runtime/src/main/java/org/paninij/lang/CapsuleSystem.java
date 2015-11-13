@@ -8,6 +8,10 @@ import java.util.Arrays;
 import org.paninij.runtime.Panini$Capsule;
 import org.paninij.runtime.Panini$Capsule$Root;
 
+/**
+ * <p>Used to start a capsule system.
+ *
+ */
 public class CapsuleSystem
 {
     public final static ExecutionProfile DEFAULT_EXECUTION_PROFILE = ExecutionProfile.THREAD;
