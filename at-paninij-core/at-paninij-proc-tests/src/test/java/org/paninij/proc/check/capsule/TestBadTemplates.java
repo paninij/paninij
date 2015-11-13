@@ -224,6 +224,6 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     
     @Test
     public void testNoDefaultPackageCheck() {
-    	testBadTemplate("CapsuleInDefaultDemplate", "");
+    	testBadTemplate("CapsuleInDefaultTemplate", "");
     }
 }
