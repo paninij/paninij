@@ -1,15 +1,15 @@
-package org.paninij.proc.check;
-
-import static java.text.MessageFormat.format;
+package org.paninij.proc.check.template;
 
 import static org.paninij.proc.check.Result.ok;
-import static org.paninij.proc.check.Result.Error;
 
 import java.util.List;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import org.paninij.proc.check.CheckEnvironment;
+import org.paninij.proc.check.Result;
+import org.paninij.proc.check.Result.Error;
 import org.paninij.proc.check.capsule.CapsuleCheck;
 import org.paninij.proc.check.signature.SignatureCheck;
 
@@ -34,8 +34,7 @@ public class NotSubclassCheck implements CapsuleCheck, SignatureCheck
     {
         List<? extends TypeMirror> interfaces = template.getInterfaces();
         if (!interfaces.isEmpty()) {
-            String err = "Signature templates must not be subinterfaces, but `{0}` extends `{1}`.";
-            err = format(err, template.getQualifiedName(), interfaces.get(0));
+            String err = "A signature template must not be a subinterface.";
             return new Error(err, NotSubclassCheck.class, template);
         }
         return ok;
@@ -47,10 +46,7 @@ public class NotSubclassCheck implements CapsuleCheck, SignatureCheck
         TypeMirror superclass = template.getSuperclass();
         if (! env.getTypeUtils().isSameType(superclass, javaLangObject))
         {
-            TypeElement elem = (TypeElement) env.getTypeUtils().asElement(superclass);
-            String err = "Capsule templates must not extend anything except `java.lang.Object`, "
-                       + "but `{0}` extends `{1}`.";
-            err = format(err, template.getQualifiedName(), elem.getQualifiedName());
+            String err = "A capsule template must not extend anything except `java.lang.Object`.";
             return new Error(err, NotSubclassCheck.class, template);
         }
 

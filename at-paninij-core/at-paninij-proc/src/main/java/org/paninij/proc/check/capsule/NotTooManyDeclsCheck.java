@@ -42,23 +42,23 @@ public class NotTooManyDeclsCheck implements CapsuleCheck
             }
         }
         if (run > 1) {
-            return error(template, "run", run);
+            return error(template, "run");
         }
         if (init > 1) {
-            return error(template, "init", init);
+            return error(template, "init");
         }
         if (design > 1) {
-            return error(template, "design", design);
+            return error(template, "design");
         }
 
         return ok;
     }
     
-    private static Result error(TypeElement template, String decl, int numFound)
+    private static Result error(TypeElement template, String decl)
     {
-        String err = "A capsule template must contain either 0 or 1 `{0}()` methods (a.k.a. {0} "
-                   + "declarations), but {1} `{0}()` methods were found in capsule template `{2}`.";
-        err = format(err, decl, numFound, template.getSimpleName().toString());
+        String err = "Capsule templates must contain either 0 or 1 `{0}()` declarations "
+                   + "(i.e. methods).";
+        err = format(err, decl);
         return new Error(err, NotTooManyDeclsCheck.class, template);
     }
 }

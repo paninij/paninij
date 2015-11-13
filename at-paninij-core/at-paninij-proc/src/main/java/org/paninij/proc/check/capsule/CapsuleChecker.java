@@ -18,8 +18,6 @@
  */
 package org.paninij.proc.check.capsule;
 
-import static java.text.MessageFormat.format;
-
 import static org.paninij.proc.check.Result.ok;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -31,14 +29,14 @@ import javax.lang.model.element.TypeElement;
 import org.paninij.lang.Capsule;
 import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
-import org.paninij.proc.check.NoBadMethodNamesCheck;
-import org.paninij.proc.check.NoNestedTypesCheck;
-import org.paninij.proc.check.NoTypeParamCheck;
-import org.paninij.proc.check.NotSubclassCheck;
-import org.paninij.proc.check.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
-import org.paninij.proc.check.SuffixCheck;
+import org.paninij.proc.check.template.NoBadMethodNamesCheck;
+import org.paninij.proc.check.template.NoNestedTypesCheck;
+import org.paninij.proc.check.template.NoTypeParamCheck;
+import org.paninij.proc.check.template.NotSubclassCheck;
+import org.paninij.proc.check.template.ProcReturnTypesDuckabilityCheck;
+import org.paninij.proc.check.template.SuffixCheck;
 
 
 public class CapsuleChecker implements Check
@@ -54,7 +52,7 @@ public class CapsuleChecker implements Check
         {
             new SuffixCheck(),
             new NotSubclassCheck(env),
-            new NoVariadicMethodsCheck(),
+            new NoVarargsMethodsCheck(),
             new OnlyZeroArgConstructorsCheck(),
             new NotTooManyDeclsCheck(),
             new InitDeclCheck(),
@@ -88,9 +86,7 @@ public class CapsuleChecker implements Check
         // Check to see if we can cast the given element to a type element.
         if (template.getKind() != ElementKind.CLASS)
         {
-            String err = "A capsule template must be a class, but an element annotated with "
-                       + "`@Capsule` named `{0}` is of kind {1}.";
-            err = format(err, template, template.getKind());
+            String err = "A capsule template must be a class.";
             return new Error(err, CapsuleChecker.class, template);
         }
 

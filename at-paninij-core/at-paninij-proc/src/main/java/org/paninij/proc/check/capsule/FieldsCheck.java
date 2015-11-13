@@ -61,33 +61,28 @@ public class FieldsCheck implements CapsuleCheck
         final boolean hasLocal = hasAnnotation(field, Local.class);
         
         if (hasImports && hasLocal) {
-            String err = "Found a field `{0} {1}` in `{2}` which is annotated with both `@Local`"
-                       + "and `@Imports`.";
-            err = format(err, field.asType(), field, template.getQualifiedName());
+            String err = "A field cannot be annotated with both `@Local` and `@Imports`.";
             return new Error(err, FieldsCheck.class, field);
         }
         
         if (isCapsuleTemplateField(field))
         {
-            String err = "Found a field `{0} {1}` in `{2}` which is a capsule template or a "
-                       + "signature template. Use the generated capsule or signature instead.";
-            err = format(err, field.asType(), field, template.getQualifiedName());
+            String err = "Found a field whose type is a capsule or signature template. Use the "
+                       + "generated capsule or signature interface instead.";
             return new Error(err, FieldsCheck.class, field);
         }
 
         if (seemsToBeCapsuleField(field))
         {
             if (!hasImports && !hasLocal) {
-                String err = "Found a field named `{0} {1}` in `{2}` whose type seems to be a "
-                           + "capsule, but it is not annotated with either `@Local` or `@Imports`.";
-                err = format(err, field.asType(), field, template.getQualifiedName());
+                String err = "Found a field whose type seems to be a capsule, but it is not "
+                           + "annotated with either `@Local` or `@Imports`.";
                 return new Error(err, FieldsCheck.class, field);
             }
             
             if (isMultiDimensionalArrayField(field)) {
-                String err = "Found a field named `{0} {1}` in `{2}` whose type seems to be a "
-                           + "multi-dimensional array of capsule. This is not yet supported.";
-                err = format(err, field.asType(), field, template.getQualifiedName());
+                String err = "Found a field whose type seems to be a multi-dimensional array of "
+                           + "capsules or signatures. This is not yet supported.";
                 return new Error(err, FieldsCheck.class, field);
             }
             
@@ -96,8 +91,8 @@ public class FieldsCheck implements CapsuleCheck
         else
         {
             if (hasLocal) {
-                String err = "Found a field `{0} {1}` in `{2}` which is annotated with `@Local`, "
-                           + "but its type seems to not be a capsule.";
+                String err = "Found a field annotated with `@Local`, but its type seems to not be "
+                           + "a capsule.";
                 err = format(err, field.asType(), field, template.getQualifiedName());
                 return new Error(err, FieldsCheck.class, field);
             }

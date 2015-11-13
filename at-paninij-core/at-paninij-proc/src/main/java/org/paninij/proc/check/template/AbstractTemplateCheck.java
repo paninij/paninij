@@ -1,7 +1,8 @@
-package org.paninij.proc.check;
+package org.paninij.proc.check.template;
 
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.proc.check.Result;
 import org.paninij.proc.check.capsule.CapsuleCheck;
 import org.paninij.proc.check.signature.SignatureCheck;
 
@@ -15,9 +16,9 @@ public abstract class AbstractTemplateCheck implements CapsuleCheck, SignatureCh
         public String toString() {
             switch (this) {
             case CAPSULE:
-                return "Capsule";
+                return "capsule";
             case SIGNATURE:
-                return "Signature";
+                return "signature";
             default:
                 throw new IllegalStateException();
             }

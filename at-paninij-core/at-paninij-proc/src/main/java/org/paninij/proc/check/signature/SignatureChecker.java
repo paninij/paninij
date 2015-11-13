@@ -31,14 +31,14 @@ import javax.lang.model.element.TypeElement;
 import org.paninij.lang.Signature;
 import org.paninij.proc.check.Check;
 import org.paninij.proc.check.CheckEnvironment;
-import org.paninij.proc.check.NoBadMethodNamesCheck;
-import org.paninij.proc.check.NoNestedTypesCheck;
-import org.paninij.proc.check.NoTypeParamCheck;
-import org.paninij.proc.check.NotSubclassCheck;
-import org.paninij.proc.check.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.Result;
-import org.paninij.proc.check.SuffixCheck;
 import org.paninij.proc.check.Result.Error;
+import org.paninij.proc.check.template.NoBadMethodNamesCheck;
+import org.paninij.proc.check.template.NoNestedTypesCheck;
+import org.paninij.proc.check.template.NoTypeParamCheck;
+import org.paninij.proc.check.template.NotSubclassCheck;
+import org.paninij.proc.check.template.ProcReturnTypesDuckabilityCheck;
+import org.paninij.proc.check.template.SuffixCheck;
 
 
 public class SignatureChecker implements Check
@@ -66,29 +66,29 @@ public class SignatureChecker implements Check
     
 
     /**
-     * @param  signature  The type element of the signature template to be checked.
-     * @return `true` if and only if `template` is can be processed as a valid signature template.
+     * @param  template  An element to be checked as a signature template.
+     * @return An `ok` result if and only if `template` is can be processed as a signature template.
      */
-    public Result check(Element signature)
+    public Result check(Element template)
     {
-        if (signature.getAnnotation(Signature.class) == null) {
+        if (template.getAnnotation(Signature.class) == null) {
             String err = "Tried to check an element as a signature template though it is not "
-                       + "annotated with `@Signature`: " + signature;
+                       + "annotated with `@Signature`: " + template;
             throw new IllegalArgumentException(err);
         }
         
         // Check to see if we can cast the given element to a type element.
-        if (signature.getKind() != ElementKind.INTERFACE)
+        if (template.getKind() != ElementKind.INTERFACE)
         {
             String err = "A signature template must be an interface, but an element annotated with "
-                       + "`@Capsule` named `{0}` is of kind {1}.";
-            err = format(err, signature, signature.getKind());
-            return new Error(err, SignatureChecker.class, signature);
+                       + "`@Signature` is of TypeKind {0}.";
+            err = format(err, template.getKind());
+            return new Error(err, SignatureChecker.class, template);
         }
 
         for (SignatureCheck check: signatureChecks)
         {
-            Result result = check.checkSignature((TypeElement) signature);
+            Result result = check.checkSignature((TypeElement) template);
             if (!result.ok()) {
                 return result;
             }

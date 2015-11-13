@@ -1,4 +1,4 @@
-package org.paninij.proc.check;
+package org.paninij.proc.check.template;
 
 import static java.text.MessageFormat.format;
 
@@ -8,6 +8,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
 public class NoBadMethodNamesCheck extends AbstractTemplateCheck
@@ -21,7 +22,7 @@ public class NoBadMethodNamesCheck extends AbstractTemplateCheck
     protected Result checkTemplate(TemplateKind kind, TypeElement template) {
         for (Element elem : template.getEnclosedElements()) {
             if (isMethodWithBadName(elem)) {
-                String err = "{0} templates cannot declare a method named `{1}()`.";
+                String err = "A {0} template cannot declare a method named `{1}()`.";
                 err = format(err, kind, elem.getSimpleName());
                 return new Error(err, NoBadMethodNamesCheck.class, elem);
             }

@@ -1,7 +1,5 @@
 package org.paninij.proc.check.capsule;
 
-import static java.text.MessageFormat.format;
-
 import static javax.lang.model.element.ElementKind.METHOD;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.PRIVATE;
@@ -53,9 +51,7 @@ public class ProceduresCheck implements CapsuleCheck
     {
         for (Element elem: template.getEnclosedElements()) {
             if (isProcedure(elem)) {
-                String err = "Active templates cannot have procedures, but a procedure named `{0}` "
-                           + "was found in active template `{1}`.";
-                err = format(err, elem.getSimpleName(), template.getSimpleName());
+                String err = "An active template cannot have any procedures.";
                 return new Error(err, ProceduresCheck.class, elem);
             }
         }
@@ -84,9 +80,7 @@ public class ProceduresCheck implements CapsuleCheck
     private Result checkProcedure(TypeElement template, ExecutableElement procedure)
     {
         if (!procedure.getModifiers().contains(PUBLIC)) {
-            String err = "Procedures must be declared `public`, but a procedure named `{0}` in the "
-                       + "capsule template `{1}` is not declared `public`.";
-            err = format(err, procedure.getSimpleName(), template.getSimpleName());
+            String err = "A procedure must be declared `public`.";
             return new Error(err, ProceduresCheck.class, procedure);
         }
         return ok;

@@ -1,4 +1,4 @@
-package org.paninij.proc.check;
+package org.paninij.proc.check.template;
 
 import static java.text.MessageFormat.format;
 
@@ -14,6 +14,7 @@ import javax.lang.model.element.TypeElement;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Future;
+import org.paninij.proc.check.CheckEnvironment;
 import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 import org.paninij.proc.check.duckability.DuckabilityChecker;
@@ -39,7 +40,7 @@ public class ProcReturnTypesDuckabilityCheck extends AbstractTemplateCheck
             if (isDuckProcedure(elem)) {
                 Result result = checker.check(((ExecutableElement) elem).getReturnType());
                 if (! result.ok()) {
-                    String err = "{0} template has a procedure named whose return type cannot be"
+                    String err = "A {0} template has a procedure whose return type cannot be "
                                + "ducked. {1}";
                     err = format(err, templateKind, result.err());
                     return new Error(err, ProcReturnTypesDuckabilityCheck.class, elem);

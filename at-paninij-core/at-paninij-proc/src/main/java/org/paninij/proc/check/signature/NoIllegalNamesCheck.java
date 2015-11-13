@@ -47,8 +47,8 @@ public class NoIllegalNamesCheck implements SignatureCheck
     {
         Element illegalMethod = getIllegalMethodNameIfAny(signature);
         if (illegalMethod != null) {
-            String err = "Signature template `{0}` includes a method with an illegal name: {1}()";
-            err = format(err, signature.getSimpleName(), illegalMethod.getSimpleName().toString());
+            String err = "A signature template method has an illegal name: `{0}()`";
+            err = format(err, illegalMethod.getSimpleName());
             return new Error(err, NoIllegalNamesCheck.class, illegalMethod);
         }
         return ok;

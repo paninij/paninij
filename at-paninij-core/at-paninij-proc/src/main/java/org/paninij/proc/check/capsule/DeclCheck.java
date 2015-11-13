@@ -58,26 +58,22 @@ public abstract class DeclCheck implements CapsuleCheck
     {
         assert template != null && init != null;
         
-        if (init.getReturnType().getKind() != TypeKind.VOID)
-        {
-            String err = "The {0} declaration of a capsule template must have void return type, "
-                       + "but a non-void `{0}()` method was found in `{1}`.";
-            err = format(err, getDeclName(), template.getSimpleName());
+        if (init.getReturnType().getKind() != TypeKind.VOID) {
+            String err = "A {0} declaration must have `void` return type.";
+            err = format(err, getDeclName());
             return new Error(err, getErrorSource(), init);
         }
         
-        if (!hasValidParameters(template, init))
-        {
-            String err = "The {0} declaration of the `{1}` capsule template has invalid parameters.";
+        if (!hasValidParameters(template, init)) {
+            // TODO: Make this message more specific and instructive for the user.
+            String err = "A {0} declaration has invalid parameters.";
             err = format(err, getDeclName(), template.getSimpleName());
             return new Error(err, getErrorSource(), init);
         }
 
-        if (!init.getTypeParameters().isEmpty())
-        {
-            String err = "The {0} declaration of a capsule template cannot have type parameters, "
-                       + "but a `{0}()` method with type paramters was found in `{1}`.";
-            err = format(err, getDeclName(), template.getSimpleName());
+        if (!init.getTypeParameters().isEmpty()) {
+            String err = "A {0} declaration cannot have type parameters.";
+            err = format(err, getDeclName());
             return new Error(err, getErrorSource(), init);
         }
 

@@ -5,7 +5,7 @@ import org.paninij.lang.Capsule;
 
 @BadTemplate
 @Capsule
-public class HasVariadicMethodTemplate
+public class HasVarargsMethodTemplate
 {
     public Object foo(Object o, Object i) {
         return new Object();

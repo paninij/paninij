@@ -1,4 +1,4 @@
-package org.paninij.proc.check;
+package org.paninij.proc.check.template;
 
 import static org.paninij.proc.check.Result.ok;
 
@@ -6,6 +6,7 @@ import static java.text.MessageFormat.format;
 
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 import org.paninij.proc.util.PaniniModel;
 
@@ -19,10 +20,10 @@ public class SuffixCheck extends AbstractTemplateCheck
         String err = null;
 
         if (!name.endsWith(expectedSuffix)) {
-            err = ("{0} template name must be suffixed with `{1}`");
+            err = ("A {0} template name must be suffixed with `{1}`");
             err = format(err, kind.toString(), expectedSuffix);
         } else if (name.length() == expectedSuffix.length()) {
-            err = "{0} template name must not be the same as the expected suffix, `{1}`";
+            err = "A {0} template name must not be the same as the expected suffix, `{1}`";
             err = format(err, kind.toString(), expectedSuffix);
         }
 

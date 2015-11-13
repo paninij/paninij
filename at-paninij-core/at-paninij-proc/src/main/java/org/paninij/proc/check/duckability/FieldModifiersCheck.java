@@ -26,8 +26,8 @@ public class FieldModifiersCheck implements DuckabilityCheck
     {
         for (Element elem : toDuck.getEnclosedElements()) {
             if (elem.getKind() == FIELD && ! hasAnyModifier(elem, PRIVATE, STATIC)) {
-                String err = "Type `{0}` has a field `{1}` which is not declared either `private` "
-                           + "or `static`.";
+                String err = "Type `{0}` has a field named `{1}` which is not declared either "
+                           + "`private` or `static`.";
                 err = format(err, toDuck, elem.getSimpleName());
                 return new Error(err, FieldModifiersCheck.class, elem);
             }

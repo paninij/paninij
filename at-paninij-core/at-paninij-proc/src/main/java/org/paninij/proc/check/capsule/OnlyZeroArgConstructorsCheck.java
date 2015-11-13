@@ -1,7 +1,5 @@
 package org.paninij.proc.check.capsule;
 
-import java.text.MessageFormat;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -29,9 +27,7 @@ public class OnlyZeroArgConstructorsCheck implements CapsuleCheck
                 int numParams = ((ExecutableElement) elem).getParameters().size();
                 if (numParams > 0)
                 {
-                    String err = "A capsule template must not contain any constructors, but a "
-                               + "constructor was found in `{0}`.";
-                    err = MessageFormat.format(err, template.getQualifiedName().toString());
+                    String err = "A capsule template must not contain any constructors.";
                     return new Result.Error(err, OnlyZeroArgConstructorsCheck.class, elem);
                 }
             }

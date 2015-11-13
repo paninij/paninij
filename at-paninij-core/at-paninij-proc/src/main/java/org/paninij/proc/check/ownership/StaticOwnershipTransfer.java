@@ -1,4 +1,4 @@
-package org.paninij.proc.check;
+package org.paninij.proc.check.ownership;
 
 public class StaticOwnershipTransfer
 {

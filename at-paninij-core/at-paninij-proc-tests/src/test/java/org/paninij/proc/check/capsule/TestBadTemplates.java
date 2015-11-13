@@ -23,8 +23,8 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     }
     
     @Test
-    public void testNoVariadicMethodsCheck() {
-        testBadTemplate("HasVariadicMethodTemplate");
+    public void testNoVarargsMethodsCheck() {
+        testBadTemplate("HasVarargsMethodTemplate");
     }
 
     @Test

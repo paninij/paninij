@@ -1,7 +1,5 @@
 package org.paninij.proc.check.capsule;
 
-import static java.text.MessageFormat.format;
-
 import static javax.lang.model.element.Modifier.*;
 
 import static org.paninij.proc.check.Result.ok;
@@ -75,8 +73,7 @@ public class NoIllegalModifiersCheck implements CapsuleCheck
     {
         Modifier illegalModifier = getIllegalModifier(template, ILLEGAL_TEMPLATE_MODIFIERS);
         if (illegalModifier != null) {
-            String err = "Capsule template `{0}` has an illegal modifier: `{1}`.";
-            err = format(err, template.getQualifiedName(), illegalModifier);
+            String err = "A capsule template has an illegal modifier: " + illegalModifier;
             return new Error(err, NoIllegalModifiersCheck.class, template);
         }
         
@@ -89,10 +86,7 @@ public class NoIllegalModifiersCheck implements CapsuleCheck
             illegalModifier = getIllegalModifier(member, illegalModifiers);
             if (illegalModifier != null)
             {
-                String err = "A member of a capsule template, `{0}`, has an illegal modifier: "
-                           + "a {1} named `{2}` includes the `{3}` modifier.";
-                err = format(err, template.getQualifiedName(), member.getKind(),
-                                  member.getSimpleName(), illegalModifier);
+                String err = "A capsule template member has an illegal modifier: " + illegalModifier;
                 return new Error(err, NoIllegalModifiersCheck.class, member);
             }
         }

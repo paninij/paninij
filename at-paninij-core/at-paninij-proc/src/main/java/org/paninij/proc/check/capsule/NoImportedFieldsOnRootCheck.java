@@ -20,7 +20,7 @@ public class NoImportedFieldsOnRootCheck implements CapsuleCheck
         if (hasAnnotation(template, Root.class)) {
             for (Element elem : template.getEnclosedElements()) {
                 if (isImportField(elem)) {
-                    String err = "Root capsules cannot have any `@Imports` fields.";
+                    String err = "A root capsule cannot have any `@Imports` fields.";
                     return new Error(err, NoImportedFieldsOnRootCheck.class, elem);
                 }
             }

@@ -1,7 +1,5 @@
 package org.paninij.proc.check.capsule;
 
-import static java.text.MessageFormat.format;
-
 import static org.paninij.proc.check.Result.ok;
 
 import java.lang.annotation.Annotation;
@@ -33,17 +31,14 @@ public class ImplementedSignaturesCheck implements CapsuleCheck
         for (TypeMirror type : template.getInterfaces())
         {
             if (seemsToBeSignatureInterfaceType(type)) {
-                String err = "Capsule template `{0}` implements the interface `{1}`. This type "
-                           + "seems to be a signature interface, but capsule templates should only "
-                           + "implement signature templates.";
-                err = format(err, template.getQualifiedName(), type.toString());
+                String err = "A capsule template cannot implement signature interfaces. Implement "
+                           + "the signature template instead.";
                 return new Error(err, ImplementedSignaturesCheck.class, template);
             }
 
-            if (!isSignatureType(type)) {
-                String err = "Capsule template `{0}` implements the interface `{1}`, but that type "
-                           + "does not seem to correspond to a signature.";
-                err = format(err, template.getQualifiedName(), type.toString());
+            if (!isSignatureTemplateType(type)) {
+                String err = "A capsule template implements an interface which is not a signature "
+                           + "template.";
                 return new Error(err, ImplementedSignaturesCheck.class, template);
             }
         }
@@ -65,7 +60,7 @@ public class ImplementedSignaturesCheck implements CapsuleCheck
         }
     }
     
-    private boolean isSignatureType(TypeMirror type)
+    private boolean isSignatureTemplateType(TypeMirror type)
     {
         if (type.getKind() == TypeKind.DECLARED) {
             TypeElement elem = (TypeElement) env.getTypeUtils().asElement(type);

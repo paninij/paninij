@@ -69,7 +69,7 @@ public class MethodModifiersCheck implements DuckabilityCheck
     {
         for (Element elem : toDuck.getEnclosedElements()) {
             if (isIllegalFinalMethod(elem)) {
-                String err = "Type `{0}` has a non-private final method: {1}().";
+                String err = "Type `{0}` has a non-private final method: `{1}()`.";
                 err = format(err, toDuck.getQualifiedName(), elem.getSimpleName());
                 return new Error(err, MethodModifiersCheck.class, elem);
             }

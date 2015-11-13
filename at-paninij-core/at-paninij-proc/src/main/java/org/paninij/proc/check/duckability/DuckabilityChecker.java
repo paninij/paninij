@@ -37,7 +37,7 @@ public class DuckabilityChecker implements Check
         case DECLARED:
             return checkDeclared(toDuck);
         default:
-            String err = "Cannot duck type `{0}` because it has type kind {1}";
+            String err = "Cannot duck type `{0}` because it has TypeKind {1}.";
             err = format(err, toDuck, toDuck.getKind());
             return new Error(err, DuckabilityChecker.class, null);
         }

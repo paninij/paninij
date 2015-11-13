@@ -1,4 +1,4 @@
-package org.paninij.proc.check;
+package org.paninij.proc.check.template;
 
 import static java.text.MessageFormat.format;
 
@@ -13,6 +13,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 
 
@@ -46,7 +47,7 @@ public class NoNestedTypesCheck extends AbstractTemplateCheck
         {
             ElementKind kind = enclosed.getKind();
             if (isIllegalKind(kind)) {
-                String err = "{0} templates must not contain a nested {1}.";
+                String err = "A {0} template must not contain a nested {1}.";
                 err = format(err, templateKind, kind, enclosed.getSimpleName(),
                                   template.getSimpleName());
                 return new Error(err, NoNestedTypesCheck.class, enclosed);
