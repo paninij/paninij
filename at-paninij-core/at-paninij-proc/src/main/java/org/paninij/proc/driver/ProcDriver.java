@@ -24,6 +24,8 @@ import javax.tools.JavaCompiler.CompilationTask;
 
 public class ProcDriver
 {
+    public static final String PANINI_GENERATED_SOURCES_DIR = "target/generated-sources/panini";
+    
     public static class Settings
     {
         final Iterable<File> classPath;
@@ -58,9 +60,9 @@ public class ProcDriver
         List<File> sourcePath = asList(
             new File("src/main/java"),
             new File("src/main/at-paninij"),
-            new File("target/generated-sources")
+            new File(PANINI_GENERATED_SOURCES_DIR)
         );
-        File sourceOutput = new File("target/generated-sources");
+        File sourceOutput = new File(PANINI_GENERATED_SOURCES_DIR);
         File classOutput = new File("target/classes");
         List<String> options = asList("-proc:only", "-Apanini.exceptOnFailedChecks");
 
