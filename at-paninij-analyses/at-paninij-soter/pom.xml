@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.paninij</groupId>
     <artifactId>at-paninij-analyses</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
 
   <artifactId>at-paninij-soter</artifactId>

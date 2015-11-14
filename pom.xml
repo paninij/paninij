@@ -33,7 +33,7 @@
 
   <groupId>org.paninij</groupId>
   <artifactId>at-paninij</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>pom</packaging>
   <name>@PaniniJ</name>
 
@@ -187,26 +187,26 @@
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>at-paninij-runtime</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>at-paninij-proc</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
       </dependency>
 
       <!-- at-paninij-analyses -->
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>at-paninij-soter</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
       </dependency>
 
       <!-- at-paninij-benchmarks -->
       <dependency>
         <groupId>org.paninij</groupId>
         <artifactId>at-paninij-benchmarks-savina</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
       </dependency>
 
       <!-- Some common remote dependencies are used across the repo. When one
