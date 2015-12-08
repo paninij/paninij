@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang='en-us'>
+  <head>
+    <meta charset='UTF-8'>
+    <title>@PaniniJ</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' href='css/normalize.css' media='screen'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,400italic' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' type='text/css' href='css/main.css' media='screen'>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+  </head>
+  <body>
+    <div class='main-content'>
+      <div class='page-header'>
+        <h1 class='project-name'>@PaniniJ</h1>
+        <p class='project-tag'>Getting Started Manual</p>
+      </div>
+      <nav class='main-nav'>
+          <a href='index.html'>Introduction</a>
+          <a href='installation.html'>Installation</a>
+          <a class='active' href='example.html'>Example</a>
+          <a href='more.html'>More</a>
+      </nav>
+
+      <h2 id='sec-intro'>Hello World Example</h2>
+
+      <p>This hello world example has three capsules:</p>
+      <img width='100%' src='img/hw-capsules.jpg'></img>
+
+      <p>
+        In this example, we have three capsules, the first is a passive capsule
+        named Console, the second is a passive capsule named Greeter and the
+        third is an active capsule called HelloWorld. The active capsule
+        HelloWorld holds a connection to the passive capsules Greeter and
+        Console in order to call on its procedures. This connection is set up by
+        the @Local annotation on the Greeter and Console field of the
+        HelloWorldTemplate.
+      </p>
+
+      <p>
+        The capsule Greeter has a field of type Console that is annotated with
+        the @Imports. This means that the Greeter wants to call procedures of a
+        Console capsule, but does not want to create the instance of the
+        capsule. By using @Imports, it specifies that the parent capsule of the
+        Greeter must supply the reference to the Console capsule. This is shown
+        in the HelloWorldTemplate in the design method where g.imports is called
+        and the reference to the Console capsule is passed as a parameter.
+      </p>
+
+      <h2>ConsoleTemplate.java</h2>
+      <script src="https://gist.github.com/ddmills/f5b07b04a339b0b08ffb.js"></script>
+
+      <h2>GreeterTemplate.java</h2>
+      <script src="https://gist.github.com/ddmills/947265cb909876052a76.js"></script>
+
+      <h2>HelloWorldTemplate.java</h2>
+      <script src="https://gist.github.com/ddmills/a15571010ea37894cc57.js"></script>
+
+      <div class='page-nav'>
+        <a class='page-nav-prev' href='installation.html'>
+          <i class='fa fa-fw fa-arrow-left'></i> Installation
+        </a>|
+        <a class='page-nav-next' href='more.html'>
+          More <i class='fa fa-fw fa-arrow-right'></i>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

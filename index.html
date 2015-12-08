@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang='en-us'>
+  <head>
+    <meta charset='UTF-8'>
+    <title>@PaniniJ</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' href='css/normalize.css' media='screen'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,400italic' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' type='text/css' href='css/main.css' media='screen'>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+  </head>
+  <body>
+    <div class='main-content'>
+      <div class='page-header'>
+        <h1 class='project-name'>@PaniniJ</h1>
+        <p class='project-tag'>Getting Started Manual</p>
+      </div>
+      <nav class='main-nav'>
+          <a class='active' href='index.html'>Introduction</a>
+          <a href='installation.html'>Installation</a>
+          <a href='example.html'>Example</a>
+          <a href='more.html'>More</a>
+      </nav>
+
+
+      <h1 id='sec-intro'>Introduction</h1>
+      <p>
+        @PaniniJ is an implementation of the
+        <a href='http://web.cs.iastate.edu/~panini/papers.shtml'>Panini
+        programming model</a> that enables the use of standard Java tools for
+        capsule-oriented programming. The Panini model is a set of rules that
+        eliminates certain classes of errors that are common in explicit
+        concurrent programs.
+      </p>
+
+      <P>
+       @PaniniJ utilizes annotation processing, a standard method of hooking
+       into the Java compiler, to generate concurrent code based on templates
+       created by the user. By converting the keywords of the PaniniJ language
+       into annotations, we are able to enforce the Panini model while still
+       allowing users to utilize any java tools they want. This Manual is for
+       getting started with @PaniniJ in the
+       <a href='https://eclipse.org/'>Eclipse</a> IDE.
+      </p>
+
+      <p>The next page details how to set up an @PaniniJ Project in Eclipse.</p>
+
+      <div class='page-nav'>
+        <a class='page-nav-next' href='installation.html'>
+          Installation <i class='fa fa-fw fa-arrow-right'></i>
+        </a>
+      </div>
+
+    </div>
+  </body>
+</html>

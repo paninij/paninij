@@ -1,0 +1,81 @@
+* { box-sizing: border-box; }
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #606c71;
+}
+
+.page-header {
+  padding: 5em 0;
+  text-align: center;
+}
+
+.project-name {
+  font-family: 'Georgia';
+  font-size: 3.5em;
+  margin: 0;
+}
+
+.project-tag {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.main-nav {
+  text-align: center;
+  font-size: 1.2em;
+  padding: 8px;
+  border-bottom: 4px solid #A22E2A;
+}
+
+.main-nav > a {
+  color: inherit;
+  margin: 0 10px;
+}
+
+.main-nav > a.active {
+  text-decoration: underline;
+}
+
+.page-nav {
+  text-align: center;
+  padding: 20px 0;
+  display: block;
+}
+
+a {
+  color: #A22E2A;;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+@media screen and (min-width: 64em) {
+  .main-content {
+    max-width: 64rem;
+    padding: 2rem 6rem;
+    margin: 0 auto;
+    font-size: 1.1rem;
+  }
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em) {
+  .main-content {
+    padding: 2rem 4rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media screen and (max-width: 42em) {
+  .main-content {
+    padding: 2rem 1rem;
+    font-size: 1rem;
+    }
+}
