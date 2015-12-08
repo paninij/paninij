@@ -57,6 +57,18 @@ img.center {
   margin-right: auto;
 }
 
+dt {
+  font-style: italic;
+}
+
+dd {
+  margin-bottom: 1em;
+}
+
+dd > ul {
+  margin: 0;
+}
+
 a {
   color: #A22E2A;;
   text-decoration: none;
