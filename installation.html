@@ -38,12 +38,76 @@
         this is necessary for the annotation processing to work correctly.
       </p>
 
+      <img class='center' src='img/step-1.jpg'></img>
+
       <h2 id='sec-step-2'>2. Download the at-paninij jar</h2>
-      <p>Download the latest jar from the github releases page: <a href='https://github.com/hridesh/panini/releases'>www.github.com/hridesh/panini/releases</a>
+      <p>
+        Download the latest processor (<code>at-paninij-proc-v0.1.0.jar</code>)
+        from the <a href='https://github.com/hridesh/panini/releases'>github
+        releases page</a>.
+      </p>
 
       <h2 id='sec-step-3'>3. Enable Annotation Processing</h2>
+      <p>
+        Enable annotation processing by right clicking on your project in the
+        project explorer and choosing "properties." Browse to Java Compiler >
+        Annotation Processing and check the Enable project specific setting
+        checkbox and Enable annotation processing.
+      </p>
+
+      <img class='center' src='img/step-2.jpg'></img>
+
+      <p>
+        Once you hit Apply, Eclipse will inform you that a rebuild on the
+        project is required. You can click yes to rebuild the project now.
+      </p>
+
+      <p>
+        Note that the "Generated Source Directory" is where the sources that
+        the annotation processor automatically generates will be stored. You can
+        remove the "." from ".apt_generated" and it will become visible in
+        eclipse.
+      </p>
+
       <h2 id='sec-step-4'>4. Add at-paninij annotation processor</h2>
+      <p>
+        Navigate to the Factory Path section of the project properties. It is
+        beneath the Annotation Processing option. Check the Enable project
+        specific settings checkbox, and click the Add External JARs&hellip;
+        button.
+      </p>
+
+      <img class='center' src='img/step-3.jpg'></img>
+
+      <p>
+        Browse to where you have downloaded the JAR file from step 2. Hit Apply
+        and confirm the project rebuild.
+      </p>
+
+      <img class='center' src='img/step-4.jpg'></img>
+
       <h2 id='sec-step-5'>5. Add the at-paninij as a referenced library</h2>
+      <p>
+        The @PaniniJ JAR file includes code necessary for the annotation
+        processing and runtime. To include the JAR file as a referenced libaray,
+        right click the project in the project explorer, and choose
+        "Add External Archives&hellip;".
+      </p>
+
+      <img class='center' src='img/step-5.jpg'></img>
+
+      <p>
+        Browse to where you downloaded the JAR file from step 2, and include it
+        in your project. Once it is included, the project should appear like
+        this in the Eclipse project explorer:
+      </p>
+
+      <img class='center' src='img/step-6.jpg'></img>
+
+      <p>
+        Now you're ready to start programming in @PaniniJ. See the next
+        page for an example @PaniniJ Hello World program.
+      </p>
 
       <div class='page-nav'>
         <a class='page-nav-prev' href='index.html'>
