@@ -24,37 +24,45 @@
 
       <h2 id='sec-intro'>Hello World Example</h2>
 
-      <p>This hello world example has three capsules:</p>
+      <p>
+        In this example, we have three capsules, the first is a <em>passive</em>
+        capsule named Console, the second is a <em>passive</em> capsule named
+        Greeter and the third is an <em>active</em> capsule called HelloWorld.
+      </p>
+
       <img width='100%' src='img/hw-capsules.jpg'></img>
 
+      <h2>ConsoleTemplate.java</h2>
+      <script src="https://gist.github.com/ddmills/f5b07b04a339b0b08ffb.js"></script>
       <p>
-        In this example, we have three capsules, the first is a passive capsule
-        named Console, the second is a passive capsule named Greeter and the
-        third is an active capsule called HelloWorld. The active capsule
-        HelloWorld holds a connection to the passive capsules Greeter and
-        Console in order to call on its procedures. This connection is set up by
-        the @Local annotation on the Greeter and Console field of the
-        HelloWorldTemplate.
+        The Console capsule has one simple procedure called <code>write</code>.
+        It simply prints out to the <code>System.out</code> stream.
       </p>
+
+      <h2>GreeterTemplate.java</h2>
+      <script src="https://gist.github.com/ddmills/947265cb909876052a76.js"></script>
 
       <p>
         The capsule Greeter has a field of type Console that is annotated with
         the @Imports. This means that the Greeter wants to call procedures of a
         Console capsule, but does not want to create the instance of the
-        capsule. By using @Imports, it specifies that the parent capsule of the
-        Greeter must supply the reference to the Console capsule. This is shown
-        in the HelloWorldTemplate in the design method where g.imports is called
-        and the reference to the Console capsule is passed as a parameter.
+        capsule. By using <code>@Imports</code>, it specifies that the parent
+        capsule of the Greeter must supply the reference to the Console capsule.
+        This is shown in the HelloWorldTemplate in the design method where
+        <code>g.imports</code> is called and the reference to the Console
+        capsule is passed as a parameter.
       </p>
-
-      <h2>ConsoleTemplate.java</h2>
-      <script src="https://gist.github.com/ddmills/f5b07b04a339b0b08ffb.js"></script>
-
-      <h2>GreeterTemplate.java</h2>
-      <script src="https://gist.github.com/ddmills/947265cb909876052a76.js"></script>
 
       <h2>HelloWorldTemplate.java</h2>
       <script src="https://gist.github.com/ddmills/a15571010ea37894cc57.js"></script>
+
+      <p>
+        The active capsule
+        HelloWorld holds a reference to the passive capsules Greeter and
+        Console in order to call on their procedures. This connection is set up by
+        the <code>@Local</code> annotation on the Greeter and Console field of
+        the HelloWorldTemplate.
+      </p>
 
       <div class='page-nav'>
         <a class='page-nav-prev' href='installation.html'>
