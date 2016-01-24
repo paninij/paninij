@@ -40,11 +40,11 @@ THE POSSIBILITY OF SUCH DAMAGE.
     <parent>
         <groupId>org.paninij</groupId>
         <artifactId>at-paninij-benchmarks</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
     
     <artifactId>at-paninij-benchmarks-jmh-harness</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>@PaniniJ Benchmarking Harness (JMH)</name>

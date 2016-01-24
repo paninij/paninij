@@ -66,12 +66,12 @@
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-proc</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-runtime</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.1-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
