@@ -209,6 +209,13 @@
         <version>0.1.1-SNAPSHOT</version>
       </dependency>
 
+      <!-- boa -->
+      <dependency>
+        <groupId>boa</groupId>
+        <artifactId>boa-datagen</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+      </dependency>
+
       <!-- Some common remote dependencies are used across the repo. When one
            of the repo's subprojects uses one of these, these version numbers
            should be inherited. -->

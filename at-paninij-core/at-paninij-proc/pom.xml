@@ -114,6 +114,11 @@
     </dependency>
 
     <dependency>
+      <groupId>boa</groupId>
+      <artifactId>boa-datagen</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
