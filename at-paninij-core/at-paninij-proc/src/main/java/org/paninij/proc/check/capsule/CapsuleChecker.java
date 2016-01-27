@@ -41,6 +41,7 @@ import org.paninij.proc.check.Result;
 import org.paninij.proc.check.Result.Error;
 import org.paninij.proc.check.template.NoBadMethodNamesCheck;
 import org.paninij.proc.check.template.NoDefaultPackageCheck;
+import org.paninij.proc.check.template.NoLocalSignatureCheck;
 import org.paninij.proc.check.template.NoNestedTypesCheck;
 import org.paninij.proc.check.template.NoTypeParamCheck;
 import org.paninij.proc.check.template.NotSubclassCheck;
@@ -77,6 +78,7 @@ public class CapsuleChecker implements Check
             new ProcReturnTypesDuckabilityCheck(env),
             new NoImportedFieldsOnRootCheck(),
             new NoBadMethodNamesCheck(),
+            new NoLocalSignatureCheck(env),
         };
     }
     

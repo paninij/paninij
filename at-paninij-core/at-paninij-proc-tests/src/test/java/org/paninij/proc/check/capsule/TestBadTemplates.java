@@ -203,6 +203,11 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     }
     
     @Test
+    public void testFieldsCheck6() {
+        testBadTemplate("fields.LocalSignatureTemplate");
+    }
+    
+    @Test
     public void testImplementedInterfaces1() {
         testBadTemplate("implemented.ImplementsSignatureTemplate");
     }
