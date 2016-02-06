@@ -18,10 +18,10 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *******************************************************************************/
 package org.paninij.proc.check.capsule.fields;
 

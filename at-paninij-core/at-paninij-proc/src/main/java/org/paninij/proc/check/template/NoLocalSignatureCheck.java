@@ -43,30 +43,30 @@ import org.paninij.proc.check.Result;
 public class NoLocalSignatureCheck extends AbstractTemplateCheck {
     private final CheckEnvironment env;
 
-	public NoLocalSignatureCheck(CheckEnvironment env) {
-		this.env = env;
-	}
-	
+    public NoLocalSignatureCheck(CheckEnvironment env) {
+        this.env = env;
+    }
+
     @Override
     protected Result checkTemplate(TemplateKind templateKind, TypeElement template) {
         for (Element element : template.getEnclosedElements()) {
-            if (element.getKind() == ElementKind.FIELD) { 
-            	if (!checkLocalField(element)) {
-            		String err = "Cannot have `@Local` for a Signature typed field.";
-            		return new Result.Error(err, NoLocalSignatureCheck.class, element);
-            	}
+            if (element.getKind() == ElementKind.FIELD) {
+                if (!checkLocalField(element)) {
+                    String err = "Cannot have `@Local` for a Signature typed field.";
+                    return new Result.Error(err, NoLocalSignatureCheck.class, element);
+                }
             }
         }
         return ok;
     }
-    
+
     private boolean checkLocalField(Element field) {
-    	assert field.getKind() == ElementKind.FIELD;
-    	
-    	if (field.getAnnotation(Local.class) == null) {
-    		return true;
-    	}
-    	
+        assert field.getKind() == ElementKind.FIELD;
+
+        if (field.getAnnotation(Local.class) == null) {
+            return true;
+        }
+
         TypeMirror type = getScalarType(field.asType());
         if (type.getKind() == TypeKind.DECLARED) {
             TypeElement elem = (TypeElement) env.getTypeUtils().asElement(type);
@@ -74,9 +74,9 @@ public class NoLocalSignatureCheck extends AbstractTemplateCheck {
                 throw new IllegalArgumentException("Failed to lookup type element for " + type);
             }
             if (elem.getAnnotation(SignatureInterface.class) != null) {
-            	return false;
+                return false;
             }
-        }	
+        }
         return true;
     }
 
