@@ -46,6 +46,7 @@ import org.paninij.proc.check.template.NoTypeParamCheck;
 import org.paninij.proc.check.template.NotSubclassCheck;
 import org.paninij.proc.check.template.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.template.SuffixCheck;
+import org.paninij.proc.check.template.TemplateNotProcedureCheck;
 
 
 public class CapsuleChecker implements Check
@@ -77,6 +78,7 @@ public class CapsuleChecker implements Check
             new ProcReturnTypesDuckabilityCheck(env),
             new NoImportedFieldsOnRootCheck(),
             new NoBadMethodNamesCheck(),
+            new TemplateNotProcedureCheck(),
         };
     }
     
