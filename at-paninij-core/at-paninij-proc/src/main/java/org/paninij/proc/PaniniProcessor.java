@@ -131,6 +131,8 @@ public class PaniniProcessor extends AbstractProcessor
         
         // Test: Print out the Boa Data ASTs for each root compilation unit found in this round.
         for (CompilationUnitTree cu : getCompilationUnitTrees(roundEnv)) {
+            System.out.println("Adapting the following compilation unit: ");
+            System.out.println(cu.toString());
             System.out.println(treeAdapter.adapt(cu).toString());
         }
         
