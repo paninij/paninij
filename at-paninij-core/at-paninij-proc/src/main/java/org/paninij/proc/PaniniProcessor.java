@@ -37,8 +37,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -83,6 +85,11 @@ import org.paninij.proc.util.ArtifactFiler;
 import org.paninij.proc.util.ArtifactMaker;
 import org.paninij.proc.util.UserArtifact;
 
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.util.Trees;
+
+import boa.datagen.suntree.SunTreeAdapter;
+
 
 /**
  * Used as an annotation processor service during compilation to make automatically-generated
@@ -100,6 +107,8 @@ public class PaniniProcessor extends AbstractProcessor
     protected ArtifactMaker artifactMaker;
     protected String capsuleListFile;
     protected FailureBehavior failureBehavior;
+    protected SunTreeAdapter treeAdapter;
+    protected Trees treeUtils;
     
     @Override
     public void init(ProcessingEnvironment processingEnv)
@@ -111,12 +120,19 @@ public class PaniniProcessor extends AbstractProcessor
         failureBehavior = options.containsKey("panini.exceptOnFailedChecks") ? EXCEPTION : LOGGING;
         
         artifactMaker = new ArtifactFiler(processingEnv.getFiler()) ;
+        treeUtils = Trees.instance(processingEnv);
+        treeAdapter = new SunTreeAdapter();
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
         this.roundEnv = roundEnv;
+        
+        // Test: Print out the Boa Data ASTs for each root compilation unit found in this round.
+        for (CompilationUnitTree cu : getCompilationUnitTrees(roundEnv)) {
+            System.out.println(treeAdapter.adapt(cu).toString());
+        }
         
         // Sets which contain models.
         Set<Capsule> capsules = new HashSet<Capsule>();
@@ -335,5 +351,13 @@ public class PaniniProcessor extends AbstractProcessor
     	df.setTimeZone(tz);
     	String iso = df.format(new Date());
     	return format("@Generated(value = \"{0}\", date = \"{1}\")", clazz.getName(), iso);
+    }
+    
+    private List<CompilationUnitTree> getCompilationUnitTrees(RoundEnvironment roundEnv) {
+        List<CompilationUnitTree> trees = new ArrayList<>();
+        for (Element root : roundEnv.getRootElements()) {
+            trees.add(treeUtils.getPath(root).getCompilationUnit());
+        }
+        return trees;
     }
 }
