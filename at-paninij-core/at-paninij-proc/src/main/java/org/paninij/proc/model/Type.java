@@ -162,7 +162,7 @@ public class Type
         	return UnduckableReason.NO_ZERO_ARG_CONSTRUCTOR;
         }
         
-        if (!JavaModel.getPackage(this.mirror).equals("")) {
+        if (JavaModel.getPackage(this.mirror).equals("")) {
         	return UnduckableReason.IN_DEFAULT_PACKAGE;
         }
         
