@@ -136,6 +136,7 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
         MessageShape shape = new MessageShape(procedure);
 
         List<String> source = Source.lines(
+                "#1",
                 "@Override",
                 "#0",
                 "{",
@@ -143,7 +144,8 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
                 "}",
                 "");
         source = Source.formatAll(source,
-                this.generateProcedureDecl(shape));
+                this.generateProcedureDecl(shape),
+                shape.kindAnnotation);
 
         return Source.formatAlignedFirst(source, this.generateEncapsulatedMethodCall(shape));
     }

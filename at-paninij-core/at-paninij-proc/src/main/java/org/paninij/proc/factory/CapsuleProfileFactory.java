@@ -90,6 +90,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
         String encoding = PaniniModel.isPaniniCustom(shape.returnType.getMirror()) ? shape.returnType.raw() : shape.encoded;
         
         List<String> source = Source.lines(
+                "#5",
                 "@Override",
                 "#0",
                 "{",
@@ -106,7 +107,8 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
                 encoding,
                 this.generateProcedureArguments(shape),
                 this.generateAssertSafeInvocationTransfer(),
-                this.generateProcedureReturn(shape));
+                this.generateProcedureReturn(shape),
+                shape.kindAnnotation);
     }
 
     protected List<String> generateProcArgumentDecls(Procedure p) {

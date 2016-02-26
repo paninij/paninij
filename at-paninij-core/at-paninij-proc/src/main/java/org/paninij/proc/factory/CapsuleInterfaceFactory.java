@@ -146,10 +146,11 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
 
         String argDeclString = String.join(", ", argDecls);
 
-        String declaration = Source.format("public #0 #1(#2);",
+        String declaration = Source.format("#3 public #0 #1(#2);",
                 shape.realReturn,
                 p.getName(),
-                argDeclString);
+                argDeclString,
+                shape.kindAnnotation);
 
         return declaration;
     }
