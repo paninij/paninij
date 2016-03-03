@@ -27,6 +27,7 @@
 package org.paninij.proc.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
@@ -88,8 +89,12 @@ public class ProcedureElement implements Procedure
 
         this.parameters = new ArrayList<Variable>();
 
-        for (VariableElement param : this.element.getParameters()) {
-            Variable v = new Variable(param.asType(), param.toString());
+        Iterator<? extends VariableElement> it = this.element.getParameters().iterator();
+        while (it.hasNext()) {
+            VariableElement param = it.next();
+            
+            boolean vararg = this.element.isVarArgs() && !it.hasNext();
+            Variable v = new Variable(param.asType(), param.toString(), vararg);
             this.parameters.add(v);
         }
 

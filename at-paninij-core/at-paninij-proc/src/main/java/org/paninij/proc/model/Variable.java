@@ -31,10 +31,12 @@ import javax.lang.model.type.TypeMirror;
 public class Variable extends Type
 {
     private String identifier;
+    private boolean isVararg;
 
-    public Variable(TypeMirror mirror, String identifier) {
+    public Variable(TypeMirror mirror, String identifier, boolean isVararg) {
         super(mirror);
         this.identifier = identifier;
+        this.isVararg = isVararg;
     }
 
     public String getIdentifier() {
@@ -43,6 +45,10 @@ public class Variable extends Type
 
     @Override
     public String toString() {
-        return super.toString() + " " + this.identifier;
+        String type = super.toString();
+        if (isVararg) {
+            type = type.replace("[]", "...");
+        }
+        return type + " " + this.identifier;
     }
 }
