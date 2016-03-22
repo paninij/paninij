@@ -256,4 +256,19 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     public void testNoDefaultPackageCheck() {
     	testBadTemplate("CapsuleInDefaultTemplate", "");
     }
+    
+    @Test
+    public void testHasBlockAnnotationTemplate() {
+        testBadTemplate("HasBlockAnnotationTemplate");  
+    }
+    
+    @Test
+    public void testHasFutureAnnotationTemplate() {
+        testBadTemplate("HasFutureAnnotationTemplate");  
+    }
+    
+    @Test
+    public void testHasDuckAnnotationTemplate() {
+        testBadTemplate("HasDuckAnnotationTemplate");  
+    }
 }

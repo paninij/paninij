@@ -9,3 +9,5 @@ bin/
 doc/
 /target/
 wala.properties
+.idea/
+*.iml
