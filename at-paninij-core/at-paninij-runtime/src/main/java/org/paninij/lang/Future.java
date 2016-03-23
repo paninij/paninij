@@ -26,6 +26,8 @@
 
 package org.paninij.lang;
 
+import java.lang.annotation.Documented;
+
 /**
  * <p>
  * Used to declare a procedure as 'futurized' behavior.
@@ -115,4 +117,5 @@ package org.paninij.lang;
  * 
  *
  */
+@Documented
 public @interface Future {}

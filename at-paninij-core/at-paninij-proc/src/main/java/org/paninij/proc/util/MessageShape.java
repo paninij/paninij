@@ -52,7 +52,7 @@ public class MessageShape
         this.category = this.getCategory();
         this.encoded = this.encode();
         this.realReturn = this.getRealReturn();
-        this.kindAnnotation = this.getKindAnnotation(procedure);
+        this.kindAnnotation = this.getKindAnnotation();
     }
 
     public enum Category {
@@ -162,19 +162,22 @@ public class MessageShape
         }
     }
     
-    private String getKindAnnotation(Procedure procedure) {
+    private String getKindAnnotation() {
         String procedureType = "";
         
-        switch (procedure.getAnnotationKind()) {
-        case BLOCK:
+        switch (this.behavior) {
+        case BLOCKED_FUTURE:
+        case BLOCKED_PREMADE:
             procedureType = "@org.paninij.lang.Block";
             break;
-        case FUTURE:
+        case UNBLOCKED_FUTURE:
             procedureType = "@org.paninij.lang.Future";
             break;
-        case DUCKFUTURE:
+        case UNBLOCKED_PREMADE:
+        case UNBLOCKED_DUCK:
             procedureType = "@org.paninij.lang.Duck";
-        case NONE:
+        case UNBLOCKED_SIMPLE:
+        case ERROR:
         default:
         }
         

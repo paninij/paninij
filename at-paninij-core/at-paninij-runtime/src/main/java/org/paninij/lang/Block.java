@@ -26,6 +26,8 @@
 
 package org.paninij.lang;
 
+import java.lang.annotation.Documented;
+
 /**
  * <p>
  * Used to declare a procedure as 'blocking' behavior.
@@ -86,4 +88,5 @@ package org.paninij.lang;
  * </ul>
  *
  */
+@Documented
 public @interface Block { }
