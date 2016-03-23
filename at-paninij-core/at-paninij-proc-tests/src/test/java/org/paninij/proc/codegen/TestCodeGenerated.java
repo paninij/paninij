@@ -92,7 +92,7 @@ public class TestCodeGenerated
     
     @Test
     public void testDuckGenerated() {
-        String runtime = "ducks.org_paninij_proc_codegen_Duckable$Duck$";
+        String runtime = "ducks.org_paninij_proc_codegen_ForDuck$Duck$";
 
         drive("DuckedProcedureTemplate");
         testGeneratedList(runtimePackage + ".", runtime);
