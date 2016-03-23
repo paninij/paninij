@@ -48,11 +48,6 @@ public class TestBadTemplates extends AbstractTestBadTemplates
     }
     
     @Test
-    public void testNoVarargsMethodsCheck() {
-        testBadTemplate("HasVarargsMethodTemplate");
-    }
-
-    @Test
     public void testOnlyZeroArgConstructorsCheck() {
         testBadTemplate("HasIllegalConstructorTemplate");
     }

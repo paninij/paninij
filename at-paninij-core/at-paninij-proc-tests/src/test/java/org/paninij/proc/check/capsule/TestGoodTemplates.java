@@ -45,6 +45,12 @@ public class TestGoodTemplates
     {
         testGoodTemplates("org.paninij.proc.activepassive", "XTemplate", "YTemplate", "ZTemplate");
     }
+    
+    @Test
+    public void testVarargs()
+    {
+        testGoodTemplates("org.paninij.proc.check.capsule", "HasVarargsMethodTemplate");
+    }
 
     private void testGoodTemplates(String pkg, String... templates)
     {

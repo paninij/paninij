@@ -59,7 +59,7 @@ public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement
 
     @Override
     public CapsuleElement visitVariable(VariableElement e, CapsuleElement capsule) {
-        Variable variable = new Variable(e.asType(), e.getSimpleName().toString());
+        Variable variable = new Variable(e.asType(), e.getSimpleName().toString(), false);
         if (e.getAnnotation(Local.class) != null) {
             capsule.addLocals(variable);
         } else if (e.getAnnotation(Imports.class) != null) {

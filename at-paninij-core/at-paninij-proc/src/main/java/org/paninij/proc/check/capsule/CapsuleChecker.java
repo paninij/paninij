@@ -64,7 +64,6 @@ public class CapsuleChecker implements Check
             new SuffixCheck(),
             new NoDefaultPackageCheck(),
             new NotSubclassCheck(env),
-            new NoVarargsMethodsCheck(),
             new OnlyZeroArgConstructorsCheck(),
             new NotTooManyDeclsCheck(),
             new InitDeclCheck(),
