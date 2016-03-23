@@ -25,47 +25,29 @@
  *******************************************************************************/
 package org.paninij.proc.check.capsule;
 
-import static org.paninij.proc.driver.ProcDriver.makeDefaultSettings;
+import org.paninij.lang.Capsule;
 
-import java.io.IOException;
-
-import org.junit.Test;
-import org.paninij.proc.driver.ProcDriver;
-
-public class TestGoodTemplates
+@Capsule
+public class HasVarargsMethodTemplate
 {
-    private final ProcDriver driver;
-    
-    public TestGoodTemplates() throws IOException {
-        driver = new ProcDriver(makeDefaultSettings());
-    }
-    
-    @Test
-    public void testMainGen()
-    {
-        testGoodTemplates("org.paninij.proc.activepassive", "XTemplate", "YTemplate", "ZTemplate");
-    }
-    
-    @Test
-    public void testVarargs()
-    {
-        testGoodTemplates("org.paninij.proc.check.capsule", "HasVarargsMethodTemplate");
+    public Object foo(Object o, Object i) {
+        return new Object();
     }
 
-    private void testGoodTemplates(String pkg, String... templates)
+    public Object primitiveArg(int i)
     {
-        if (templates.length == 0) {
-            return;
-        }
-        if (pkg != null && !pkg.equals("")) {
-            for (int idx = 0; idx < templates.length; idx++) {
-                templates[idx] = pkg + "." + templates[idx];
-            }
-        }
-        try {
-            driver.process(templates);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        return new Object();
     }
+
+    public Object arrayArg(Object[] arr) {
+        return new Object();
+    }
+
+    public Object primitiveArrayArg(int[] arr) {
+        return new Object();
+    } 
+
+    public Object variadicArg(int i, int... integers) {
+        return new Object();
+    } 
 }
