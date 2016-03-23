@@ -163,7 +163,8 @@ public class CapsuleMockupFactory implements ArtifactFactory<Signature>
         }
         String params = String.join(",", varStrings);
         
-        List<String> src = lines("@Override",
+        List<String> src = lines("#4",
+                                 "@Override",
                                  "public #0 #1(#2) {",
                                  "    /* Do Nothing */",
                                  "    #3",
@@ -173,7 +174,8 @@ public class CapsuleMockupFactory implements ArtifactFactory<Signature>
         return formatAll(src, shape.realReturn,
                               procedure.getName(),
                               params,
-                              generateProcedureReturnStatement(procedure));
+                              generateProcedureReturnStatement(procedure),
+                              shape.kindAnnotation);
     }
     
 

@@ -142,6 +142,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
         String encoding = PaniniModel.isPaniniCustom(shape.returnType.getMirror()) ? shape.returnType.raw() : shape.encoded;
         
         List<String> source = Source.lines(
+                "#6",
                 "@Override",
                 "#0",
                 "{",
@@ -159,7 +160,8 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                 this.generateProcedureArguments(shape),
                 this.generateAssertSafeInvocationTransfer(),
                 doBlock,
-                this.generateProcedureReturn(shape));
+                this.generateProcedureReturn(shape),
+                shape.kindAnnotation);
     }
 
     private List<String> generateProcedures()

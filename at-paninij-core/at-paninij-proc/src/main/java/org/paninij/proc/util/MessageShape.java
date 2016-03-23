@@ -43,6 +43,7 @@ public class MessageShape
     public final Behavior behavior;
     public final String encoded;
     public final String realReturn;
+    public final String kindAnnotation;
 
     public MessageShape(Procedure procedure) {
         this.procedure = procedure;
@@ -51,6 +52,7 @@ public class MessageShape
         this.category = this.getCategory();
         this.encoded = this.encode();
         this.realReturn = this.getRealReturn();
+        this.kindAnnotation = this.getKindAnnotation();
     }
 
     public enum Category {
@@ -158,6 +160,28 @@ public class MessageShape
         default:
             throw new IllegalArgumentException("Message has an illegal (\"ERROR\") behavior, so the real return type cannot be determined.");
         }
+    }
+    
+    private String getKindAnnotation() {
+        String procedureType = "";
+        
+        switch (this.behavior) {
+        case BLOCKED_FUTURE:
+        case BLOCKED_PREMADE:
+            procedureType = "@org.paninij.lang.Block";
+            break;
+        case UNBLOCKED_FUTURE:
+            procedureType = "@org.paninij.lang.Future";
+            break;
+        case UNBLOCKED_PREMADE:
+        case UNBLOCKED_DUCK:
+            procedureType = "@org.paninij.lang.Duck";
+        case UNBLOCKED_SIMPLE:
+        case ERROR:
+        default:
+        }
+        
+        return procedureType;
     }
 
 }
