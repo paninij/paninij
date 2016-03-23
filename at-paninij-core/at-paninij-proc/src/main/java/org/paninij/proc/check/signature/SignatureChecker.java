@@ -48,6 +48,7 @@ import org.paninij.proc.check.template.NoTypeParamCheck;
 import org.paninij.proc.check.template.NotSubclassCheck;
 import org.paninij.proc.check.template.ProcReturnTypesDuckabilityCheck;
 import org.paninij.proc.check.template.SuffixCheck;
+import org.paninij.proc.check.template.TemplateNotProcedureCheck;
 
 
 public class SignatureChecker implements Check
@@ -71,6 +72,7 @@ public class SignatureChecker implements Check
             new NoIllegalNamesCheck(),
             new ProcReturnTypesDuckabilityCheck(env),
             new NoBadMethodNamesCheck(),
+            new TemplateNotProcedureCheck(),
         };
     }
     

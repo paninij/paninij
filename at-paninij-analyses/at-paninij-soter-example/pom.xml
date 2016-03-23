@@ -122,11 +122,6 @@
     </dependency>
     <dependency>
       <groupId>org.paninij</groupId>
-      <artifactId>at-paninij-runtime</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.paninij</groupId>
       <artifactId>at-paninij-soter</artifactId>
     </dependency>
   </dependencies>
