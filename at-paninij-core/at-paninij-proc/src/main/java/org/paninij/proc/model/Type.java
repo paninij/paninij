@@ -78,6 +78,13 @@ public class Type
 
     public String encodeFull() {
         String enc = this.mirror.toString().replaceAll("_", "__").replaceAll("\\.", "_");
+        
+        if (enc.contains("<")) { // generic type
+            enc = enc.replaceAll("<", "\\$").replaceAll(">", "\\$generic");
+            enc = enc.replaceAll(",", "__").replaceAll(" ", "__");
+            enc = enc.replaceAll("\\?", "_");
+        }
+        
         if (this.kind == TypeKind.ARRAY) {
             enc = enc.replace('[', '$');
             enc = enc.replace(']', ' ');

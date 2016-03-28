@@ -52,6 +52,13 @@ public class TestGoodTemplates
         testGoodTemplates("org.paninij.proc.check.capsule", "HasVarargsMethodTemplate");
     }
 
+    @Test
+    public void testGenerics()
+    {
+        testGoodTemplates("org.paninij.proc.decls", 
+                "GenericReturnTemplate", "GenericParameterTemplate");
+    }
+    
     private void testGoodTemplates(String pkg, String... templates)
     {
         if (templates.length == 0) {
