@@ -119,6 +119,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.sun</groupId>
+      <artifactId>tools</artifactId>
+      <scope>system</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

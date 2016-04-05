@@ -79,6 +79,10 @@
   <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Warning: It is likey that you will need to change this on your system: -->
+    <java.tools.jar>${java.home}/../lib/tools.jar</java.tools.jar>
+
     <java.lang.version>1.8</java.lang.version>
 
     <panini.gen.src.dir>
@@ -225,6 +229,14 @@
         <artifactId>compile-testing</artifactId>
         <version>0.6</version>
         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun</groupId>
+        <artifactId>tools</artifactId>
+        <version>${java.lang.version}</version>
+        <scope>system</scope>
+        <systemPath>${java.tools.jar}</systemPath>
       </dependency>
 
     </dependencies>

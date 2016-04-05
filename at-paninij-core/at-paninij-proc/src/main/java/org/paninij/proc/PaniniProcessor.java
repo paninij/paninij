@@ -37,8 +37,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -57,6 +59,8 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import com.sun.source.util.Trees;
+import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import org.paninij.proc.check.CapsuleTestChecker;
 import org.paninij.proc.check.FailureBehavior;
 import org.paninij.proc.check.Result;
@@ -100,6 +104,7 @@ public class PaniniProcessor extends AbstractProcessor
     protected ArtifactMaker artifactMaker;
     protected String capsuleListFile;
     protected FailureBehavior failureBehavior;
+    protected Trees treeUtils;
     
     @Override
     public void init(ProcessingEnvironment processingEnv)
@@ -111,12 +116,18 @@ public class PaniniProcessor extends AbstractProcessor
         failureBehavior = options.containsKey("panini.exceptOnFailedChecks") ? EXCEPTION : LOGGING;
         
         artifactMaker = new ArtifactFiler(processingEnv.getFiler()) ;
+        treeUtils = Trees.instance(processingEnv);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
         this.roundEnv = roundEnv;
+
+        for (JCCompilationUnit compilationUnit : getCompilationUnits(roundEnv)) {
+            System.out.println(compilationUnit.toString());
+        }
+
         
         // Sets which contain models.
         Set<Capsule> capsules = new HashSet<Capsule>();
@@ -335,5 +346,13 @@ public class PaniniProcessor extends AbstractProcessor
     	df.setTimeZone(tz);
     	String iso = df.format(new Date());
     	return format("@Generated(value = \"{0}\", date = \"{1}\")", clazz.getName(), iso);
+    }
+
+    private List<JCCompilationUnit> getCompilationUnits(RoundEnvironment roundEnv) {
+        List<JCCompilationUnit> trees = new ArrayList<>();
+        for (Element root : roundEnv.getRootElements()) {
+            trees.add((JCCompilationUnit) treeUtils.getPath(root).getCompilationUnit());
+        }
+        return trees;
     }
 }
