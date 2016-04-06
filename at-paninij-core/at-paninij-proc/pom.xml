@@ -46,6 +46,16 @@
   </scm>
 
   <build>
+
+    <!-- Specify the custom location of @PaniniJ test source resources. -->
+    <!--
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/src/test/panini/testsrc</directory>
+      </testResource>
+    </testResources>
+    -->
+
     <plugins>
 
       <!-- Prevent the compiler from trying to use the processor which it is compiling. -->
@@ -107,18 +117,22 @@
   </build>
 
   <dependencies>
-
     <dependency>
       <groupId>org.paninij</groupId>
       <artifactId>at-paninij-runtime</artifactId>
     </dependency>
 
+    <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>me.dwtj</groupId>
+      <artifactId>java-compiler-runner</artifactId>
+      <version>0.1.0</version>
+    </dependency>
   </dependencies>
 
 </project>
