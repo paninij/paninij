@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.paninij</groupId>
+    <artifactId>at-paninij-core</artifactId>
+    <version>0.1.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>at-paninij-tests</artifactId>
+  <packaging>jar</packaging>
+
+  <name>@PaniniJ Annotation Processor Tests - Take 2</name>
+  <description>
+    A package for testing `proc` with various @PaniniJ programs.
+  </description>
+
+  <properties>
+    <!-- <panini.gen.src.dir>
+      ${project.build.directory}/generated-sources/panini
+    </panini.gen.src.dir>
+    <panini.gen.test.src.dir>
+      ${project.build.directory}/generated-test-sources/panini
+    </panini.gen.test.src.dir> -->
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <!-- Add the generated source directories so that Eclipse will find them. -->
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/target/tests</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.paninij</groupId>
+      <artifactId>at-paninij-proc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.dwtj</groupId>
+      <artifactId>java-compiler-runner</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.testing.compile</groupId>
+      <artifactId>compile-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
