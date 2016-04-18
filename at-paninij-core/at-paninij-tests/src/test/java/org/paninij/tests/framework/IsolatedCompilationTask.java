@@ -28,79 +28,47 @@ package org.paninij.tests.framework;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
-import javax.tools.JavaCompiler;
 import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
 import javax.tools.JavaCompiler.CompilationTask;
 
 import org.paninij.proc.PaniniProcessor;
 
 import me.dwtj.java.compiler.runner.CompilationTaskBuilder;
-
-import javax.tools.JavaFileObject;
+import me.dwtj.java.compiler.runner.StandardJavaFileManagerBuilder;
 
 public class IsolatedCompilationTask {
-    private static final List<File> SOURCE_IN;
-    private static final List<File> CLASS_IN;
+    public static final File SOURCE_FOLDER;
+
+    private static final File RUNTIME_CLASSES_FOLDER;
     private static final String SOURCE_OUT;
     private static final String CLASS_OUT;
     
-    public static final File SOURCE_FOLDER;
-    
     static {
         SOURCE_FOLDER = new File("src/test/sources/");
-                
-        SOURCE_IN = new ArrayList<File>();
-        SOURCE_IN.add(SOURCE_FOLDER);
-        
-        CLASS_IN = new ArrayList<File>();
-        CLASS_IN.add(new File("../at-paninij-runtime/target/classes/"));
-        
+        RUNTIME_CLASSES_FOLDER = new File("../at-paninij-runtime/target/classes/");
         SOURCE_OUT = "target/tests/source/";
         CLASS_OUT = "target/tests/class/";
     }
     
-    private final File testSourceOut;
-    private final File testClassOut;
-    private final StandardJavaFileManager fm;
-    private final CompilationTaskBuilder builder;
+    private final File sourceOutput;
+    private final File classOutput;
+    private final StandardJavaFileManagerBuilder fmBuilder;
+    private final CompilationTaskBuilder ctBuilder;
     private boolean called;
     
     public IsolatedCompilationTask(String unitName, String testName) throws IOException {
         String fullTestName = unitName + "." + testName;
-        testSourceOut = new File(SOURCE_OUT + fullTestName);
-        testClassOut = new File(CLASS_OUT + fullTestName);
+        sourceOutput = new File(SOURCE_OUT + fullTestName);
+        classOutput = new File(CLASS_OUT + fullTestName);
         
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        fm = compiler.getStandardFileManager(null, null, null);
-        fm.setLocation(StandardLocation.SOURCE_PATH, SOURCE_IN);
-        
-        CLASS_IN.add(testClassOut);
-        builder = CompilationTaskBuilder.newBuilder();
-        builder.setFileManager(fm)
-               .setSourceOutputDir(testSourceOut)
-               .setClassOutputDir(testClassOut)
-               .addAllClassPathDirs(CLASS_IN)
-               .addAllSourcePathDirs(SOURCE_IN)
-               .addProc(new PaniniProcessor());
+        fmBuilder = StandardJavaFileManagerBuilder.newBuilder();
+        ctBuilder = CompilationTaskBuilder.newBuilder();
     }
     
     public void addClasses(String...classes) throws IOException {
-        for (String s : classes) {
-            JavaFileObject unit = fm.getJavaFileForInput(
-                    StandardLocation.SOURCE_PATH,
-                    s,
-                    JavaFileObject.Kind.SOURCE);
-            
-            if (unit == null)
-                throw new IllegalStateException("Unit " + s + " is null");
-            
-            builder.addCompilationUnit(unit);
-        }
+        ctBuilder.addAllClasses(Arrays.asList(classes));
     }
     
     public void execute() throws IOException {
@@ -109,13 +77,28 @@ public class IsolatedCompilationTask {
         called = true;
         
         // Clean up from previous tests if needed
-        delete(testSourceOut);
-        delete(testClassOut);
+        delete(sourceOutput);
+        delete(classOutput);
         
-        testSourceOut.mkdirs();
-        testClassOut.mkdirs();
+        sourceOutput.mkdirs();
+        classOutput.mkdirs();
         
-        CompilationTask task = builder.build();
+        // Build file manager and task
+        fmBuilder.setSourceOutputDir(sourceOutput)
+                 .setClassOutputDir(classOutput)
+                 .addSourcePathDir(SOURCE_FOLDER)
+                 .addClassPathDir(classOutput)
+                 .addClassPathDir(RUNTIME_CLASSES_FOLDER);
+        
+        StandardJavaFileManager fileManager = fmBuilder.build();
+        
+        ctBuilder.setFileManager(fileManager)
+                  .addProc(new PaniniProcessor())
+                  .addOption("-Apanini.exceptOnFailedChecks");
+        
+        CompilationTask task = ctBuilder.build();
+        
+        // Execute compiler
         task.call();
     }
     
