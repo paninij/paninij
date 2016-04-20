@@ -24,7 +24,7 @@
  *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.proc.util;
+package org.paninij.test;
 
 import java.io.File;
 import java.io.FileInputStream;

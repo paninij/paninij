@@ -18,39 +18,33 @@
  * http://paninij.org
  *
  * Contributors:
- *  Dr. Hridesh Rajan,
- *  Dalton Mills,
- *  David Johnston,
- *  Trey Erenberger
- *  Jackson Maddox
+ * 	Dr. Hridesh Rajan,
+ * 	Dalton Mills,
+ * 	David Johnston,
+ * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.util;
+package org.paninij.proc.capsuletest;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import org.paninij.lang.Capsule;
+import org.paninij.lang.Imports;
 
-import java.util.ArrayList;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
-
-public abstract class AbstractTestBadTemplates extends AbstractCompileTest {
-
-    public AbstractTestBadTemplates(ArrayList<String> classes) {
-        super(classes);
+/*
+@Capsule
+public class FooTemplate
+{
+    @Import Bar bar;
+    int count;
+    
+    void init() {
+        count = 0;
     }
     
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
-
-    @Before
-    public void setUp()
-    {
-        expected.expect(RuntimeException.class);
-        expected.expectCause(instanceOf(getExpectedCause()));
-        // TODO: Figure out if we can specify the expected error source (i.e. the check from which
-        // the exception was originally thrown).
+    public Integer importedBarCount() {
+        return bar.barCount();
     }
-
-    protected abstract Class<?> getExpectedCause();
+    
+    public Integer fooCount() {
+        return ++count;
+    }
 }
+*/

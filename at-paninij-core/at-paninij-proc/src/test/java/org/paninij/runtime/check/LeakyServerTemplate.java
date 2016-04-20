@@ -18,35 +18,42 @@
  * http://paninij.org
  *
  * Contributors:
- *  Dr. Hridesh Rajan,
- *  Dalton Mills,
- *  David Johnston,
- *  Trey Erenberger
- *  Jackson Maddox
+ * 	Dr. Hridesh Rajan,
+ * 	Dalton Mills,
+ * 	David Johnston,
+ * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.capsule;
+package org.paninij.runtime.check;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import org.paninij.lang.Capsule;
 
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-import org.paninij.test.AbstractCompileTest;
-
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
-        super(classes);
+/**
+ * Implements a server which gives away a reference to its state.
+ */
+/*
+@Capsule
+public class LeakyServerTemplate
+{
+    Secret serverSecret = new Secret();
+    
+    public Integer getInteger() {
+        return new Integer(9);
     }
 
-    @Parameterized.Parameters
-    public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
+    public void giveInteger(Integer i) {
+        // Nothing to do.
     }
-
-    @Test
-    public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+    
+    public void giveSecret(Secret s) {
+        // Nothing to do.
+    }
+    
+    public Secret getSecret() {
+        return serverSecret;
+    }
+    
+    public LeakyServerTemplate getTemplateReference() {
+        return this;
     }
 }
+*/

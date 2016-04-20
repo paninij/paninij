@@ -24,7 +24,7 @@
  *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.proc.util;
+package org.paninij.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +71,14 @@ public class IsolatedCompilationTask {
         
         fmBuilder = StandardJavaFileManagerBuilder.newBuilder();
         ctBuilder = CompilationTaskBuilder.newBuilder();
+    }
+    
+    public File getSourceOutput() {
+        return sourceOutput;
+    }
+    
+    public File getClassOutput() {
+        return classOutput;
     }
     
     public void addClasses(String...classes) throws IOException {

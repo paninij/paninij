@@ -18,35 +18,14 @@
  * http://paninij.org
  *
  * Contributors:
- *  Dr. Hridesh Rajan,
- *  Dalton Mills,
- *  David Johnston,
- *  Trey Erenberger
- *  Jackson Maddox
+ * 	Dr. Hridesh Rajan,
+ * 	Dalton Mills,
+ * 	David Johnston,
+ * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.capsule;
+package org.paninij.runtime.check;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+public class Secret
+{
 
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-import org.paninij.test.AbstractCompileTest;
-
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
-        super(classes);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
-    }
-
-    @Test
-    public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
-    }
 }

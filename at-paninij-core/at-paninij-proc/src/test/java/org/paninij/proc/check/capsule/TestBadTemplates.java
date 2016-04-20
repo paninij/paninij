@@ -33,7 +33,7 @@ import java.util.Collection;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.paninij.proc.check.capsule.CapsuleCheckException;
-import org.paninij.proc.util.AbstractTestBadTemplates;
+import org.paninij.test.AbstractTestBadTemplates;
 
 public class TestBadTemplates extends AbstractTestBadTemplates {
     public TestBadTemplates(ArrayList<String> classes) {

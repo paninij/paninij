@@ -18,35 +18,34 @@
  * http://paninij.org
  *
  * Contributors:
- *  Dr. Hridesh Rajan,
- *  Dalton Mills,
- *  David Johnston,
- *  Trey Erenberger
- *  Jackson Maddox
+ * 	Dr. Hridesh Rajan,
+ * 	Dalton Mills,
+ * 	David Johnston,
+ * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.capsule;
+package org.paninij.proc.driver;
+
+import static org.paninij.proc.driver.ProcDriver.makeDefaultSettings;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.junit.Test;
-import org.junit.runners.Parameterized;
-import org.paninij.test.AbstractCompileTest;
+import org.paninij.proc.driver.ProcDriver;
 
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
-        super(classes);
+/**
+ * Includes tests which perform a Java compilation task with a `PaniniProcessor` instance configured
+ * to use `-Apanini.staticOwnership=SOTER`.
+ */
+public class TestProcDriver
+{
+    private final ProcDriver driver;
+    
+    public TestProcDriver() throws IOException {
+        driver = new ProcDriver(makeDefaultSettings());
     }
-
-    @Parameterized.Parameters
-    public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
-    }
-
+    
     @Test
-    public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+    public void processNormalTemplate() throws IOException {
+        driver.process("org.paninij.proc.shapes.NormalTemplate");
     }
 }

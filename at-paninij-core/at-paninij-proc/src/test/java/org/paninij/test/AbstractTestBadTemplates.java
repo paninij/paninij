@@ -24,45 +24,33 @@
  *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.proc.util;
+package org.paninij.test;
 
-import java.io.IOException;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.rules.ExpectedException;
 
-@RunWith(Parameterized.class)
-public abstract class AbstractCompileTest {
+public abstract class AbstractTestBadTemplates extends AbstractCompileTest {
+
+    public AbstractTestBadTemplates(ArrayList<String> classes) {
+        super(classes);
+    }
+    
     @Rule
-    public TestName name = new TestName();
-    
-    protected IsolatedCompilationTask task;
-    private final ArrayList<String> classes;
-    
-    public AbstractCompileTest(ArrayList<String> classes) {
-        this.classes = classes;
-    }
-    
+    public ExpectedException expected = ExpectedException.none();
+
     @Before
-    public void before() throws IOException {
-        task = new IsolatedCompilationTask(
-                getClass().getName(),
-                name.getMethodName());
-    }
-    
-    public static Collection<ArrayList<String>> parameters(String type) throws IOException {
-        TestUtil util = new TestUtil(IsolatedCompilationTask.SOURCE_FOLDER);
-        util.process();
-        return util.getUnits(type);
+    public void setUp()
+    {
+        expected.expect(RuntimeException.class);
+        expected.expectCause(instanceOf(getExpectedCause()));
+        // TODO: Figure out if we can specify the expected error source (i.e. the check from which
+        // the exception was originally thrown).
     }
 
-    public void addClassesAndExecute() throws IOException {
-        task.addClasses(classes.toArray(new String[classes.size()]));
-        task.execute();
-    }
+    protected abstract Class<?> getExpectedCause();
 }

@@ -18,35 +18,23 @@
  * http://paninij.org
  *
  * Contributors:
- *  Dr. Hridesh Rajan,
- *  Dalton Mills,
- *  David Johnston,
- *  Trey Erenberger
- *  Jackson Maddox
+ * 	Dr. Hridesh Rajan,
+ * 	Dalton Mills,
+ * 	David Johnston,
+ * 	Trey Erenberger
+ * 	Jackson Maddox
  *******************************************************************************/
-package org.paninij.proc.check.capsule;
+package org.paninij.proc.codegen;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-import org.paninij.test.AbstractCompileTest;
-
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
-        super(classes);
+public class ProcReturn {
+    private int x, y;
+    
+    public void set(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
-
-    @Parameterized.Parameters
-    public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
-    }
-
-    @Test
-    public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+    
+    public void print() {
+        System.out.println(x + " " + y);
     }
 }

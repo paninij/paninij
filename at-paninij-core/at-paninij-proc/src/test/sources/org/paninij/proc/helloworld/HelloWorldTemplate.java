@@ -18,35 +18,30 @@
  * http://paninij.org
  *
  * Contributors:
- *  Dr. Hridesh Rajan,
- *  Dalton Mills,
- *  David Johnston,
- *  Trey Erenberger
- *  Jackson Maddox
+ * 	Dr. Hridesh Rajan,
+ * 	Dalton Mills,
+ * 	David Johnston,
+ * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.capsule;
+package org.paninij.proc.helloworld;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import org.paninij.lang.Capsule;
+import org.paninij.lang.Local;
+import org.paninij.lang.Root;
 
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-import org.paninij.test.AbstractCompileTest;
+@Root
+@Capsule
+public class HelloWorldTemplate
+{
+    @Local Console c;
+    @Local Greeter g;
 
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
-        super(classes);
+    void design(HelloWorld self) {
+        g.imports(c);
     }
 
-    @Parameterized.Parameters
-    public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
-    }
-
-    @Test
-    public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+    void run() {
+        int ret2 = g.greetBlock();
+        System.out.println("Greet has blocked and returned: " + ret2);
     }
 }

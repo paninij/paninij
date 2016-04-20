@@ -25,7 +25,7 @@
   <modules>
     <module>at-paninij-runtime</module>
     <module>at-paninij-proc</module>
-    <module>at-paninij-proc-tests</module>
+    <!-- <module>at-paninij-proc-tests</module> -->
   </modules>
 
 </project>

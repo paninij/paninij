@@ -18,35 +18,42 @@
  * http://paninij.org
  *
  * Contributors:
- *  Dr. Hridesh Rajan,
- *  Dalton Mills,
- *  David Johnston,
- *  Trey Erenberger
- *  Jackson Maddox
+ * 	Dr. Hridesh Rajan,
+ * 	Dalton Mills,
+ * 	David Johnston,
+ * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.capsule;
+package org.paninij.proc.helloworld;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import org.paninij.lang.Block;
+import org.paninij.lang.Capsule;
+import org.paninij.lang.Future;
+import org.paninij.lang.Imports;
+import org.paninij.lang.String;
 
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-import org.paninij.test.AbstractCompileTest;
+@Capsule
+class GreeterTemplate
+{
+    String message;
+    @Imports Stream s;
 
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
-        super(classes);
+    void init() {
+        message = new String("Hello World!");
     }
 
-    @Parameterized.Parameters
-    public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
+    @Future
+    public long greet(boolean draw) {
+        s.write(new String("Panini: " + message));
+        long time = System.currentTimeMillis();
+        s.write(new String("Time is now: " + time));
+        return time;
     }
 
-    @Test
-    public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+    @Block
+    public int greetBlock() {
+        s.write(new String("Panini: " + message));
+        long time = System.currentTimeMillis();
+        s.write(new String("Time is now: " + time));
+        return 42;
     }
 }
