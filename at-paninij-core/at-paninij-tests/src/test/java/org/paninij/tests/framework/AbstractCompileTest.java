@@ -24,29 +24,45 @@
  *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.tests;
+package org.paninij.tests.framework;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.paninij.tests.framework.AbstractCompileTest;
 
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
-        super(classes);
+@RunWith(Parameterized.class)
+public abstract class AbstractCompileTest {
+    @Rule
+    public TestName name = new TestName();
+    
+    protected IsolatedCompilationTask task;
+    private final ArrayList<String> classes;
+    
+    public AbstractCompileTest(ArrayList<String> classes) {
+        this.classes = classes;
+    }
+    
+    @Before
+    public void before() throws IOException {
+        task = new IsolatedCompilationTask(
+                getClass().getName(),
+                name.getMethodName());
+    }
+    
+    public static Collection<ArrayList<String>> parameters(String type) throws IOException {
+        TestUtil util = new TestUtil(IsolatedCompilationTask.SOURCE_FOLDER);
+        util.process();
+        return util.getUnits(type);
     }
 
-    @Parameterized.Parameters
-    public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
-    }
-
-    @Test
-    public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+    public void addClassesAndExecute() throws IOException {
+        task.addClasses(classes.toArray(new String[classes.size()]));
+        task.execute();
     }
 }

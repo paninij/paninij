@@ -34,19 +34,18 @@ import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.paninij.tests.framework.AbstractCompileTest;
 
-public class TestGoodTemplates extends AbstractCompileTest {
-    public TestGoodTemplates(ArrayList<String> classes) {
+public class TestBadTemplates extends AbstractCompileTest {
+    public TestBadTemplates(ArrayList<String> classes) {
         super(classes);
     }
-
+    
     @Parameterized.Parameters
     public static Collection<ArrayList<String>> parameters() throws IOException {
-        return parameters("good");
+        return parameters("bad");
     }
 
-    @Test
+    @Test(expected=RuntimeException.class)
     public void test() throws IOException {
-        task.exceptOnCompileError();
         addClassesAndExecute();
     }
 }

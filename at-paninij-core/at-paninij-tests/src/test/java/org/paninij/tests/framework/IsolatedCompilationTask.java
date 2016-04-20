@@ -29,9 +29,13 @@ package org.paninij.tests.framework;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 
 import javax.tools.StandardJavaFileManager;
 import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticListener;
 
 import org.paninij.proc.PaniniProcessor;
 
@@ -44,12 +48,14 @@ public class IsolatedCompilationTask {
     private static final File RUNTIME_CLASSES_FOLDER;
     private static final String SOURCE_OUT;
     private static final String CLASS_OUT;
+    private static final String TARGET;
     
     static {
         SOURCE_FOLDER = new File("src/test/sources/");
         RUNTIME_CLASSES_FOLDER = new File("../at-paninij-runtime/target/classes/");
-        SOURCE_OUT = "target/tests/source/";
-        CLASS_OUT = "target/tests/class/";
+        SOURCE_OUT = "/sources/";
+        CLASS_OUT = "/classes/";
+        TARGET = "target/tests/";
     }
     
     private final File sourceOutput;
@@ -60,8 +66,8 @@ public class IsolatedCompilationTask {
     
     public IsolatedCompilationTask(String unitName, String testName) throws IOException {
         String fullTestName = unitName + "." + testName;
-        sourceOutput = new File(SOURCE_OUT + fullTestName);
-        classOutput = new File(CLASS_OUT + fullTestName);
+        sourceOutput = new File(TARGET + fullTestName + SOURCE_OUT);
+        classOutput = new File(TARGET + fullTestName + CLASS_OUT);
         
         fmBuilder = StandardJavaFileManagerBuilder.newBuilder();
         ctBuilder = CompilationTaskBuilder.newBuilder();
@@ -69,6 +75,10 @@ public class IsolatedCompilationTask {
     
     public void addClasses(String...classes) throws IOException {
         ctBuilder.addAllClasses(Arrays.asList(classes));
+    }
+    
+    public void exceptOnCompileError() {
+        ctBuilder.setDiagnosticListener(new DiagExcept());
     }
     
     public void execute() throws IOException {
@@ -112,5 +122,15 @@ public class IsolatedCompilationTask {
           }
         }
         file.delete();
+    }
+    
+    private static class DiagExcept implements DiagnosticListener<JavaFileObject> {
+        @Override
+        public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+            System.err.println(diagnostic.toString());
+            throw new RuntimeException(
+                    "Compile error: " +
+                    diagnostic.getMessage(Locale.getDefault()));
+        }
     }
 }

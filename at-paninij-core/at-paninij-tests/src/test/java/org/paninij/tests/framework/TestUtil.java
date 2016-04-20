@@ -37,6 +37,7 @@ import com.sun.tools.javac.util.Pair;
 
 public class TestUtil {
     private static final String configFileName = "config.properties";
+    private static final String groupToken = ".group";
     
     private final File sourceFolder;
     private final LinkedList<Pair<String, Properties>> info;
@@ -47,37 +48,40 @@ public class TestUtil {
     }
 
     public void process() throws IOException {
-        assert info.size() == 0 && sourceFolder.isDirectory();
-        
-        for (File f : sourceFolder.listFiles()) {
-            if (f.isDirectory()) {
-                processImpl("", f);
-            }
+        if (info.size() != 0 || !sourceFolder.isDirectory()) {
+            String msg = "Already processed or source folder is not a directory";
+            throw new IllegalStateException(msg);
         }
+        
+        processImpl("", sourceFolder, true);
     }
     
-    private void processImpl(String pkg, File file) throws IOException {
+    private void processImpl(String pkg, File file, boolean isRoot) throws IOException {
         if (!file.isDirectory())
             return;
         
-        pkg += file.getName() + ".";
+        if (!isRoot) {
+            pkg += file.getName() + ".";
+        }
         for (File f : file.listFiles()) {
             if (f.isFile() && f.getName().equals(configFileName)) {
                 Properties prop = read(f);
                 info.add(new Pair<String, Properties>(pkg, prop));
             } else if (f.isDirectory()) {
-                processImpl(pkg, f);
+                processImpl(pkg, f, false);
             }
         }
     }
     
-    private Properties read(File f) throws IOException{
+    private Properties read(File f) throws IOException {
         if (!f.exists())
             return new Properties();
         
         Properties prop = new Properties();
-        FileInputStream stream = new FileInputStream(f);
-        prop.load(stream);
+        try (FileInputStream stream = new FileInputStream(f)) {
+            prop.load(stream);
+        }
+        
         return prop;
     }
     
@@ -85,20 +89,27 @@ public class TestUtil {
        ArrayList<ArrayList<String>> list = new ArrayList<>();
        
        for (Pair<String, Properties> pair : info) {
-           if ("true".equals((String)pair.snd.get("_Group"))) {
+           if ("true".equals((String)pair.snd.get(groupToken))) {
                ArrayList<String> units = new ArrayList<>();
                for (Object o: pair.snd.keySet()) {
-                   if (!"_Group".equals((String)o) && type.equals(pair.snd.getProperty((String)o))) {
-                       units.add(pair.fst + (String)o);
+                   String s = (String)o;
+                   if (!groupToken.equals(s) && type.equals(pair.snd.getProperty(s))) {
+                       units.add(pair.fst + s);
                    }
                }
-               list.add(units);
+               if (!units.isEmpty()) {
+                   list.add(units);
+               }
            } else {
                for (Object o: pair.snd.keySet()) {
+                   String s = (String)o;
                    ArrayList<String> units = new ArrayList<>();
-                   if (type.equals(pair.snd.getProperty((String) o)))
-                   units.add(pair.fst + (String)o);
-                   list.add(units);
+                   if (type.equals(pair.snd.getProperty(s))) {
+                       units.add(pair.fst + s);
+                   }
+                   if (!units.isEmpty()) {
+                       list.add(units);
+                   }
                }
            }
        }
