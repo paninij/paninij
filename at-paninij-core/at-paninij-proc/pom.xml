@@ -118,6 +118,11 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>me.dwtj</groupId>
+      <artifactId>java-compiler-runner</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
