@@ -39,9 +39,6 @@ import javax.tools.DiagnosticListener;
 
 import org.paninij.proc.PaniniProcessor;
 
-import me.dwtj.java.compiler.runner.CompilationTaskBuilder;
-import me.dwtj.java.compiler.runner.StandardJavaFileManagerBuilder;
-
 public class IsolatedCompilationTask {
     public static final File SOURCE_FOLDER;
 

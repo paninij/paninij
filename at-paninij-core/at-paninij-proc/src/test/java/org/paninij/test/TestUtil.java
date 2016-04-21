@@ -38,6 +38,7 @@ import com.sun.tools.javac.util.Pair;
 public class TestUtil {
     private static final String configFileName = "config.properties";
     private static final String groupToken = ".group";
+    private static final String dependencyValue = "dependency";
     
     private final File sourceFolder;
     private final LinkedList<Pair<String, Properties>> info;
@@ -89,31 +90,65 @@ public class TestUtil {
        ArrayList<ArrayList<String>> list = new ArrayList<>();
        
        for (Pair<String, Properties> pair : info) {
-           if ("true".equals((String)pair.snd.get(groupToken))) {
-               ArrayList<String> units = new ArrayList<>();
-               for (Object o: pair.snd.keySet()) {
-                   String s = (String)o;
-                   if (!groupToken.equals(s) && type.equals(pair.snd.getProperty(s))) {
-                       units.add(pair.fst + s);
-                   }
-               }
-               if (!units.isEmpty()) {
-                   list.add(units);
-               }
-           } else {
-               for (Object o: pair.snd.keySet()) {
-                   String s = (String)o;
-                   ArrayList<String> units = new ArrayList<>();
-                   if (type.equals(pair.snd.getProperty(s))) {
-                       units.add(pair.fst + s);
-                   }
-                   if (!units.isEmpty()) {
-                       list.add(units);
-                   }
-               }
+           ArrayList<ArrayList<String>> pairList = fromPair(pair, type);
+           ArrayList<String> dependencies = getDependencies(pair);
+           for (ArrayList<String> group : pairList) {
+               group.addAll(dependencies);
            }
+           list.addAll(pairList);
        }
        
        return list;
+    }
+    
+    private ArrayList<String> getDependencies(Pair<String, Properties> pair) {
+        ArrayList<String> dependencies = new ArrayList<>();
+        for (Object o : pair.snd.keySet()) {
+            if (dependencyValue.equals(pair.snd.getProperty((String)o, null))) {
+                addDependencies(dependencies, (String)o);
+            }
+        }
+        return dependencies;
+    }
+
+    private void addDependencies(ArrayList<String> dependencies, String dep) {
+        for (Pair<String,Properties> pair : info) {
+            if (pair.fst.equals(dep + ".")) {
+                for (Object o : pair.snd.keySet()) {
+                    String s = (String)o;
+                    if (!groupToken.equals(s)) {
+                        dependencies.add(pair.fst + s);
+                    }
+                }
+            }
+        }
+    }
+
+    private ArrayList<ArrayList<String>> fromPair(Pair<String, Properties> pair, String type) {
+        ArrayList<ArrayList<String>> list = new ArrayList<>();
+        if ("true".equals((String)pair.snd.get(groupToken))) {
+            ArrayList<String> units = new ArrayList<>();
+            for (Object o: pair.snd.keySet()) {
+                String s = (String)o;
+                if (!groupToken.equals(s) && type.equals(pair.snd.getProperty(s))) {
+                    units.add(pair.fst + s);
+                }
+            }
+            if (!units.isEmpty()) {
+                list.add(units);
+            }
+        } else {
+            for (Object o: pair.snd.keySet()) {
+                String s = (String)o;
+                ArrayList<String> units = new ArrayList<>();
+                if (type.equals(pair.snd.getProperty(s))) {
+                    units.add(pair.fst + s);
+                }
+                if (!units.isEmpty()) {
+                    list.add(units);
+                }
+            }
+        }
+        return list;
     }
 }

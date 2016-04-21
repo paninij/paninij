@@ -65,12 +65,6 @@ public class TestSystem
         runWithEachProfile("HelloWorldShort");
     }
     
-    @Test
-    public void testCLI() {
-        CapsuleSystem.main(new String[] {PACKAGE_PREFIX + "HelloWorldShort"});
-    }
-    
-
     private static void runWithEachProfile(String capsuleName)
     {
         for (ExecutionProfile profile : RUNNABLE_EXECUTION_PROFILES) {
