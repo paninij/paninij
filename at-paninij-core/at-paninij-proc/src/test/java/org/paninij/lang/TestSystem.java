@@ -27,23 +27,56 @@ package org.paninij.lang;
 
 import static org.paninij.lang.ExecutionProfile.*;
 
+import java.io.IOException;
 import java.lang.String;  // Needed to prevent unintended use of `org.paninij.lang.String`.
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.paninij.runtime.Panini$Capsule$Root;
+import org.paninij.test.IsolatedCompilationTask;
 
 
 public class TestSystem
 {
-    private static final String[] NO_ARGS = {};
+    @Rule
+    public TestName name = new TestName();
     
+    private static final String[] NO_ARGS = {};
     private static String PACKAGE_PREFIX = "org.paninij.proc.helloworld.";
+    private static final String[] CLASSES = {
+        "HelloWorldShortTemplate",
+        "HelloWorldTemplate",
+        "ConsoleTemplate",
+        "GreeterTemplate",
+        "StreamTemplate"
+    };
+    
     private static ExecutionProfile[] RUNNABLE_EXECUTION_PROFILES = {
         MONITOR,
         SERIAL,
         TASK,
         THREAD,
     };
+    
+    private IsolatedCompilationTask task;
+    private URLClassLoader newLoader;
+    
+    @Before
+    public void setup() throws IOException {
+        task = new IsolatedCompilationTask(
+                getClass().getName(), 
+                name.getMethodName());
+        for (String c : CLASSES) {
+            task.addClasses(PACKAGE_PREFIX + c);
+        }
+        task.exceptOnCompileError();
+        task.execute();
+    }
     
     @Test
     public void testHelloWorld$Thread() {
@@ -65,23 +98,43 @@ public class TestSystem
         runWithEachProfile("HelloWorldShort");
     }
     
-    private static void runWithEachProfile(String capsuleName)
+    private void runWithEachProfile(String capsuleName)
     {
         for (ExecutionProfile profile : RUNNABLE_EXECUTION_PROFILES) {
             run(capsuleName, profile);
         }
     }
     
-    private static void run(String capsuleName, ExecutionProfile profile) {
-        CapsuleSystem.start(getRootClass(PACKAGE_PREFIX + capsuleName), profile, NO_ARGS);
+    private void run(String capsuleName, ExecutionProfile profile) {
+        Class<? extends Panini$Capsule$Root> c;
+        c = getRootClass(PACKAGE_PREFIX + capsuleName);
+        
+        CapsuleSystem.start(c, profile, NO_ARGS, newLoader);
+
+        try {
+            newLoader.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
     
     @SuppressWarnings("unchecked")
-    private static Class<? extends Panini$Capsule$Root> getRootClass(String root) {
-         try {
-            return (Class<? extends Panini$Capsule$Root>) Class.forName(root);
+    private Class<? extends Panini$Capsule$Root> getRootClass(String root) {
+        URL[] urls;
+        try {
+            urls = new URL[]{task.getClassOutput().toURI().toURL()};
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException(ex);
+        }
+        
+        try {
+            newLoader = new URLClassLoader(urls, getClass().getClassLoader());
+            for (String c : CLASSES) {
+                newLoader.loadClass(PACKAGE_PREFIX + c);
+            }
+            return (Class<? extends Panini$Capsule$Root>) newLoader.loadClass(root);
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
-        }       
+        } 
     }
 }
