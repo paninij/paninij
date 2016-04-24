@@ -129,9 +129,6 @@ public class TestSystem
         
         try {
             newLoader = new URLClassLoader(urls, getClass().getClassLoader());
-            for (String c : CLASSES) {
-                newLoader.loadClass(PACKAGE_PREFIX + c);
-            }
             return (Class<? extends Panini$Capsule$Root>) newLoader.loadClass(root);
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
