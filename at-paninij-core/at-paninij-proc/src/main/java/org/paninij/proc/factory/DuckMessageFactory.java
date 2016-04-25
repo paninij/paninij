@@ -197,7 +197,10 @@ public class DuckMessageFactory extends AbstractMessageFactory
         List<String> statements=  new ArrayList<String>();
         int i = 0;
         for (Variable v : context.getParameters()) {
-            if (v.getCategory() == Category.NORMAL) statements.add("panini$arg" + (i++) + " = null;");
+            if (v.getCategory() == Category.NORMAL) {
+                statements.add("panini$arg" + i + " = null;");
+            }
+            i++;
         }
         return statements;
     }
