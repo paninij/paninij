@@ -46,7 +46,6 @@ public class TestGoodTemplates extends AbstractCompileTest {
 
     @Test
     public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+        addClassesAndExecute(false);
     }
 }

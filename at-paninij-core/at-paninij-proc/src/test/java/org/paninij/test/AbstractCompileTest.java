@@ -61,8 +61,8 @@ public abstract class AbstractCompileTest {
         return util.getUnits(type);
     }
 
-    public void addClassesAndExecute() throws IOException {
+    public void addClassesAndExecute(boolean suppressCompileErrors) throws IOException {
         task.addClasses(classes.toArray(new String[classes.size()]));
-        task.execute();
+        task.execute(suppressCompileErrors);
     }
 }

@@ -69,13 +69,11 @@ public class TestCodeGenerated
     }
 
     private void drive(String... classNames) throws IOException {
-        task.exceptOnCompileError();
-        
         for (int i = 0; i < classNames.length; i++) {
             classNames[i] = classPackage + "." + classNames[i];
         }
         task.addClasses(classNames);
-        task.execute();
+        task.execute(false);
     }
 
     private void testGeneratedList(String prefix, String... list) {

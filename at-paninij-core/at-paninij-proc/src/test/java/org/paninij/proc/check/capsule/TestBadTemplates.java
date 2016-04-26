@@ -47,8 +47,7 @@ public class TestBadTemplates extends AbstractTestBadTemplates {
 
     @Test
     public void test() throws IOException {
-        task.exceptOnCompileError();
-        addClassesAndExecute();
+        addClassesAndExecute(true);
     }
 
     @Override

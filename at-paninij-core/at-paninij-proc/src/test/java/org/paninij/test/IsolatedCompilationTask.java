@@ -82,11 +82,7 @@ public class IsolatedCompilationTask {
         ctBuilder.addAllClasses(Arrays.asList(classes));
     }
     
-    public void exceptOnCompileError() {
-        ctBuilder.setDiagnosticListener(new DiagExcept());
-    }
-    
-    public void execute() throws IOException {
+    public void execute(boolean suppressCompileErrors) throws IOException {
         if (called)
             throw new IllegalStateException("Cannot execute more than once");
         called = true;
@@ -111,6 +107,8 @@ public class IsolatedCompilationTask {
                   .addProc(new PaniniProcessor())
                   .addOption("-Apanini.exceptOnFailedChecks");
         
+        ctBuilder.setDiagnosticListener(new DiagExcept(suppressCompileErrors));
+        
         CompilationTask task = ctBuilder.build();
         
         // Execute compiler
@@ -130,8 +128,15 @@ public class IsolatedCompilationTask {
     }
     
     private static class DiagExcept implements DiagnosticListener<JavaFileObject> {
+        private boolean suppressError;
+        public DiagExcept(boolean suppressError) {
+            this.suppressError = suppressError;
+        }
+        
         @Override
         public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+            if (suppressError) return;
+            
             System.err.println(diagnostic.toString());
             throw new RuntimeException(
                     "Compile error: " +

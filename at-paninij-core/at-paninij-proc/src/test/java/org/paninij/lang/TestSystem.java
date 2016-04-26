@@ -74,8 +74,7 @@ public class TestSystem
         for (String c : CLASSES) {
             task.addClasses(PACKAGE_PREFIX + c);
         }
-        task.exceptOnCompileError();
-        task.execute();
+        task.execute(false);
     }
     
     @Test
