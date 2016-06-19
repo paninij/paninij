@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+description = '@PaniniJ Benchmarking Harness (Savina)'
+
+dependencies {
+  compile 'edu.rice.habanero:savina:0.0.1-SNAPSHOT'
+  compile project(':benchmarks:savina')
+}

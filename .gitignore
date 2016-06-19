@@ -1,13 +1,13 @@
 *.class
 *.jar
 *.factorypath
-**/target/*
 .project
 .classpath
 .settings
 bin/
 doc/
-/target/
+build/
 wala.properties
 .idea/
 *.iml
+/.gradle/

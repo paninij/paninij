@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+group = 'org.paninij'
+version = '0.0.2-SNAPSHOT'
+
+description = """@PaniniJ Examples"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile 'org.paninij:proc:0.1.1-SNAPSHOT'
+}
+
+repositories {
+  mavenLocal()
+}

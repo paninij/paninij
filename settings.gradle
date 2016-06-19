@@ -1,0 +1,11 @@
+rootProject.name = 'at-paninij'
+
+include ':core'
+include ':core:runtime'
+include ':core:proc'
+include ':core:proc-tests'
+
+include ':benchmarks'
+include ':benchmarks:savina'
+include ':benchmarks:jmh-harness'
+include ':benchmarks:savina-harness'

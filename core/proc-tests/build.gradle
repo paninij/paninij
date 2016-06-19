@@ -1,0 +1,16 @@
+apply plugin: 'java'
+
+description = '@PaniniJ Annotation Processor Tests'
+
+ext {
+  genSrcDir = "${buildDir}/generated-sources/panini"
+}
+test.doFirst {
+  mkdir genSrcDir
+}
+
+dependencies {
+  compile project(':core:proc')
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.testing.compile:compile-testing:0.9'
+}

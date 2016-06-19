@@ -1,0 +1,9 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+description = '@PaniniJ Annotation Processor'
+
+dependencies {
+  compile project(':core:runtime')
+  testCompile 'junit:junit:4.12'
+}

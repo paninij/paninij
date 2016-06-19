@@ -1,0 +1,8 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+description = '@PaniniJ Runtime'
+
+dependencies {
+  testCompile 'junit:junit:4.12'
+}

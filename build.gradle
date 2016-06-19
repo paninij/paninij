@@ -1,0 +1,26 @@
+description = '''
+  @PaniniJ is an annotation-based realization of capsule-oriented programming
+  in Java. Capsule-oriented programming is an implicitly concurrent programming
+  model.
+'''
+
+allprojects  {
+  group = 'org.paninij'
+  version = '0.1.1-SNAPSHOT'
+}
+
+subprojects {
+  // Add standard configuration to all subprojects using the 'java' plugin.
+  plugins.withType(JavaPlugin).whenPluginAdded {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    jar {
+      // Include sources along-side classes in compiled jars.
+      from sourceSets.main.allSource
+    }
+    repositories {
+      mavenLocal()
+      maven { url "http://repo.maven.apache.org/maven2" }
+    }
+  }
+}
