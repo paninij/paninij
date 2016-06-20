@@ -6,4 +6,12 @@
       <java6processor class="org.paninij.proc.PaniniProcessor" />
     </java6processors>
   </extension>
+  <extension point="org.eclipse.jdt.core.compilationParticipant">
+    <compilationParticipant
+      class="org.paninij.jdt.plugin.Plugin"
+      id="PaniniPlugin"
+      modifiesEnvironment="false"
+      createsProblems="true"
+      requiredSourceLevel="1.8" />
+  </extension>
 </plugin>

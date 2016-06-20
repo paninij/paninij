@@ -5,10 +5,12 @@ Bundle-SymbolicName: org.paninij.jdt.plugin;singleton:=true
 Bundle-Version: 0.1.1.qualifier
 Bundle-Activator: org.paninij.jdt.plugin.Activator
 Require-Bundle: org.eclipse.core.runtime,
+                org.eclipse.jdt.core,
                 org.eclipse.jdt.apt.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: libs/proc-0.1.1-SNAPSHOT.jar,
                   libs/runtime-0.1.1-SNAPSHOT.jar,
                   .
-Export-Package: org.paninij.proc;x-internal:=true
+Export-Package: org.paninij.proc;x-internal:=true,
+                org.paninij.jdt.plugin;x-internal:=true
