@@ -1,0 +1,5 @@
+/lib/
+/build-eclipse/
+/.project
+/.classpath
+/.settings/

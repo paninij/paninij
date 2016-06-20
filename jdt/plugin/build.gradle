@@ -1,0 +1,89 @@
+/*
+ * Warning: Currently, Gradle is not directly involved in building, testing, or
+ * archiving this project. These responsibilities should instead be performed
+ * within the Eclipse IDE.
+ */
+
+apply plugin: 'eclipse'
+apply plugin: 'java'
+
+// The `java` plugin was only added to help configure the `eclipse` plugin.
+// In order to make sure that Gradle (and tools which directly depend on
+// Gradle) do not try to compile these sources, we make sure that the project's
+// sources are in a directory which Gradle doesn't know about but Eclipse does.
+def srcDir = 'src/'
+
+task libs(type: Copy) {
+  // The jar tasks from other sub-projects upon which this sub-project depends.
+  def depTaskPaths = [ ':core:proc:jar', ':core:runtime:jar' ]
+
+  // Make this copy task depend upon each jar task.
+  depTaskPaths.each { t ->
+    dependsOn t
+  }
+
+  // Copy each JAR into `libs/`.
+  depTaskPaths.each { t ->
+    from(tasks.getByPath(t)) 
+    into file('libs')
+  }
+}
+
+// Add each JAR in `libs/` as a project dependency.
+dependencies {
+  compile fileTree('libs')
+}
+
+// Re-add `build` as a task so that project-wide `build` will trigger `libs`:
+tasks.build.dependsOn 'libs'
+
+// Let `clean` also clean the contents of `libs/`:
+tasks.clean.dependsOn 'cleanLibs'
+
+eclipse {
+  project {
+    name = 'org.paninij.jdt.plugin'
+    natures 'org.eclipse.jdt.core.javanature', 'org.eclipse.pde.PluginNature'
+  }
+  classpath {
+    // More clearly disambiguate Eclipse's build directory from Gradle's:
+    defaultOutputDir = file('build-eclipse')
+
+    // Add everything from the `compile` dependency configuration to classpath:
+    plusConfigurations += [configurations.compile]
+
+    // Make Eclipse resolve classes using the manifest's `Require-Bundle` info:
+    containers 'org.eclipse.pde.core.requiredPlugins'
+
+    // Specify the source directory via manual XML model manipulation. We do
+    // this manually, because we are not pointing Gradle at this directory
+    // using some source set.
+    file {
+      withXml {
+        def root = it.asNode()
+	def child = root.appendNode('classpathentry')
+	child.@path = srcDir
+	child.@kind = 'src'
+      }
+    }
+  }
+  jdt {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    javaRuntimeName = "JavaSE-1.8"
+  }
+}
+
+// Ensure that JARs have already been added to `libs/` before Eclipse config.
+tasks.eclipseClasspath.dependsOn 'libs'
+
+// Always clobber in-IDE Eclipse project changes:
+tasks.eclipse.dependsOn 'cleanEclipse'
+
+// Assert that for each source set, no Java `srcDirs` actually exist.
+sourceSets.each { sourceSet ->
+  sourceSet.java.srcDirs.each { dir ->
+    assert ! dir.exists(),
+      "In this project, source directories shouldn't exist, but one does: $dir"
+  }
+}
