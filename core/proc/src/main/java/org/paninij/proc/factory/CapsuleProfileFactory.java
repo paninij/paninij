@@ -60,8 +60,6 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
             String ret = shape.returnType.isVoid() ? "" : "return ";
             ret += "panini$message.get();";
             return ret;
-        case ERROR:
-            break;
         case BLOCKED_PREMADE:
             return "return panini$message.get();";
         case UNBLOCKED_DUCK:
@@ -70,11 +68,10 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
             return "return panini$message;";
         case UNBLOCKED_SIMPLE:
             return "";
+        case ERROR:
         default:
-            break;
+            throw new IllegalArgumentException("Bad MessageShape behavior");
         }
-
-        return null;
     }
 
     protected String generateProcedureArguments(MessageShape shape) {
