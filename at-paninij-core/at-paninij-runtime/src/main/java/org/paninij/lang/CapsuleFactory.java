@@ -52,7 +52,11 @@ public class CapsuleFactory
     
     @SuppressWarnings("unchecked")
     public CapsuleFactory(Class<? extends Panini$Capsule> clazz, ClassLoader loader) throws ClassNotFoundException {
-        capsuleInterface = (Class<Panini$Capsule>) clazz;
+        if (loader == null) {
+        	loader = ClassLoader.getSystemClassLoader();
+        }
+        
+    	capsuleInterface = (Class<Panini$Capsule>) clazz;
         
         capsuleMockup  = (Class<Capsule$Mockup>)  Class.forName(clazz.getName() + "$Mockup", true, loader);
         capsuleMonitor = (Class<Capsule$Monitor>) Class.forName(clazz.getName() + "$Monitor",true, loader);
