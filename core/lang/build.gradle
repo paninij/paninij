@@ -1,9 +1,21 @@
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'com.bmuschko.nexus'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-description = '@PaniniJ Language and Runtime'
+description '''
+Classes which are part of the common @PaniniJ runtime. These are needed to
+compile and/or run any @PaniniJ program.
+'''
+
+modifyPom {
+  project {
+    artifactId 'lang'
+    description project.description
+    name '@PaniniJ Language and Runtime'
+  }
+}
 
 dependencies {
   testCompile 'junit:junit:4.12'

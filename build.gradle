@@ -1,16 +1,23 @@
+import com.bmuschko.gradle.nexus.NexusPlugin
+
 description = '''
-  @PaniniJ is an annotation-based realization of capsule-oriented programming
-  in Java. Capsule-oriented programming is an implicitly concurrent programming
-  model.
+@PaniniJ is an annotation-based realization of capsule-oriented programming
+in Java. Capsule-oriented programming is an implicitly concurrent programming
+model.
 '''
+
+def RELEASING_SCRIPT = 'releasing.gradle'
+if (file(RELEASING_SCRIPT).exists()) {
+  apply from: file(RELEASING_SCRIPT)
+}
 
 allprojects  {
   group = 'org.paninij'
   version = '0.2.1-SNAPSHOT'
 }
 
-subprojects {
-  // Add standard configuration to all subprojects using the 'java' plugin.
+subprojects { subproj ->
+  // Inject some standard configuration into subprojects with the java plugin:
   plugins.withType(JavaPlugin).whenPluginAdded {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -22,5 +29,47 @@ subprojects {
       mavenLocal()
       mavenCentral()
     }
+  }
+
+  // Inject some standard configuration into subprojects with the nexus plugin:
+  plugins.withType(NexusPlugin).whenPluginAdded {
+    subproj.modifyPom {
+      project {
+        packaging 'jar'
+        url 'https://github.com/paninij/paninij'
+        scm {
+          url 'https://github.com/paninij/paninij.git'
+        }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'dwtj'
+            name 'David Johnston'
+            email 'dwtj@iastate.edu'
+          }
+          developer {
+            id 'jlmaddox'
+            name 'Jackson Maddox'
+            email 'jlmaddox@iastate.edu'
+          }
+        }
+      }
+    }
+  }
+}
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
   }
 }

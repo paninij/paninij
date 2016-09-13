@@ -2,10 +2,21 @@ import static javax.tools.ToolProvider.getSystemToolClassLoader
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'com.bmuschko.nexus'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-description = '@PaniniJ Annotation Processor'
+description '''
+An Java annotation processor to check and compile @PaniniJ programs.
+'''
+
+modifyPom {
+  project {
+    artifactId 'proc'
+    description project.description
+    name '@PaniniJ Annotation Processor'
+  }
+}
 
 dependencies {
   compile project(':core:lang')
