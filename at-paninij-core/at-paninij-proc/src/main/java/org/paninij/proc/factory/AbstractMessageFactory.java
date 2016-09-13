@@ -76,7 +76,6 @@ public abstract class AbstractMessageFactory implements ArtifactFactory<Procedur
         packs.add("javax.annotation.Generated");
         packs.add("org.paninij.runtime.Panini$Future");
         packs.add("org.paninij.runtime.Panini$Message");
-        packs.add(ret.packed());
 
         switch (this.shape.category) {
         case DUCKFUTURE:
