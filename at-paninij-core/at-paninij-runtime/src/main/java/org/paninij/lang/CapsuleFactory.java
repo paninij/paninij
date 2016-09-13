@@ -49,17 +49,21 @@ public class CapsuleFactory
     public final Class<Capsule$Serial>  capsuleSerial;
     public final Class<Capsule$Task>    capsuleTask;
     public final Class<Capsule$Thread>  capsuleThread;
-
+    
     @SuppressWarnings("unchecked")
-    public CapsuleFactory(Class<? extends Panini$Capsule> clazz) throws ClassNotFoundException
-    {
-        capsuleInterface = (Class<Panini$Capsule>) clazz;
+    public CapsuleFactory(Class<? extends Panini$Capsule> clazz, ClassLoader loader) throws ClassNotFoundException {
+        if (loader == null) {
+        	loader = ClassLoader.getSystemClassLoader();
+        }
         
-        capsuleMockup  = (Class<Capsule$Mockup>)  Class.forName(clazz.getName() + "$Mockup");
-        capsuleMonitor = (Class<Capsule$Monitor>) Class.forName(clazz.getName() + "$Monitor");
-        capsuleSerial  = (Class<Capsule$Serial>)  Class.forName(clazz.getName() + "$Serial");
-        capsuleTask    = (Class<Capsule$Task>)    Class.forName(clazz.getName() + "$Task");
-        capsuleThread  = (Class<Capsule$Thread>)  Class.forName(clazz.getName() + "$Thread");
+    	capsuleInterface = (Class<Panini$Capsule>) clazz;
+        
+        capsuleMockup  = (Class<Capsule$Mockup>)  Class.forName(clazz.getName() + "$Mockup", true, loader);
+        capsuleMonitor = (Class<Capsule$Monitor>) Class.forName(clazz.getName() + "$Monitor",true, loader);
+        capsuleSerial  = (Class<Capsule$Serial>)  Class.forName(clazz.getName() + "$Serial", true, loader);
+        capsuleTask    = (Class<Capsule$Task>)    Class.forName(clazz.getName() + "$Task",   true, loader);
+        capsuleThread  = (Class<Capsule$Thread>)  Class.forName(clazz.getName() + "$Thread", true, loader);
+    
     }
 
     public Capsule$Mockup newMockupInstance() {
