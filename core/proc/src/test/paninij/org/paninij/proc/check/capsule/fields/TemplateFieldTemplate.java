@@ -23,15 +23,14 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.signature;
+package org.paninij.proc.check.capsule.fields;
 
-import org.paninij.proc.check.CheckException;
+import org.paninij.lang.Capsule;
 
-public class SignatureCheckException extends CheckException
+import org.paninij.ex.helloworld.HelloWorldTemplate;
+
+@Capsule
+public class TemplateFieldTemplate
 {
-    private static final long serialVersionUID = 3022661365708183837L;
-    
-    public SignatureCheckException(String err) {
-        super(err);
-    }
+    HelloWorldTemplate template;
 }

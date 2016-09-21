@@ -3,7 +3,6 @@ rootProject.name = 'at-paninij'
 include ':core'
 include ':core:runtime'
 include ':core:proc'
-include ':core:proc-tests'
 
 include ':jdt'
 include ':jdt:plugin'

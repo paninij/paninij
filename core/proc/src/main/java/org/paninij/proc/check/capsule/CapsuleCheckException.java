@@ -25,7 +25,9 @@
  *******************************************************************************/
 package org.paninij.proc.check.capsule;
 
-public class CapsuleCheckException extends RuntimeException
+import org.paninij.proc.check.CheckException;
+
+public class CapsuleCheckException extends CheckException
 {
     private static final long serialVersionUID = -4278404329262452302L;
     

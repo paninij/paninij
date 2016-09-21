@@ -23,15 +23,9 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.signature;
+package org.paninij.ownership;
 
-import org.paninij.proc.check.CheckException;
-
-public class SignatureCheckException extends CheckException
+public class Secret
 {
-    private static final long serialVersionUID = 3022661365708183837L;
-    
-    public SignatureCheckException(String err) {
-        super(err);
-    }
+
 }

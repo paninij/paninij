@@ -23,15 +23,14 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.signature;
+package org.paninij.proc.check.capsule.duckability;
 
-import org.paninij.proc.check.CheckException;
+import org.paninij.lang.Capsule;
 
-public class SignatureCheckException extends CheckException
+@Capsule
+public class OkTemplate
 {
-    private static final long serialVersionUID = 3022661365708183837L;
-    
-    public SignatureCheckException(String err) {
-        super(err);
+    public ClassWithPrivateFinalMethod proc() {
+        return null;
     }
 }

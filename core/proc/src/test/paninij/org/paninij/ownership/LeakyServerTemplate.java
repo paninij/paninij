@@ -23,15 +23,37 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.signature;
+package org.paninij.ownership;
 
-import org.paninij.proc.check.CheckException;
+import org.paninij.lang.Capsule;
 
-public class SignatureCheckException extends CheckException
+/**
+ * Implements a server which gives away a reference to its state.
+ */
+/*
+@Capsule
+public class LeakyServerTemplate
 {
-    private static final long serialVersionUID = 3022661365708183837L;
+    Secret serverSecret = new Secret();
     
-    public SignatureCheckException(String err) {
-        super(err);
+    public Integer getInteger() {
+        return new Integer(9);
+    }
+
+    public void giveInteger(Integer i) {
+        // Nothing to do.
+    }
+    
+    public void giveSecret(Secret s) {
+        // Nothing to do.
+    }
+    
+    public Secret getSecret() {
+        return serverSecret;
+    }
+    
+    public LeakyServerTemplate getTemplateReference() {
+        return this;
     }
 }
+*/
