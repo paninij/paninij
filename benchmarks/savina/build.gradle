@@ -2,7 +2,13 @@ apply plugin: 'java'
 
 description = '@PaniniJ Savina Benchmarks'
 
+repositories {
+  maven {
+    url 'https://dl.bintray.com/dwtj/maven'
+  }
+}
+
 dependencies {
   compile project(':core:proc')
-  compile 'edu.rice.habanero:savina:0.0.1-SNAPSHOT'
+  compile 'edu.rice.habanero:savina:0.0.1'
 }

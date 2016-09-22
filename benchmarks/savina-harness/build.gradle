@@ -2,7 +2,13 @@ apply plugin: 'java'
 
 description = '@PaniniJ Benchmarking Harness (Savina)'
 
+repositories {
+  maven {
+    url 'https://dl.bintray.com/dwtj/maven'
+  }
+}
+
 dependencies {
-  compile 'edu.rice.habanero:savina:0.0.1-SNAPSHOT'
+  compile 'edu.rice.habanero:savina:0.0.1'
   compile project(':benchmarks:savina')
 }
