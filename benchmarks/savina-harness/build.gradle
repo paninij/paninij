@@ -6,6 +6,9 @@ repositories {
   maven {
     url 'https://dl.bintray.com/dwtj/maven'
   }
+  maven {
+    url 'http://www.cs.rice.edu/~vs3/hjlib/code/maven-repo/'
+  }
 }
 
 dependencies {
