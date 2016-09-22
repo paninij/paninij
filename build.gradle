@@ -24,3 +24,25 @@ subprojects {
     }
   }
 }
+
+// `checkExamples` wouldn't be necessary if `examples` was a sub-project, but
+// by making `examples` be its own independent Gradle project, it serves as a
+// complete example of how to set up a Gradle-based @PaniniJ project.
+task checkExamples(type: Exec) {
+  dependsOn tasks.getByPath(':core:proc:install')
+  dependsOn tasks.getByPath(':core:runtime:install')
+  workingDir 'examples'
+  commandLine './gradlew', 'clean', 'check'
+
+  // Store output in a byte array. The method `checkExamples.output()` can be
+  // called to obtain the output as a string.
+  standardOutput = new ByteArrayOutputStream()
+  ext.output = {
+    return standardOutput.toString()
+  }
+}
+
+task check {
+  dependsOn checkExamples
+  // Nothing else to do here at the moment.
+}
