@@ -9,3 +9,5 @@ dependencies {
   testCompile 'com.google.testing.compile:compile-testing:0.9'
   testCompile 'me.dwtj:java-compiler-utils:0.1.6'
 }
+
+check.dependsOn javadoc

@@ -3,8 +3,18 @@ apply plugin: 'maven'
 
 description = '@PaniniJ Language and Runtime'
 
-tasks.javadoc.options.tags << 'spec:a:"spec:"'  // `@spec` is used in `String`
-
 dependencies {
   testCompile 'junit:junit:4.12'
 }
+
+javadoc.options.tags << 'spec:a:"spec:"'  // `@spec` is used in `String`
+javadoc.exclude 'org/paninij/runtime/'    // `runtime` is not public API
+
+// Nothing is excluded in this alternative Javadoc task. For the `check`
+// task to succeed, this Javadoc compilation must not fail.
+task javadocPrivate(type: Javadoc) {
+  source = sourceSets.main.allJava
+  destinationDir = reporting.file("javadoc-private")
+  options.tags << 'spec:a:"spec:"'  // `@spec` is used in `String`
+}
+check.dependsOn javadocPrivate
