@@ -25,12 +25,16 @@ subprojects {
   }
 }
 
-// `checkExamples` wouldn't be necessary if `examples` was a sub-project, but
-// by making `examples` be its own independent Gradle project, it serves as a
-// complete example of how to set up a Gradle-based @PaniniJ project.
+// This custom `checkExamples` task wouldn't be necessary if `examples` was a
+// sub-project. However, by making `examples` be its own independent Gradle
+// project, it serves as a complete example of how to set up a Gradle-based
+// @PaniniJ project.
 task checkExamples(type: Exec) {
+  // Note that `install` is used so that when examples is checked, it is
+  // loading the most recent versions of `proc` and `lang` via the local Maven
+  // repository.
   dependsOn tasks.getByPath(':core:proc:install')
-  dependsOn tasks.getByPath(':core:runtime:install')
+  dependsOn tasks.getByPath(':core:lang:install')
   workingDir 'examples'
   commandLine './gradlew', 'clean', 'check'
 

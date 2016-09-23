@@ -15,7 +15,7 @@ def srcDir = 'src/'
 
 task libs(type: Copy) {
   // The jar tasks from other sub-projects upon which this sub-project depends.
-  def depTaskPaths = [ ':core:proc:jar', ':core:runtime:jar' ]
+  def depTaskPaths = [ ':core:proc:jar', ':core:lang:jar' ]
 
   // Make this copy task depend upon each jar task.
   depTaskPaths.each { t ->

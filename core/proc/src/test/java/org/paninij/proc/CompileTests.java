@@ -117,7 +117,7 @@ public class CompileTests {
     private static final String OUTPUTS_PREFIX = "build/proc-tests";
     private static final String SOURCE_OUTPUT_DIR_SUFFIX = "gen-src";
     private static final String CLASS_OUTPUT_DIR_SUFFIX = "classes";
-    private static final File PANINI_RUNTIME_CLASSES_DIR = new File("../runtime/build/classes/main");
+    private static final File PANINI_RUNTIME_CLASSES_DIR = new File("../lang/build/classes/main");
     private static final File PANINI_PROC_CLASSES_DIR = new File("build/classes/main");
     private static final String COMPILE_PROPERTIES = "compile.properties";
 

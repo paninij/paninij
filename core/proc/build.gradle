@@ -4,7 +4,7 @@ apply plugin: 'maven'
 description = '@PaniniJ Annotation Processor'
 
 dependencies {
-  compile project(':core:runtime')
+  compile project(':core:lang')
   testCompile 'junit:junit:4.12'
   testCompile 'com.google.testing.compile:compile-testing:0.9'
   testCompile 'me.dwtj:java-compiler-utils:0.1.6'

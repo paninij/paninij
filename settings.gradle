@@ -1,7 +1,7 @@
 rootProject.name = 'at-paninij'
 
 include ':core'
-include ':core:runtime'
+include ':core:lang'
 include ':core:proc'
 
 include ':jdt'
