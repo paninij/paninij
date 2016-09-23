@@ -1,0 +1,6 @@
+subprojects {
+  // Checks only succeed if javadoc compilation succeeds.
+  plugins.withType(JavaPlugin).whenPluginAdded {
+    check.dependsOn javadoc
+  }
+}

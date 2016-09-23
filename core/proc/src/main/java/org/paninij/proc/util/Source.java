@@ -124,16 +124,19 @@ public class Source
     /**
      * Inserts each of the given `lines` into the `fmt` string at the first "##" such that each
      * line is inserted at the same depth as the "##". For example,
+     *
+     * <pre><code>
+     * formatAligned("    ##", "foo", "bar", "baz") =&gt; "    foo\n    bar\n    baz"
+     * </code></pre>
      * 
-     *     formatAligned("    ##", "foo", "bar", "baz") -> "    foo\n    bar\n    baz"
+     * <p>Technically, the portion of the line which precedes the "##" will be copied as the
+     * prefix of each of the lines being inserted.
      * 
-     * Technically, the portion of the line which precedes the "##" will be copied as the prefix of
-     * each of the lines being inserted.
+     * <p>Note that if `lines` is empty, then this method will return a string just like `fmt`,
+     * except with the first "##" characters removed.
      * 
-     * Note that if `lines` is empty, then this method will return a string just like `fmt`, except
-     * with the first "##" characters removed.
-     * 
-     * @throws `InvalidArgumentException` if any character of prefix is not a whitespace character.
+     * @throws IllegalArgumentException
+     *           If any character of prefix is not a whitespace character.
      */
     public static String formatAligned(String fmt, Object... lines)
     {
@@ -160,11 +163,13 @@ public class Source
      * A helper method for `formatAligned()` that returns the line prefix before `idx`, that is,
      * the substring which spans from the beginning of the line that `idx` points into up to the
      * given `idx`. For example,
+     *
+     * <pre><code>
+     * getWhitespaceLinePrefix("    foo", 4) -> "    "
+     * </code></pre>
      * 
-     *     getWhitespaceLinePrefix("    foo", 4) -> "    "
-     * 
-     * Note that this method will throw an `IllegalArgumentException` if the line prefix is not
-     * all whitespace characters.
+     * @throws IllegalArgumentException
+     *           If the line prefix is not all whitespace characters.
      */
     private static String getWhitespaceLinePrefix(String str, int idx)
     {
@@ -261,13 +266,15 @@ public class Source
 
     /**
      * Inserts any elements in the given list of items into the format string at
-     * format elements. A format element is a substring of `fmt` that satisfies
-     * the pattern "#\d+", that is, a hash-symbol followed by one or more
+     * format elements. A format element is a substring of {@code fmt} that satisfies
+     * the pattern {@code #\d+"}, that is, a hash-symbol followed by one or more
      * digits. The digits of a format element are interpreted to be the index
-     * into `items` used to find which item to place at that location. For
+     * into {@code items} used to find which item to place at that location. For
      * example,
      *
-     *     Source.format("#0? #1, #0...", "World", "Hello") -> "World? Hello, World..."
+     * <pre><code>
+     *     Source.format("#0? #1, #0...", "World", "Hello") =&gt; "World? Hello, World..."
+     * </code></pre>
      */
     public static String format(String fmt, Object... items)
     {
@@ -489,10 +496,12 @@ public class Source
     }
 
     /**
-     * Builds a `String` matching the type such that it is fully qualified and with any type
+     * Builds a {@link String} matching the type such that it is fully qualified and with any type
      * arguments dropped. For example, if the given `t` represents a declared type
      *
-     *     HashSet<Integer>
+     * <pre><code>
+     *   HashSet&lt;Integer&gt;
+     * </code></pre>
      *
      * then this method would return "java.util.HashSet".
      */
@@ -507,17 +516,21 @@ public class Source
     }
 
     /**
-     * Builds a `List<String>` of import declarations from the given set of types. Each of the
-     * given `String` objects is assumed to be a fully qualified type that can be imported as-is.
-     * For example, if the following set of types were passed,
+     * Builds a {@code List&lt;String&gt;} of import declarations from the given set of types.
+     * Each of the given {@link String} objects is assumed to be a fully qualified type that can
+     * be imported as-is. For example, if the following set of types were passed,
      *
+     * <pre><code>
      *     { java.util.HashSet, java.util.Set, java.lang.String }
+     * </code></pre>
      *
-     * then this method would return the following imports declarations as a single `String`:
+     * <p>then this method would return the following imports declarations as a single `String`:
      *
-     *     import java.util.HashSet;
-     *     import java.util.Set;
-     *     import java.lang.String;
+     * <pre><code>
+     *   import java.util.HashSet;
+     *   import java.util.Set;
+     *   import java.lang.String;
+     * </code></pre>
      */
     public static List<String> buildImportDecls(Iterable<String> imports)
     {

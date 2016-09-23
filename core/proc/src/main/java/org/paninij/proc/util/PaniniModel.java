@@ -390,24 +390,25 @@ public class PaniniModel
      * Inspects the given capsule template, finds the design declaration on it, then returns a
      * String representation of a `imports()` method declaration.
      *
-     * For example, if a user-defined capsule template has the form
+     * <p>For example, if a user-defined capsule template has the form
      *
-     *     ```
-     *     @Capsule
-     *     public class BazTemplate
-     *     {
-     *         @Import Foo foo;
-     *         @Import Bar bar;
-     *         // ...
-     *     }
-     *     ```
+     * <pre><code>
+     * &#64;Capsule
+     * public class BazTemplate {
+     *     &#64;Import Foo foo;
+     *     &#64;Import Bar bar;
+     *     // ...
+     * }
+     * </code></pre>
      *
-     * where `foo` and `bar` are the only `@Import`-annotated fields on the template, then this
+     * <p>where `foo` and `bar` are the only `@Import`-annotated fields on the template, then this
      * method would return the `String`
      *
-     *     "public void imports(Foo foo, Bar bar)"
+     * <pre><code>
+     * public void imports(Foo foo, Bar bar)
+     * </code></pre>
      *
-     * Note: If the `template` has no `@Import` capsules, then this method returns `null`.
+     * <p>Note: If the `template` has no `@Import` capsules, then this method returns `null`.
      */
     public static String buildExportMethodDecl(PaniniProcessor context, TypeElement template)
     {

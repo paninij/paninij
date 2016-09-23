@@ -3,6 +3,8 @@ apply plugin: 'maven'
 
 description = '@PaniniJ Runtime'
 
+tasks.javadoc.options.tags << 'spec:a:"spec:"'  // `@spec` is used in `String`
+
 dependencies {
   testCompile 'junit:junit:4.12'
 }

@@ -54,15 +54,15 @@ public interface Result
         }
     };
     
-    /**
-     * @throw  IllegalArgumentException  If `err` or `source` is null.
-     */
     public static class Error implements Result
     {
         private final String err;
         private final Class<? extends Check> source;
         private final Element offender;
-        
+
+        /**
+         * @throws  IllegalArgumentException  If `err` or `source` is null.
+         */
         public Error(String err, Class<? extends Check> source, Element offender) {
             if (err == null || source == null) {
                 throw new IllegalArgumentException();

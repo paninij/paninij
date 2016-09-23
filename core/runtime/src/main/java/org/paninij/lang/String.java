@@ -29,6 +29,8 @@ package org.paninij.lang;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Comparator;
+import java.util.IllegalFormatException;
+import java.util.regex.PatternSyntaxException;
 
 import org.paninij.runtime.Panini$Future;
 import org.paninij.runtime.Panini$Message;
@@ -218,7 +220,7 @@ public class String extends Object implements CharSequence,
      * This value is filled when either:
      * <ol>
      * <li> an {@code org.paninij.lang.String} is constructed with the actual value</li>
-     * <li> the {@link #panini$resolve(String)} method is called. </li>
+     * <li> the {@link #panini$resolve(java.lang.String)} method is called. </li>
      * </ol>
      * @serial
      */
@@ -233,8 +235,9 @@ public class String extends Object implements CharSequence,
     private final int panini$message$id;
     /**
      * Boolean indicating whether or not the actual value has been set.
-     * Should only be set in either a constructor that has an actual value
-     * or when the {@link #panini$resolve(String)} method is called.
+     *
+     * Should only be set in either a constructor that has an actual value or when the {@link
+     * #panini$resolve(java.lang.String)} method is called.
      */
     private boolean panini$resolved;
 
@@ -255,8 +258,10 @@ public class String extends Object implements CharSequence,
     
     /**
      * Save the value and notify listeners the value is available.
-     * This is a duplicate of {@link #panini$resolve(String)} only used by string lambdas because
-     * the {@link #panini$resolve(String)} method will be overwritten.
+     *
+     * This is a duplicate of {@link #panini$resolve(java.lang.String)} only used by string lambdas
+     * because the {@link #panini$resolve(java.lang.String)} method will be overwritten.
+     *
      * @param s    {@code java.lang.String} to use as a value. Method will pull
      *             the wrapped {@code String} out as the value.
      */
@@ -876,9 +881,9 @@ public class String extends Object implements CharSequence,
      * subarray of <code>dst</code> starting at index <code>dstBegin</code>
      * and ending at index:
      * 
-     * <p><blockquote><pre>
+     * <blockquote><pre>
      *     dstbegin + (srcEnd-srcBegin) - 1
-     * </pre></blockquote></p>
+     * </pre></blockquote>
      *
      * @param      srcBegin   index of the first character in the string
      *                        to copy.
@@ -1267,7 +1272,7 @@ public class String extends Object implements CharSequence,
      * The java.text package provides <em>Collators</em> to allow
      * locale-sensitive ordering.
      *
-     * @see     java.text.Collator#compare(String, String)
+     * @see     java.text.Collator#compare(java.lang.String, java.lang.String)
      * @since   1.2
      */
     public static final Comparator<String> CASE_INSENSITIVE_ORDER =
@@ -1298,7 +1303,7 @@ public class String extends Object implements CharSequence,
      * @return  a negative integer, zero, or a positive integer as the
      *          specified String is greater than, equal to, or less
      *          than this String, ignoring case considerations.
-     * @see     java.text.Collator#compare(String, String)
+     * @see     java.text.Collator#compare(java.lang.String, java.lang.String)
      * @since   1.2
      */
     public int compareToIgnoreCase(String str) {
@@ -1322,7 +1327,7 @@ public class String extends Object implements CharSequence,
      * @return  a negative integer, zero, or a positive integer as the
      *          specified String is greater than, equal to, or less
      *          than this String, ignoring case considerations.
-     * @see     java.text.Collator#compare(String, String)
+     * @see     java.text.Collator#compare(java.lang.String, java.lang.String)
      * @since   1.2
      */
     public int compareToIgnoreCase(java.lang.String str) {
@@ -1519,12 +1524,12 @@ public class String extends Object implements CharSequence,
      * of <code>ch</code> in the range from 0 to 0xFFFF (inclusive),
      * this is the smallest value <i>k</i> such that:
      * <blockquote><pre>
-     * (this.charAt(<i>k</i>) == ch) && (<i>k</i> &gt;= fromIndex)
+     * (this.charAt(<i>k</i>) == ch) &amp;&amp; (<i>k</i> &gt;= fromIndex)
      * </pre></blockquote>
      * is true. For other values of <code>ch</code>, it is the
      * smallest value <i>k</i> such that:
      * <blockquote><pre>
-     * (this.codePointAt(<i>k</i>) == ch) && (<i>k</i> &gt;= fromIndex)
+     * (this.codePointAt(<i>k</i>) == ch) &amp;&amp; (<i>k</i> &gt;= fromIndex)
      * </pre></blockquote>
      * is true. In either case, if no such character occurs in this
      * string at or after position <code>fromIndex</code>, then
@@ -1587,12 +1592,12 @@ public class String extends Object implements CharSequence,
      * from 0 to 0xFFFF (inclusive), the index returned is the largest
      * value <i>k</i> such that:
      * <blockquote><pre>
-     * (this.charAt(<i>k</i>) == ch) && (<i>k</i> &lt;= fromIndex)
+     * (this.charAt(<i>k</i>) == ch) &amp;&amp; (<i>k</i> &lt;= fromIndex)
      * </pre></blockquote>
      * is true. For other values of <code>ch</code>, it is the
      * largest value <i>k</i> such that:
      * <blockquote><pre>
-     * (this.codePointAt(<i>k</i>) == ch) && (<i>k</i> &lt;= fromIndex)
+     * (this.codePointAt(<i>k</i>) == ch) &amp;&amp; (<i>k</i> &lt;= fromIndex)
      * </pre></blockquote>
      * is true. In either case, if no such character occurs in this
      * string at or before position <code>fromIndex</code>, then
@@ -1644,7 +1649,7 @@ public class String extends Object implements CharSequence,
      *
      * <p>The returned index is the smallest value <i>k</i> for which:
      * <blockquote><pre>
-     * <i>k</i> &gt;= fromIndex && this.startsWith(str, <i>k</i>)
+     * <i>k</i> &gt;= fromIndex &amp;&amp; this.startsWith(str, <i>k</i>)
      * </pre></blockquote>
      * If no such value of <i>k</i> exists, then {@code -1} is returned.
      *
@@ -1685,7 +1690,7 @@ public class String extends Object implements CharSequence,
      *
      * <p>The returned index is the largest value <i>k</i> for which:
      * <blockquote><pre>
-     * <i>k</i> &lt;= fromIndex && this.startsWith(str, <i>k</i>)
+     * <i>k</i> &lt;= fromIndex &amp;&amp; this.startsWith(str, <i>k</i>)
      * </pre></blockquote>
      * If no such value of <i>k</i> exists, then {@code -1} is returned.
      *
@@ -1752,18 +1757,20 @@ public class String extends Object implements CharSequence,
     /**
      * Returns a new character sequence that is a subsequence of this sequence.
      *
-     * <p> An invocation of this method of the form
+     * <p>
+     * An invocation of this method of the form</p>
      *
      * <blockquote><pre>
      * str.subSequence(begin,&nbsp;end)</pre></blockquote>
      *
-     * behaves in exactly the same way as the invocation
+     * <p>behaves in exactly the same way as the invocation</p>
      *
      * <blockquote><pre>
      * str.substring(begin,&nbsp;end)</pre></blockquote>
      *
+     * <p>
      * This method is defined so that the <tt>String</tt> class can implement
-     * the {@link CharSequence} interface. </p>
+     * the {@link CharSequence} interface.</p>
      *
      * @param      beginIndex   the begin index, inclusive.
      * @param      endIndex     the end index, exclusive.
@@ -1850,7 +1857,7 @@ public class String extends Object implements CharSequence,
      * same result as the expression
      *
      * <blockquote><tt> {@link java.util.regex.Pattern}.{@link
-     * java.util.regex.Pattern#matches(String,CharSequence)
+     * java.util.regex.Pattern#matches(java.lang.String, CharSequence)
      * matches}(</tt><i>regex</i><tt>,</tt> <i>str</i><tt>)</tt></blockquote>
      *
      * @param   regex
@@ -1881,7 +1888,7 @@ public class String extends Object implements CharSequence,
      * same result as the expression
      *
      * <blockquote><tt> {@link java.util.regex.Pattern}.{@link
-     * java.util.regex.Pattern#matches(String,CharSequence)
+     * java.util.regex.Pattern#matches(java.lang.String,CharSequence)
      * matches}(</tt><i>regex</i><tt>,</tt> <i>str</i><tt>)</tt></blockquote>
      *
      * @param   regex
@@ -2115,7 +2122,7 @@ public class String extends Object implements CharSequence,
      * href="../util/regex/Pattern.html#sum">regular expression</a>.
      *
      * <p> This method works as if by invoking the two-argument {@link
-     * #split(String, int) split} method with the given expression and a limit
+     * #split(java.lang.String, int) split} method with the given expression and a limit
      * argument of zero.  Trailing empty strings are therefore not included in
      * the resulting array.
      *
@@ -2202,7 +2209,7 @@ public class String extends Object implements CharSequence,
      * @return the <code>String</code>, converted to lowercase.
      * @see     java.lang.String#toLowerCase()
      * @see     java.lang.String#toUpperCase()
-     * @see     java.lang.String#toUpperCase(Locale)
+     * @see     java.lang.String#toUpperCase(java.util.Locale)
      * @since   1.1
      */
     public java.lang.String toLowerCase(java.util.Locale locale) {
@@ -2227,7 +2234,7 @@ public class String extends Object implements CharSequence,
      * <code>toLowerCase(Locale.ENGLISH)</code>.
      * <p>
      * @return  the <code>String</code>, converted to lowercase.
-     * @see     java.lang.String#toLowerCase(Locale)
+     * @see     java.lang.String#toLowerCase(java.util.Locale)
      */
     public java.lang.String toLowerCase() {
     	if(panini$resolved == false) panini$get();
@@ -2242,7 +2249,7 @@ public class String extends Object implements CharSequence,
      * <code>String</code> may be a different length than the original <code>String</code>.
      * <p>
      * Examples of locale-sensitive and 1:M case mappings are in the following table.
-     * <p>
+     * </p>
      * <table border="1" summary="Examples of locale-sensitive and 1:M case mappings. Shows Language code of locale, lower case, upper case, and description.">
      * <tr>
      *   <th>Language Code of Locale</th>
@@ -2279,7 +2286,7 @@ public class String extends Object implements CharSequence,
      * @return the <code>String</code>, converted to uppercase.
      * @see     java.lang.String#toUpperCase()
      * @see     java.lang.String#toLowerCase()
-     * @see     java.lang.String#toLowerCase(Locale)
+     * @see     java.lang.String#toLowerCase(java.util.Locale)
      * @since   1.1
      */
     public java.lang.String toUpperCase(java.util.Locale locale) {
@@ -2304,7 +2311,7 @@ public class String extends Object implements CharSequence,
      * <code>toUpperCase(Locale.ENGLISH)</code>.
      * <p>
      * @return  the <code>String</code>, converted to uppercase.
-     * @see     java.lang.String#toUpperCase(Locale)
+     * @see     java.lang.String#toUpperCase(java.util.Locale)
      */
     public java.lang.String toUpperCase() {
     	if(panini$resolved == false) panini$get();

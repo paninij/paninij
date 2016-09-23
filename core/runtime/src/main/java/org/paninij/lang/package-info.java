@@ -24,9 +24,10 @@
  * 	Trey Erenberger
  *******************************************************************************/
 /**
- * <p>The <code>org.paninij.lang</code> package offers various classes and annotations which are used by a
- * developer to create an &#64;PaniniJ program. &#64;PaniniJ is an annotation-based realization of capsule-
- * oriented programming in Java. Capsule-oriented programming is an implicitly concurrent programming model.
+ * <p>The <code>org.paninij.lang</code> package offers various classes and annotations which are
+ * used by a developer to create an &#64;PaniniJ program. &#64;PaniniJ is an annotation-based
+ * realization of capsule-oriented programming in Java. Capsule-oriented programming is an
+ * implicitly concurrent programming model.
  * 
  * <p>The annotations defined within this package are needed to define a &#64;PaniniJ program. The
  * user writes a set of Java class definitions, but they are annotated in such a way that they can
@@ -34,7 +35,7 @@
  * 
  * 
  * <h2>Example 1: Defining a Capsule</h2>
- * <h4>HelloWorldTemplate.java</h4>
+ * <h3>HelloWorldTemplate.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -84,7 +85,7 @@
  * 
  * 
  * <h2>Example 2: A System of Capsules</h2>
- * <h4>ConsoleTemplate.java</h4>
+ * <h3>ConsoleTemplate.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -98,7 +99,7 @@
  * }
  * </pre></blockquote>
  * 
- * <h4>GreeterTemplate.java</h4>
+ * <h3>GreeterTemplate.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -169,7 +170,7 @@
  * 
  * 
  * <h2>Example 3: Ping-Pong</h2>
- * <h4>PingTemplate.java</h4>
+ * <h3>PingTemplate.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -185,7 +186,7 @@
  *     &#64;Imports int count;
  * 
  *     public void ping() {
- *         if (--count > 0) {
+ *         if (--count &lt; 0) {
  *             pong.pong(count);
  *         } else {
  *             System.out.println("done");
@@ -196,7 +197,7 @@
  * }
  * </pre></blockquote>
  * 
- * <h4>PongTemplate.java</h4>
+ * <h3>PongTemplate.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -217,7 +218,7 @@
  * }
  * </pre></blockquote>
  *
- * <h4>PingPongTemplate.java</h4>
+ * <h3>PingPongTemplate.java</h3>
  * <blockquote><pre>
  * package example;
  * 
