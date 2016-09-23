@@ -1,6 +1,8 @@
 @PaniniJ
 ----------
 
+[![Build Status](https://travis-ci.org/hridesh/panini.svg?branch=gradle%2Ftravis-ci)](https://travis-ci.org/hridesh/panini)
+
 A realization of Panini via Java compiler plugins. Panini is a capsule-oriented
 programming model, which introduces a new programming abstraction, *the
 capsule*. The main motivation behind this abstraction is to enable more modular
