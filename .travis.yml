@@ -12,6 +12,12 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+# Decryption command generated using `travis encrypt-file`.
+# See `https://docs.travis-ci.com/user/encrypting-files/` for more info.
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_4227c98d6c43_key -iv $encrypted_4227c98d6c43_iv
+  -in deploy/travis/ghpages_deploy_key.enc -out deploy/travis/ghpages_deploy_key -d
+
 # TODO: Re-enable after intitial complete configuration of Travis.
 #notifications:
 #  email:
@@ -20,3 +26,7 @@ cache:
 #    on_success: change
 #    on_failure: always
 
+deploy:
+  # Deploy GitHub Pages Site:
+  - provider: script
+    script: deploy/travis/site.sh

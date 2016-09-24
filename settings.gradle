@@ -11,3 +11,5 @@ include ':benchmarks'
 include ':benchmarks:savina'
 include ':benchmarks:jmh-harness'
 include ':benchmarks:savina-harness'
+
+include ':site'

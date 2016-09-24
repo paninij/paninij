@@ -1,0 +1,31 @@
+plugins {
+  id 'base'
+  id 'org.ajoberstar.github-pages' version '1.5.1'
+}
+
+def siteDir = "$buildDir/site/"
+def ghpagesRepoUri = 'git@github.com:paninij/paninij.github.io.git'
+
+task siteJavadoc(type: Copy) {
+  def publicJavadocTask = tasks.getByPath(':core:lang:javadoc')
+  dependsOn publicJavadocTask
+  from publicJavadocTask.destinationDir
+  into "$siteDir/javadoc"
+
+}
+assemble.dependsOn siteJavadoc
+
+// Deploy site to GitHub Pages. Auth is over SSH enabled by `ssh-agent`.
+project.ext['org.ajoberstar.grgit.auth.force'] = 'sshagent'
+githubPages {
+  repoUri = ghpagesRepoUri
+  targetBranch = 'master'
+  pages {
+    from siteDir
+  }
+}
+publishGhPages.dependsOn build
+
+task deploy() {
+  dependsOn publishGhPages
+}
