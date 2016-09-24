@@ -12,9 +12,11 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-notifications:
-  email:
-    recipients:
-      - panini-project@googlegroups.com
-    on_success: change
-    on_failure: always
+# TODO: Re-enable after intitial complete configuration of Travis.
+#notifications:
+#  email:
+#    recipients:
+#      - panini-project@googlegroups.com
+#    on_success: change
+#    on_failure: always
+
