@@ -1,4 +1,4 @@
-package org.paninij.proc.activepassive;
+package org.paninij.ex.xyz;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
