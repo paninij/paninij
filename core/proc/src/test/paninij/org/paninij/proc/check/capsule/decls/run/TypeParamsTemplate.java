@@ -1,12 +1,13 @@
 package org.paninij.proc.check.capsule.decls;
 
+import java.util.List;
+
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class BadParamsRunTemplate
+public class TypeParamsTemplate
 {
-    public void run(Object param) {
+    <T> void init(List<T> list) {
         // Nothing
     }
 }
-

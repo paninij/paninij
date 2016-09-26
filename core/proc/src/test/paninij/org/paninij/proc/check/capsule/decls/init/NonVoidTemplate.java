@@ -1,9 +1,9 @@
-package org.paninij.proc.check.capsule.decls;
+package org.paninij.proc.check.capsule.decls.init;
 
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class NonVoidInitTemplate
+public class NonVoidTemplate
 {
     protected Object init() {
         return null;
