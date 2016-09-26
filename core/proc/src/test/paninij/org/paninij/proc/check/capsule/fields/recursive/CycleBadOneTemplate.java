@@ -5,5 +5,5 @@ import org.paninij.lang.Imports;
 
 @Capsule
 public class CycleBadOneTemplate {
-    @Local CycleBadTwo;
+    @Local CycleBadTwo two;
 }

@@ -5,5 +5,5 @@ import org.paninij.lang.Imports;
 
 @Capsule
 public class OkTemplate {
-    @Imports Ok;
+    @Imports Ok ok;
 }

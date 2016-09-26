@@ -5,5 +5,5 @@ import org.paninij.lang.Local;
 
 @Capsule
 public class BadTemplate {
-    @Local Bad;
+    @Local Bad bad;
 }
