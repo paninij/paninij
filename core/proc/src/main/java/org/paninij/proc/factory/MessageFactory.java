@@ -42,7 +42,7 @@ public class MessageFactory implements ArtifactFactory<Procedure>
     private DuckMessageFactory duckMessageFactory;
 
     public MessageFactory() {
-        this.generated = new HashSet<String>();
+        this.generated = new HashSet<>();
         this.futureMessageFactory = new FutureMessageFactory();
         this.simpleMessageFactory = new SimpleMessageFactory();
         this.duckMessageFactory = new DuckMessageFactory();

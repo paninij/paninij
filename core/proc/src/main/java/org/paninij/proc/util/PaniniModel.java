@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -37,8 +38,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-
-import org.paninij.proc.PaniniProcessor;
 
 
 public class PaniniModel
@@ -233,21 +232,21 @@ public class PaniniModel
     } 
 
 
-    public static boolean isCapsuleFieldDecl(PaniniProcessor context, Element elem)
+    public static boolean isCapsuleFieldDecl(ProcessingEnvironment context, Element elem)
     {
         return isLocalFieldDecl(context, elem) || isImportFieldDecl(context, elem);
     }
 
 
-    public static boolean hasCapsuleFieldDecls(PaniniProcessor context, TypeElement template)
+    public static boolean hasCapsuleFieldDecls(ProcessingEnvironment context, TypeElement template)
     {
         return getCapsuleFieldDecls(context, template).isEmpty();
     }
 
 
-    public static List<VariableElement> getCapsuleFieldDecls(PaniniProcessor context, TypeElement template)
+    public static List<VariableElement> getCapsuleFieldDecls(ProcessingEnvironment context, TypeElement template)
     {
-        List<VariableElement> fieldDecls = new ArrayList<VariableElement>();
+        List<VariableElement> fieldDecls = new ArrayList<>();
         for (Element elem : template.getEnclosedElements())
         {
             if (isCapsuleFieldDecl(context, elem)) {
@@ -258,22 +257,22 @@ public class PaniniModel
     }
 
 
-    public static boolean isLocalFieldDecl(PaniniProcessor context, Element elem)
+    public static boolean isLocalFieldDecl(ProcessingEnvironment context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
             && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Local");
     }
 
 
-    public static boolean hasLocalFieldDecls(PaniniProcessor context, TypeElement template) {
-        return getImportFieldDecls(context, template).isEmpty() == false;
+    public static boolean hasLocalFieldDecls(ProcessingEnvironment context, TypeElement template) {
+        return ! getImportFieldDecls(context, template).isEmpty();
     }
 
 
-    public static List<VariableElement> getLocalFieldDecls(PaniniProcessor context,
+    public static List<VariableElement> getLocalFieldDecls(ProcessingEnvironment context,
                                                            TypeElement template)
     {
-        List<VariableElement> locals = new ArrayList<VariableElement>();
+        List<VariableElement> locals = new ArrayList<>();
         for (Element elem : template.getEnclosedElements())
         {
             if (isLocalFieldDecl(context, elem)) {
@@ -284,18 +283,18 @@ public class PaniniModel
     }
 
 
-    public static boolean isImportFieldDecl(PaniniProcessor context, Element elem)
+    public static boolean isImportFieldDecl(ProcessingEnvironment context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
             && JavaModel.isAnnotatedBy(context, elem, "org.paninij.lang.Import");
     }
 
 
-    public static boolean hasImportFieldDecls(PaniniProcessor context, TypeElement template) {
-        return getImportFieldDecls(context, template).isEmpty() == false;
+    public static boolean hasImportFieldDecls(ProcessingEnvironment context, TypeElement template) {
+        return ! getImportFieldDecls(context, template).isEmpty();
     }
 
-    public static List<VariableElement> getImportFieldDecls(PaniniProcessor context, TypeElement template)
+    public static List<VariableElement> getImportFieldDecls(ProcessingEnvironment context, TypeElement template)
     {
         List<VariableElement> importFields = new ArrayList<VariableElement>();
         for (Element elem : template.getEnclosedElements())
@@ -307,22 +306,22 @@ public class PaniniModel
         return importFields;
     }
     
-    public static boolean isStateFieldDecl(PaniniProcessor context, Element elem)
+    public static boolean isStateFieldDecl(ProcessingEnvironment context, Element elem)
     {
         return elem.getKind() == ElementKind.FIELD
-            && isImportFieldDecl(context, elem) == false
-            && isLocalFieldDecl(context, elem) == false;
+            && ! isImportFieldDecl(context, elem)
+            && ! isLocalFieldDecl(context, elem);
         
     }
     
-    public static boolean hasStateFieldDecl(PaniniProcessor context, TypeElement template)
+    public static boolean hasStateFieldDecl(ProcessingEnvironment context, TypeElement template)
     {
-        return getStateFieldDecls(context, template).isEmpty() == false;
+        return ! getStateFieldDecls(context, template).isEmpty();
     }
 
-    public static List<VariableElement> getStateFieldDecls(PaniniProcessor context, TypeElement template)
+    public static List<VariableElement> getStateFieldDecls(ProcessingEnvironment context, TypeElement template)
     {
-        List<VariableElement> state_decls = new ArrayList<VariableElement>();
+        List<VariableElement> state_decls = new ArrayList<>();
         for (Element elem : template.getEnclosedElements())
         {
             if (isStateFieldDecl(context, elem)) {
@@ -336,7 +335,7 @@ public class PaniniModel
     /**
      * A capsule is a "root" capsule if and only if it is active and has no `@Import` fields.
      */
-    public static boolean isRootCapsule(PaniniProcessor context, TypeElement template)
+    public static boolean isRootCapsule(ProcessingEnvironment context, TypeElement template)
     {
         return hasImportFieldDecls(context, template) == false && isActive(template);
     }
@@ -375,7 +374,7 @@ public class PaniniModel
      */
     public static List<ExecutableElement> getProcedures(TypeElement template)
     {
-        List<ExecutableElement> rv = new ArrayList<ExecutableElement>();
+        List<ExecutableElement> rv = new ArrayList<>();
         for (Element elem : template.getEnclosedElements())
         {
             if (isProcedure(elem)) {
@@ -410,9 +409,9 @@ public class PaniniModel
      *
      * <p>Note: If the `template` has no `@Import` capsules, then this method returns `null`.
      */
-    public static String buildExportMethodDecl(PaniniProcessor context, TypeElement template)
+    public static String buildExportMethodDecl(ProcessingEnvironment context, TypeElement template)
     {
-        List<String> paramDecls = new ArrayList<String>();
+        List<String> paramDecls = new ArrayList<>();
         for (VariableElement varElem : getImportFieldDecls(context, template)) {
             paramDecls.add(Source.buildVariableDecl(varElem));
         }

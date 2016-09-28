@@ -43,7 +43,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
     protected String generateProcedureID(Procedure p) {
         String base = "panini$proc$";
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
 
         for (Variable param : p.getParameters()) {
             params.add(param.encodeFull());
@@ -79,7 +79,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
     protected String generateProcedureArguments(MessageShape shape) {
         String procID = this.generateProcedureID(shape.procedure);
-        List<String> argNames = new ArrayList<String>();
+        List<String> argNames = new ArrayList<>();
         argNames.add(procID);
         argNames.addAll(this.generateProcArgumentNames(shape.procedure));
         return String.join(", ", argNames);
@@ -112,7 +112,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
     }
 
     protected List<String> generateProcArgumentDecls(Procedure p) {
-        List<String> argDecls = new ArrayList<String>();
+        List<String> argDecls = new ArrayList<>();
         for (Variable v : p.getParameters()) {
             argDecls.add(v.toString());
         }
@@ -120,7 +120,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
     }
 
     protected List<String> generateProcArgumentNames(Procedure p) {
-        List<String> argNames = new ArrayList<String>();
+        List<String> argNames = new ArrayList<>();
         for (Variable v : p.getParameters()) {
             argNames.add(v.getIdentifier());
         }
@@ -161,9 +161,9 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
             if (local.isArray()) required.add(local);
         }
 
-        if (required.isEmpty()) return new ArrayList<String>();
+        if (required.isEmpty()) return new ArrayList<>();
 
-        List<String> assertions = new ArrayList<String>(required.size());
+        List<String> assertions = new ArrayList<>(required.size());
         for (int idx = 0; idx < required.size(); idx++) {
             if (required.get(idx).isCapsule()) {
                 assertions.add(Source.format(
@@ -184,8 +184,8 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
     protected List<String> generateExport()
     {
         List<Variable> imported = this.capsule.getImportFields();
-        List<String> refs = new ArrayList<String>();
-        List<String> decls = new ArrayList<String>();
+        List<String> refs = new ArrayList<>();
+        List<String> decls = new ArrayList<>();
 
         if (imported.isEmpty()) return refs;
 
@@ -226,16 +226,16 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
     protected List<String> generateGetAllState()
     {
-    	List<String> states = new ArrayList<String>();
-    	
-    	for(Variable field : capsule.getStateFields())
-    	{
-    		if(field.getKind() == TypeKind.ARRAY || field.getKind() == TypeKind.DECLARED)
-    		{
-    			states.add("panini$encapsulated." + field.getIdentifier());
-    		}
-    	}
-    	
+        List<String> states = new ArrayList<>();
+
+        for(Variable field : capsule.getStateFields())
+        {
+            if(field.getKind() == TypeKind.ARRAY || field.getKind() == TypeKind.DECLARED)
+            {
+                states.add("panini$encapsulated." + field.getIdentifier());
+            }
+        }
+
         List<String> src = Source.lines("@Override",
                                         "public Object panini$getAllState()",
                                         "{",
@@ -249,7 +249,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
     protected List<String> generateInitState()
     {
-        if (!this.capsule.hasInit()) return new ArrayList<String>();
+        if (!this.capsule.hasInit()) return new ArrayList<>();
         return Source.lines(
                 "@Override",
                 "protected void panini$initState() {",
@@ -259,8 +259,8 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
     }
 
     protected List<String> generateOnTerminate() {
-        List<String> shutdowns = new ArrayList<String>();
-        List<Variable> references = new ArrayList<Variable>();
+        List<String> shutdowns = new ArrayList<>();
+        List<Variable> references = new ArrayList<>();
 
         references.addAll(this.capsule.getImportFields());
         references.addAll(this.capsule.getLocalFields());
@@ -301,7 +301,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
     protected List<String> generateMain()
     {
-        if (!this.deservesMain()) return new ArrayList<String>();
+        if (!this.deservesMain()) return new ArrayList<>();
 
         List<String> src = Source.lines(
                 "public static void main(String[] args) {",

@@ -25,7 +25,70 @@
  *******************************************************************************/
 package org.paninij.proc.check;
 
+import org.paninij.proc.util.Source;
+
+import javax.lang.model.element.Element;
+
 public interface Check
 {
-    // Nothing needed here.
+    interface Result
+    {
+        boolean ok();
+
+        /** May throw {@link IllegalStateException}. */
+        String errMsg();
+
+        /** May throw {@link IllegalStateException}. */
+        Class<? extends Check> source();
+
+        /** May throw {@link IllegalStateException}. */
+        Element offender();
+
+        Result OK = new Result()
+        {
+            @Override public boolean ok() {
+                return true;
+            }
+            @Override public String errMsg() {
+                throw new IllegalStateException("Check result was OK, so no error message.");
+            }
+            @Override public Class<? extends Check> source() {
+                throw new IllegalStateException("Check result was OK, so no error source.");
+            }
+            @Override public Element offender() {
+                throw new IllegalStateException("Check result was OK, so no offending element.");
+            }
+            @Override public String toString() {
+                return "Result.OK";
+            }
+        };
+
+        /**
+         * @throws  IllegalArgumentException  If `err` or `source` is null.
+         */
+        static Result error(String errMsg, Class<? extends Check> source, Element offender)
+        {
+            if (errMsg == null || source == null) {
+                throw new IllegalArgumentException();
+            }
+            return new Result() {
+                @Override public boolean ok() {
+                    return false;
+                }
+                @Override public String errMsg() {
+                    return errMsg;
+                }
+                @Override public Class<? extends Check> source() {
+                    return source;
+                }
+                @Override public Element offender() {
+                    return offender;
+                }
+                @Override public String toString() {
+                    return Source.format("Result.error(errMsg=#0, source=#1, offender=#2)",
+                                         errMsg, source, offender);
+                }
+            };
+        }
+    }
 }

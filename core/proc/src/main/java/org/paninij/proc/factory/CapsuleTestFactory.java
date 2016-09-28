@@ -31,11 +31,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
 
+@Deprecated
 public class CapsuleTestFactory extends AbstractCapsuleFactory
 {
     public static final String CAPSULE_TEST_SUFFIX = "$Test";
@@ -60,7 +60,7 @@ public class CapsuleTestFactory extends AbstractCapsuleFactory
 
         src = Source.format(src,
                 this.capsule.getPackage(),
-                PaniniProcessor.getGeneratedAnno(CapsuleTestFactory.class),
+                ArtifactFactory.getGeneratedAnno(CapsuleTestFactory.class),
                 this.generateClassName());
         src = Source.formatAligned(src, generateImports());
         src = Source.formatAligned(src, generateTests());

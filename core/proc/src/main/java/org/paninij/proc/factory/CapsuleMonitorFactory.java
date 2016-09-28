@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Type;
 import org.paninij.proc.model.Variable;
@@ -67,7 +66,7 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
 
         src = Source.format(src,
                 this.capsule.getPackage(),
-                PaniniProcessor.getGeneratedAnno(CapsuleMonitorFactory.class),
+                ArtifactFactory.getGeneratedAnno(CapsuleMonitorFactory.class),
                 this.generateClassName(),
                 this.capsule.getSimpleName());
 

@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.AnnotationKind;
 import org.paninij.proc.model.Capsule;
 import org.paninij.proc.model.Procedure;
@@ -46,6 +45,7 @@ import org.paninij.proc.util.Source;
 import org.paninij.proc.util.SourceFile;
 
 // TODO: Also implement ArtifactFactory<Capsule>
+@Deprecated
 public class CapsuleMockupFactory implements ArtifactFactory<Signature>
 {
     public static final String CAPSULE_MOCKUP_SUFFIX = "$Mockup";
@@ -87,7 +87,7 @@ public class CapsuleMockupFactory implements ArtifactFactory<Signature>
 
         src = format(src,
         		this.signature.getPackage(),
-        		PaniniProcessor.getGeneratedAnno(CapsuleMockupFactory.class),
+        		ArtifactFactory.getGeneratedAnno(CapsuleMockupFactory.class),
         		this.getSimpleName(),
         		this.signature.getSimpleName());
 

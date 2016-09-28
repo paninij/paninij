@@ -25,13 +25,28 @@
  *******************************************************************************/
 package org.paninij.proc.check.capsule;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.check.Check;
-import org.paninij.proc.check.Result;
+import org.paninij.proc.util.Source;
+
+import static org.paninij.proc.check.Check.Result.error;
+
 
 public interface CapsuleCheck extends Check
 {
+    default Result checkCapsule(Element elem)
+    {
+        if (elem.getKind() != ElementKind.CLASS) {
+            String err = Source.format("A capsule template must be a class, but one has `TypeKind` "
+                                     + "#0: #1", elem.getKind(), elem);
+            return error(err, RoundOneCapsuleChecks.class, elem);
+        }
+        return checkCapsule((TypeElement) elem);
+    }
+
     /**
      * @param   template  A type element for the capsule template to be checked.
      * @return  The result of the check.

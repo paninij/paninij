@@ -161,8 +161,8 @@ public class CompileTests {
         CompilationTaskBuilder taskBuilder = newBuilder(config);
 
         // Add the implicit/standard configuration to this test compilation task.
-        taskBuilder.addProc(new PaniniProcessor())
-                   .addOption("-Apanini.exceptOnFailedChecks");
+        taskBuilder.addProc(new RoundZeroProcessor())
+                   .addProc(new RoundOneProcessor());
         taskBuilder.getFileManagerConfig().addToSourcePath(SOURCES_DIR)
                                           .addToClassPath(PANINI_PROC_CLASSES_DIR)
                                           .addToClassPath(PANINI_RUNTIME_CLASSES_DIR)

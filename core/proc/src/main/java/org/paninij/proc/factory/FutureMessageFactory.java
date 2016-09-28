@@ -29,7 +29,6 @@ package org.paninij.proc.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.model.Type.Category;
@@ -132,7 +131,7 @@ public class FutureMessageFactory extends AbstractMessageFactory
 
         src = Source.format(src,
                 this.shape.getPackage(),
-                PaniniProcessor.getGeneratedAnno(FutureMessageFactory.class),
+                ArtifactFactory.getGeneratedAnno(FutureMessageFactory.class),
                 this.shape.encoded,
                 this.context.getReturnType().wrapped());
 

@@ -25,16 +25,26 @@
  *******************************************************************************/
 package org.paninij.proc.check.signature;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.check.Check;
-import org.paninij.proc.check.Result;
+
+import static java.text.MessageFormat.format;
+import static org.paninij.proc.check.Check.Result.error;
 
 public interface SignatureCheck extends Check
 {
-    /**
-     * @param  template  The type element for the signature template to be check.
-     * @return The result of the check.
-     */
+    default Result checkSignature(Element elem) {
+        if (elem.getKind() != ElementKind.INTERFACE) {
+            String err = "A signature template must be an interface, but an element annotated with "
+                    + "`@Signature` has TypeKind {0}.";
+            err = format(err, elem.getKind());
+            return error(err, AllSignatureChecks.class, elem);
+        }
+        return checkSignature((TypeElement) elem);
+    }
+
     Result checkSignature(TypeElement template);
 }

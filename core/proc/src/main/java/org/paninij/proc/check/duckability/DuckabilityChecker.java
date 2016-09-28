@@ -27,26 +27,25 @@ package org.paninij.proc.check.duckability;
 
 import static java.text.MessageFormat.format;
 
-import static org.paninij.proc.check.Result.ok;
+import static org.paninij.proc.check.Check.Result.OK;
+import static org.paninij.proc.check.Check.Result.error;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.proc.check.Check;
-import org.paninij.proc.check.CheckEnvironment;
-import org.paninij.proc.check.Result;
-import org.paninij.proc.check.Result.Error;
 
 public class DuckabilityChecker implements Check
 {
-    private final CheckEnvironment env;
+    private final ProcessingEnvironment procEnv;
     private final DuckabilityCheck[] checks;
     
-    public DuckabilityChecker(CheckEnvironment env) {
-        this.env = env;
+    public DuckabilityChecker(ProcessingEnvironment procEnv) {
+        this.procEnv = procEnv;
         this.checks = new DuckabilityCheck[] {
-            new FieldModifiersCheck(),
-            new MethodModifiersCheck()
+            new CheckFieldModifiers(),
+            new CheckMethodModifiers()
         };
     }
     
@@ -58,19 +57,19 @@ public class DuckabilityChecker implements Check
     {
         switch (toDuck.getKind()) {
         case VOID:
-            return ok;
+            return OK;
         case DECLARED:
             return checkDeclared(toDuck);
         default:
             String err = "Cannot duck type `{0}` because it has TypeKind {1}.";
             err = format(err, toDuck, toDuck.getKind());
-            return new Error(err, DuckabilityChecker.class, null);
+            return error(err, DuckabilityChecker.class, null);
         }
     }
     
     public Result checkDeclared(TypeMirror toDuck)
     {
-        TypeElement toDuckElem = (TypeElement) env.getTypeUtils().asElement(toDuck);
+        TypeElement toDuckElem = (TypeElement) procEnv.getTypeUtils().asElement(toDuck);
         if (toDuckElem == null) {
             throw new RuntimeException("Could not convert type mirror to type element: " + toDuck);
         }
@@ -82,6 +81,6 @@ public class DuckabilityChecker implements Check
             }
         }
         
-        return ok; 
+        return OK;
     }
 }

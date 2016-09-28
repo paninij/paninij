@@ -27,10 +27,25 @@ package org.paninij.proc.factory;
 
 import org.paninij.proc.util.SourceFile;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import static java.text.MessageFormat.format;
+
 /**
  * A common interface for all artifact factories. An artifact factory makes `SourceFile` objects
  * from models of type `T`.
  */
 public interface ArtifactFactory<T> {
     SourceFile make(T model);
+
+    static String getGeneratedAnno(Class<? extends ArtifactFactory<?>> clazz) {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+        df.setTimeZone(tz);
+        String iso = df.format(new Date());
+        return format("@Generated(value = \"{0}\", date = \"{1}\")", clazz.getName(), iso);
+    }
 }

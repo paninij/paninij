@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.util.MessageShape;
@@ -64,7 +63,7 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
 
         src = Source.format(src,
                 this.capsule.getPackage(),
-                PaniniProcessor.getGeneratedAnno(CapsuleInterfaceFactory.class),
+                ArtifactFactory.getGeneratedAnno(CapsuleInterfaceFactory.class),
                 this.capsule.getSimpleName(),
                 this.generateInterfaces(),
                 this.generateImportDecl());

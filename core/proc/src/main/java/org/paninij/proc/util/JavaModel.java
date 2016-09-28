@@ -30,6 +30,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -40,8 +41,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
-
-import org.paninij.proc.PaniniProcessor;
 
 
 public class JavaModel {
@@ -109,8 +108,8 @@ public class JavaModel {
         }
     }
 
-    public static TypeElement getTypeElement(PaniniProcessor context, String className) {
-        return context.getElementUtils().getTypeElement(className);
+    public static TypeElement getTypeElement(ProcessingEnvironment procEnv, String className) {
+        return procEnv.getElementUtils().getTypeElement(className);
     }
 
     /**
@@ -205,36 +204,33 @@ public class JavaModel {
     
     public static boolean hasZeroArgConstructor(Element type)
     {
-    	List<ExecutableElement> constructors = ElementFilter.constructorsIn(type.getEnclosedElements());
-    	for (ExecutableElement constructor : constructors) {
-    		if (constructor.getParameters().isEmpty()) return true;
-    	}
-    	return false;
+        List<ExecutableElement> constructors = ElementFilter.constructorsIn(type.getEnclosedElements());
+        for (ExecutableElement constructor : constructors) {
+            if (constructor.getParameters().isEmpty()) return true;
+        }
+        return false;
     }
 
-    public static <A extends Annotation> boolean isAnnotatedBy(PaniniProcessor context,
+    public static <A extends Annotation> boolean isAnnotatedBy(ProcessingEnvironment procEnv,
                                                                TypeMirror typeMirror,
                                                                String annotationName)
     {
-        TypeElement typeElem = (TypeElement) context.getTypeUtils().asElement(typeMirror);
-        return isAnnotatedBy(context, typeElem, annotationName);
+        TypeElement typeElem = (TypeElement) procEnv.getTypeUtils().asElement(typeMirror);
+        return isAnnotatedBy(procEnv, typeElem, annotationName);
     }
 
-    public static <A extends Annotation> boolean isAnnotatedBy(PaniniProcessor context,
+    public static <A extends Annotation> boolean isAnnotatedBy(ProcessingEnvironment procEnv,
                                                                Element elem,
                                                                String annotationName)
     {
-        TypeElement annotationType = getTypeElement(context, annotationName);
-        if (annotationType == null)
-        {
+        TypeElement annotationType = getTypeElement(procEnv, annotationName);
+        if (annotationType == null) {
             String msg = "Called `isAnnotatedBy()` with an `annotationName` which could not be found.";
             throw new IllegalArgumentException(msg);
         }
 
-        for (AnnotationMirror am : elem.getAnnotationMirrors())
-        {
-             if (context.getTypeUtils().isSameType(am.getAnnotationType(), annotationType.asType()))
-             {
+        for (AnnotationMirror am : elem.getAnnotationMirrors()) {
+             if (procEnv.getTypeUtils().isSameType(am.getAnnotationType(), annotationType.asType())) {
                  return true;
              }
         }

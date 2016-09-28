@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Type;
 import org.paninij.proc.model.Variable;
@@ -68,7 +67,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
 
         src = Source.format(src,
                 this.capsule.getPackage(),
-                PaniniProcessor.getGeneratedAnno(CapsuleSerialFactory.class),
+                ArtifactFactory.getGeneratedAnno(CapsuleSerialFactory.class),
                 this.generateClassName(),
                 this.capsule.getSimpleName());
 
@@ -86,7 +85,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
 
     private List<String> generateImports()
     {
-        Set<String> imports = new HashSet<String>();
+        Set<String> imports = new HashSet<>();
 
         for (Procedure p : this.capsule.getProcedures()) {
             MessageShape shape = new MessageShape(p);
@@ -104,7 +103,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         imports.add("org.paninij.runtime.Panini$System");
         imports.add(this.capsule.getQualifiedName());
 
-        List<String> prefixedImports = new ArrayList<String>();
+        List<String> prefixedImports = new ArrayList<>();
 
         for (String i : imports) {
             prefixedImports.add("import " + i + ";");
@@ -141,7 +140,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
 
     private List<String> generateEncapsulatedMethodCall(MessageShape shape)
     {
-        List<String> encap = new ArrayList<String>();
+        List<String> encap = new ArrayList<>();
         List<String> argNames = this.generateProcArgumentNames(shape.procedure);
         String args = String.join(", ", argNames);
         String call = "panini$encapsulated." + shape.procedure.getName() + "(" + args + ")";
@@ -182,7 +181,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
 
     private List<String> generateProcedures()
     {
-        ArrayList<String> src = new ArrayList<String>();
+        ArrayList<String> src = new ArrayList<>();
         for (Procedure p : this.capsule.getProcedures()) {
             src.addAll(this.generateProcedure(p));
         }
@@ -192,7 +191,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
     private List<String> generateInitLocals()
     {
         List<Variable> locals = this.capsule.getLocalFields();
-        List<String> source = new ArrayList<String>();
+        List<String> source = new ArrayList<>();
 
         if (locals.size() == 0) return source;
 
@@ -304,7 +303,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
 
     private List<String> generateCapsuleBody()
     {
-        List<String> src = new ArrayList<String>();
+        List<String> src = new ArrayList<>();
 
         src.add(this.generateEncapsulatedDecl());
         src.addAll(this.generateProcedures());

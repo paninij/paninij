@@ -26,7 +26,6 @@
 
 package org.paninij.proc.factory;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
@@ -74,7 +73,7 @@ public class SimpleMessageFactory extends AbstractMessageFactory
                 "}");
 
         src = Source.format(src, this.shape.getPackage(),
-                                 PaniniProcessor.getGeneratedAnno(SimpleMessageFactory.class),
+                                 ArtifactFactory.getGeneratedAnno(SimpleMessageFactory.class),
                                  this.shape.encoded);
         src = Source.formatAligned(src, this.buildParameterFields());
         src = Source.formatAligned(src, this.buildConstructor());

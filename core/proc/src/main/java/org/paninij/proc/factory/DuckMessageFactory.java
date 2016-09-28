@@ -36,10 +36,10 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
-import org.paninij.proc.PaniniProcessor;
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Variable;
 import org.paninij.proc.model.Type.Category;
+import org.paninij.proc.util.Artifact;
 import org.paninij.proc.util.JavaModel;
 import org.paninij.proc.util.MessageShape;
 import org.paninij.proc.util.Source;
@@ -116,7 +116,7 @@ public class DuckMessageFactory extends AbstractMessageFactory
 
         src = Source.format(src,
         		this.shape.getPackage(),
-        		PaniniProcessor.getGeneratedAnno(DuckMessageFactory.class),
+        		ArtifactFactory.getGeneratedAnno(DuckMessageFactory.class),
         		this.shape.encoded,
         		this.shape.returnType.wrapped());
 
@@ -180,7 +180,7 @@ public class DuckMessageFactory extends AbstractMessageFactory
                 "}");
 
         src = Source.format(src, this.shape.getPackage(),
-        		PaniniProcessor.getGeneratedAnno(DuckMessageFactory.class),
+        		ArtifactFactory.getGeneratedAnno(DuckMessageFactory.class),
         		this.shape.encoded,
         		this.shape.returnType.wrapped());
         

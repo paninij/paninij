@@ -28,7 +28,6 @@ package org.paninij.proc.check.duckability;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.check.Check;
-import org.paninij.proc.check.Result;
 
 public interface DuckabilityCheck extends Check
 {
