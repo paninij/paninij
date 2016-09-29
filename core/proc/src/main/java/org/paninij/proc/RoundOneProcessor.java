@@ -2,10 +2,11 @@ package org.paninij.proc;
 
 import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.SignatureInterface;
-import org.paninij.proc.check.Check;
+import org.paninij.proc.check.Check.Result;
 import org.paninij.proc.check.CheckException;
+import org.paninij.proc.check.capsule.CapsuleCheck;
+import org.paninij.proc.check.capsule.CheckForCycleOfLocalFields;
 import org.paninij.proc.check.capsule.RoundOneCapsuleChecks;
-import org.paninij.proc.check.signature.AllSignatureChecks;
 import org.paninij.proc.factory.CapsuleMonitorFactory;
 import org.paninij.proc.factory.CapsuleSerialFactory;
 import org.paninij.proc.factory.CapsuleTaskFactory;
@@ -29,6 +30,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.paninij.proc.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
@@ -49,8 +51,9 @@ public class RoundOneProcessor extends AbstractProcessor {
 
     // Custom utilities instantiated using the processing environment instance:
     private RoundOneCapsuleChecks capsuleCheck;
-    private AllSignatureChecks signatureCheck;
+    private CapsuleCheck cycleCheck;
     private ArtifactFiler artifactMaker;
+
 
     // Factories to perform code generating:
     private final MessageFactory messageFactory = new MessageFactory();
@@ -67,7 +70,7 @@ public class RoundOneProcessor extends AbstractProcessor {
         elementUtils = processingEnv.getElementUtils();
 
         capsuleCheck = new RoundOneCapsuleChecks(processingEnv);
-        signatureCheck = new AllSignatureChecks(processingEnv);
+        cycleCheck = new CheckForCycleOfLocalFields(processingEnv);
         artifactMaker = new ArtifactFiler(processingEnv.getFiler());
     }
 
@@ -79,12 +82,54 @@ public class RoundOneProcessor extends AbstractProcessor {
             return false;
         }
 
-        // TODO: Check everything, but then only do code-gen if everything checks out?
+        // TODO: What about if an error was raised in the prior round? See: roundEnv.errorRaised()
 
-        // For each capsule interface generated in the last round, lookup the capsule template from
-        // which it was created. Check the capsule template. If it checks-out, then start code-gen.
-        // Otherwise, report an error. Note that capsule interface sources were already created in
-        // the last round.
+        // Perform all remaining code-gen on OK capsule templates:
+        for (TypeElement template : getOkCapsuleTemplates(roundEnv)) {
+            Capsule model = CapsuleElement.make(template);
+            for (Procedure procedure : model.getProcedures()) {
+                artifactMaker.add(messageFactory.make(procedure));
+            }
+            artifactMaker.add(capsuleThreadFactory.make(model));
+            artifactMaker.add(capsuleSerialFactory.make(model));
+            artifactMaker.add(capsuleMonitorFactory.make(model));
+            artifactMaker.add(capsuleTaskFactory.make(model));
+        }
+
+        // Perform all remaining code-gen on OK signature templates:
+        for (TypeElement template : getOkSignatureTemplates(roundEnv)) {
+            Signature model = SignatureElement.make(template);
+            for (Procedure procedure : model.getProcedures()) {
+                artifactMaker.add(messageFactory.make(procedure));
+            }
+        }
+
+        artifactMaker.makeAll();
+        return false;
+    }
+
+    /**
+     * <p>Get all OK capsule templates whose capsule interfaces were generated in the last round. We
+     * consider a capsule template to be OK if it passes all checks (i.e. all checks return an OK
+     * {@link Result}).
+     *
+     * <p>If some capsule template whose capsule interface was generated in the last round does not
+     * pass some check, then this method has the side effect of reporting this failed check via
+     * {@link #error}.
+     *
+     * <p>Code generation ought to be able to be performed on all capsule templates returned from
+     * this method.
+     *
+     * @param roundEnv
+     *          The current round environment, in which we lookup capsule interfaces generated in
+     *          the last round.
+     * @return
+     *          A newly instantiated set of type elements of capsule templates adhering to the
+     *          above description.
+     */
+    private Set<TypeElement> getOkCapsuleTemplates(RoundEnvironment roundEnv) {
+        Set<TypeElement> set = new HashSet<>();
+
         for (Element iface : roundEnv.getElementsAnnotatedWith(CapsuleInterface.class)) {
             String templateName = iface + CAPSULE_TEMPLATE_SUFFIX;
             TypeElement template = elementUtils.getTypeElement(templateName);
@@ -93,29 +138,38 @@ public class RoundOneProcessor extends AbstractProcessor {
                            + "capsule template: " + templateName;
                 throw new IllegalStateException(msg);
             }
-            Check.Result result = capsuleCheck.checkCapsule(template);
-            if (! result.ok()) {
+
+            Result result = capsuleCheck.checkCapsule(template);
+            if (!result.ok()) {
                 // TODO: Re-enable once compile test improvements make `CheckException` obsolete.
                 //error(result.errMsg(), result.offender());
                 throw new CheckException();
             } else {
-                Capsule model = CapsuleElement.make(template);
-                for (Procedure procedure : model.getProcedures()) {
-                    artifactMaker.add(messageFactory.make(procedure));
-                }
-                artifactMaker.add(capsuleThreadFactory.make(model));
-                artifactMaker.add(capsuleSerialFactory.make(model));
-                artifactMaker.add(capsuleMonitorFactory.make(model));
-                artifactMaker.add(capsuleTaskFactory.make(model));
+                set.add(template);
             }
         }
 
-        // For each signature interface generated in the last round, lookup the capsule template
-        // from which it was created. Note that unlike for capsules above, we do not need to check
-        // any signature templates here: all signature templates must have been checked in the
-        // previous round. Note also that signature interface sources were already created in the
-        // last round. Thus, the only sources which still need to be generated from signatures are
-        // the messages.
+        // Run one more check. This check is not part of the `capsuleCheck` above, because some of
+        // the prior checks need to have already been performed before this check will behave
+        // correctly.
+        for (TypeElement template : set) {
+            Result result = cycleCheck.checkCapsule(template);
+            if (!result.ok()) {
+                set.remove(template);
+                throw new CheckException();
+            }
+        }
+
+        return set;
+    }
+
+    /**
+     * Just like {@link #getOkCapsuleTemplates(RoundEnvironment)} but for signature templates.
+     */
+    private Set<TypeElement> getOkSignatureTemplates(RoundEnvironment roundEnv) {
+        // Note: In the current implementation, all signature template checks will have already been
+        // performed in the previous round, and no more checks need to be performed here.
+        Set<TypeElement> set = new HashSet<>();
         for (Element iface : roundEnv.getElementsAnnotatedWith(SignatureInterface.class)) {
             String templateName = iface + SIGNATURE_TEMPLATE_SUFFIX;
             TypeElement template = elementUtils.getTypeElement(templateName);
@@ -124,15 +178,9 @@ public class RoundOneProcessor extends AbstractProcessor {
                            + "signature template: " + templateName;
                 throw new IllegalStateException(msg);
             }
-            Signature model = SignatureElement.make(template);
-            for (Procedure procedure : model.getProcedures()) {
-                artifactMaker.add(messageFactory.make(procedure));
-            }
+            set.add(template);
         }
-
-        artifactMaker.makeAll();
-
-        return false;
+        return set;
     }
 
     public void error(String msg) {
