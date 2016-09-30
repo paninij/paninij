@@ -1,4 +1,4 @@
-package org.paninij.proc.shapes.voided;
+package org.paninij.proc.shapes;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
