@@ -25,4 +25,5 @@
  *******************************************************************************/
 package org.paninij.lang;
 
+@Deprecated
 public @interface Test { }
