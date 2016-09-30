@@ -37,6 +37,9 @@ import javax.lang.model.type.TypeMirror;
 
 import org.paninij.proc.check.Check;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * This check is responsibility
@@ -45,6 +48,7 @@ public class DuckabilityChecks implements Check
 {
     private final ProcessingEnvironment procEnv;
     private final DuckabilityCheck[] checks;
+    private final Map<String, Result> resultsCache = new HashMap<>();
     
     public DuckabilityChecks(ProcessingEnvironment procEnv) {
         this.procEnv = procEnv;
@@ -63,16 +67,26 @@ public class DuckabilityChecks implements Check
      *          Some {@link Result} indicating success or failure.
      */
     public Result checkDuckability(TypeMirror toDuck) {
+        // If this type has previously been check and if its result has previously been cached,
+        // then return the cached result immediately.
+        Result result = resultsCache.get(key(toDuck));
+        if (result != null) {
+            return result;
+        }
         switch (toDuck.getKind()) {
         case VOID:
+            // Don't cache this result.
             return error("`void` cannot be ducked.", DuckabilityChecks.class, null);
         case DECLARED:
-            return checkDeclared(toDuck);
+            result = checkDeclared(toDuck);
+            break;
         default:
             String err = "Cannot duck type `{0}` because it has TypeKind {1}.";
             err = format(err, toDuck, toDuck.getKind());
-            return error(err, DuckabilityChecks.class, null);
+            result = error(err, DuckabilityChecks.class, null);
         }
+        resultsCache.put(key(toDuck), result);
+        return result;
     }
 
     private Result checkDeclared(TypeMirror toDuck)
@@ -90,5 +104,9 @@ public class DuckabilityChecks implements Check
         }
         
         return OK;
+    }
+
+    private static String key(TypeMirror type) {
+        return type.toString();
     }
 }
