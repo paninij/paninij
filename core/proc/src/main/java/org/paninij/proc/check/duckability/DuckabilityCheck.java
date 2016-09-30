@@ -32,8 +32,10 @@ import org.paninij.proc.check.Check;
 public interface DuckabilityCheck extends Check
 {
     /**
-     * @param   toDuck  A type element representing some type to be ducked.
-     * @return  The result of the duckability check.
+     * @param toDuck
+     *          A type element representing some type to be ducked.
+     * @return
+     *          The result of the duckability check: either an OK result or an error result.
      */
     Result checkDuckability(TypeElement toDuck);
 }

@@ -37,7 +37,7 @@ import org.paninij.proc.check.template.CheckForIllegalMethodNames;
 import org.paninij.proc.check.template.CheckForNestedTypes;
 import org.paninij.proc.check.template.CheckForTypeParameters;
 import org.paninij.proc.check.template.CheckForIllegalSubtyping;
-import org.paninij.proc.check.template.CheckDuckabilityOfProcReturnTypes;
+import org.paninij.proc.check.template.CheckProcAnnotations;
 import org.paninij.proc.check.template.CheckForBadAnnotations;
 import org.paninij.proc.check.template.CheckPackage;
 import org.paninij.proc.check.template.CheckSuffix;
@@ -61,7 +61,7 @@ public class AllSignatureChecks implements SignatureCheck
             new CheckForTypeParameters(),
             new CheckForIllegalModifiers(),
             new CheckForllegalNames(),
-            new CheckDuckabilityOfProcReturnTypes(procEnv),
+            new CheckProcAnnotations(procEnv),
             new CheckForIllegalMethodNames(),
             new CheckForBadAnnotations(),
         };

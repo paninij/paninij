@@ -1,6 +1,15 @@
 package org.paninij.proc.check.capsule;
 
+import org.paninij.proc.check.capsule.decl.CheckDesignDecl;
+import org.paninij.proc.check.capsule.decl.CheckInitDecl;
+import org.paninij.proc.check.capsule.decl.CheckRunDecl;
+import org.paninij.proc.check.template.CheckForBadAnnotations;
+import org.paninij.proc.check.template.CheckForIllegalMethodNames;
+import org.paninij.proc.check.template.CheckForIllegalSubtyping;
+import org.paninij.proc.check.template.CheckForNestedTypes;
+import org.paninij.proc.check.template.CheckForTypeParameters;
 import org.paninij.proc.check.template.CheckPackage;
+import org.paninij.proc.check.template.CheckProcAnnotations;
 import org.paninij.proc.check.template.CheckSuffix;
 import org.paninij.proc.check.template.TemplateCheck;
 
@@ -27,7 +36,20 @@ public class RoundZeroCapsuleChecks implements CapsuleCheck {
         this.roundZeroChecks = new CapsuleCheck[] {
             new CheckSuffix(),
             new CheckPackage(),
-            new CheckThatOnlySignatureTemplatesAreImplemented(procEnv)
+            new CheckProcedures(),
+            new CheckProcAnnotations(procEnv),
+            new CheckForIllegalSubtyping(procEnv),
+            new CheckForNonZeroArgConstructors(),
+            new CheckForTooManyDecls(),
+            new CheckInitDecl(),
+            new CheckRunDecl(),
+            new CheckDesignDecl(),
+            new CheckForNestedTypes(),
+            new CheckForTypeParameters(),
+            new CheckForIllegalModifiers(),
+            new CheckForIllegalMethodNames(),
+            new CheckForBadAnnotations(),
+            new CheckThatOnlySignatureTemplatesAreImplemented(procEnv),
         };
     }
 

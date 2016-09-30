@@ -31,43 +31,51 @@ import static org.paninij.proc.check.Check.Result.OK;
 import static org.paninij.proc.check.Check.Result.error;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.paninij.proc.check.Check;
 
-public class DuckabilityChecker implements Check
+
+/**
+ * This check is responsibility
+ */
+public class DuckabilityChecks implements Check
 {
     private final ProcessingEnvironment procEnv;
     private final DuckabilityCheck[] checks;
     
-    public DuckabilityChecker(ProcessingEnvironment procEnv) {
+    public DuckabilityChecks(ProcessingEnvironment procEnv) {
         this.procEnv = procEnv;
         this.checks = new DuckabilityCheck[] {
             new CheckFieldModifiers(),
             new CheckMethodModifiers()
         };
     }
-    
+
     /**
-     * @param toDuck  A type element representing some type to be ducked.
-     * @return  The result of the duckability check.
+     * Checks that the given type can be ducked.
+     *
+     * @param toDuck
+     *          A type element representing some type to be ducked.
+     * @return
+     *          Some {@link Result} indicating success or failure.
      */
-    public Result check(TypeMirror toDuck)
-    {
+    public Result checkDuckability(TypeMirror toDuck) {
         switch (toDuck.getKind()) {
         case VOID:
-            return OK;
+            return error("`void` cannot be ducked.", DuckabilityChecks.class, null);
         case DECLARED:
             return checkDeclared(toDuck);
         default:
             String err = "Cannot duck type `{0}` because it has TypeKind {1}.";
             err = format(err, toDuck, toDuck.getKind());
-            return error(err, DuckabilityChecker.class, null);
+            return error(err, DuckabilityChecks.class, null);
         }
     }
-    
-    public Result checkDeclared(TypeMirror toDuck)
+
+    private Result checkDeclared(TypeMirror toDuck)
     {
         TypeElement toDuckElem = (TypeElement) procEnv.getTypeUtils().asElement(toDuck);
         if (toDuckElem == null) {

@@ -25,6 +25,7 @@
  *******************************************************************************/
 package org.paninij.proc.check.capsule;
 
+import static java.text.MessageFormat.format;
 import static javax.lang.model.type.TypeKind.DECLARED;
 import static org.paninij.proc.check.Check.Result.OK;
 import static org.paninij.proc.check.Check.Result.error;
@@ -52,8 +53,8 @@ public class CheckThatOnlySignatureTemplatesAreImplemented implements CapsuleChe
         for (TypeMirror type : template.getInterfaces())
         {
             if (! isSignatureTemplateType(type)) {
-                String err = "A capsule template may only implement signature templates, but this" +
-                             "template implements " + type.toString();
+                String err = format("A capsule template may only implement signature templates, "
+                                  + "but this template implements `{0}`.", type.toString());
                 return error(err, CheckThatOnlySignatureTemplatesAreImplemented.class, template);
             }
         }

@@ -39,7 +39,7 @@ import org.paninij.proc.check.template.CheckForIllegalMethodNames;
 import org.paninij.proc.check.template.CheckForNestedTypes;
 import org.paninij.proc.check.template.CheckForTypeParameters;
 import org.paninij.proc.check.template.CheckForIllegalSubtyping;
-import org.paninij.proc.check.template.CheckDuckabilityOfProcReturnTypes;
+import org.paninij.proc.check.template.CheckProcAnnotations;
 import org.paninij.proc.check.template.CheckForBadAnnotations;
 
 
@@ -53,22 +53,10 @@ public class RoundOneCapsuleChecks implements CapsuleCheck
         this.procEnv = procEnv;
         this.capsuleChecks = new CapsuleCheck[]
         {
-            new CheckForIllegalSubtyping(procEnv),
-            new CheckForNonZeroArgConstructors(),
-            new CheckForTooManyDecls(),
-            new CheckInitDecl(),
-            new CheckRunDecl(),
-            new CheckDesignDecl(),
-            new CheckForNestedTypes(),
-            new CheckForTypeParameters(),
-            new CheckForIllegalModifiers(),
-            new CheckProcedures(),
+
             new CheckFields(procEnv),
-            new CheckDuckabilityOfProcReturnTypes(procEnv),
             new CheckForImportedFieldsOnRoot(),
-            new CheckForIllegalMethodNames(),
             new CheckForLocalSignatureFields(procEnv),
-            new CheckForBadAnnotations(),
         };
     }
 
