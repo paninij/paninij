@@ -1,15 +1,20 @@
-apply plugin: 'java'
+plugins {
+  id 'net.ltgt.apt' version '0.9'
+  id 'java'
+  id 'eclipse'
+}
 
 group = 'org.paninij'
 version = '0.0.2-SNAPSHOT'
 
-description = """@PaniniJ Examples"""
+description = '''@PaniniJ Examples'''
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile 'org.paninij:proc:0.1.1-SNAPSHOT'
+  compile 'org.paninij:lang:0.1.1-SNAPSHOT'
+  apt 'org.paninij:proc:0.1.1-SNAPSHOT'
 }
 
 repositories {

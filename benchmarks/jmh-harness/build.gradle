@@ -1,11 +1,23 @@
 plugins {
-  id "me.champeau.gradle.jmh" version "0.3.1"
+  id 'me.champeau.gradle.jmh' version '0.3.1'
+  id 'java'
 }
 
-apply plugin: 'java'
+jmh {
+  jmhVersion = '1.15'
+}
 
 description = '@PaniniJ Benchmarking Harness (JMH)'
 
 dependencies {
   compile project(':benchmarks:savina')
+}
+
+repositories {
+  maven {
+    url 'https://dl.bintray.com/dwtj/maven'
+  }
+  maven {
+    url 'http://www.cs.rice.edu/~vs3/hjlib/code/maven-repo/'
+  }
 }
