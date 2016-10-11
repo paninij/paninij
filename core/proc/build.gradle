@@ -1,10 +1,14 @@
+import static javax.tools.ToolProvider.getSystemToolClassLoader
+
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'eclipse'
 
 description = '@PaniniJ Annotation Processor'
 
 dependencies {
   compile project(':core:lang')
+  compile files(((URLClassLoader) getSystemToolClassLoader()).getURLs())
   testCompile 'junit:junit:4.12'
   testCompile 'com.google.testing.compile:compile-testing:0.9'
   testCompile 'me.dwtj:java-compiler-utils:0.1.6'
