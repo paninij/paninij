@@ -1,9 +1,10 @@
 *.class
 *.jar
-*.factorypath
 .project
 .classpath
 .settings
+.factorypath
+.apt_generated
 bin/
 doc/
 build/

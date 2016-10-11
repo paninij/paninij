@@ -45,8 +45,7 @@ import org.paninij.lang.Imports;
     }
 
     private void process(String filename) {
-        try {
-            FileInputStream stream = new FileInputStream(new File(filename));
+        try (FileInputStream stream = new FileInputStream(new File(filename))) {
             System.out.println("READER: input file " + filename + " successfully opened. Starting processing...");
             int r;
             while ((r = stream.read()) != -1) {

@@ -1,4 +1,7 @@
-apply plugin: 'java'
+plugins {
+  id 'java'
+  id 'eclipse'
+}
 
 description = '@PaniniJ Benchmarking Harness (Savina)'
 

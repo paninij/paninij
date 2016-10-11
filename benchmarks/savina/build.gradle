@@ -1,4 +1,8 @@
-apply plugin: 'java'
+plugins {
+  id 'net.ltgt.apt' version '0.9'
+  id 'java'
+  id 'eclipse'
+}
 
 description = '@PaniniJ Savina Benchmarks'
 
@@ -12,6 +16,7 @@ repositories {
 }
 
 dependencies {
-  compile project(':core:proc')
+  apt project(':core:proc')
+  compile project(':core:lang')
   compile 'edu.rice.habanero:savina:0.0.1'
 }

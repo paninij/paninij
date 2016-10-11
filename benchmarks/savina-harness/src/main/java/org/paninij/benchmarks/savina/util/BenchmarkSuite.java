@@ -26,21 +26,22 @@
 package org.paninij.benchmarks.savina.util;
 
 import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-
-import scala.actors.threadpool.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class BenchmarkSuite {
-    static String OUTFOLDER = "C:/Users/dmill_000/Desktop/BENCHMARK_RESULTS/raw/";
+    static String OUTFOLDER = "build/benchmarks/";
 
     public static void mark(String name) {
         try {
+            Files.createDirectories(Paths.get(OUTFOLDER));
             System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(OUTFOLDER + name + "-raw.txt")), true));
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
+		}
     }
 }
