@@ -25,23 +25,12 @@
  *  Jackson Maddox
  *******************************************************************************/
 
-package org.paninij.proc.model;
+package org.paninij.lang;
 
-import java.util.List;
+import java.lang.annotation.Documented;
 
-public interface Capsule extends Signature
-{
-    public List<Procedure> getEventHandlers();
-    public List<Variable> getLocalFields();
-    public List<Variable> getImportFields();
-    public List<Variable> getBroadcastEventFields();
-    public List<Variable> getChainEventFields();
-    public List<Variable> getStateFields();
-    public List<String> getSignatures();
-    public boolean isRoot();
-    public boolean hasInit();
-    public boolean hasRun();
-    public boolean hasDesign();
-    public boolean isActive();
-    public boolean hasActiveAncestor();
-}
+/**
+ * TODO
+ */
+@Documented
+public @interface Broadcast { }

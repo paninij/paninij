@@ -18,30 +18,15 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
+package org.paninij.runtime;
 
-package org.paninij.proc.model;
-
-import java.util.List;
-
-public interface Capsule extends Signature
-{
-    public List<Procedure> getEventHandlers();
-    public List<Variable> getLocalFields();
-    public List<Variable> getImportFields();
-    public List<Variable> getBroadcastEventFields();
-    public List<Variable> getChainEventFields();
-    public List<Variable> getStateFields();
-    public List<String> getSignatures();
-    public boolean isRoot();
-    public boolean hasInit();
-    public boolean hasRun();
-    public boolean hasDesign();
-    public boolean isActive();
-    public boolean hasActiveAncestor();
+public enum EventMode {
+    BROADCAST,
+    CHAIN
 }

@@ -22,6 +22,7 @@
  * 	Dalton Mills,
  * 	David Johnston,
  * 	Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
 
 package org.paninij.proc.model;
@@ -30,9 +31,15 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleElementVisitor8;
 
 import org.paninij.lang.Local;
+import org.paninij.lang.PaniniEvent;
+
+import org.paninij.lang.Broadcast;
 import org.paninij.lang.Imports;
 
 /**
@@ -60,10 +67,28 @@ public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement
     @Override
     public CapsuleElement visitVariable(VariableElement e, CapsuleElement capsule) {
         Variable variable = new Variable(e.asType(), e.getSimpleName().toString(), false);
+
+        // TODO: Delegate getting the qualified name to Type or PaniniModel
+        String eventName = PaniniEvent.class.getName();
+        TypeMirror mirror = e.asType();
+        String fullTypeName = null;
+        if (mirror.getKind() == TypeKind.DECLARED) {
+            DeclaredType dec = (DeclaredType) e.asType();
+            TypeElement type = (TypeElement) dec.asElement();
+            fullTypeName = type.getQualifiedName().toString();
+        }
+
         if (e.getAnnotation(Local.class) != null) {
             capsule.addLocals(variable);
         } else if (e.getAnnotation(Imports.class) != null) {
             capsule.addImportDecl(variable);
+        } else if (eventName.equals(fullTypeName)) {
+            if (e.getAnnotation(Broadcast.class) != null) {
+                capsule.addBroadcastEvent(variable);
+            }
+            else { // Assume chain event by default
+                capsule.addChainEvent(variable);
+            }
         } else {
             capsule.addState(variable);
         }

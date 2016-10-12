@@ -18,30 +18,31 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
 
-package org.paninij.proc.model;
+package org.paninij.runtime;
 
-import java.util.List;
+import org.paninij.lang.PaniniEventExecution;
 
-public interface Capsule extends Signature
+public class PaniniEventMessage<T> implements Panini$Message
 {
-    public List<Procedure> getEventHandlers();
-    public List<Variable> getLocalFields();
-    public List<Variable> getImportFields();
-    public List<Variable> getBroadcastEventFields();
-    public List<Variable> getChainEventFields();
-    public List<Variable> getStateFields();
-    public List<String> getSignatures();
-    public boolean isRoot();
-    public boolean hasInit();
-    public boolean hasRun();
-    public boolean hasDesign();
-    public boolean isActive();
-    public boolean hasActiveAncestor();
+    public final int procID;
+    public final PaniniEventExecution<T> ex;
+    public final T arg0;
+
+    public PaniniEventMessage(int procID, PaniniEventExecution<T> ex, T arg0) {
+        this.procID = procID;
+        this.ex = ex;
+        this.arg0 = arg0;
+    }
+
+    @Override
+    public int panini$msgID() {
+        return procID;
+    }
 }
