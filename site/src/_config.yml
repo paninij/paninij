@@ -14,13 +14,6 @@ email: info@paninij.org
 description: >
   PaniniJ is an easy-to-integrate Java extension for safer and more modular
   concurrent programming.
-long_description: >
-  @PaniniJ is a Java extension for safer and more modular concurrent
-  programming. It adds *capsules*--a new concurrent programming abstraction--to
-  Java via an easy-to-integrate compiler plugin. Capsules are like Actors, but
-  with certain static guarantees checked at compile-time and reported just like
-  any other compile error. Adding support for capsules to your Java project is
-  as simple as adding a JAR or a Maven-style dependency to your project.
 baseurl: ""
 url: "https://paninij.github.io"
 twitter_username: paninij
