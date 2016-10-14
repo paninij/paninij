@@ -15,7 +15,7 @@ layout: base
   <nav class="navbar navbar-light row">
     <ul class="nav navbar-nav">
       <li class="nav-item btn-group col-xs-12 col-sm-2">
-        <a class="dropdown-toggle nav-link" id="intro-menu-toggler" data-toggle="dropdown">Intro</a>
+        <a class="dropdown-toggle nav-link" id="intro-menu-toggler" data-toggle="dropdown" href="#">Intro</a>
         <div class="dropdown-menu">
           {% for intro in site.intros %}
           <a class="dropdown-item" href="{{ intro.url }}">{{ intro.short_title }}</a>
@@ -23,14 +23,14 @@ layout: base
         </div>
       </li>
       <li class="nav-item btn-group col-xs-12 col-sm-2">
-        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown">Setup</a>
+        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Setup</a>
         <div class="dropdown-menu">
           {% for setup in site.setups %}
           <a class="dropdown-item" href="{{ setup.url }}">{{ setup.short_title }}</a>
           {% endfor %}</div>
       </li>
       <li class="nav-item btn-group col-xs-12 col-sm-2">
-        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown">Docs</a>
+        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
         <div class="dropdown-menu">
           <a class="dropdown-item" href="/docs/glossary.html">Glossary</a>
           <a class="dropdown-item" href="/docs/javadoc/">Javadoc</a>
