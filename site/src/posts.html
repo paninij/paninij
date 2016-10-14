@@ -1,0 +1,17 @@
+---
+layout: default
+permalink: /posts/
+---
+
+<div class="container">
+  <h2>Posts</h2>
+  {% for post in site.posts %}
+  <div class="medium-12 columns">
+    <h5>
+      <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+    </h5>
+    <span>{{ post.date | date: "%b %-d, %Y" }}</span>
+    <p>{{ post.description }}</p>
+  </div>
+  {% endfor %}
+</div>

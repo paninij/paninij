@@ -3,22 +3,32 @@ plugins {
   id 'org.ajoberstar.github-pages' version '1.5.1'
 }
 
-def srcDir = "$projectDir/src"
 def siteDir = "$buildDir/site/"
 def ghpagesRepoUri = 'git@github.com:paninij/paninij.github.io.git'
+def jekyllSrcDir = "$projectDir/src"
 
-task siteMain(type: Copy) {
-  from srcDir
-  into "$siteDir"
-}
-task siteJavadoc(type: Copy) {
+task javadoc(type: Copy) {
   def publicJavadocTask = tasks.getByPath(':core:lang:javadoc')
   dependsOn publicJavadocTask
   from publicJavadocTask.destinationDir
-  into "$siteDir/javadoc"
+  into "$siteDir/docs/javadoc"
 }
-assemble.dependsOn siteMain
-assemble.dependsOn siteJavadoc
+assemble.dependsOn javadoc
+
+task jekyll(type: Exec, dependsOn: javadoc) {
+  commandLine 'jekyll', 'build',
+  		'--source', jekyllSrcDir,
+		'--destination', siteDir,
+  standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT.
+}
+assemble.dependsOn jekyll
+
+task jekyllServe(type: Exec, dependsOn: javadoc) {
+  commandLine 'jekyll', 'serve',
+  		'--source', jekyllSrcDir,
+		'--destination', siteDir
+}
+
 
 // Deploy site to GitHub Pages. Auth is over SSH enabled by `ssh-agent`.
 project.ext['org.ajoberstar.grgit.auth.force'] = 'sshagent'

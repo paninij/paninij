@@ -1,0 +1,62 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing these this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+title: PaniniJ
+email: info@paninij.org
+description: >
+  PaniniJ is an easy-to-integrate Java extension for safer and more modular
+  concurrent programming.
+long_description: >
+  @PaniniJ is a Java extension for safer and more modular concurrent
+  programming. It adds *capsules*--a new concurrent programming abstraction--to
+  Java via an easy-to-integrate compiler plugin. Capsules are like Actors, but
+  with certain static guarantees checked at compile-time and reported just like
+  any other compile error. Adding support for capsules to your Java project is
+  as simple as adding a JAR or a Maven-style dependency to your project.
+baseurl: ""
+url: "https://paninij.github.io"
+twitter_username: paninij
+github_username:  paninij
+
+markdown: kramdown
+exclude:
+  - Gemfile
+  - Gemfile.lock
+
+keep_files:
+  - docs/javadoc
+
+# Declare collections, and make sure that files are output:
+collections:
+  intros:
+    output: true
+  setups:
+    output: true
+  papers:
+    output: true
+
+# Set default layout for each collection.
+defaults:
+  - scope:
+      type: intros
+      path: ""
+    values:
+      layout: page
+  - scope:
+      type: setups
+      path: ""
+    values:
+      layout: page
+  - scope:
+      type: papers
+      path: ""
+    values:
+      layout: paper
