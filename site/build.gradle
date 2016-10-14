@@ -8,6 +8,7 @@ def ghpagesRepoUri = 'git@github.com:paninij/paninij.github.io.git'
 def jekyllSrcDir = "$projectDir/src"
 
 task javadoc(type: Copy) {
+  description = "Copy public javadocs into the site's build directory."
   def publicJavadocTask = tasks.getByPath(':core:lang:javadoc')
   dependsOn publicJavadocTask
   from publicJavadocTask.destinationDir
@@ -16,6 +17,7 @@ task javadoc(type: Copy) {
 assemble.dependsOn javadoc
 
 task jekyll(type: Exec, dependsOn: javadoc) {
+  description = "Use Jekyll CLI tool to build the site."
   commandLine 'jekyll', 'build',
   		'--source', jekyllSrcDir,
 		'--destination', siteDir,
@@ -24,15 +26,25 @@ task jekyll(type: Exec, dependsOn: javadoc) {
 assemble.dependsOn jekyll
 
 task jekyllServe(type: Exec, dependsOn: javadoc) {
+  description = "Use Jekyll CLI tool to build the site and serve it locally."
   commandLine 'jekyll', 'serve',
   		'--source', jekyllSrcDir,
 		'--destination', siteDir
 }
 
+task htmlProofer(type: Exec, dependsOn: assemble) {
+  description = "Use `htmlproofer` CLI tool to check the site."
+  commandLine 'htmlproofer', siteDir,
+  		'--allow-hash-href',
+		'--file-ignore', $//\/docs\/javadoc\///$
+  standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT
+}
+check.dependsOn htmlProofer
 
-// Deploy site to GitHub Pages. Auth is over SSH enabled by `ssh-agent`.
 project.ext['org.ajoberstar.grgit.auth.force'] = 'sshagent'
+// GitHub Pages authentication is done with SSH via `ssh-agent`.
 githubPages {
+  description = "Deploy site to GitHub Pages site."
   repoUri = ghpagesRepoUri
   targetBranch = 'master'
   pages {
