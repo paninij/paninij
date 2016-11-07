@@ -9,7 +9,7 @@ set(OWNERSHIP_H ${PANINIJ_JAVAH_INCLUDE_DIR}/paninij/ownership.h)
 
 add_custom_command(
     OUTPUT ${OWNERSHIP_H}
-    COMMAND ${JAVAH_PROGRAM} -classpath ${PANINIJ_RUNTIME_CLASSES_PATH}
+    COMMAND ${JAVAH_PROGRAM} -classpath ${PANINIJ_LANG_JAR}
                              -o ${OWNERSHIP_H} ${OWNERSHIP_CLASS}
 )
 

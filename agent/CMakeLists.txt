@@ -2,12 +2,19 @@ cmake_minimum_required(VERSION 3.6)
 
 project(paninij-agent VERSION 0.1.1 LANGUAGES CXX)
 
-# This cache variable is set to `NOTFOUND` by default. The user must set it.
-set(PANINIJ_RUNTIME_CLASSES_PATH NOTFOUND CACHE PATH
-    "Absolute path to a dir including the `org.paninij.runtime.*` class files.")
-if(NOT PANINIJ_RUNTIME_CLASSES_PATH)
-    message(FATAL_ERROR "PANINIJ_RUNTIME_CLASSES_PATH was not set properly.")
-endif(NOT PANINIJ_RUNTIME_CLASSES_PATH)
+# These cache variables are set to `NOTFOUND` by default so that the user will
+# set them manually at CMake configuration-time.
+set(PANINIJ_LANG_JAR NOTFOUND CACHE FILEPATH
+    "Absolute path to the PaniniJ lang (a.k.a. run-time) JAR file.")
+set(PANINIJ_PROC_JAR NOTFOUND CACHE FILEPATH
+    "Absolute path to the PaniniJ proc (a.k.a. compile-time) JAR file.")
+if(NOT PANINIJ_LANG_JAR)
+    message(FATAL_ERROR "PANINIJ_LANG_JAR was not set properly.")
+endif(NOT PANINIJ_LANG_JAR)
+if(NOT PANINIJ_PROC_JAR)
+    message(FATAL_ERROR "PANINIJ_PROC_JAR was not set properly.")
+endif(NOT PANINIJ_PROC_JAR)
+
 
 # Use the output directory for `javah` as an include directory.
 add_subdirectory(javah)

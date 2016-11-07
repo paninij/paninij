@@ -20,7 +20,7 @@ foreach(TEST IN LISTS INTEGRATION_TESTS)
     # `IT.class` file will be placed in the build tree.
     add_custom_command(
         OUTPUT ${TEST_CLASS}
-        COMMAND ${JAVAC_PROGRAM} -classpath ${PANINIJ_RUNTIME_CLASSES_PATH}
+        COMMAND ${JAVAC_PROGRAM} -classpath ${PANINIJ_LANG_JAR}
                                  -sourcepath ${TEST_SOURCE_DIR} -d ${TEST_CLASSES_DIR}
                                              ${TEST_SOURCE_DIR}/IT.java
     )
@@ -28,7 +28,7 @@ foreach(TEST IN LISTS INTEGRATION_TESTS)
     # Add a target which runs `IT.class` with the @PaniniJ agent.
     add_custom_target(
         ${TEST}
-        COMMAND ${JAVA_PROGRAM} -classpath "${PANINIJ_RUNTIME_CLASSES_PATH}:${TEST_CLASSES_DIR}"
+        COMMAND ${JAVA_PROGRAM} -classpath "${PANINIJ_LANG_JAR}:${TEST_CLASSES_DIR}"
                                 -agentpath:$<TARGET_FILE:agent> IT
         DEPENDS ${TEST_CLASS}
     )
@@ -37,7 +37,7 @@ foreach(TEST IN LISTS INTEGRATION_TESTS)
     add_custom_target(
         ${TEST}_lldb
         COMMAND ${LLDB_PROGRAM} --
-                ${JAVA_PROGRAM} -classpath "${PANINIJ_RUNTIME_CLASSES_PATH}:${TEST_CLASSES_DIR}"
+                ${JAVA_PROGRAM} -classpath "${PANINIJ_LANG_JAR}:${TEST_CLASSES_DIR}"
                                 -agentpath:$<TARGET_FILE:agent> IT
         DEPENDS ${TEST_CLASS}
     )
