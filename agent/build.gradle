@@ -34,3 +34,19 @@ task makeTest(type: Exec, dependsOn: makefiles) {
   commandLine 'make', 'test'
 }
 task test(dependsOn: makeTest)
+
+
+// CMake recommends that a subdirectory of the source directory not be used.
+def eclipseBuildDir = file("$projectDir/../agent-eclipse")
+
+task makeEclipseBuildDir << {
+  eclipseBuildDir.mkdirs()
+}
+
+task eclipse(type: Exec, dependsOn: makeEclipseBuildDir) {
+  description = 'Uses CMake to initialize an Eclipse project.'
+  workingDir eclipseBuildDir
+  commandLine 'cmake', '-G', 'Eclipse CDT4 - Unix Makefiles',
+                       '-D', "PANINIJ_RUNTIME_CLASSES_PATH=${runtimeClasses}",
+                       '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir
+}

@@ -12,3 +12,4 @@ wala.properties
 .idea/
 *.iml
 /.gradle/
+/agent-eclipse/
