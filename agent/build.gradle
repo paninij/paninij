@@ -1,0 +1,36 @@
+plugins {
+  id 'base'
+}
+
+def runtimeClasses = project(':core:lang').sourceSets.main.output.classesDir
+
+task makeBuildDir << {
+  buildDir.mkdirs()
+}
+
+task makefiles(type: Exec, dependsOn: makeBuildDir) {
+  description = 'Uses CMake to initialize the build directory.'
+  workingDir buildDir
+  commandLine 'cmake', '-G', 'Unix Makefiles',
+                       '-D', "PANINIJ_RUNTIME_CLASSES_PATH=${runtimeClasses}",
+                       '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir
+}
+
+task makeAll(type: Exec, dependsOn: [makefiles, ':core:lang:build']) {
+  workingDir buildDir
+  commandLine 'make', 'all'
+}
+build.dependsOn makeAll
+
+// This is likely redundant, since `clean` will delete `$buildDir` anyway.
+task makeClean(type: Exec, dependsOn: makefiles) {
+  workingDir buildDir
+  commandLine 'make', 'clean'
+}
+clean.dependsOn makeClean
+
+task makeTest(type: Exec, dependsOn: makefiles) {
+  workingDir buildDir
+  commandLine 'make', 'test'
+}
+task test(dependsOn: makeTest)
