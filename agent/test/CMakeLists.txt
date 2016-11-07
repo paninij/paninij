@@ -1,18 +1,53 @@
-#find_program (BASH_PROGRAM bash)
-#
-#if (BASH_PROGRAM)
-#    add_test (it1 ${BASH_PROGRAM} ${CMAKE_CURRENT_SOURCE_DIR}/it1/it1.sh ${LIBRARY_OUTPUT_DIRECTORY}/agent)
-#endif (BASH_PROGRAM)
+set(INTEGRATION_TESTS
+      it1
+      it2)
 
-set(INTEGRATION_TESTS it1)
-find_program (BASH_PROGRAM bash)
+find_program(JAVAC_PROGRAM javac)
+find_program(JAVA_PROGRAM java)
+find_program(LLDB_PROGRAM lldb)
+find_program(MAKE_PROGRAM make)
 
 foreach(TEST IN LISTS INTEGRATION_TESTS)
-add_custom_target(${TEST}
-                  COMMAND ./it.sh ${TEST} $<TARGET_FILE:agent>
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_test(NAME ${TEST}
-        COMMAND ${BASH_PROGRAM} it.sh ${TEST} $<TARGET_FILE:agent>
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    set(TEST_CLASSES_DIR "${CMAKE_CURRENT_BINARY_DIR}/${TEST}")
+    set(TEST_CLASS "${TEST_CLASSES_DIR}/IT.class")
+    set(TEST_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${TEST}")
+
+    # Make a directory in the build tree to hold this test's `IT.class` file.
+    file(MAKE_DIRECTORY ${TEST_CLASSES_DIR})
+
+    # Add a command to compile `IT.java` in source tree. The resulting
+    # `IT.class` file will be placed in the build tree.
+    add_custom_command(
+        OUTPUT ${TEST_CLASS}
+        COMMAND ${JAVAC_PROGRAM} -classpath ${PANINIJ_RUNTIME_CLASSES_PATH}
+                                 -sourcepath ${TEST_SOURCE_DIR} -d ${TEST_CLASSES_DIR}
+                                             ${TEST_SOURCE_DIR}/IT.java
+    )
+
+    # Add a target which runs `IT.class` with the @PaniniJ agent.
+    add_custom_target(
+        ${TEST}
+        COMMAND ${JAVA_PROGRAM} -classpath "${PANINIJ_RUNTIME_CLASSES_PATH}:${TEST_CLASSES_DIR}"
+                                -agentpath:$<TARGET_FILE:agent> IT
+        DEPENDS ${TEST_CLASS}
+    )
+
+    # Add a target which runs `IT.class` with the @PaniniJ agent with LLDB.
+    add_custom_target(
+        ${TEST}_lldb
+        COMMAND ${LLDB_PROGRAM} --
+                ${JAVA_PROGRAM} -classpath "${PANINIJ_RUNTIME_CLASSES_PATH}:${TEST_CLASSES_DIR}"
+                                -agentpath:$<TARGET_FILE:agent> IT
+        DEPENDS ${TEST_CLASS}
+    )
+
+    # Add a CTest which invokes CMake to run the above target ${TEST}.
+    # TODO: Suppress the output from CMake. We only want Java's output.
+    add_test(
+        NAME ${TEST}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}
+                                 --target ${TEST}
+    )
+
 endforeach()
