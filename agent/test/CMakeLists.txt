@@ -32,6 +32,7 @@ foreach(TEST IN LISTS INTEGRATION_TESTS)
                                 -agentpath:$<TARGET_FILE:agent> IT
         DEPENDS ${TEST_CLASS}
     )
+    add_dependencies(${TEST} agent)
 
     # Add a target which runs `IT.class` with the @PaniniJ agent with LLDB.
     add_custom_target(

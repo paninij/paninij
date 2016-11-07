@@ -18,13 +18,13 @@ task makefiles(type: Exec, dependsOn: makeBuildDir) {
                        '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir
 }
 
-task makeAll(type: Exec, dependsOn: ['makefiles', ':core:lang:build']) {
+task makeAll(type: Exec, dependsOn: [makefiles, ':core:lang:jar']) {
   workingDir buildDir
   commandLine 'make', 'all'
 }
 build.dependsOn makeAll
 
-task makeTest(type: Exec, dependsOn: makefiles) {
+task makeTest(type: Exec, dependsOn: [makefiles, ':core:lang:jar', ':core:proc:jar']) {
   workingDir buildDir
   commandLine 'make', 'test'
 }
