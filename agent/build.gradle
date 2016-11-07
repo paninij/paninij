@@ -22,13 +22,6 @@ task makeAll(type: Exec, dependsOn: [makefiles, ':core:lang:build']) {
 }
 build.dependsOn makeAll
 
-// This is likely redundant, since `clean` will delete `$buildDir` anyway.
-task makeClean(type: Exec, dependsOn: makefiles) {
-  workingDir buildDir
-  commandLine 'make', 'clean'
-}
-clean.dependsOn makeClean
-
 task makeTest(type: Exec, dependsOn: makefiles) {
   workingDir buildDir
   commandLine 'make', 'test'
