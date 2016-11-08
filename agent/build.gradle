@@ -5,6 +5,11 @@ plugins {
 def langJar = project(':core:lang').jar.archivePath
 def procJar = project(':core:proc').jar.archivePath
 
+ext {
+  // The dir which will hold compiled library targets (e.g. the agent lib).
+  libDir = buildDir
+}
+
 task makeBuildDir << {
   buildDir.mkdirs()
 }
@@ -18,11 +23,12 @@ task makefiles(type: Exec, dependsOn: makeBuildDir) {
                        '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir
 }
 
-task makeAll(type: Exec, dependsOn: [makefiles, ':core:lang:jar']) {
+task makeAgent(type: Exec, dependsOn: [makefiles, ':core:lang:jar']) {
   workingDir buildDir
-  commandLine 'make', 'all'
+  commandLine 'make', 'agent'
 }
-build.dependsOn makeAll
+task lib(dependsOn: makeAgent)
+build.dependsOn lib
 
 task makeTest(type: Exec, dependsOn: [makefiles, ':core:lang:jar', ':core:proc:jar']) {
   workingDir buildDir
