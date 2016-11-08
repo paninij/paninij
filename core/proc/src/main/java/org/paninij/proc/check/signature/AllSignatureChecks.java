@@ -64,6 +64,7 @@ public class AllSignatureChecks implements SignatureCheck
             new CheckProcAnnotations(procEnv),
             new CheckForIllegalMethodNames(),
             new CheckForBadAnnotations(),
+            new CheckForEventHandlers(),
         };
     }
 
@@ -72,6 +73,7 @@ public class AllSignatureChecks implements SignatureCheck
      * @param  template  An element to be checked as a signature template.
      * @return An `OK` result if and only if `template` is can be processed as a signature template.
      */
+    @Override
     public Result checkSignature(TypeElement template)
     {
         if (! isAnnotatedBy(procEnv, template, "org.paninij.lang.Signature")) {

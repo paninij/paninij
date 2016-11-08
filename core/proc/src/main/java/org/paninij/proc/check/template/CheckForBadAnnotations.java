@@ -22,6 +22,7 @@
  *  Dalton Mills,
  *  David Johnston,
  *  Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
 package org.paninij.proc.check.template;
 
@@ -33,8 +34,11 @@ import static org.paninij.proc.check.Check.Result.error;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.lang.Block;
+import org.paninij.lang.Broadcast;
+import org.paninij.lang.Chain;
 import org.paninij.lang.Duck;
 import org.paninij.lang.Future;
+import org.paninij.lang.Handler;
 
 /**
  * Check that a template does not have certain bad annotations. For example, capsule and signature
@@ -61,6 +65,12 @@ public class CheckForBadAnnotations implements TemplateCheck {
             return "Future";
         } else if (template.getAnnotation(Duck.class) != null) {
             return "Duck";
+        } else if (template.getAnnotation(Handler.class) != null) {
+            return "Handler";
+        } else if (template.getAnnotation(Chain.class) != null) {
+            return "Chain";
+        } else if (template.getAnnotation(Broadcast.class) != null) {
+            return "Broadcast";
         }
         return null;
     }
