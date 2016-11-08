@@ -17,7 +17,7 @@ bool add_capabilities(jvmtiEnv *env);
 
 /** The kinds of events which the agent needs to be enabled. */
 jvmtiEvent enabled_events[] {
-    JVMTI_EVENT_VM_OBJECT_ALLOC,
+    //JVMTI_EVENT_VM_OBJECT_ALLOC,
 };
 
 
