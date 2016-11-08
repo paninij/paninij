@@ -27,8 +27,12 @@ bool enable_events(jvmtiEnv* env);
 
 
 static void JNICALL
-vm_object_alloc_cb(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jthread thread,
-                   jobject object, jclass object_klass, jlong size);
+vm_object_alloc_cb(jvmtiEnv *jvmti_env,
+                   JNIEnv* jni_env,
+                   jthread thread,
+                   jobject object,
+                   jclass object_klass,
+                   jlong size);
 
 /** A map of event callbacks which the agent will use. */
 const jvmtiEventCallbacks agent_callbacks = {
@@ -40,8 +44,34 @@ const jvmtiEventCallbacks agent_callbacks = {
 bool set_event_callbacks(jvmtiEnv* env);
 
 
-/** Configures the `env` to receive needed callbacks about GC heap iteration. */
-bool set_heap_iteration(jvmtiEnv* env);  // TODO: Everything!
+static jint JNICALL
+heap_tagging_cb(jvmtiHeapReferenceKind reference_kind,
+                  const jvmtiHeapReferenceInfo* reference_info,
+                  jlong class_tag,
+                  jlong referrer_class_tag,
+                  jlong size,
+                  jlong* tag_ptr,
+                  jlong* referrer_tag_ptr,
+                  jint length,
+                  void* user_data);
 
+const jvmtiHeapCallbacks heap_tagging_callbacks = {
+    .heap_reference_callback = &heap_tagging_cb
+};
+
+static jint JNICALL
+heap_searching_cb(jvmtiHeapReferenceKind reference_kind,
+                  const jvmtiHeapReferenceInfo* reference_info,
+                  jlong class_tag,
+                  jlong referrer_class_tag,
+                  jlong size,
+                  jlong* tag_ptr,
+                  jlong* referrer_tag_ptr,
+                  jint length,
+                  void* user_data);
+
+const jvmtiHeapCallbacks heap_searching_callbacks = {
+    .heap_reference_callback = &heap_searching_cb
+};
 
 #endif //AT_PANINIJ_AGENT_H
