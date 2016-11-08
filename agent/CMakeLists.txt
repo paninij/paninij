@@ -2,18 +2,17 @@ cmake_minimum_required(VERSION 3.6)
 
 project(paninij-agent VERSION 0.1.1 LANGUAGES CXX)
 
-# These cache variables are set to `NOTFOUND` by default so that the user will
-# set them manually at CMake configuration-time.
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic-errors")
+
+# This cache variables is set to `NOTFOUND` by default so that the user will
+# set it manually at CMake configuration-time.
 set(PANINIJ_LANG_JAR NOTFOUND CACHE FILEPATH
     "Absolute path to the PaniniJ lang (a.k.a. run-time) JAR file.")
-set(PANINIJ_PROC_JAR NOTFOUND CACHE FILEPATH
-    "Absolute path to the PaniniJ proc (a.k.a. compile-time) JAR file.")
 if(NOT PANINIJ_LANG_JAR)
     message(FATAL_ERROR "PANINIJ_LANG_JAR was not set properly.")
 endif(NOT PANINIJ_LANG_JAR)
-if(NOT PANINIJ_PROC_JAR)
-    message(FATAL_ERROR "PANINIJ_PROC_JAR was not set properly.")
-endif(NOT PANINIJ_PROC_JAR)
 
 
 # Use the output directory for `javah` as an include directory.
@@ -35,5 +34,5 @@ target_compile_features(agent
 add_dependencies(agent javah)
 
 # Add testing support:
-enable_testing()
-add_subdirectory(test)
+#enable_testing()
+#add_subdirectory(test)

@@ -1,54 +1,80 @@
 plugins {
-  id 'base'
+  id 'java'
+  id "net.ltgt.apt" version "0.9"
+}
+
+boolean isMacOsX() {
+  System.properties['os.name'].toLowerCase().contains('mac os x')
 }
 
 def langJar = project(':core:lang').jar.archivePath
-def procJar = project(':core:proc').jar.archivePath
 
-ext {
-  // The dir which will hold compiled library targets (e.g. the agent lib).
-  libDir = buildDir
-}
+// The dir which will hold compiled library targets (e.g. the agent lib).
+def cppDir = file("build/cpp")
 
-task makeBuildDir << {
-  buildDir.mkdirs()
-}
-
-task makefiles(type: Exec, dependsOn: makeBuildDir) {
+task makefiles(type: Exec) {
   description = 'Uses CMake to initialize the build directory.'
-  workingDir buildDir
-  commandLine 'cmake', '-G', 'Unix Makefiles',
-                       '-D', "PANINIJ_LANG_JAR=${langJar}",
-                       '-D', "PANINIJ_PROC_JAR=${procJar}",
-                       '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir
+  executable = 'cmake'
+  args = ['-G', 'Unix Makefiles',
+          '-D', "PANINIJ_LANG_JAR=${langJar}",
+          '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir]
+  workingDir = cppDir
+}
+makefiles.doFirst {
+  cppDir.mkdirs()
 }
 
 task makeAgent(type: Exec, dependsOn: [makefiles, ':core:lang:jar']) {
-  workingDir buildDir
+  workingDir cppDir
   commandLine 'make', 'agent'
 }
 task lib(dependsOn: makeAgent)
 build.dependsOn lib
 
-task makeTest(type: Exec, dependsOn: [makefiles, ':core:lang:jar', ':core:proc:jar']) {
-  workingDir buildDir
-  commandLine 'make', 'test'
-}
-check.dependsOn makeTest
 
-
-// CMake recommends that a subdirectory of the source directory not be used.
-def eclipseBuildDir = file("$projectDir/../agent-eclipse")
-
-task makeEclipseBuildDir << {
-  eclipseBuildDir.mkdirs()
+sourceSets {
+  integrationTest {
+    java {
+      srcDir "$projectDir/itest"
+    }
+  }
 }
 
-task eclipse(type: Exec, dependsOn: makeEclipseBuildDir) {
+dependencies {
+  integrationTestCompileOnly project(':core:proc')
+  integrationTestRuntime project(':core:lang')
+}
+
+def integrationTestPackages = [
+  'it1',
+  'it2',
+]
+
+// For each named integration test, create debug and non-debug tasks:
+integrationTestPackages.each { testPkg ->
+  def taskName = testPkg
+  task "$taskName" (type:JavaExec, dependsOn: [makeAgent]) {
+    main = "${testPkg}/IT"
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    jvmArgs '-agentlib:agent'
+    enableAssertions = true
+    environment(isMacOsX() ? 'DYLD_LIBRARY_PATH' : 'LD_LIBRARY_PATH', cppDir)
+  }
+  check.dependsOn(tasks[taskName])
+}
+
+
+// CMake v3.6 recommends that a subdirectory of the source directory not be
+// used, so we use a sibling directory instead.
+def eclipseBuildDir = "$projectDir/../agent-eclipse"
+
+task eclipse(type: Exec) {
   description = 'Uses CMake to initialize an Eclipse project.'
   workingDir eclipseBuildDir
   commandLine 'cmake', '-G', 'Eclipse CDT4 - Unix Makefiles',
                        '-D', "PANINIJ_LANG_JAR=${langJar}",
-                       '-D', "PANINIJ_PROC_JAR=${procJar}",
                        '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir
+}
+eclipse.doFirst {
+  new File(eclipseBuildDir).mkdirs()
 }
