@@ -102,7 +102,7 @@ public class CheckEventFields implements CapsuleCheck
         }
 
         if (badType) {
-            String err = "Event type must be a PaniniEvent with a type that is not a capsule.";
+            String err = "Event type must be a PaniniEvent.";
             return error(err, CheckFields.class, field);
         }
 
