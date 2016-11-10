@@ -11,7 +11,7 @@ dependencies {
   compile files(((URLClassLoader) getSystemToolClassLoader()).getURLs())
   testCompile 'junit:junit:4.12'
   testCompile 'com.google.testing.compile:compile-testing:0.9'
-  testCompile 'me.dwtj:java-compiler-utils:0.1.6'
+  testCompile 'me.dwtj:java-compiler-utils:0.1.7'
 }
 
 check.dependsOn javadoc
