@@ -1,4 +1,4 @@
-rootProject.name = 'at-paninij'
+rootProject.name = 'paninij'
 
 include ':core'
 include ':core:lang'

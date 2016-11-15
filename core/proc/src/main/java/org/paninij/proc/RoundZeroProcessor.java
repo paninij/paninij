@@ -1,8 +1,6 @@
 package org.paninij.proc;
 
-import org.paninij.proc.check.Check;
 import org.paninij.proc.check.Check.Result;
-import org.paninij.proc.check.CheckException;
 import org.paninij.proc.check.signature.AllSignatureChecks;
 import org.paninij.proc.check.capsule.RoundZeroCapsuleChecks;
 import org.paninij.proc.factory.CapsuleInterfaceFactory;
@@ -66,9 +64,7 @@ public class RoundZeroProcessor extends AbstractProcessor {
                 Capsule model = CapsuleElement.make((TypeElement) elem);
                 artifactMaker.add(capsuleInterfaceFactory.make(model));
             } else {
-                // TODO: Re-enable once compile test improvements make `CheckException` obsolete.
-                //error(result.errMsg(), result.offender());
-                throw new CheckException();
+                error(result.errMsg(), result.offender());
             }
         }
 
@@ -80,9 +76,7 @@ public class RoundZeroProcessor extends AbstractProcessor {
                 Signature model = SignatureElement.make((TypeElement) elem);
                 artifactMaker.add(signatureInterfaceFactory.make(model));
             } else {
-                // TODO: Re-enable once compile test improvements make `CheckException` obsolete.
-                //error(result.errMsg(), result.offender());
-                throw new CheckException();
+                error(result.errMsg(), result.offender());
             }
         }
 

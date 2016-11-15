@@ -3,9 +3,7 @@ package org.paninij.proc;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
@@ -18,18 +16,22 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import me.dwtj.java.compiler.utils.CompilationTaskBuilder;
-import org.paninij.proc.check.CheckException;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
 
 import static java.io.File.separatorChar;
+import static java.text.MessageFormat.format;
+import static javax.tools.Diagnostic.Kind.ERROR;
 import static me.dwtj.java.compiler.utils.CompilationTaskBuilder.compileProperties;
 import static me.dwtj.java.compiler.utils.CompilationTaskBuilder.newBuilder;
-import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertEquals;
-import static org.junit.rules.ExpectedException.none;
 
 /**
  * Runs a suite of compilation tasks over various @PaniniJ sources to test various aspects of the
@@ -80,6 +82,8 @@ import static org.junit.rules.ExpectedException.none;
  * {@code compile.properties} file, then that indicates that no exceptions are expected to be thrown
  * from the compilation task.
  *
+ * TODO: Fix this out-of-date documentation.
+ *
  * Currently, the only valid value for the {@code exception} property is {@code CheckException},
  * which indicates that the user expects some {@link CheckException} to be thrown during the
  * compilation task because some input violates one or more of the Panini-specific checks in
@@ -127,8 +131,6 @@ public class CompileTests {
     @Parameter(0) public String compileTestName;
     @Parameter(1) public File compilePropertiesFile;
 
-    public CompilationTask compilationTask;
-
     @Parameters(name="{0}")
     public static Collection<Object[]> compilePropertiesFiles() {
         List<Object[]> files = new ArrayList<>();
@@ -150,64 +152,36 @@ public class CompileTests {
         }
     }
 
-    @Rule
-    public ExpectedException exception = none();
 
-    private boolean expectedToHaveCompileErrors;
-
-    @Before
-    public void init() throws IOException, ClassNotFoundException {
+    @Test
+    public void compileTest() throws IOException, ClassNotFoundException {
+        CompilationTask compilationTask;
         PropertiesConfiguration config = compileProperties(compilePropertiesFile);
         CompilationTaskBuilder taskBuilder = newBuilder(config);
+        DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<>();
 
         // Add the implicit/standard configuration to this test compilation task.
         taskBuilder.addProc(new RoundZeroProcessor())
-                   .addProc(new RoundOneProcessor());
-        taskBuilder.getFileManagerConfig().addToSourcePath(SOURCES_DIR)
+                   .addProc(new RoundOneProcessor())
+                   .setDiagnosticListener(diagnosticCollector)
+                   .getFileManagerConfig().addToSourcePath(SOURCES_DIR)
                                           .addToClassPath(PANINI_PROC_CLASSES_DIR)
                                           .addToClassPath(PANINI_RUNTIME_CLASSES_DIR)
                                           .setSourceOutputDir(sourceOutputDir())
                                           .setClassOutputDir(classOutputDir());
 
-        // TODO: Clarify the distinction between compile errors and exception.
-
-        // Note: One might imagine that we could simplify this system by just looking for compile
-        // errors and not using exceptions from `proc` at all. However, exception throwing/catching
-        // makes it easy to have precise determinations using the Java type system.
-
-        // TODO: Look into how to compilation diagnostics can be inspected to see if they'd work.
-
-        // For now, assume that a compilation task--if it terminates without an exception--should
-        // always finish without any compile errors.
-        expectedToHaveCompileErrors = false;
-
         // Make sure that the output directories exist.
         sourceOutputDir().mkdirs();
         classOutputDir().mkdirs();
 
-        // Check whether we should expect an exception.
-        String exceptionStr = config.getString("exception", "");
-        if (exceptionStr.equals("")) {
-            exception = none();
-        } else if (exceptionStr.equals("CheckException")) {
-            // Expect the JUnit test to catch a `RuntimeException` containing a nested
-            // `CheckException`. (The compiler itself wraps any exception thrown from the
-            // annotation processor in a `RuntimeException`.)
-            exception.expect(isA(RuntimeException.class));
-            exception.expectCause(isA(CheckException.class));
-        } else {
-            String msg = "`exception` property set to an unexpected value: " + exceptionStr;
-            throw new RuntimeException(msg);
-        }
-
         // Build the compilation task itself.
         compilationTask = taskBuilder.build();
-    }
+        compilationTask.call();
 
-    @Test
-    public void compile() {
-        boolean actuallyHasCompileErrors = !compilationTask.call();
-        assertEquals(expectedToHaveCompileErrors, actuallyHasCompileErrors);
+        boolean hasActualErrors = diagnosticCollector.getDiagnostics().stream()
+                                                     .map(Diagnostic::getKind)
+                                                     .anyMatch(k -> k == ERROR);
+        assertEquals("Compilation error diagnostics?", isExpectingErrors(config), hasActualErrors);
     }
 
     private File sourceOutputDir() {
@@ -227,6 +201,19 @@ public class CompileTests {
         name = name.substring(0, name.length() - SUFFIX.length());  // Drop SUFFIX.
         assert name.length() > 0;
         return name;
+    }
+
+    private boolean isExpectingErrors(PropertiesConfiguration config) {
+        String value = config.getString("errors", "no").toLowerCase().trim();
+        if (value.equals("yes")) {
+            return true;
+        } else if (value.equals("no")) {
+            return false;
+        } else {
+            String msg = format("`errors` property in {0} set to an unexpected value: {1}",
+                                compilePropertiesFile.getPath(), value);
+            throw new RuntimeException(msg);
+        }
     }
 
     private static File[] denullify(File[] arr) {
