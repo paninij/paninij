@@ -33,6 +33,5 @@ target_compile_features(agent
                         cxx_range_for)
 add_dependencies(agent javah)
 
-# Add testing support:
-#enable_testing()
-#add_subdirectory(test)
+# Note that no tests are currently declared in CMake. This is because all tests
+# are currently specified and driven using Gradle.
