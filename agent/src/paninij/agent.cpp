@@ -128,12 +128,15 @@ heap_tagging_cb(jvmtiHeapReferenceKind reference_kind,
                   void*) // user_data
 {
     if (referrer_tag_ptr == nullptr) {
-        // The current object is the root of the object graph being explored.
-        // Nothing to do.
+        return JVMTI_VISIT_OBJECTS;
     } else {
-        *tag_ptr = *referrer_tag_ptr;
+        if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
+            return 0;
+        } else {
+            *tag_ptr = *referrer_tag_ptr;
+            return JVMTI_VISIT_OBJECTS;
+        }
     }
-    return JVMTI_VISIT_OBJECTS;
 }
 
 
@@ -148,6 +151,10 @@ heap_searching_cb(jvmtiHeapReferenceKind reference_kind,
                   jint,   // length
                   void* found_illegal_move)
 {
+    // Do not follow references from object instances to their class.
+    if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
+        return 0;
+    }
     if (*tag_ptr == MOVE_TAG) {
         *tag_ptr = ILLEGAL_MOVE_TAG;
         *(bool*) found_illegal_move = true;
