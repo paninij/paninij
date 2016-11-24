@@ -1,9 +1,9 @@
 plugins {
   id 'java'
-  id "net.ltgt.apt" version "0.9"
+  id 'net.ltgt.apt' version '0.9'
 }
 
-boolean isMacOsX() {
+static boolean isMacOsX() {
   System.properties['os.name'].toLowerCase().contains('mac os x')
 }
 
@@ -12,16 +12,17 @@ def langJar = project(':core:lang').jar.archivePath
 // The dir which will hold compiled library targets (e.g. the agent lib).
 def cppDir = file("build/cpp")
 
-task makefiles(type: Exec) {
+task makeCppDir {
+  cppDir.mkdirs()
+}
+
+task makefiles(type: Exec, dependsOn: makeCppDir) {
   description = 'Uses CMake to initialize the build directory.'
   executable = 'cmake'
   args = ['-G', 'Unix Makefiles',
           '-D', "PANINIJ_LANG_JAR=${langJar}",
           '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir]
   workingDir = cppDir
-}
-makefiles.doFirst {
-  cppDir.mkdirs()
 }
 
 task makeAgent(type: Exec, dependsOn: [makefiles, ':core:lang:jar']) {
@@ -33,7 +34,7 @@ build.dependsOn lib
 
 
 sourceSets {
-  integrationTest {
+  test {
     java {
       srcDir "$projectDir/itest"
     }
@@ -41,21 +42,22 @@ sourceSets {
 }
 
 dependencies {
-  integrationTestCompileOnly project(':core:proc')
-  integrationTestRuntime project(':core:lang')
+  testCompile project(':core:proc')
+  testCompile project(':core:lang')
 }
 
-def integrationTestPackages = [
+def integrationTests = [
   'it1',
   'it2',
+  'it3',
 ]
 
-// For each named integration test, create debug and non-debug tasks:
-integrationTestPackages.each { testPkg ->
+// For each named integration test create a `JavaExec` tasks to run it:
+integrationTests.each { testPkg ->
   def taskName = testPkg
   task "$taskName" (type:JavaExec, dependsOn: [makeAgent]) {
     main = "${testPkg}/IT"
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    classpath = sourceSets.test.runtimeClasspath
     jvmArgs '-agentlib:agent'
     enableAssertions = true
     environment(isMacOsX() ? 'DYLD_LIBRARY_PATH' : 'LD_LIBRARY_PATH', cppDir)
