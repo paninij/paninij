@@ -9,9 +9,9 @@ include ':agent'
 include ':jdt'
 include ':jdt:plugin'
 
-include ':benchmarks'
-include ':benchmarks:savina'
+//include ':benchmarks'
+//include ':benchmarks:savina'
 //include ':benchmarks:jmh-harness'
-include ':benchmarks:savina-harness'
+//include ':benchmarks:savina-harness'
 
 include ':site'
