@@ -3,7 +3,6 @@ package org.paninij.proc;
 import org.paninij.lang.CapsuleInterface;
 import org.paninij.lang.SignatureInterface;
 import org.paninij.proc.check.Check.Result;
-import org.paninij.proc.check.CheckException;
 import org.paninij.proc.check.capsule.CapsuleCheck;
 import org.paninij.proc.check.capsule.CheckForCycleOfLocalFields;
 import org.paninij.proc.check.capsule.RoundOneCapsuleChecks;
@@ -140,27 +139,27 @@ public class RoundOneProcessor extends AbstractProcessor {
             }
 
             Result result = capsuleCheck.checkCapsule(template);
-            if (!result.ok()) {
-                // TODO: Re-enable once compile test improvements make `CheckException` obsolete.
-                //error(result.errMsg(), result.offender());
-                throw new CheckException();
-            } else {
+            if (result.ok()) {
                 set.add(template);
+            } else {
+                error(result.errMsg(), result.offender());
             }
         }
 
         // Run one more check. This check is not part of the `capsuleCheck` above, because some of
         // the prior checks need to have already been performed before this check will behave
         // correctly.
+        Set<TypeElement> filteredSet = new HashSet<>();
         for (TypeElement template : set) {
             Result result = cycleCheck.checkCapsule(template);
-            if (!result.ok()) {
-                set.remove(template);
-                throw new CheckException();
+            if (result.ok()) {
+                filteredSet.add(template);
+            } else {
+                error(result.errMsg(), result.offender());
             }
         }
 
-        return set;
+        return filteredSet;
     }
 
     /**
