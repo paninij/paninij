@@ -1,4 +1,4 @@
-package it3;
+package it4;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
@@ -8,8 +8,11 @@ public class PongTemplate {
 
     @Imports Ping ping;
 
-    public void hit(Object o) {
+    Object obj;
+
+    public Object hit(Object o) {
         System.out.println("Pong!");
-        ping.hit(o);
+        obj = o;
+        return o;
     }
 }
