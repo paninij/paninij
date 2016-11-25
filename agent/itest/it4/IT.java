@@ -2,8 +2,12 @@ package it4;
 
 import org.paninij.lang.CapsuleSystem;
 
+import static org.paninij.agent.util.Assert.assertOwnershipError;
+
 public class IT {
     public static void main(String[] args) {
-        CapsuleSystem.start(Server.class, null);
+        assertOwnershipError(() -> {
+            CapsuleSystem.start(Server.class, null);
+        });
     }
 }
