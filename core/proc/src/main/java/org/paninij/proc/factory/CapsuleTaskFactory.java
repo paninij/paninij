@@ -386,15 +386,9 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
 
     private String generateAssertSafeResultTransfer()
     {
-        /*
-        return Source.format(
-                "assert Panini$Ownership.#0.isSafeTransfer(#1, #2) : #3",
-                PaniniProcessor.ownershipCheckMethod,
-                "result",
-                "panini$getAllState()",
-                "\"Procedure return attempted unsafe ownership transfer.\"");
-        */
-        return "";
+        return Source.format("org.paninij.runtime.check.Ownership.move(#0, null, #1)",
+                             "result",
+                             "panini$getAllState()");
     }
 
     private List<String> generateCapsuleBody()

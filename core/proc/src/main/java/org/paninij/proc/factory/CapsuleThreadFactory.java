@@ -58,7 +58,6 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "",
                 "#1",
                 "@SuppressWarnings(\"unused\")",  // To suppress unused import warnings.
-                "@CapsuleThread",
                 "public class #2 extends Capsule$Thread implements #3",
                 "{",
                 "    ##",
@@ -95,13 +94,11 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         
         imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
-        imports.add("org.paninij.lang.CapsuleThread");
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
         imports.add("org.paninij.runtime.Panini$Future");
         imports.add("org.paninij.runtime.Panini$System");
-        imports.add("org.paninij.runtime.check.DynamicOwnershipTransfer");
         imports.add(this.capsule.getQualifiedName());
 
         List<String> prefixedImports = new ArrayList<String>();
@@ -232,6 +229,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                     "        panini$encapsulated.run();",
                     "    } catch (Throwable thrown) {",
                     "        panini$errors.add(thrown);",
+                    "        throw thrown;",
                     "    } finally {",
                     "        panini$onTerminate();",
                     "        try {",
@@ -261,6 +259,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 "        }",
                 "    } catch (Throwable thrown) {",
                 "        panini$errors.add(thrown);",
+                "        throw thrown;",
                 "    }",
                 "    try {",
                 "       Panini$System.threads.countDown();",
@@ -373,16 +372,9 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
     private String generateAssertSafeResultTransfer()
     {
-        // TODO: Clean this up!
-        /**
-        return Source.format(
-                "assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2) : #3",
-                PaniniProcessor.dynamicOwnershipTransferKind,
-                "result",
-                "panini$getAllState()",
-                "\"Procedure return attempted unsafe ownership transfer.\"");
-        */
-        return "";
+        return Source.format("org.paninij.runtime.check.Ownership.move(#0, null, #1)",
+                             "result",
+                             "panini$getAllState()");
     }
 
     private List<String> generateCapsuleBody()

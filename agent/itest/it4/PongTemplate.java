@@ -10,9 +10,9 @@ public class PongTemplate {
 
     Object obj;
 
-    public Object hit(Object o) {
+    public void hit(Object o) {
         System.out.println("Pong!");
         obj = o;
-        return o;
+        ping.hit(o);  // Creates ownership conflict (if non-null).
     }
 }

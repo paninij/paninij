@@ -1,7 +1,5 @@
 package org.paninij.runtime.check;
 
-import org.paninij.runtime.Panini$Capsule;
-
 /**
  * @author dwtj
  */

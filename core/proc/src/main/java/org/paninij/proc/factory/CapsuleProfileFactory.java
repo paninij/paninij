@@ -141,15 +141,9 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
     protected String generateAssertSafeInvocationTransfer()
     {
-        // TODO: Clean this up!
-        /**
-        return Source.format("assert DynamicOwnershipTransfer.#0.isSafeTransfer(#1, #2): #3",
-                             PaniniProcessor.dynamicOwnershipTransferKind,
+        return Source.format("org.paninij.runtime.check.Ownership.move(#0, null, #1)",
                              "panini$message",
-                             "Panini$System.self.get().panini$getAllState()",
-                             "\"Procedure invocation performed unsafe ownership transfer.\"");
-        */
-        return "";
+                             "Panini$System.self.get().panini$getAllState()");
     }
 
     protected List<String> generateCheckRequiredFields()

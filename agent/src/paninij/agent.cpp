@@ -1,4 +1,5 @@
 #include <jvmti.h>
+#include <iostream>
 #include <cassert>
 #include "paninij/agent.h"
 #include "paninij/ownership.h"
@@ -129,13 +130,12 @@ heap_tagging_cb(jvmtiHeapReferenceKind reference_kind,
 {
     if (referrer_tag_ptr == nullptr) {
         return JVMTI_VISIT_OBJECTS;
+    } else if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
+        // Do not follow references from object instances to their class.
+        return 0;
     } else {
-        if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
-            return 0;
-        } else {
-            *tag_ptr = *referrer_tag_ptr;
-            return JVMTI_VISIT_OBJECTS;
-        }
+        *tag_ptr = *referrer_tag_ptr;
+        return JVMTI_VISIT_OBJECTS;
     }
 }
 
@@ -151,13 +151,18 @@ heap_searching_cb(jvmtiHeapReferenceKind reference_kind,
                   jint,   // length
                   void* found_illegal_move)
 {
-    // Do not follow references from object instances to their class.
+    if (*(bool*) found_illegal_move) {
+        // Don't follow any more references if we already found an illegal move.
+        return 0;
+    }
     if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
+        // Do not follow references from object instances to their class.
         return 0;
     }
     if (*tag_ptr == MOVE_TAG) {
         *tag_ptr = ILLEGAL_MOVE_TAG;
         *(bool*) found_illegal_move = true;
+        return 0;
     }
     return JVMTI_VISIT_OBJECTS;
 }
@@ -212,7 +217,7 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
     // Java thread which called this JNI method.
 
     jvmtiError err;
-    bool found_illegal_move;
+    bool found_illegal_move = false;
     tagAllReachable(ref, MOVE_TAG);
 
     // Search for objects reachable from `sender` but marked with `MOVE_TAG`.
