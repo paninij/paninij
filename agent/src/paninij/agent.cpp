@@ -23,9 +23,22 @@ namespace {
      * an object's class.
      *
      * @see
-     *     <a href="https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html#FollowReferences.klass"
+     *     <a href="https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html#FollowReferences.klass">
+     *       FollowReferences.klass
+     *      </a>
      */
     const jclass DONT_FILTER_HEAP_CALLBACKS_BY_CLASS = nullptr;
+
+    /**
+     * Indicates that heap traversal should continue, but not visit any objects
+     * referenced by the object currently being visited.
+     *
+     * @see
+     *     <a href="https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html#jvmtiHeapVisitControl">
+     *       Heap Visit Control Flags
+     *     </a>
+     */
+    const jint DONT_VISIT_OBJECTS = ! JVMTI_VISIT_ABORT & ! JVMTI_VISIT_OBJECTS;
 
     /** Indicates that an object has no tag. */
     const jlong NO_TAG = 0;
@@ -131,8 +144,7 @@ heap_tagging_cb(jvmtiHeapReferenceKind reference_kind,
     if (referrer_tag_ptr == nullptr) {
         return JVMTI_VISIT_OBJECTS;
     } else if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
-        // Do not follow references from object instances to their class.
-        return 0;
+        return DONT_VISIT_OBJECTS;
     } else {
         *tag_ptr = *referrer_tag_ptr;
         return JVMTI_VISIT_OBJECTS;
@@ -151,18 +163,13 @@ heap_searching_cb(jvmtiHeapReferenceKind reference_kind,
                   jint,   // length
                   void* found_illegal_move)
 {
-    if (*(bool*) found_illegal_move) {
-        // Don't follow any more references if we already found an illegal move.
-        return 0;
-    }
     if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
-        // Do not follow references from object instances to their class.
-        return 0;
+        return DONT_VISIT_OBJECTS;
     }
     if (*tag_ptr == MOVE_TAG) {
         *tag_ptr = ILLEGAL_MOVE_TAG;
         *(bool*) found_illegal_move = true;
-        return 0;
+        return JVMTI_VISIT_ABORT;
     }
     return JVMTI_VISIT_OBJECTS;
 }
