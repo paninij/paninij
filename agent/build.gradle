@@ -12,7 +12,7 @@ def langJar = project(':core:lang').jar.archivePath
 // The dir which will hold compiled library targets (e.g. the agent lib).
 def cppDir = file("build/cpp")
 
-task makeCppDir {
+task makeCppDir << {
   cppDir.mkdirs()
 }
 
