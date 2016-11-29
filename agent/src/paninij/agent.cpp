@@ -227,11 +227,14 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
                                               jobject  sender,
                                               jobject  sender_encapsulated,
                                               jobject, // receiver (cur. unused)
-                                              jobject  ref)
+                                              jobjectArray moved)
 {
-    assert(sender != nullptr && sender_encapsulated != nullptr);
+    assert(sender != nullptr
+        && sender_encapsulated != nullptr
+        && moved != nullptr);
 
-    if (ref == nullptr) {
+    // Return early if nothing is being moved.
+    if (jni_env->GetArrayLength(moved) == 0) {
         return;
     }
 
@@ -243,7 +246,7 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
 
     jvmtiError err;
     bool found_illegal_move = false;
-    tag_all_reachable(ref, MOVE_TAG);
+    tag_all_reachable(moved, MOVE_TAG);
 
     // Search for objs reachable from `sender_state` but marked with `MOVE_TAG`.
     jobject sender_state = get_all_state(jni_env, sender);
@@ -261,6 +264,6 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
         jni_env->ThrowNew(cls, "Detected an illegal ownership move.");
     } else {
         // Otherwise, un-tag all objects reachable from `ref`
-        tag_all_reachable(ref, NO_TAG);
+        tag_all_reachable(moved, NO_TAG);
     }
 }

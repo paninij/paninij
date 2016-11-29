@@ -157,7 +157,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                 this.generateProcedureDecl(shape),
                 encoding,
                 this.generateProcedureArguments(shape),
-                this.generateAssertSafeInvocationTransfer(),
+                this.generateAssertSafeInvocationTransfer(procedure),
                 doBlock,
                 this.generateProcedureReturn(shape),
                 shape.kindAnnotation);
@@ -382,11 +382,6 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                 "panini$encapsulated.#0(#1)",
                 shape.procedure.getName(),
                 String.join(", ", args));
-    }
-
-    private String generateAssertSafeResultTransfer() {
-        // TODO: Everything!
-        return "";
     }
 
     private List<String> generateCapsuleBody()

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.paninij.proc.model.Procedure;
 import org.paninij.proc.model.Type;
@@ -375,21 +376,29 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
     }
 
     @Override
-    protected String generateAssertSafeInvocationTransfer() {
+    protected String generateAssertSafeInvocationTransfer(Procedure procedure) {
+        // Pass each of the procedure wrapper's reference-typed parameters as moved refs:
+        String moved = procedure.getParameters()
+                .stream()
+                .filter(v -> !v.isPrimitive())
+                .map(Variable::getIdentifier)
+                .collect(Collectors.joining(", "));
+
         return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2, #3)",
                 "Panini$System.self.get()",
                 "Panini$System.self.get().panini$encapsulated()",
                 "this",  // The sending capsule is calling `this` capsule's proc wrapper.
-                "panini$message");
+                moved);
     }
 
-    private String generateAssertSafeResultTransfer()
+    @Override
+    protected String generateAssertSafeResultTransfer()
     {
         return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2, #3)",
                              "Panini$System.self.get()",
                              "Panini$System.self.get().panini$encapsulated()",
                              "null",
-                             "result");
+                             "result.panini$get()");
     }
 
     private List<String> generateCapsuleBody()

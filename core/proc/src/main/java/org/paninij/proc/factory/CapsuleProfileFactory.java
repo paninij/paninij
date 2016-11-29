@@ -106,7 +106,7 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
                 this.generateProcedureDecl(shape),
                 encoding,
                 this.generateProcedureArguments(shape),
-                this.generateAssertSafeInvocationTransfer(),
+                this.generateAssertSafeInvocationTransfer(procedure),
                 this.generateProcedureReturn(shape),
                 shape.kindAnnotation);
     }
@@ -139,7 +139,11 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
         return declaration;
     }
 
-    protected String generateAssertSafeInvocationTransfer() {
+    protected String generateAssertSafeInvocationTransfer(Procedure procedure) {
+        return "";
+    }
+
+    protected String generateAssertSafeResultTransfer() {
         return "";
     }
 
