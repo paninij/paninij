@@ -1,7 +1,9 @@
 package it1;
 
+import org.paninij.lang.CapsuleSystem;
+
 public class IT {
     public static void main(String[] args) {
-        System.out.println("Hello, from a `main()` method.");
+        CapsuleSystem.start(Server.class, null);
     }
 }

@@ -8,17 +8,18 @@ import static java.lang.System.out;
 @Capsule
 public class PingTemplate {
 
-    final int MAX_ITERATIONS = 5;
+    @Imports
+    Pong pong;
 
-    @Imports Pong pong;
-    int counter = 0;
+    Object obj;
 
-    public void hit(Object obj) {
+    public void hit(Object o) {
         out.println("Ping!");
-        if (counter++ < MAX_ITERATIONS) {
-            pong.hit(obj);
-        } else {
-            out.println("Done...");
-        }
+        hitHelper(o);
+        obj = o;      // Use-after-move.
+    }
+
+    private void hitHelper(Object o) {
+        pong.hit(o);  // Ownership conflict!
     }
 }
