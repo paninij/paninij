@@ -372,9 +372,8 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
     private String generateAssertSafeResultTransfer()
     {
-        return Source.format("org.paninij.runtime.check.Ownership.move(#0, null, #1)",
-                             "result",
-                             "panini$getAllState()");
+        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2)",
+                             "Panini$System.self.get()", "null", "result");
     }
 
     private List<String> generateCapsuleBody()

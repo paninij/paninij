@@ -176,6 +176,29 @@ heap_searching_cb(jvmtiHeapReferenceKind reference_kind,
 
 
 /*****************************************************************************
+ * Agent Helper Functions                                                    *
+ *****************************************************************************/
+
+void tag_all_reachable(jobject root, jlong tag) {
+    jvmtiError err;
+    err = jvmti_env->SetTag(root, tag);
+    assert(err == JVMTI_ERROR_NONE);
+    err = jvmti_env->FollowReferences(DONT_FILTER_HEAP_CALLBACKS_BY_TAG,
+                                      DONT_FILTER_HEAP_CALLBACKS_BY_CLASS,
+                                      root, &heap_tagging_callbacks, nullptr);
+    assert(err == JVMTI_ERROR_NONE);
+}
+
+jobject get_all_state(JNIEnv *jni_env, jobject sender) {
+    jclass cls = jni_env->GetObjectClass(sender);
+    jmethodID mid = jni_env->GetMethodID(cls, "panini$getAllState",
+                                     "()Ljava/lang/Object;");
+    assert(mid != NULL);  // Expects a capsule to have a `panini$getAllState()`.
+    return jni_env->CallObjectMethod(sender, mid);
+}
+
+
+/*****************************************************************************
  * Agent Shutdown                                                            *
  *****************************************************************************/
 
@@ -189,15 +212,6 @@ Agent_OnUnload(JavaVM *vm) {
  * Definitions of JNI Methods                                                *
  *****************************************************************************/
 
-void tagAllReachable(jobject root, jlong tag) {
-    jvmtiError err;
-    err = jvmti_env->SetTag(root, tag);
-    assert(err == JVMTI_ERROR_NONE);
-    err = jvmti_env->FollowReferences(DONT_FILTER_HEAP_CALLBACKS_BY_TAG,
-                                      DONT_FILTER_HEAP_CALLBACKS_BY_CLASS,
-                                      root, &heap_tagging_callbacks, nullptr);
-    assert(err == JVMTI_ERROR_NONE);
-}
 
 
 /**
@@ -225,12 +239,13 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
 
     jvmtiError err;
     bool found_illegal_move = false;
-    tagAllReachable(ref, MOVE_TAG);
+    tag_all_reachable(ref, MOVE_TAG);
 
-    // Search for objects reachable from `sender` but marked with `MOVE_TAG`.
+    // Search for objs reachable from `sender_state` but marked with `MOVE_TAG`.
+    jobject sender_state = get_all_state(jni_env, sender);
     err = jvmti_env->FollowReferences(DONT_FILTER_HEAP_CALLBACKS_BY_TAG,
                                       DONT_FILTER_HEAP_CALLBACKS_BY_CLASS,
-                                      sender,
+                                      sender_state,
                                       &heap_searching_callbacks,
                                       &found_illegal_move);
     assert(err == JVMTI_ERROR_NONE);
@@ -241,6 +256,6 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
         jni_env->ThrowNew(error_class, "Detected an illegal ownership move.");
     } else {
         // Otherwise, un-tag all objects reachable from `ref`
-        tagAllReachable(ref, NO_TAG);
+        tag_all_reachable(ref, NO_TAG);
     }
 }
