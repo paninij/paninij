@@ -384,11 +384,9 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                 String.join(", ", args));
     }
 
-    private String generateAssertSafeResultTransfer()
-    {
-        return Source.format("org.paninij.runtime.check.Ownership.move(#0, null, #1)",
-                             "result",
-                             "panini$getAllState()");
+    private String generateAssertSafeResultTransfer() {
+        // TODO: Everything!
+        return "";
     }
 
     private List<String> generateCapsuleBody()

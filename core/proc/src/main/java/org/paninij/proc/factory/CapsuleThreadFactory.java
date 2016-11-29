@@ -370,6 +370,14 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 String.join(", ", args));
     }
 
+    @Override
+    protected String generateAssertSafeInvocationTransfer() {
+        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2)",
+                "Panini$System.self.get()",
+                "this",
+                "panini$message");
+    }
+
     private String generateAssertSafeResultTransfer()
     {
         return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2)",

@@ -139,12 +139,8 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
         return declaration;
     }
 
-    protected String generateAssertSafeInvocationTransfer()
-    {
-        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2)",
-                             "Panini$System.self.get()",
-                             "this",
-                             "panini$message");
+    protected String generateAssertSafeInvocationTransfer() {
+        return "";
     }
 
     protected List<String> generateCheckRequiredFields()
