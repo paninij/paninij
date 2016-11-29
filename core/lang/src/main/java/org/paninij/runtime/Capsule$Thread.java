@@ -58,6 +58,9 @@ public abstract class Capsule$Thread implements Panini$Capsule, Runnable
     }
 
 
+    public abstract Object panini$encapsulated();
+
+
     protected final void panini$extendQueue()
     {
         assert (panini$tail >= panini$queue.length);

@@ -222,10 +222,13 @@ JNIEXPORT void JNICALL
 Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
                                               jclass,  // Ownership.class
                                               jobject  sender,
+                                              jobject  sender_encapsulated,
                                               jobject, // receiver (cur. unused)
                                               jobject  ref)
 {
-    if (sender == nullptr || ref == nullptr) {
+    assert(sender != nullptr && sender_encapsulated != nullptr);
+
+    if (ref == nullptr) {
         return;
     }
 

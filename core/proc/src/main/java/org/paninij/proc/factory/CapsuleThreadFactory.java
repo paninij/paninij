@@ -117,6 +117,10 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 this.capsule.getQualifiedName() + PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
     }
 
+    private String generateEncapsulatedDeclGetter() {
+        return "@Override public Object panini$encapsulated() { return panini$encapsulated; }";
+    }
+
     private List<String> generateProcedureIDs()
     {
         ArrayList<String> decls = new ArrayList<String>();
@@ -372,16 +376,20 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
     @Override
     protected String generateAssertSafeInvocationTransfer() {
-        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2)",
+        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2, #3)",
                 "Panini$System.self.get()",
-                "this",
+                "Panini$System.self.get().panini$encapsulated()",
+                "this",  // The sending capsule is calling `this` capsule's proc wrapper.
                 "panini$message");
     }
 
     private String generateAssertSafeResultTransfer()
     {
-        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2)",
-                             "Panini$System.self.get()", "null", "result");
+        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2, #3)",
+                             "Panini$System.self.get()",
+                             "Panini$System.self.get().panini$encapsulated()",
+                             "null",
+                             "result");
     }
 
     private List<String> generateCapsuleBody()
@@ -389,6 +397,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         List<String> src = new ArrayList<String>();
 
         src.add(this.generateEncapsulatedDecl());
+        src.add(this.generateEncapsulatedDeclGetter());
         src.addAll(this.generateProcedureIDs());
         src.addAll(this.generateProcedures());
         src.addAll(this.generateCheckRequiredFields());
