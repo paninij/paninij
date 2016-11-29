@@ -16,7 +16,7 @@ namespace {
      * @see
      *    <a href="https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html#jvmtiHeapFilter">Heap Filter Flags</a>
      */
-    const jint DONT_FILTER_HEAP_CALLBACKS_BY_TAG = 0;
+    const jint DO_NOT_FILTER_HEAP_CALLBACKS_BY_TAG = 0;
 
     /**
      * Indicates that a heap traversal should not limit callbacks based on
@@ -27,7 +27,7 @@ namespace {
      *       FollowReferences.klass
      *      </a>
      */
-    const jclass DONT_FILTER_HEAP_CALLBACKS_BY_CLASS = nullptr;
+    const jclass DO_NOT_FILTER_HEAP_CALLBACKS_BY_CLASS = nullptr;
 
     /**
      * Indicates that heap traversal should continue, but not visit any objects
@@ -38,7 +38,8 @@ namespace {
      *       Heap Visit Control Flags
      *     </a>
      */
-    const jint DONT_VISIT_OBJECTS = ! JVMTI_VISIT_ABORT & ! JVMTI_VISIT_OBJECTS;
+    const jint DO_NOT_VISIT_OBJECTS = ! JVMTI_VISIT_ABORT
+                                    & ! JVMTI_VISIT_OBJECTS;
 
     /** Indicates that an object has no tag. */
     const jlong NO_TAG = 0;
@@ -79,6 +80,8 @@ Agent_OnLoad(JavaVM* jvm, char* options, void* reserved) {
         ! set_event_callbacks(env))
     {
         jvmtiError err = env->DisposeEnvironment();
+        // TODO: Check `err`?
+
         env = nullptr;
         return JNI_ERR;
     }
@@ -144,7 +147,7 @@ heap_tagging_cb(jvmtiHeapReferenceKind reference_kind,
     if (referrer_tag_ptr == nullptr) {
         return JVMTI_VISIT_OBJECTS;
     } else if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
-        return DONT_VISIT_OBJECTS;
+        return DO_NOT_VISIT_OBJECTS;
     } else {
         *tag_ptr = *referrer_tag_ptr;
         return JVMTI_VISIT_OBJECTS;
@@ -164,7 +167,7 @@ heap_searching_cb(jvmtiHeapReferenceKind reference_kind,
                   void* found_illegal_move)
 {
     if (reference_kind == JVMTI_HEAP_REFERENCE_CLASS) {
-        return DONT_VISIT_OBJECTS;
+        return DO_NOT_VISIT_OBJECTS;
     }
     if (*tag_ptr == MOVE_TAG) {
         *tag_ptr = ILLEGAL_MOVE_TAG;
@@ -183,8 +186,8 @@ void tag_all_reachable(jobject root, jlong tag) {
     jvmtiError err;
     err = jvmti_env->SetTag(root, tag);
     assert(err == JVMTI_ERROR_NONE);
-    err = jvmti_env->FollowReferences(DONT_FILTER_HEAP_CALLBACKS_BY_TAG,
-                                      DONT_FILTER_HEAP_CALLBACKS_BY_CLASS,
+    err = jvmti_env->FollowReferences(DO_NOT_FILTER_HEAP_CALLBACKS_BY_TAG,
+                                      DO_NOT_FILTER_HEAP_CALLBACKS_BY_CLASS,
                                       root, &heap_tagging_callbacks, nullptr);
     assert(err == JVMTI_ERROR_NONE);
 }
@@ -215,7 +218,7 @@ Agent_OnUnload(JavaVM *vm) {
 /**
  * This is called by the PaniniJ runtime to report that the client's program has
  * moved ownership of the object graph rooted at `ref` from the `sender` capsule
- * to the `reciever` capsule. The given `clazz` is always the `Ownership` class
+ * to the `receiver` capsule. The given `clazz` is always the `Ownership` class
  * itself.
  */
 JNIEXPORT void JNICALL
@@ -244,8 +247,8 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
 
     // Search for objs reachable from `sender_state` but marked with `MOVE_TAG`.
     jobject sender_state = get_all_state(jni_env, sender);
-    err = jvmti_env->FollowReferences(DONT_FILTER_HEAP_CALLBACKS_BY_TAG,
-                                      DONT_FILTER_HEAP_CALLBACKS_BY_CLASS,
+    err = jvmti_env->FollowReferences(DO_NOT_FILTER_HEAP_CALLBACKS_BY_TAG,
+                                      DO_NOT_FILTER_HEAP_CALLBACKS_BY_CLASS,
                                       sender_state,
                                       &heap_searching_callbacks,
                                       &found_illegal_move);
