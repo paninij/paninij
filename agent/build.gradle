@@ -24,11 +24,13 @@ task makefiles(type: Exec, dependsOn: makeCppDir) {
           '-D', "PANINIJ_LANG_JAR=${langJar}",
           '-D', 'CMAKE_BUILD_TYPE=Debug', projectDir]
   workingDir = cppDir
+  logging.captureStandardOutput LogLevel.INFO
 }
 
 task makeAgent(type: Exec, dependsOn: [makefiles, ':core:lang:jar']) {
   workingDir cppDir
   commandLine 'make', 'agent'
+  logging.captureStandardOutput LogLevel.INFO
 }
 task lib(dependsOn: makeAgent)
 build.dependsOn lib
