@@ -252,8 +252,9 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
 
     if (found_illegal_move) {
         // TODO: Consider using `GetObjectsWithTags()`
-        jclass error_class = jni_env->FindClass("java/lang/Error");
-        jni_env->ThrowNew(error_class, "Detected an illegal ownership move.");
+        const char* cls_name = "org/paninij/runtime/check/OwnershipMoveError";
+        jclass cls = jni_env->FindClass(cls_name);
+        jni_env->ThrowNew(cls, "Detected an illegal ownership move.");
     } else {
         // Otherwise, un-tag all objects reachable from `ref`
         tag_all_reachable(ref, NO_TAG);
