@@ -189,10 +189,10 @@ void tag_all_reachable(jobject root, jlong tag) {
     assert(err == JVMTI_ERROR_NONE);
 }
 
-jobject get_all_state(JNIEnv *jni_env, jobject sender) {
+jobject get_all_state(JNIEnv* jni_env, jobject sender) {
     jclass cls = jni_env->GetObjectClass(sender);
     jmethodID mid = jni_env->GetMethodID(cls, "panini$getAllState",
-                                     "()Ljava/lang/Object;");
+                                         "()Ljava/lang/Object;");
     assert(mid != NULL);  // Expects a capsule to have a `panini$getAllState()`.
     return jni_env->CallObjectMethod(sender, mid);
 }
@@ -211,8 +211,6 @@ Agent_OnUnload(JavaVM *vm) {
 /*****************************************************************************
  * Definitions of JNI Methods                                                *
  *****************************************************************************/
-
-
 
 /**
  * This is called by the PaniniJ runtime to report that the client's program has
