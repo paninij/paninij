@@ -8,6 +8,7 @@
 const jvmtiCapabilities agent_capabilities = {
     .can_tag_objects = 1,
     .can_generate_vm_object_alloc_events = 1,
+    .can_access_local_variables = 1,
 };
 
 
