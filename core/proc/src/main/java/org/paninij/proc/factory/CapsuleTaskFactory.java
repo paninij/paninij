@@ -350,7 +350,9 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                     this.generateProcedureID(procedure),
                     procedure.getReturnType().wrapped(),
                     this.generateEncapsulatedMethodCall(shape),
-                    this.generateAssertSafeResultTransfer());
+                    (procedure.getReturnType().isPrimitive())
+                            ? ""
+                            : this.generateAssertSafeResultTransfer());
         }
     }
 

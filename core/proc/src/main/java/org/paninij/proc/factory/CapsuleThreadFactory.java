@@ -384,21 +384,28 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                 .map(Variable::getIdentifier)
                 .collect(Collectors.joining(", "));
 
-        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2, #3)",
-                "Panini$System.self.get()",
-                "Panini$System.self.get().panini$encapsulated()",
-                "this",  // The sending capsule is calling `this` capsule's proc wrapper.
-                moved);
+        if (moved.isEmpty()) {
+            return "";
+        } else {
+            return Source.format(
+                    "org.paninij.runtime.check.Ownership.procedureInvocationMove(#0, #1, #2, #3)",
+                    "Panini$System.self.get()",
+                    "Panini$System.self.get().panini$encapsulated()",
+                    "this",  // The sending capsule is calling `this` capsule's proc wrapper.
+                    moved
+            );
+        }
     }
 
     @Override
     protected String generateAssertSafeResultTransfer()
     {
-        return Source.format("org.paninij.runtime.check.Ownership.move(#0, #1, #2, #3)",
-                             "Panini$System.self.get()",
-                             "Panini$System.self.get().panini$encapsulated()",
-                             "null",
-                             "result.panini$get()");
+        return Source.format(
+                "org.paninij.runtime.check.Ownership.procedureReturnMove(#0, #1, #2)",
+                "Panini$System.self.get()",
+                "Panini$System.self.get().panini$encapsulated()",
+                "result"
+        );
     }
 
     private List<String> generateCapsuleBody()

@@ -222,13 +222,14 @@ Agent_OnUnload(JavaVM *vm) {
  * itself.
  */
 JNIEXPORT void JNICALL
-Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
-                                              jclass,  // Ownership.class
-                                              jobject  sender,
-                                              jobject  sender_encapsulated,
-                                              jobject, // receiver (cur. unused)
-                                              jobjectArray moved)
-{
+Java_org_paninij_runtime_check_Ownership_procedureInvocationMove (
+    JNIEnv* jni_env,
+    jclass,  // Ownership.class
+    jobject  sender,
+    jobject  sender_encapsulated,
+    jobject, // receiver (currently unused)
+    jobjectArray moved
+) {
     assert(sender != nullptr
         && sender_encapsulated != nullptr
         && moved != nullptr);
@@ -241,7 +242,7 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
     // Notice that under the assumption of strong ownership and state
     // encapsulation, there are no data-races between these different calls to
     // `FollowReferences()`. This is because under these assumptions, the only
-    // Java thread which may modify the `sender` or `ref` object graphs is the
+    // Java thread which may modify the `sender` or `moved` object graphs is the
     // Java thread which called this JNI method.
 
     jvmtiError err;
@@ -266,4 +267,17 @@ Java_org_paninij_runtime_check_Ownership_move(JNIEnv*  jni_env,
         // Otherwise, un-tag all objects reachable from `ref`
         tag_all_reachable(moved, NO_TAG);
     }
+}
+
+JNIEXPORT void JNICALL
+Java_org_paninij_runtime_check_Ownership_procedureReturnMove (
+        JNIEnv* jni_env,
+        jclass, // Ownership.class
+        jobject sender,
+        jobject sender_encapsulated,
+        jobject moved
+) {
+    const char* cls_name = "java/lang/UnsupportedOperationException";
+    jclass cls = jni_env->FindClass(cls_name);
+    jni_env->ThrowNew(cls, "TODO");
 }
