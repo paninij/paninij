@@ -57,6 +57,7 @@ def integrationTests = [
   'it3',
   'it4',
   'it5',
+  'it6',
 ]
 
 // For each named integration test create a `JavaExec` tasks to run it:
