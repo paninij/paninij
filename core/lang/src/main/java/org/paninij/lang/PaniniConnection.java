@@ -28,6 +28,11 @@ package org.paninij.lang;
 
 import java.util.function.BiConsumer;
 
+/** 
+ * A subscription of a handler to an event.
+ * 
+ * @param <T>
+ */
 public class PaniniConnection<T> {
     BiConsumer<PaniniEventExecution<T>, T> handler;
     RegisterType type;
@@ -39,10 +44,18 @@ public class PaniniConnection<T> {
         this.on = true;
     }
 
+    /** 
+     * Enables this handler to receive new announcements.
+     */
     public void on() {
         on = true;
     }
 
+    /**
+     * Stops the handler from receiving new announcements.
+     * This does not affect announcements that were initiated
+     * but have not reached this handler before this is called.
+     */
     public void off() {
         on = false;
     }

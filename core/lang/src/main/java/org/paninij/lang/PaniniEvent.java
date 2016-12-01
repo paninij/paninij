@@ -31,28 +31,51 @@ import java.util.function.BiConsumer;
 
 import org.paninij.runtime.EventMode;
 
+/**
+ * A capsule event.
+ * 
+ * @param <T>
+ *            the type of message that can be announced to handlers
+ */
 public class PaniniEvent<T> {
     private ConcurrentLinkedQueue<PaniniConnection<T>> list = new ConcurrentLinkedQueue<>();
     private final EventMode mode;
-    
+
     public PaniniEvent(EventMode mode) {
         this.mode = mode;
     }
-    
+
+    /**
+     * Registers a reference to a `@Handler` to this event.
+     * The registration is by default enabled.
+     * 
+     * @param handler
+     *            method reference to the handler
+     * @param type
+     *            whether the handler reads or writes
+     * @return a subscription to the event
+     */
     public PaniniConnection<T> register(BiConsumer<PaniniEventExecution<T>, T> handler, RegisterType type) {
         if (type == RegisterType.WRITE && mode == EventMode.BROADCAST) {
             throw new IllegalArgumentException("Cannot register writer to broadcast event");
         }
-        
+
         PaniniConnection<T> conn = new PaniniConnection<>(handler, type);
         list.add(conn);
         return conn;
     }
 
+    /**
+     * Announces this event with the provided message.
+     * 
+     * @param arg
+     *            message to send to handlers
+     * @return the announcement's event execution
+     */
     public PaniniEventExecution<T> announce(T arg) {
         ConcurrentLinkedQueue<PaniniConnection<T>> announceList = null;
         announceList = new ConcurrentLinkedQueue<>(list);
-        
+
         PaniniEventExecution<T> ex = new PaniniEventExecution<>(announceList);
         ex.execute(mode, arg);
         return ex;

@@ -26,6 +26,10 @@
  *******************************************************************************/
 package org.paninij.lang;
 
+/**
+ * This defines whether a `@Handler` will only read or also
+ * potentially modify the data announced from an event.
+ */
 public enum RegisterType {
     READ,
     WRITE

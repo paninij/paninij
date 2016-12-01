@@ -32,6 +32,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.paninij.runtime.EventMode;
 
+/**
+ * Represents a single announcement of some event.
+ *
+ * @param <T>
+ */
 public class PaniniEventExecution<T> {
     private List<PaniniConnection<T>> list;
     private EventMode mode;
@@ -53,10 +58,20 @@ public class PaniniEventExecution<T> {
         }
     }
     
+    /**
+     * Lets the announcer capsule know if this event announcement
+     * has been completed. i.e. Every subscribed capsule is done
+     * with the event data.
+     * @return whether this event announcement is completed
+     */
     public synchronized boolean isDone() {
         return marks < list.size();
     }
     
+    /**
+     * Blocks until the event announcement has been completed.
+     * i.e. Every subscribed capsule is done with the event data.
+     */
     public synchronized void done() {
         while (marks < list.size()) {
             try {
