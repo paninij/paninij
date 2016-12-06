@@ -45,7 +45,7 @@ import org.paninij.lang.Broadcast;
 import org.paninij.lang.Chain;
 import org.paninij.lang.Imports;
 import org.paninij.lang.Local;
-import org.paninij.lang.PaniniEvent;
+import org.paninij.lang.Event;
 
 
 /**
@@ -93,7 +93,7 @@ public class CheckEventFields implements CapsuleCheck
         if (mirror.getKind() != TypeKind.DECLARED) {
             badType = true;
         } else {
-            String eventName = PaniniEvent.class.getName();
+            String eventName = Event.class.getName();
             DeclaredType dec = (DeclaredType) mirror;
             TypeElement type = (TypeElement) dec.asElement();
             String fullTypeName = type.getQualifiedName().toString();

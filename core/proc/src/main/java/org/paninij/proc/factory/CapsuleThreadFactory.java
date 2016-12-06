@@ -97,8 +97,8 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.lang.CapsuleThread");
-        imports.add("org.paninij.lang.PaniniEventExecution");
-        imports.add("org.paninij.runtime.PaniniEventMessage");
+        imports.add("org.paninij.lang.EventExecution");
+        imports.add("org.paninij.runtime.EventMessage");
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
@@ -350,7 +350,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
     private List<String> generateRunHandlerSwitchCase(Procedure p) {
         List<String> list = Source.lines(
                 "case #0: {",
-                "    PaniniEventMessage<#1> em = (PaniniEventMessage<#1>) msg;",
+                "    EventMessage<#1> em = (EventMessage<#1>) msg;",
                 "    panini$encapsulated.#2(em.arg0);",
                 "    em.ex.panini$markComplete();",
                 "    break;",

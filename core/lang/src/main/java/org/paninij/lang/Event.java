@@ -37,11 +37,11 @@ import org.paninij.runtime.EventMode;
  * @param <T>
  *            the type of message that can be announced to handlers
  */
-public class PaniniEvent<T> {
-    private ConcurrentLinkedQueue<PaniniConnection<T>> list = new ConcurrentLinkedQueue<>();
+public class Event<T> {
+    private ConcurrentLinkedQueue<EventConnection<T>> list = new ConcurrentLinkedQueue<>();
     private final EventMode mode;
 
-    public PaniniEvent(EventMode mode) {
+    public Event(EventMode mode) {
         this.mode = mode;
     }
 
@@ -55,12 +55,12 @@ public class PaniniEvent<T> {
      *            whether the handler reads or writes
      * @return a subscription to the event
      */
-    public PaniniConnection<T> register(BiConsumer<PaniniEventExecution<T>, T> handler, RegisterType type) {
+    public EventConnection<T> register(BiConsumer<EventExecution<T>, T> handler, RegisterType type) {
         if (type == RegisterType.WRITE && mode == EventMode.BROADCAST) {
             throw new IllegalArgumentException("Cannot register writer to broadcast event");
         }
 
-        PaniniConnection<T> conn = new PaniniConnection<>(handler, type);
+        EventConnection<T> conn = new EventConnection<>(handler, type);
         list.add(conn);
         return conn;
     }
@@ -72,11 +72,11 @@ public class PaniniEvent<T> {
      *            message to send to handlers
      * @return the announcement's event execution
      */
-    public PaniniEventExecution<T> announce(T arg) {
-        ConcurrentLinkedQueue<PaniniConnection<T>> announceList = null;
+    public EventExecution<T> announce(T arg) {
+        ConcurrentLinkedQueue<EventConnection<T>> announceList = null;
         announceList = new ConcurrentLinkedQueue<>(list);
 
-        PaniniEventExecution<T> ex = new PaniniEventExecution<>(announceList);
+        EventExecution<T> ex = new EventExecution<>(announceList);
         ex.execute(mode, arg);
         return ex;
     }

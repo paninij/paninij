@@ -33,12 +33,12 @@ import java.util.function.BiConsumer;
  * 
  * @param <T>
  */
-public class PaniniConnection<T> {
-    BiConsumer<PaniniEventExecution<T>, T> handler;
+public class EventConnection<T> {
+    BiConsumer<EventExecution<T>, T> handler;
     RegisterType type;
     volatile boolean on;
 
-    PaniniConnection(BiConsumer<PaniniEventExecution<T>, T> handler, RegisterType type) {
+    EventConnection(BiConsumer<EventExecution<T>, T> handler, RegisterType type) {
         this.handler = handler;
         this.type = type;
         this.on = true;

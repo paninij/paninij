@@ -37,21 +37,21 @@ import org.paninij.runtime.EventMode;
  *
  * @param <T>
  */
-public class PaniniEventExecution<T> {
-    private List<PaniniConnection<T>> list;
+public class EventExecution<T> {
+    private List<EventConnection<T>> list;
     private EventMode mode;
     private volatile int marks;
     private volatile int nextIndex;
     private boolean hasExecuted;
     private T arg;
     
-    PaniniEventExecution(ConcurrentLinkedQueue<PaniniConnection<T>> list) {
+    EventExecution(ConcurrentLinkedQueue<EventConnection<T>> list) {
         this.list = new ArrayList<>();
         this.marks = 0;
         this.nextIndex = 0;
         this.hasExecuted = false;
         
-        for (PaniniConnection<T> c : list) {
+        for (EventConnection<T> c : list) {
             if (c.on) {
                 this.list.add(c);
             }
@@ -92,7 +92,7 @@ public class PaniniEventExecution<T> {
         this.arg = arg;
         
         if (mode == EventMode.BROADCAST) {
-            for (PaniniConnection<T> c : list) {
+            for (EventConnection<T> c : list) {
                 c.handler.accept(this, arg);
             }
         }
@@ -121,7 +121,7 @@ public class PaniniEventExecution<T> {
         
         boolean hasReading = false;
         for (int i = nextIndex; i < list.size(); i++) {
-            PaniniConnection<T> c = list.get(i);
+            EventConnection<T> c = list.get(i);
             if (c.type == RegisterType.READ) {
                 c.handler.accept(this, arg);
                 hasReading = true;

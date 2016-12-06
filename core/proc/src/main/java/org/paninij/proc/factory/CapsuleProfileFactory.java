@@ -177,9 +177,9 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
         source = Source.lines(
                     "@Override",
-                    "public void #0(PaniniEventExecution<#2> ex, #1) {",
-                    "    PaniniEventMessage<#2> panini$message = null;",
-                    "    panini$message = new PaniniEventMessage<>(#4, ex, #3);",
+                    "public void #0(EventExecution<#2> ex, #1) {",
+                    "    EventMessage<#2> panini$message = null;",
+                    "    panini$message = new EventMessage<>(#4, ex, #3);",
                     "    panini$push(panini$message);",
                     "}",
                     "");
@@ -205,12 +205,12 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
 
         for (Variable v : capsule.getBroadcastEventFields()) {
             list.add(Source.format(
-                    "    panini$encapsulated.#0 = new PaniniEvent<>(org.paninij.runtime.EventMode.BROADCAST);",
+                    "    panini$encapsulated.#0 = new Event<>(org.paninij.runtime.EventMode.BROADCAST);",
                     v.getIdentifier()));
         }
         for (Variable v : capsule.getChainEventFields()) {
             list.add(Source.format(
-                    "    panini$encapsulated.#0 = new PaniniEvent<>(org.paninij.runtime.EventMode.CHAIN);",
+                    "    panini$encapsulated.#0 = new Event<>(org.paninij.runtime.EventMode.CHAIN);",
                     v.getIdentifier()));
         }
 

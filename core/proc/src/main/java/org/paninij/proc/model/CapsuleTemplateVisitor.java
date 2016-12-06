@@ -37,7 +37,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleElementVisitor8;
 
 import org.paninij.lang.Local;
-import org.paninij.lang.PaniniEvent;
+import org.paninij.lang.Event;
 
 import org.paninij.lang.Broadcast;
 import org.paninij.lang.Imports;
@@ -69,7 +69,7 @@ public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement
         Variable variable = new Variable(e.asType(), e.getSimpleName().toString(), false);
 
         // TODO: Delegate getting the qualified name to Type or PaniniModel
-        String eventName = PaniniEvent.class.getName();
+        String eventName = Event.class.getName();
         TypeMirror mirror = e.asType();
         String fullTypeName = null;
         if (mirror.getKind() == TypeKind.DECLARED) {

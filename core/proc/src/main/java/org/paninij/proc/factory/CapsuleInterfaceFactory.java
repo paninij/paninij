@@ -114,7 +114,7 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
         imports.add("org.paninij.lang.CapsuleInterface");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Capsule$Root");
-        imports.add("org.paninij.lang.PaniniEventExecution");
+        imports.add("org.paninij.lang.EventExecution");
         
         List<String> prefixedImports = new ArrayList<String>();
 
@@ -165,7 +165,7 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
     protected String generateHandlerFacades(Procedure p) {
         Variable param = p.getParameters().get(0);
         String argDeclString = param.toString();
-        String declaration = Source.format("public void #0(PaniniEventExecution<#2> ex, #1);", 
+        String declaration = Source.format("public void #0(EventExecution<#2> ex, #1);", 
                 p.getName(),
                 argDeclString,
                 param.getMirror().toString());

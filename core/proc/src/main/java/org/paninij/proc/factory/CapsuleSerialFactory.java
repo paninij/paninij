@@ -97,8 +97,8 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
         
         imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
-        imports.add("org.paninij.lang.PaniniEventExecution");
-        imports.add("org.paninij.runtime.PaniniEventMessage");
+        imports.add("org.paninij.lang.EventExecution");
+        imports.add("org.paninij.runtime.EventMessage");
         imports.add("org.paninij.runtime.Capsule$Serial");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
@@ -147,7 +147,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
 
         source = Source.lines(
                 "@Override",
-                "public void #0(PaniniEventExecution<#2> ex, #1) {",
+                "public void #0(EventExecution<#2> ex, #1) {",
                 "    panini$encapsulated.#0(#3);",
                 "    ex.panini$markComplete();",
                 "}",
