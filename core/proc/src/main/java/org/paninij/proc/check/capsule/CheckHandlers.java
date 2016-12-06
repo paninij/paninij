@@ -60,7 +60,7 @@ public class CheckHandlers implements CapsuleCheck {
         if (hasAnnotation(e, Block.class)
                 || hasAnnotation(e, Future.class)
                 || hasAnnotation(e, Duck.class)) {
-            String err = "A handler cannot have `@Block` and `@Future`, or `@Duck`.";
+            String err = "A handler cannot have `@Block`, `@Future`, or `@Duck`.";
             return error(err, CheckHandlers.class, e);
         }
 
@@ -69,6 +69,12 @@ public class CheckHandlers implements CapsuleCheck {
             return error(err, CheckHandlers.class, e);
         }
 
+        TypeKind paramKind = e.getParameters().get(0).asType().getKind();
+        if (paramKind != TypeKind.DECLARED && paramKind != TypeKind.ERROR) {
+            String err = "A handler cannot have primitive parameters.";
+            return error(err, CheckHandlers.class, e);
+        }
+        
         if (e.getReturnType().getKind() != TypeKind.VOID) {
             String err = "A Handler may not return anything.";
             return error(err, CheckHandlers.class, e);

@@ -34,10 +34,12 @@ import static org.paninij.proc.check.Check.Result.OK;
 import static org.paninij.proc.check.Check.Result.error;
 
 import java.lang.annotation.Annotation;
+import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
@@ -107,10 +109,16 @@ public class CheckProcAnnotations implements TemplateCheck
      * procedure.
      */
     private static boolean isDuckProcedure(Element member) {
-        return member.getKind() == METHOD
-            && !isDecl(member)
+        if (member.getKind() != METHOD){
+            return false;
+        }
+        Set<Modifier> modifiers = ((ExecutableElement)member).getModifiers();
+        
+        return !isDecl(member)
             && !hasAnnotation(member, Future.class)
-            && !hasAnnotation(member, Block.class);
+            && !hasAnnotation(member, Block.class)
+            && !modifiers.contains(Modifier.STATIC)
+            && !modifiers.contains(Modifier.PRIVATE);
     }
 
     private static boolean isDecl(Element member) {

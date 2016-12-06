@@ -74,35 +74,32 @@ public class CheckEventFields implements CapsuleCheck
         final boolean hasBroadcast = hasAnnotation(field, Broadcast.class);
         final boolean hasChain = hasAnnotation(field, Chain.class);
 
-        if (!hasBroadcast && !hasChain) {
-            return OK;
-        }
-
-        if (hasBroadcast && hasChain) {
-            String err = "An event cannot be annotated with both `@Broadcast` and `@Chain`.";
-            return error(err, CheckFields.class, field);
-        }
-
-        if (hasAnnotation(field, Imports.class) || hasAnnotation(field, Local.class)) {
-            String err = "An event cannot be annotated with `@Local` or `@Imports`";
-            return error(err, CheckFields.class, field);
-        }
-
-        boolean badType = false;
+        boolean nonEventType = false;
         TypeMirror mirror = field.asType();
         if (mirror.getKind() != TypeKind.DECLARED) {
-            badType = true;
+            nonEventType = true;
         } else {
             String eventName = Event.class.getName();
             DeclaredType dec = (DeclaredType) mirror;
             TypeElement type = (TypeElement) dec.asElement();
             String fullTypeName = type.getQualifiedName().toString();
 
-            badType = !eventName.equals(fullTypeName);
+            nonEventType = !eventName.equals(fullTypeName);
+        }
+        
+        if (nonEventType && (hasBroadcast || hasChain)) {
+            String err = "Event type must be a Panini Event.";
+            return error(err, CheckFields.class, field);
+        }
+         
+        if (hasBroadcast && hasChain) {
+            String err = "An event cannot be annotated with both `@Broadcast` and `@Chain`.";
+            return error(err, CheckFields.class, field);
         }
 
-        if (badType) {
-            String err = "Event type must be a PaniniEvent.";
+        if (!nonEventType && (hasAnnotation(field, Imports.class) 
+                || hasAnnotation(field, Local.class))) {
+            String err = "An event cannot be annotated with `@Local` or `@Imports`";
             return error(err, CheckFields.class, field);
         }
 
