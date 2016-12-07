@@ -104,7 +104,7 @@ public class JavaModel {
         case UNION:         // TODO: What are union and intersection types?
         case INTERSECTION:
         default:
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot box " + exec.getReturnType().getKind());
         }
     }
 

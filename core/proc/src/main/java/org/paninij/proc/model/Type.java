@@ -108,7 +108,7 @@ public class Type
         case SHORT:
             return "short";
         default:
-            throw new IllegalArgumentException(String.format(
+            throw new RuntimeException(String.format(
                     "The `variable` (of the form `%s`) has an unexpected and un-encodable `TypeKind`: %s",
                     this, this.kind));
         }
@@ -205,8 +205,7 @@ public class Type
         case UNION:
         case INTERSECTION:
         default:
-            System.out.println("DEFAULT: " + this.mirror.toString() + " " + this.kind);
-            throw new IllegalArgumentException();
+            throw new RuntimeException("Cannot wrap " + this.kind);
         }
     }
 
@@ -265,7 +264,7 @@ public class Type
         case UNION:
         case INTERSECTION:
         default:
-            throw new IllegalArgumentException();
+            throw new RuntimeException("Cannot slot " + this.kind);
         }
     }
 
