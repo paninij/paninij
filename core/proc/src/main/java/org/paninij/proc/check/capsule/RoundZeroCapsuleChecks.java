@@ -50,6 +50,8 @@ public class RoundZeroCapsuleChecks implements CapsuleCheck {
             new CheckForIllegalMethodNames(),
             new CheckForBadAnnotations(),
             new CheckThatOnlySignatureTemplatesAreImplemented(procEnv),
+            new CheckHandlers(),
+            new CheckEventFields(),
         };
     }
 

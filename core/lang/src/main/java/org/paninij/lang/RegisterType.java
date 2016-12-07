@@ -18,25 +18,19 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.examples.asteroids;
+package org.paninij.lang;
 
-public class Constants {
-    public static final int HEIGHT = 20;
-    public static final int WIDTH = 20;
-
-    public static final char SYMBOL_BORDER = '=';
-    public static final char SYMBOL_SPACE = ' ';
-
-    public static final char SYMBOL_ASTEROID = '@';
-    public static final char SYMBOL_ASTEROID_EXPLODE = '#';
-
-    public static final char SYMBOL_SHIP = '^';
-    public static final char SYMBOL_SHIP_EXPLODE = 'x';
-    public static final char SYMBOL_SHIP_FIRE = '*';
+/**
+ * This defines whether a `@Handler` will only read or also
+ * potentially modify the data announced from an event.
+ */
+public enum RegisterType {
+    READ,
+    WRITE
 }

@@ -18,12 +18,12 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
-
 package org.paninij.examples.asteroids;
 
 import org.paninij.lang.Capsule;
@@ -34,43 +34,18 @@ import org.paninij.lang.Root;
 @Root
 @Capsule
 public class AsteroidsTemplate {
-
+    @Local TextAreaUI ui;
     @Local Game game;
+    @Local View view;
     @Local Ship ship;
-    @Local Input input;
-    @Local UserInterface ui;
 
     public void design(Asteroids self) {
-        input.imports(ship);
-        ui.imports(game);
+        view.imports(ui, game);
+        ship.imports(ui);
+        game.imports(view, ship);
     }
 
-    public void run() {
-        int points = 0;
-        while (ship.isAlive()) {
-            int shipPos = ship.getPosition();
-            boolean isFiring = ship.isFiring();
-            int result = game.step(shipPos, isFiring);
-
-            if (result > 0) {
-                points += result;
-            } else if (result < 0) {
-                ship.die();
-            }
-
-            this.ui.repaint(shipPos, isFiring, points);
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        this.ui.onGameEnd();
-    }
-
-
-    public static void main(String[] args) {
+    public static void main(String args[]) {
         CapsuleSystem.start(Asteroids.class, args);
     }
 }

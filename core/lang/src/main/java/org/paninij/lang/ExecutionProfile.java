@@ -47,7 +47,6 @@ package org.paninij.lang;
  * </ol>
  */
 public enum ExecutionProfile {
-    MOCKUP,
     THREAD,
     TASK,
     MONITOR,

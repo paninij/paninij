@@ -22,6 +22,7 @@
  * 	Dalton Mills,
  * 	David Johnston,
  * 	Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
 
 package org.paninij.proc.factory;
@@ -59,6 +60,7 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
                 "{",
                 "    #4",
                 "    ##",
+                "    ##",
                 "}");
 
         src = Source.format(src,
@@ -70,6 +72,7 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
 
         src = Source.formatAligned(src, this.generateImports());
         src = Source.formatAligned(src, this.generateFacades());
+        src = Source.formatAligned(src, this.generateEventFacades());
 
         return src;
     }
@@ -111,7 +114,8 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
         imports.add("org.paninij.lang.CapsuleInterface");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Capsule$Root");
-
+        imports.add("org.paninij.lang.EventExecution");
+        
         List<String> prefixedImports = new ArrayList<String>();
 
         for (String i : imports) {
@@ -127,6 +131,10 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
 
         for (Procedure p : this.capsule.getProcedures()) {
             facades.add(this.generateFacade(p));
+            facades.add("");
+        }
+        for (Procedure p : this.capsule.getEventHandlers()) {
+            facades.add(this.generateHandlerFacades(p));
             facades.add("");
         }
 
@@ -152,5 +160,30 @@ public class CapsuleInterfaceFactory extends AbstractCapsuleFactory
                 shape.kindAnnotation);
 
         return declaration;
+    }
+    
+    protected String generateHandlerFacades(Procedure p) {
+        Variable param = p.getParameters().get(0);
+        String argDeclString = param.toString();
+        String declaration = Source.format("public void #0(EventExecution<#2> ex, #1);", 
+                p.getName(),
+                argDeclString,
+                param.getMirror().toString());
+        
+        return declaration;
+    }
+    
+    protected List<String> generateEventFacades() {
+        List<String> facades = new ArrayList<>();
+
+        List<Variable> allEvents = capsule.getBroadcastEventFields();
+        allEvents.addAll(capsule.getChainEventFields());
+        
+        for (Variable v : allEvents) {
+            facades.add(Source.format("public #0 #1();",
+                    v.raw(),
+                    v.getIdentifier()));
+        }
+        return facades;
     }
 }

@@ -18,68 +18,122 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
-
 package org.paninij.examples.asteroids;
 
 import java.util.Random;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.Handler;
+import org.paninij.lang.Imports;
+import org.paninij.lang.Local;
+import org.paninij.lang.EventConnection;
+import org.paninij.lang.RegisterType;
 
 @Capsule
-public class GameTemplate
-{
+public class GameTemplate {
+    @Local Step step;
+    @Imports View view;
+    @Imports Ship ship;
+
     short[] asteroidPositions;
     int asteroidPos;
     int lastFired;
+    int points;
     Random prng;
 
-    protected void init() {
+    boolean stepFiring;
+    int stepShipPos;
+
+    EventConnection<Void> onStepConn;
+
+    void design(Game self) {
+        onStepConn = step.step().register(self::onStep, RegisterType.READ);
+        ship.updatePosition().register(self::onShipMove, RegisterType.READ);
+        ship.firing().register(self::onShipFire, RegisterType.READ);
+    }
+
+    void init() {
         this.asteroidPositions = new short[Constants.WIDTH];
         for (int i = 0; i < this.asteroidPositions.length; i++) {
             this.asteroidPositions[i] = -1;
         }
         this.asteroidPos = -1;
-        this.lastFired = -1;
+        this.lastFired = -2;
         this.prng = new Random();
+        stepShipPos = ship.getPosition();
+        stepFiring = false;
+    }
+    
+    @Block public int getLastFired() {
+        return this.lastFired;
     }
 
-    @Block
-    public Integer step(int shipPos, boolean isFiring) {
+    @Block public short getAsteroidPosition(int index) {
+        return this.asteroidPositions[index];
+    }
+
+    @Handler public void onShipMove(Integer xPos) {
+        if (ship.isAlive()) {
+            stepShipPos = xPos;
+            paint();
+        }
+    }
+
+    @Handler public void onShipFire(Void v) {
+        if (ship.isAlive()) {
+            stepFiring = true;
+            paint();
+        }
+    }
+
+    @Handler public void onStep(Void v) {
+        if (ship.isAlive()) {
+            int result = step();
+
+            if (result > 0) {
+                points += result;
+            } else if (result < 0) {
+                ship.die();
+            }
+
+            paint();
+        } else {
+            view.paintGameEndMessage();
+            onStepConn.off();
+        }
+    }
+
+    private void paint() {
+        view.paint(stepShipPos, stepFiring, points);
+    }
+    
+    private int step() {
         int result = 0;
 
         if (asteroidPos == lastFired) {
             result = 1;
-        } else if (asteroidPos == shipPos) {
+        } else if (asteroidPos == stepShipPos) {
             result = -1;
         }
 
-        this.lastFired = isFiring ? shipPos : -1;
+        this.lastFired = stepFiring ? stepShipPos : -2;
         this.asteroidPos = this.nextAsteroid();
+        stepFiring = false;
         return result;
     }
 
-    @Block
-    private int nextAsteroid() {
+    @Block private int nextAsteroid() {
         for (int i = Constants.WIDTH - 1; i > 0; i--) {
-            asteroidPositions[i] = asteroidPositions[i-1];
+            asteroidPositions[i] = asteroidPositions[i - 1];
         }
         asteroidPositions[0] = (short) prng.nextInt(Constants.WIDTH);
         return asteroidPositions[Constants.WIDTH - 1];
-    }
-
-    @Block
-    public int getLastFired() {
-        return this.lastFired;
-    }
-
-    @Block
-    public short getAsteroidPosition(int index) {
-        return this.asteroidPositions[index];
     }
 }

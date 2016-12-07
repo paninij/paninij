@@ -18,25 +18,31 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.examples.asteroids;
 
-public class Constants {
-    public static final int HEIGHT = 20;
-    public static final int WIDTH = 20;
+package org.paninij.runtime;
 
-    public static final char SYMBOL_BORDER = '=';
-    public static final char SYMBOL_SPACE = ' ';
+import org.paninij.lang.EventExecution;
 
-    public static final char SYMBOL_ASTEROID = '@';
-    public static final char SYMBOL_ASTEROID_EXPLODE = '#';
+public class EventMessage<T> implements Panini$Message
+{
+    public final int procID;
+    public final EventExecution<T> ex;
+    public final T arg0;
 
-    public static final char SYMBOL_SHIP = '^';
-    public static final char SYMBOL_SHIP_EXPLODE = 'x';
-    public static final char SYMBOL_SHIP_FIRE = '*';
+    public EventMessage(int procID, EventExecution<T> ex, T arg0) {
+        this.procID = procID;
+        this.ex = ex;
+        this.arg0 = arg0;
+    }
+
+    @Override
+    public int panini$msgID() {
+        return procID;
+    }
 }

@@ -18,25 +18,45 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.examples.asteroids;
+package org.paninij.lang;
 
-public class Constants {
-    public static final int HEIGHT = 20;
-    public static final int WIDTH = 20;
+import java.util.function.BiConsumer;
 
-    public static final char SYMBOL_BORDER = '=';
-    public static final char SYMBOL_SPACE = ' ';
+/** 
+ * A subscription of a handler to an event.
+ * 
+ * @param <T>
+ */
+public class EventConnection<T> {
+    BiConsumer<EventExecution<T>, T> handler;
+    RegisterType type;
+    volatile boolean on;
 
-    public static final char SYMBOL_ASTEROID = '@';
-    public static final char SYMBOL_ASTEROID_EXPLODE = '#';
+    EventConnection(BiConsumer<EventExecution<T>, T> handler, RegisterType type) {
+        this.handler = handler;
+        this.type = type;
+        this.on = true;
+    }
 
-    public static final char SYMBOL_SHIP = '^';
-    public static final char SYMBOL_SHIP_EXPLODE = 'x';
-    public static final char SYMBOL_SHIP_FIRE = '*';
+    /** 
+     * Enables this handler to receive new announcements.
+     */
+    public void on() {
+        on = true;
+    }
+
+    /**
+     * Stops the handler from receiving new announcements.
+     * This does not affect announcements that were initiated
+     * but have not reached this handler before this is called.
+     */
+    public void off() {
+        on = false;
+    }
 }

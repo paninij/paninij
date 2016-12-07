@@ -22,6 +22,7 @@
  * 	Dalton Mills,
  * 	David Johnston,
  * 	Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
 package org.paninij.proc.factory;
 
@@ -139,6 +140,86 @@ public abstract class CapsuleProfileFactory extends AbstractCapsuleFactory
         return declaration;
     }
 
+    protected List<String> generateEventMethods() {
+        List<String> list = new ArrayList<String>();
+        
+        List<Variable> allEvents = capsule.getBroadcastEventFields();
+        allEvents.addAll(capsule.getChainEventFields());
+        
+        for (Variable v : allEvents) {
+            List<String> source = Source.lines(
+                    "@Override",
+                    "public #0 #1() {",
+                    "    return panini$encapsulated.#1;",
+                    "}",
+                    "");
+
+            list.addAll(Source.formatAll(source,
+                    v.raw(),
+                    v.getIdentifier()));
+        }
+
+        return list;
+    }
+    
+    protected List<String> generateEventHandlers() {
+        List<String> list = new ArrayList<String>();
+        
+        for (Procedure p : capsule.getEventHandlers()) {
+            list.addAll(generateEventHandler(p));
+        }
+        
+        return list;
+    }
+
+    protected List<String> generateEventHandler(Procedure handler) {
+        List<String> source = null;
+
+        source = Source.lines(
+                    "@Override",
+                    "public void #0(EventExecution<#2> ex, #1) {",
+                    "    EventMessage<#2> panini$message = null;",
+                    "    panini$message = new EventMessage<>(#4, ex, #3);",
+                    "    panini$push(panini$message);",
+                    "}",
+                    "");
+
+        Variable param = handler.getParameters().get(0);
+        String argDeclString = param.toString();
+        source = Source.formatAll(source,
+                handler.getName(),
+                argDeclString,
+                param.getMirror().toString(),
+                param.getIdentifier(),
+                generateProcedureID(handler));
+
+        return source;
+    }
+
+    protected List<String> generateConstructor() {
+        List<String> list = new ArrayList<String>();
+
+        list.add(Source.format(
+                "public #0() {",
+                generateClassName()));
+
+        for (Variable v : capsule.getBroadcastEventFields()) {
+            list.add(Source.format(
+                    "    panini$encapsulated.#0 = new Event<>(org.paninij.runtime.EventMode.BROADCAST);",
+                    v.getIdentifier()));
+        }
+        for (Variable v : capsule.getChainEventFields()) {
+            list.add(Source.format(
+                    "    panini$encapsulated.#0 = new Event<>(org.paninij.runtime.EventMode.CHAIN);",
+                    v.getIdentifier()));
+        }
+
+        list.add("}");
+        list.add("");
+
+        return list;
+    }
+    
     protected String generateAssertSafeInvocationTransfer()
     {
         // TODO: Clean this up!

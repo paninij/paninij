@@ -18,25 +18,30 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
 package org.paninij.examples.asteroids;
 
-public class Constants {
-    public static final int HEIGHT = 20;
-    public static final int WIDTH = 20;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-    public static final char SYMBOL_BORDER = '=';
-    public static final char SYMBOL_SPACE = ' ';
+import org.paninij.lang.Broadcast;
+import org.paninij.lang.Capsule;
+import org.paninij.lang.Event;
 
-    public static final char SYMBOL_ASTEROID = '@';
-    public static final char SYMBOL_ASTEROID_EXPLODE = '#';
+@Capsule
+public class StepTemplate {
+    @Broadcast Event<Void> step;
+    ScheduledThreadPoolExecutor ex;
 
-    public static final char SYMBOL_SHIP = '^';
-    public static final char SYMBOL_SHIP_EXPLODE = 'x';
-    public static final char SYMBOL_SHIP_FIRE = '*';
+    void init() {
+        ex = new ScheduledThreadPoolExecutor(1);
+        ex.scheduleAtFixedRate(() -> {
+            step.announce(null);
+        }, 0, 1, TimeUnit.SECONDS);
+    }
 }

@@ -22,6 +22,7 @@
  * 	Dalton Mills,
  * 	David Johnston,
  * 	Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
 
 package org.paninij.proc.factory;
@@ -94,6 +95,8 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
         imports.addAll(this.capsule.getImports());
         imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
+        imports.add("org.paninij.lang.EventExecution");
+        imports.add("org.paninij.runtime.EventMessage");
         imports.add("org.paninij.runtime.Capsule$Monitor");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
@@ -147,6 +150,29 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
                 shape.kindAnnotation);
 
         return Source.formatAlignedFirst(source, this.generateEncapsulatedMethodCall(shape));
+    }
+
+    @Override
+    protected List<String> generateEventHandler(Procedure handler) {
+        List<String> source = null;
+
+        source = Source.lines(
+                "@Override",
+                "public synchronized void #0(EventExecution<#2> ex, #1) {",
+                "    panini$encapsulated.#0(#3);",
+                "    ex.panini$markComplete();",
+                "}",
+                "");
+
+        Variable param = handler.getParameters().get(0);
+        String argDeclString = param.toString();
+        source = Source.formatAll(source,
+                handler.getName(),
+                argDeclString,
+                param.getMirror().toString(),
+                param.getIdentifier());
+
+        return source;
     }
 
     private List<String> generateEncapsulatedMethodCall(MessageShape shape)
@@ -203,8 +229,6 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
     {
         List<Variable> locals = this.capsule.getLocalFields();
         List<String> source = new ArrayList<String>();
-
-        if (locals.size() == 0) return source;
 
         for (Variable local : locals) {
             if (local.isArray()) {
@@ -317,7 +341,10 @@ public class CapsuleMonitorFactory extends CapsuleProfileFactory
         List<String> src = new ArrayList<String>();
 
         src.add(this.generateEncapsulatedDecl());
+        src.addAll(this.generateConstructor());
         src.addAll(this.generateProcedures());
+        src.addAll(this.generateEventHandlers());
+        src.addAll(this.generateEventMethods());
         src.addAll(this.generateCheckRequiredFields());
         src.addAll(this.generateExport());
         src.addAll(this.generateInitLocals());

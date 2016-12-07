@@ -18,19 +18,28 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
-
 package org.paninij.examples.asteroids;
 
 import org.paninij.lang.Block;
+import org.paninij.lang.Broadcast;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.Handler;
+import org.paninij.lang.Imports;
+import org.paninij.lang.Event;
+import org.paninij.lang.RegisterType;
 
 @Capsule
 public class ShipTemplate {
+    @Imports TextAreaUI ui;
+    @Broadcast Event<Integer> updatePosition;
+    @Broadcast Event<Void> firing;
+    
     short state;
     int x;
 
@@ -38,13 +47,31 @@ public class ShipTemplate {
         this.state = 0;
         this.x = Constants.WIDTH/2;
     }
-
+    
+    public void design(Ship self) {
+        ui.keyPressed().register(self::move, RegisterType.READ);
+    }
+    
+    @Handler public void move(String keyCode) {
+        if (!isAlive()) 
+            return;
+        
+        if (keyCode.equals("J")) {
+            moveLeft();
+        } else if (keyCode.equals("L")) {
+            moveRight();
+        } else if (keyCode.equals("I")) {
+            fire();
+        }
+    }
+    
     public void die() {
         this.state = 2;
     }
 
     public void fire() {
         this.state = 1;
+        firing.announce(null);
     }
 
     @Block
@@ -63,6 +90,18 @@ public class ShipTemplate {
 
     @Block
     public int getPosition() { return this.x; }
-    public void moveLeft() { if (this.x > 0) this.x--; }
-    public void moveRight() { if (this.x < Constants.WIDTH) this.x++; }
+    
+    public void moveLeft() { 
+        if (this.x > 0) {
+            this.x--;
+            updatePosition.announce(x);
+        }
+    }
+    
+    public void moveRight() { 
+        if (this.x < Constants.WIDTH - 1) {
+            this.x++;
+            updatePosition.announce(x);
+        }
+    }
 }

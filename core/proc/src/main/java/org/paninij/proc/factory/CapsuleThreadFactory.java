@@ -22,6 +22,7 @@
  * 	Dalton Mills,
  * 	David Johnston,
  * 	Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
 
 package org.paninij.proc.factory;
@@ -96,6 +97,8 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         imports.add("javax.annotation.Generated");
         imports.add("java.util.concurrent.Future");
         imports.add("org.paninij.lang.CapsuleThread");
+        imports.add("org.paninij.lang.EventExecution");
+        imports.add("org.paninij.runtime.EventMessage");
         imports.add("org.paninij.runtime.Capsule$Thread");
         imports.add("org.paninij.runtime.Panini$Capsule");
         imports.add("org.paninij.runtime.Panini$Message");
@@ -125,7 +128,9 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         ArrayList<String> decls = new ArrayList<String>();
         int currID = 0;
 
-        for (Procedure p : this.capsule.getProcedures()) {
+        List<Procedure> allProcs = this.capsule.getProcedures();
+        allProcs.addAll(capsule.getEventHandlers());
+        for (Procedure p : allProcs) {
             decls.add(Source.format("public static final int #0 = #1;",
                     generateProcedureID(p),
                     currID++));
@@ -149,8 +154,6 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
     {
         List<Variable> locals = this.capsule.getLocalFields();
         List<String> source = new ArrayList<String>();
-
-        if (locals.size() == 0) return source;
 
         for (Variable local : locals) {
             if (local.isArray()) {
@@ -282,6 +285,9 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         for (Procedure p : this.capsule.getProcedures()) {
             lines.addAll(this.generateRunSwitchCase(p));
         }
+        for (Procedure p : this.capsule.getEventHandlers()) {
+            lines.addAll(this.generateRunHandlerSwitchCase(p));
+        }
 
         // add case statements for when a capsule shuts down and for EXIT command
         lines.addAll(Source.lines(
@@ -341,6 +347,20 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         }
     }
 
+    private List<String> generateRunHandlerSwitchCase(Procedure p) {
+        List<String> list = Source.lines(
+                "case #0: {",
+                "    EventMessage<#1> em = (EventMessage<#1>) msg;",
+                "    panini$encapsulated.#2(em.arg0);",
+                "    em.ex.panini$markComplete();",
+                "    break;",
+                "}");
+        return Source.formatAll(list,
+                generateProcedureID(p),
+                p.getParameters().get(0).getMirror().toString(),
+                p.getName());
+    }
+    
     private String generateEncapsulatedMethodCall(MessageShape shape)
     {
         List<String> args = new ArrayList<String>();
@@ -391,7 +411,10 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
         src.add(this.generateEncapsulatedDecl());
         src.addAll(this.generateProcedureIDs());
+        src.addAll(this.generateConstructor());
         src.addAll(this.generateProcedures());
+        src.addAll(this.generateEventHandlers());
+        src.addAll(this.generateEventMethods());
         src.addAll(this.generateCheckRequiredFields());
         src.addAll(this.generateExport());
         src.addAll(this.generateInitLocals());

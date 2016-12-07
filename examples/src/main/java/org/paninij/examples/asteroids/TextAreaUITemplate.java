@@ -18,40 +18,41 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
-
 package org.paninij.examples.asteroids;
 
-import java.io.IOException;
+import java.awt.event.KeyEvent;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Broadcast;
+import org.paninij.lang.Event;
 
 @Capsule
-public class InputTemplate {
+public class TextAreaUITemplate {
+    @Broadcast Event<String> keyPressed;
+    Window window;
 
-    @Imports Ship ship;
-
-    public void run() {
-        try {
-            while (ship.isAlive()) {
-                int c = System.in.read();
-                switch (c) {
-                case 106:
-                    ship.moveLeft();
-                    break;
-                case 108:
-                    ship.moveRight();
-                    break;
-                case 105:
-                    ship.fire();
-                    break;
-                }
-            }
-        } catch (IOException ioe) {}
+    void design(TextAreaUI self) {
+        window = new Window(self);
     }
+
+    void init() {
+        window.show();
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        String key = KeyEvent.getKeyText(keyCode);
+        keyPressed.announce(key);
+    }
+
+    public void setText(String str) {
+        window.setText(str);
+    }
+
 }

@@ -18,67 +18,72 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
-
 package org.paninij.examples.asteroids;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
 @Capsule
-public class UserInterfaceTemplate {
+public class ViewTemplate {
+    @Imports TextAreaUI ui;
     @Imports Game game;
 
-    private void paintHorizBorder() {
-        for (int i = 0; i <= Constants.WIDTH; i++) System.out.print(Constants.SYMBOL_BORDER);
-        System.out.print('\n');
+    private void paintHorizBorder(StringBuilder builder) {
+        for (int i = 0; i <= Constants.WIDTH; i++) {
+            builder.append(Constants.SYMBOL_BORDER);
+        }
+        builder.append('\n');
     }
 
-    public void repaint(int shipPos, boolean isFiring, int points) {
-        System.out.print('\n');
-        this.paintHorizBorder();
+    public void paint(int shipPos, boolean isFiring, int points) {
+        StringBuilder builder = new StringBuilder();
+        builder.append('\n');
+        this.paintHorizBorder(builder);
         for (int i = 0; i < Constants.WIDTH; i++) {
             for (int j = 0; j < Constants.HEIGHT - 1; j++) {
                 if (j == this.game.getAsteroidPosition(i)) {
-                    System.out.print(Constants.SYMBOL_ASTEROID);
+                    builder.append(Constants.SYMBOL_ASTEROID);
                 } else {
-                    System.out.print(Constants.SYMBOL_SPACE);
+                    builder.append(Constants.SYMBOL_SPACE);
                 }
             }
-            System.out.print('\n');
+            builder.append('\n');
         }
 
         for (int i = 0; i < Constants.WIDTH; i++) {
             if (i == this.game.getAsteroidPosition(Constants.HEIGHT - 1)) {
                 if (i == this.game.getLastFired()) {
-                    System.out.print(Constants.SYMBOL_ASTEROID_EXPLODE);
+                    builder.append(Constants.SYMBOL_ASTEROID_EXPLODE);
                 } else if (i == shipPos) {
-                    System.out.print(Constants.SYMBOL_SHIP_EXPLODE);
+                    builder.append(Constants.SYMBOL_SHIP_EXPLODE);
                 } else {
-                    System.out.print(Constants.SYMBOL_ASTEROID);
+                    builder.append(Constants.SYMBOL_ASTEROID);
                 }
             } else if (i == shipPos) {
                 if (isFiring) {
-                    System.out.print(Constants.SYMBOL_SHIP_FIRE);
+                    builder.append(Constants.SYMBOL_SHIP_FIRE);
                 } else {
-                    System.out.print(Constants.SYMBOL_SHIP);
+                    builder.append(Constants.SYMBOL_SHIP);
                 }
             } else {
-                System.out.print(Constants.SYMBOL_SPACE);
+                builder.append(Constants.SYMBOL_SPACE);
             }
         }
 
-        System.out.print('\n');
-        this.paintHorizBorder();
-        System.out.println("~" + points + "~");
+        builder.append('\n');
+        this.paintHorizBorder(builder);
+        builder.append("~" + points + "~" + "\n");
 
+        ui.setText(builder.toString());
     }
 
-    public void onGameEnd() {
-        System.out.println("Game over :(");
+    public void paintGameEndMessage() {
+        ui.setText("Game over :(");
     }
 }
