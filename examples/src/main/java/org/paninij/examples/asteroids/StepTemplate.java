@@ -18,40 +18,30 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
-
 package org.paninij.examples.asteroids;
 
-import java.io.IOException;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import org.paninij.lang.Broadcast;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Event;
 
 @Capsule
-public class InputTemplate {
+public class StepTemplate {
+    @Broadcast Event<Void> step;
+    ScheduledThreadPoolExecutor ex;
 
-    @Imports Ship ship;
-
-    public void run() {
-        try {
-            while (ship.isAlive()) {
-                int c = System.in.read();
-                switch (c) {
-                case 106:
-                    ship.moveLeft();
-                    break;
-                case 108:
-                    ship.moveRight();
-                    break;
-                case 105:
-                    ship.fire();
-                    break;
-                }
-            }
-        } catch (IOException ioe) {}
+    void init() {
+        ex = new ScheduledThreadPoolExecutor(1);
+        ex.scheduleAtFixedRate(() -> {
+            step.announce(null);
+        }, 0, 1, TimeUnit.SECONDS);
     }
 }

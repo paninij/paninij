@@ -22,8 +22,8 @@
  * 	Dalton Mills,
  * 	David Johnston,
  * 	Trey Erenberger
+ *  Jackson Maddox
  *******************************************************************************/
-
 package org.paninij.examples.asteroids;
 
 public class Constants {

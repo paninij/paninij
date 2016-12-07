@@ -24,7 +24,7 @@
  *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.examples.eventasteroids;
+package org.paninij.examples.asteroids;
 
 import java.awt.Dimension;
 import java.awt.Font;

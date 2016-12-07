@@ -18,25 +18,41 @@
  * http://paninij.org
  *
  * Contributors:
- * 	Dr. Hridesh Rajan,
- * 	Dalton Mills,
- * 	David Johnston,
- * 	Trey Erenberger
+ *  Dr. Hridesh Rajan,
+ *  Dalton Mills,
+ *  David Johnston,
+ *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.examples.eventasteroids;
+package org.paninij.examples.asteroids;
 
-public class Constants {
-    public static final int HEIGHT = 20;
-    public static final int WIDTH = 20;
+import java.awt.event.KeyEvent;
 
-    public static final char SYMBOL_BORDER = '=';
-    public static final char SYMBOL_SPACE = ' ';
+import org.paninij.lang.Capsule;
+import org.paninij.lang.Broadcast;
+import org.paninij.lang.Event;
 
-    public static final char SYMBOL_ASTEROID = '@';
-    public static final char SYMBOL_ASTEROID_EXPLODE = '#';
+@Capsule
+public class TextAreaUITemplate {
+    @Broadcast Event<String> keyPressed;
+    Window window;
 
-    public static final char SYMBOL_SHIP = '^';
-    public static final char SYMBOL_SHIP_EXPLODE = 'x';
-    public static final char SYMBOL_SHIP_FIRE = '*';
+    void design(TextAreaUI self) {
+        window = new Window(self);
+    }
+
+    void init() {
+        window.show();
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        String key = KeyEvent.getKeyText(keyCode);
+        keyPressed.announce(key);
+    }
+
+    public void setText(String str) {
+        window.setText(str);
+    }
+
 }
