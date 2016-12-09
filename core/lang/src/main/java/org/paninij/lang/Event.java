@@ -49,6 +49,12 @@ public class Event<T> {
      * Registers a reference to a `@Handler` to this event.
      * The registration is by default enabled.
      * 
+     * Note that across capsules, registration ordering is nondeterministic.
+     * That is, if a capsule subscribes two handlers A and B to the same event
+     * then A will always be notified before B. However, other capsules'
+     * handlers can be registered before, after, and in between
+     * A and B's registration.
+     * 
      * @param handler
      *            method reference to the handler
      * @param type

@@ -29,8 +29,26 @@ package org.paninij.lang;
 
 import java.lang.annotation.Documented;
 
+
 /**
- * TODO
+ * <p>
+ * Used to declare `broadcast` announcement behavior of an event. 
+ * </p>
+ * 
+ * <h3>Purpose</h3>
+ * <p>
+ * This annotation specifies the announcement behavior of the event it annotates.
+ * When an event is annotated by `@Broadcast`, it can accept only read handlers.
+ * </p>
+ * 
+ * <h3>Details</h3>
+ * <p>
+ * The broadcast announcement behavior means that all subscribers must be read only.
+ * If a write handler attempts to register to a broadcast event, the registration
+ * will throw an exception. Since subsribers are all readers, announcement messages 
+ * are sent to every subscriber simultaneously. 
+ * </p>
+ * 
  */
 @Documented
 public @interface Broadcast { }

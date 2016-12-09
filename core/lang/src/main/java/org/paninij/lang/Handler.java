@@ -30,7 +30,22 @@ package org.paninij.lang;
 import java.lang.annotation.Documented;
 
 /**
- * TODO
+ * <p>
+ * Used to designate a procedure as an event handler.
+ * </p>
+ * 
+ * <h3>Purpose</h3>
+ * <p>
+ * The @Handler annotation specifies that a procedure can be registered to events,
+ * and are not to be used for any other purpose.
+ * </p>
+ * 
+ * <h3>Details</h3>
+ * <p>
+ * The handler must have exactly one parameter of some type that it can receive from
+ * the event. It will be generated as such to be compatible with event registration
+ * and announcement. When an event announcement is received, the handler will be invoked.
+ * </p>
  */
 @Documented
 public @interface Handler { }

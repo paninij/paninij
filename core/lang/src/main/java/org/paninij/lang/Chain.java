@@ -30,7 +30,33 @@ package org.paninij.lang;
 import java.lang.annotation.Documented;
 
 /**
- * TODO
+ * <p>
+ * Used to declare `chained` announcement behavior of an event. 
+ * </p>
+ * 
+ * <h3>Purpose</h3>
+ * <p>
+ * This annotation specifies the announcement behavior of the event it annotates.
+ * When an event is annotated by `@Chain`, it can accept both read and write handlers.
+ * </p>
+ * 
+ * <h3>Details</h3>
+ * <p>
+ * The chained announcement behavior means that subscribers are examined in the order
+ * that they were registered. Groups of read-only subscribers are notified all at once
+ * while writing subscribers are notified individually. Once a group of read-only
+ * subscribers or a writing subscriber is notified, no other subscribers are notified
+ * until the current subscribers' handlers have returned.
+ * </p>
+ * 
+ * <h3>Example</h3>
+ * <p>
+ * Suppose W1 and W2 are writing subscribers and R1, R2, R3 are read-only subscribers
+ * that were registered in the order of W1, R1, R2, W2, R3. Then the event's announcement
+ * proceeds as follows: W1 -> R1, R2 -> W2 -> R3 where R1 and R2 are notified at the
+ * same time and -> denotes the RHS being notified only after the LHS completes.
+ * </p>
+ * 
  */
 @Documented
 public @interface Chain { }
