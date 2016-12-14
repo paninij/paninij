@@ -53,8 +53,8 @@ import java.lang.annotation.Documented;
  * <p>
  * Suppose W1 and W2 are writing subscribers and R1, R2, R3 are read-only subscribers
  * that were registered in the order of W1, R1, R2, W2, R3. Then the event's announcement
- * proceeds as follows: W1 -> R1, R2 -> W2 -> R3 where R1 and R2 are notified at the
- * same time and -> denotes the RHS being notified only after the LHS completes.
+ * proceeds as follows: {@literal W1 -> R1, R2 -> W2 -> R3} where R1 and R2 are notified at the
+ * same time and {@literal ->} denotes the RHS being notified only after the LHS completes.
  * </p>
  * 
  */
