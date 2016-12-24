@@ -70,3 +70,8 @@ ol#markdown-toc {
 .nav-item:hover, .dropdown-item:hover, .nav-item:focus, .dropdown-item:focus {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+.flex-separate {
+  display: flex;
+  justify-content: space-between;
+}
