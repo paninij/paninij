@@ -8,9 +8,9 @@ These are the overall steps to setting up an @PaniniJ project in Eclipse:
 1. TOC
 {:toc}
 
-### Step 1: Setup project to use JRE 1.7 or Greater
+### Step 1: Setup project to use JRE 1.8 or greater
 
-When you create a new project, be sure to choose JRE 1.7 or greater, this is
+When you create a new project, be sure to choose JRE 1.8 or greater, this is
 necessary for the annotation processing to work correctly.
 
 <div class="row">
@@ -24,8 +24,8 @@ necessary for the annotation processing to work correctly.
 
 ### Step 2: Download the at-paninij jar
 
-Download the latest processor (at-paninij-proc-v0.1.0.jar) from the github
-releases page.
+Download the @Paninij release from the github releases page. You should have
+received two JAR files (proc-0.1.1-SNAPSHOT.jar and lang-0.1.1-SNAPSHOT.jar).
 
 ### Step 3: Enable Annotation Processing
 
@@ -63,8 +63,8 @@ checkbox, and click the Add External JARs… button.
 </div>
 </div>
 
-Browse to where you have downloaded the JAR file from step 2. Hit Apply and
-confirm the project rebuild.
+Browse to where you have downloaded the JAR files from step 2. Select both of
+the JAR files and click ok. Finally, hit Apply and confirm the project rebuild.
 
 <div class="row">
 <div class="col-md-10 offset-md-1">
@@ -77,9 +77,10 @@ confirm the project rebuild.
 
 ### Step 5: Add the at-paninij as a referenced library
 
-The @PaniniJ JAR file includes code necessary for the annotation processing and
-runtime. To include the JAR file as a referenced libaray, right click the
-project in the project explorer, and choose "Add External Archives…".
+The @PaniniJ JAR files includes code necessary for the annotation processing
+and runtime. To include the JAR files as a referenced libaray, right click the
+project in the project explorer, go to "Build Path", and choose "Add External
+Archives…".
 
 <div class="row">
 <div class="col-md-10 offset-md-1">
@@ -90,9 +91,9 @@ project in the project explorer, and choose "Add External Archives…".
 </div>
 
 
-Browse to where you downloaded the JAR file from step 2, and include it in your
-project. Once it is included, the project should appear like this in the Eclipse
-project explorer:
+Browse to where you downloaded the JAR files from step 2, and include them in
+your project. Once it is included, the project should appear like this in the
+Eclipse project explorer:
 
 <div class="row">
 <div class="col-md-10 offset-md-1">
@@ -102,5 +103,6 @@ project explorer:
 </div>
 </div>
 
-Now you're ready to start programming in @PaniniJ. See the next page for an
-example @PaniniJ Hello World program.
+Now you're ready to start programming in @PaniniJ. See
+[this page]({{ site.baseurl }}/docs/examples/hello_world.html)
+for an example @PaniniJ Hello World program.
