@@ -8,4 +8,4 @@ programming model, which introduces a new programming abstraction, *the
 capsule*. The main motivation behind this abstraction is to enable more modular
 reasoning about concurrent programs.
 
-See http://hridesh.github.io/panini for basic usage and documentation.
+See https://paninij.github.io/ for basic usage and documentation.
