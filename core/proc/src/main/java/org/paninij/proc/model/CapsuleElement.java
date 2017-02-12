@@ -174,8 +174,8 @@ public class CapsuleElement implements Capsule
 
         for (TypeMirror i : this.element.getInterfaces()) {
             String name = i.toString();
-            assert(name.endsWith(PaniniModel.SIGNATURE_SPEC_SUFFIX));
-            name = name.substring(0, name.length() - PaniniModel.SIGNATURE_SPEC_SUFFIX.length());
+            assert(name.endsWith(PaniniModel.SIGNATURE_CORE_SUFFIX));
+            name = name.substring(0, name.length() - PaniniModel.SIGNATURE_CORE_SUFFIX.length());
             sigs.add(name);
         }
         return sigs;

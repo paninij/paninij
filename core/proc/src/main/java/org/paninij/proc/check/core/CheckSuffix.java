@@ -59,7 +59,7 @@ public class CheckSuffix implements CoreCheck
         case CAPSULE:
             return PaniniModel.CAPSULE_CORE_SUFFIX;
         case SIGNATURE:
-            return PaniniModel.SIGNATURE_SPEC_SUFFIX;
+            return PaniniModel.SIGNATURE_CORE_SUFFIX;
         default:
             throw new IllegalArgumentException("Unknown core kind: " + kind);
         }

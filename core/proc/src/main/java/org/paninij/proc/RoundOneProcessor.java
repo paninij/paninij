@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.paninij.proc.util.PaniniModel.CAPSULE_CORE_SUFFIX;
-import static org.paninij.proc.util.PaniniModel.SIGNATURE_SPEC_SUFFIX;
+import static org.paninij.proc.util.PaniniModel.SIGNATURE_CORE_SUFFIX;
 
 /**
  * @author dwtj
@@ -170,7 +170,7 @@ public class RoundOneProcessor extends AbstractProcessor {
         // performed in the previous round, and no more checks need to be performed here.
         Set<TypeElement> set = new HashSet<>();
         for (Element iface : roundEnv.getElementsAnnotatedWith(SignatureInterface.class)) {
-            String coreName = iface + SIGNATURE_SPEC_SUFFIX;
+            String coreName = iface + SIGNATURE_CORE_SUFFIX;
             TypeElement core = elementUtils.getTypeElement(coreName);
             if (core == null) {
                 String msg = "Found a signature interface, but could not find its corresponding "

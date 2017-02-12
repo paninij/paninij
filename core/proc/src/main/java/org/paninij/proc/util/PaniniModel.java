@@ -49,7 +49,7 @@ public class PaniniModel
     public static final String CAPSULE_CORE_SUFFIX = "Core";
     public static final String CAPSULE_TEST_CORE_SUFFIX = "Core";
     public static final String CAPSULE_TEST_SUFFIX = "Test";
-    public static final String SIGNATURE_SPEC_SUFFIX = "Core";
+    public static final String SIGNATURE_CORE_SUFFIX = "Core";
 
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 
@@ -184,18 +184,18 @@ public class PaniniModel
     
     
     public static String simpleSignatureName(TypeElement core) {
-        // Drops the `SIGNATURE_SPEC_SUFFIX`.
+        // Drops the `SIGNATURE_CORE_SUFFIX`.
         String name = core.getSimpleName().toString();
-        assert(name.endsWith(SIGNATURE_SPEC_SUFFIX));
-        return name.substring(0, name.length() - SIGNATURE_SPEC_SUFFIX.length());
+        assert(name.endsWith(SIGNATURE_CORE_SUFFIX));
+        return name.substring(0, name.length() - SIGNATURE_CORE_SUFFIX.length());
     }
     
     public static String qualifiedSignatureName(TypeElement core)
     {
          // Drops the `CAPSULE_CORE_SUFFIX`.
         String name = core.getQualifiedName().toString();
-        assert(name.endsWith(SIGNATURE_SPEC_SUFFIX));
-        return name.substring(0, name.length() - SIGNATURE_SPEC_SUFFIX.length());
+        assert(name.endsWith(SIGNATURE_CORE_SUFFIX));
+        return name.substring(0, name.length() - SIGNATURE_CORE_SUFFIX.length());
     }
 
     
