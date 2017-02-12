@@ -21,7 +21,7 @@ import static javax.lang.model.type.TypeKind.DECLARED;
 import static org.paninij.proc.check.Check.Result.OK;
 import static org.paninij.proc.check.Check.Result.error;
 import static org.paninij.proc.util.JavaModel.isAnnotatedBy;
-import static org.paninij.proc.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
+import static org.paninij.proc.util.PaniniModel.CAPSULE_CORE_SUFFIX;
 
 /**
  * <p>Checks that a given capsule template is not a part a part some cycle of capsule types linked
@@ -237,7 +237,7 @@ public class CheckForCycleOfLocalFields implements CapsuleCheck {
     private TypeElement lookupCapsuleTemplate(TypeMirror capsule) {
         assert capsule.getKind() == DECLARED;
         assert isAnnotatedBy(procEnv, capsule, "org.paninij.lang.CapsuleInterface");
-        String templateName = capsule.toString() + CAPSULE_TEMPLATE_SUFFIX;
+        String templateName = capsule.toString() + CAPSULE_CORE_SUFFIX;
         TypeElement template = procEnv.getElementUtils().getTypeElement(templateName);
         if (template == null) {
             throw new IllegalStateException("Failed to lookup a capsule template: " + templateName);

@@ -32,8 +32,8 @@ import javax.lang.model.util.Types;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.paninij.proc.util.PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
-import static org.paninij.proc.util.PaniniModel.SIGNATURE_TEMPLATE_SUFFIX;
+import static org.paninij.proc.util.PaniniModel.CAPSULE_CORE_SUFFIX;
+import static org.paninij.proc.util.PaniniModel.SIGNATURE_SPEC_SUFFIX;
 
 /**
  * @author dwtj
@@ -130,7 +130,7 @@ public class RoundOneProcessor extends AbstractProcessor {
         Set<TypeElement> set = new HashSet<>();
 
         for (Element iface : roundEnv.getElementsAnnotatedWith(CapsuleInterface.class)) {
-            String templateName = iface + CAPSULE_TEMPLATE_SUFFIX;
+            String templateName = iface + CAPSULE_CORE_SUFFIX;
             TypeElement template = elementUtils.getTypeElement(templateName);
             if (template == null) {
                 String msg = "Found a capsule interface, but could not find its corresponding "
@@ -170,7 +170,7 @@ public class RoundOneProcessor extends AbstractProcessor {
         // performed in the previous round, and no more checks need to be performed here.
         Set<TypeElement> set = new HashSet<>();
         for (Element iface : roundEnv.getElementsAnnotatedWith(SignatureInterface.class)) {
-            String templateName = iface + SIGNATURE_TEMPLATE_SUFFIX;
+            String templateName = iface + SIGNATURE_SPEC_SUFFIX;
             TypeElement template = elementUtils.getTypeElement(templateName);
             if (template == null) {
                 String msg = "Found a signature interface, but could not find its corresponding "

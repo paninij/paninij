@@ -57,9 +57,9 @@ public class CheckSuffix implements TemplateCheck
     private static String getExpectedSuffix(TemplateKind kind) {
         switch (kind) {
         case CAPSULE:
-            return PaniniModel.CAPSULE_TEMPLATE_SUFFIX;
+            return PaniniModel.CAPSULE_CORE_SUFFIX;
         case SIGNATURE:
-            return PaniniModel.SIGNATURE_TEMPLATE_SUFFIX;
+            return PaniniModel.SIGNATURE_SPEC_SUFFIX;
         default:
             throw new IllegalArgumentException("Unknown template kind: " + kind);
         }

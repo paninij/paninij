@@ -46,10 +46,10 @@ public class PaniniModel
     public static final String DEFAULT_FUTURE_PACKAGE = "org.paninij.runtime.futures";
     public static final String DEFAULT_DUCK_PACKAGE = "org.paninij.runtime.ducks";
 
-    public static final String CAPSULE_TEMPLATE_SUFFIX = "Template";
-    public static final String CAPSULE_TEST_TEMPLATE_SUFFIX = "Template";
+    public static final String CAPSULE_CORE_SUFFIX = "Core";
+    public static final String CAPSULE_TEST_CORE_SUFFIX = "Core";
     public static final String CAPSULE_TEST_SUFFIX = "Test";
-    public static final String SIGNATURE_TEMPLATE_SUFFIX = "Template";
+    public static final String SIGNATURE_SPEC_SUFFIX = "Spec";
 
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 
@@ -101,133 +101,133 @@ public class PaniniModel
     }
 
     /**
-     * @return `true` if and only if the given capsule template describes an active capsule.
+     * @return `true` if and only if the given capsule core describes an active capsule.
      *
      * Note: This method is (currently) equivalent to calling `hasRunDeclaration()`.
      *
-     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
-     * `template` passes all checks).
+     * Warning: This method *assumes* that `core` is a well-defined capsule core (i.e.
+     * `core` passes all checks).
      */
-    public static boolean isActive(TypeElement template)
+    public static boolean isActive(TypeElement core)
     {
-        return hasRunDeclaration(template);
+        return hasRunDeclaration(core);
     }
 
     /**
-     * @return `true` if and only if the given capsule template has a `run()` declaration/method.
+     * @return `true` if and only if the given capsule core has a `run()` declaration/method.
      *
-     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
-     * `template` passes all checks).
+     * Warning: This method *assumes* that `core` is a well-defined capsule core (i.e.
+     * `core` passes all checks).
      */
-    public static boolean hasRunDeclaration(TypeElement template)
+    public static boolean hasRunDeclaration(TypeElement core)
     {
-        List<ExecutableElement> methods = JavaModel.getMethodsNamed(template, "run");
+        List<ExecutableElement> methods = JavaModel.getMethodsNamed(core, "run");
         return methods.size() > 0;
     }
 
     /**
-     * @return `true` if and only if the given capsule template has an `init()` declaration/method.
+     * @return `true` if and only if the given capsule core has an `init()` declaration/method.
      *
-     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
-     * `template` passes all checks).
+     * Warning: This method *assumes* that `core` is a well-defined capsule core (i.e.
+     * `core` passes all checks).
      */
-    public static boolean hasInitDeclaration(TypeElement template)
+    public static boolean hasInitDeclaration(TypeElement core)
     {
-        List<ExecutableElement> methods = JavaModel.getMethodsNamed(template, "init");
+        List<ExecutableElement> methods = JavaModel.getMethodsNamed(core, "init");
         return methods.size() > 0;
     }
 
     /**
-     * @return The name of the simple (i.e. unqualified) type of the given capsule template type.
+     * @return The name of the simple (i.e. unqualified) type of the given capsule core type.
      */
-    public static String simpleTemplateName(TypeElement template) {
-        return template.getSimpleName().toString();
+    public static String simpleCapsuleCoreName(TypeElement core) {
+        return core.getSimpleName().toString();
     }
 
     /**
-     * @return The name of the fully-qualified type of the given capsule template type.
+     * @return The name of the fully-qualified type of the given capsule core type.
      */
-    public static String qualifiedTemplateName(TypeElement template) {
-        return template.getQualifiedName().toString();
+    public static String qualifiedCapsuleCoreName(TypeElement core) {
+        return core.getQualifiedName().toString();
     }
 
     /**
      * @return The name of the simple (i.e. unqualified) capsule type associated with the given
-     * capsule template type.
+     * capsule core type.
      *
-     * Assumes that the given capsule template type is suffixed by `CAPSULE_TEMPLATE_SUFFIX`. This
-     * is a useful helper method for dropping the `CAPSULE_TEMPLATE_SUFFIX`.
+     * Assumes that the given capsule core type is suffixed by `CAPSULE_CORE_SUFFIX`. This
+     * is a useful helper method for dropping the `CAPSULE_CORE_SUFFIX`.
      */
-    public static String simpleCapsuleName(TypeElement template)
+    public static String simpleCapsuleName(TypeElement core)
     {
-        // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
-        String name = template.getSimpleName().toString();
-        assert(name.endsWith(CAPSULE_TEMPLATE_SUFFIX));
-        return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
+        // Drops the `CAPSULE_CORE_SUFFIX`.
+        String name = core.getSimpleName().toString();
+        assert(name.endsWith(CAPSULE_CORE_SUFFIX));
+        return name.substring(0, name.length() - CAPSULE_CORE_SUFFIX.length());
     }
 
 
     /**
      * @return The name of the fully-qualified capsule type associated with the given capsule
-     * template type.
+     * core type.
      *
-     * Assumes that the given capsule template type is suffixed by `CAPSULE_TEMPLATE_SUFFIX`. This
-     * is a useful helper method for dropping the `CAPSULE_TEMPLATE_SUFFIX`.
+     * Assumes that the given capsule core type is suffixed by `CAPSULE_CORE_SUFFIX`. This
+     * is a useful helper method for dropping the `CAPSULE_CORE_SUFFIX`.
      */
-    public static String qualifiedCapsuleName(TypeElement template)
+    public static String qualifiedCapsuleName(TypeElement core)
     {
-         // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
-        String name = template.getQualifiedName().toString();
-        assert(name.endsWith(CAPSULE_TEMPLATE_SUFFIX));
-        return name.substring(0, name.length() - CAPSULE_TEMPLATE_SUFFIX.length());
+         // Drops the `CAPSULE_CORE_SUFFIX`.
+        String name = core.getQualifiedName().toString();
+        assert(name.endsWith(CAPSULE_CORE_SUFFIX));
+        return name.substring(0, name.length() - CAPSULE_CORE_SUFFIX.length());
     }
     
     
-    public static String simpleSignatureName(TypeElement template) {
-        // Drops the `SIGNATURE_TEMPLATE_SUFFIX`.
-        String name = template.getSimpleName().toString();
-        assert(name.endsWith(SIGNATURE_TEMPLATE_SUFFIX));
-        return name.substring(0, name.length() - SIGNATURE_TEMPLATE_SUFFIX.length());
+    public static String simpleSignatureName(TypeElement core) {
+        // Drops the `SIGNATURE_SPEC_SUFFIX`.
+        String name = core.getSimpleName().toString();
+        assert(name.endsWith(SIGNATURE_SPEC_SUFFIX));
+        return name.substring(0, name.length() - SIGNATURE_SPEC_SUFFIX.length());
     }
     
-    public static String qualifiedSignatureName(TypeElement template)
+    public static String qualifiedSignatureName(TypeElement core)
     {
-         // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
-        String name = template.getQualifiedName().toString();
-        assert(name.endsWith(SIGNATURE_TEMPLATE_SUFFIX));
-        return name.substring(0, name.length() - SIGNATURE_TEMPLATE_SUFFIX.length());
+         // Drops the `CAPSULE_CORE_SUFFIX`.
+        String name = core.getQualifiedName().toString();
+        assert(name.endsWith(SIGNATURE_SPEC_SUFFIX));
+        return name.substring(0, name.length() - SIGNATURE_SPEC_SUFFIX.length());
     }
 
     
     /**
      * @return The name of the simple (i.e. unqualified) tester type associated with the given
-     * capsule tester template type.
+     * capsule tester core type.
      *
-     * Assumes that the given tester template type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
+     * Assumes that the given tester core type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
      * is a useful helper method for dropping the `CAPSULE_TESTER_SUFFIX`.
      */
     public static String simpleTesterName(TypeElement tester)
     {
-        // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
+        // Drops the `CAPSULE_CORE_SUFFIX`.
         String name = tester.getSimpleName().toString();
-        assert(name.endsWith(CAPSULE_TEST_TEMPLATE_SUFFIX));
-        name = name.substring(0, name.length() - CAPSULE_TEST_TEMPLATE_SUFFIX.length());
+        assert(name.endsWith(CAPSULE_TEST_CORE_SUFFIX));
+        name = name.substring(0, name.length() - CAPSULE_TEST_CORE_SUFFIX.length());
         return name + CAPSULE_TEST_SUFFIX;
     }
 
     /**
      * @return The name of the fully-qualified tester type associated with the given tester
-     * template type.
+     * core type.
      *
-     * Assumes that the given tester template type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
+     * Assumes that the given tester core type is suffixed by `CAPSULE_TESTER_SUFFIX`. This
      * is a useful helper method for dropping the `CAPSULE_TESTER_SUFFIX`.
      */
     public static String qualifiedTesterName(TypeElement tester)
     {
-         // Drops the `CAPSULE_TEMPLATE_SUFFIX`.
+         // Drops the `CAPSULE_CORE_SUFFIX`.
         String name = tester.getQualifiedName().toString();
-        assert(name.endsWith(CAPSULE_TEST_TEMPLATE_SUFFIX));
-        name = name.substring(0, name.length() - CAPSULE_TEST_TEMPLATE_SUFFIX.length());
+        assert(name.endsWith(CAPSULE_TEST_CORE_SUFFIX));
+        name = name.substring(0, name.length() - CAPSULE_TEST_CORE_SUFFIX.length());
         return name + CAPSULE_TEST_SUFFIX;
     } 
 
@@ -238,16 +238,16 @@ public class PaniniModel
     }
 
 
-    public static boolean hasCapsuleFieldDecls(ProcessingEnvironment context, TypeElement template)
+    public static boolean hasCapsuleFieldDecls(ProcessingEnvironment context, TypeElement core)
     {
-        return getCapsuleFieldDecls(context, template).isEmpty();
+        return getCapsuleFieldDecls(context, core).isEmpty();
     }
 
 
-    public static List<VariableElement> getCapsuleFieldDecls(ProcessingEnvironment context, TypeElement template)
+    public static List<VariableElement> getCapsuleFieldDecls(ProcessingEnvironment context, TypeElement core)
     {
         List<VariableElement> fieldDecls = new ArrayList<>();
-        for (Element elem : template.getEnclosedElements())
+        for (Element elem : core.getEnclosedElements())
         {
             if (isCapsuleFieldDecl(context, elem)) {
                 fieldDecls.add((VariableElement) elem);
@@ -264,16 +264,16 @@ public class PaniniModel
     }
 
 
-    public static boolean hasLocalFieldDecls(ProcessingEnvironment context, TypeElement template) {
-        return ! getImportFieldDecls(context, template).isEmpty();
+    public static boolean hasLocalFieldDecls(ProcessingEnvironment context, TypeElement core) {
+        return ! getImportFieldDecls(context, core).isEmpty();
     }
 
 
     public static List<VariableElement> getLocalFieldDecls(ProcessingEnvironment context,
-                                                           TypeElement template)
+                                                           TypeElement core)
     {
         List<VariableElement> locals = new ArrayList<>();
-        for (Element elem : template.getEnclosedElements())
+        for (Element elem : core.getEnclosedElements())
         {
             if (isLocalFieldDecl(context, elem)) {
                 locals.add((VariableElement) elem);
@@ -290,14 +290,14 @@ public class PaniniModel
     }
 
 
-    public static boolean hasImportFieldDecls(ProcessingEnvironment context, TypeElement template) {
-        return ! getImportFieldDecls(context, template).isEmpty();
+    public static boolean hasImportFieldDecls(ProcessingEnvironment context, TypeElement core) {
+        return ! getImportFieldDecls(context, core).isEmpty();
     }
 
-    public static List<VariableElement> getImportFieldDecls(ProcessingEnvironment context, TypeElement template)
+    public static List<VariableElement> getImportFieldDecls(ProcessingEnvironment context, TypeElement core)
     {
         List<VariableElement> importFields = new ArrayList<VariableElement>();
-        for (Element elem : template.getEnclosedElements())
+        for (Element elem : core.getEnclosedElements())
         {
             if (isImportFieldDecl(context, elem)) {
                 importFields.add((VariableElement) elem);
@@ -314,15 +314,15 @@ public class PaniniModel
         
     }
     
-    public static boolean hasStateFieldDecl(ProcessingEnvironment context, TypeElement template)
+    public static boolean hasStateFieldDecl(ProcessingEnvironment context, TypeElement core)
     {
-        return ! getStateFieldDecls(context, template).isEmpty();
+        return ! getStateFieldDecls(context, core).isEmpty();
     }
 
-    public static List<VariableElement> getStateFieldDecls(ProcessingEnvironment context, TypeElement template)
+    public static List<VariableElement> getStateFieldDecls(ProcessingEnvironment context, TypeElement core)
     {
         List<VariableElement> state_decls = new ArrayList<>();
-        for (Element elem : template.getEnclosedElements())
+        for (Element elem : core.getEnclosedElements())
         {
             if (isStateFieldDecl(context, elem)) {
                 state_decls.add((VariableElement) elem);
@@ -335,31 +335,31 @@ public class PaniniModel
     /**
      * A capsule is a "root" capsule if and only if it is active and has no `@Import` fields.
      */
-    public static boolean isRootCapsule(ProcessingEnvironment context, TypeElement template)
+    public static boolean isRootCapsule(ProcessingEnvironment context, TypeElement core)
     {
-        return hasImportFieldDecls(context, template) == false && isActive(template);
+        return hasImportFieldDecls(context, core) == false && isActive(core);
     }
 
 
     /**
-     * Returns `true` if and only if the given capsule template has a design declaration.
+     * Returns `true` if and only if the given capsule core has a design declaration.
      */
-    public static boolean hasCapsuleDesignDecl(TypeElement template)
+    public static boolean hasCapsuleDesignDecl(TypeElement core)
     {
-        return getCapsuleDesignDecl(template) != null;
+        return getCapsuleDesignDecl(core) != null;
     }
 
 
     /**
-     * Returns the `ExecutableElement` representing the given capsule template design declaration,
+     * Returns the `ExecutableElement` representing the given capsule core design declaration,
      * or returns `null` if there is no such declaration.
      *
-     * Warning: This method *assumes* that `template` is a well-defined capsule template (i.e.
-     * `template` passes all checks).
+     * Warning: This method *assumes* that `core` is a well-defined capsule core (i.e.
+     * `core` passes all checks).
      */
-    public static ExecutableElement getCapsuleDesignDecl(TypeElement template)
+    public static ExecutableElement getCapsuleDesignDecl(TypeElement core)
     {
-        List<ExecutableElement> decls = JavaModel.getMethodsNamed(template, "design");
+        List<ExecutableElement> decls = JavaModel.getMethodsNamed(core, "design");
         if (decls.isEmpty()) {
             return null;
         } else {
@@ -370,12 +370,12 @@ public class PaniniModel
 
     /**
      * Returns a list of all of the procedures (represented as `ExcecutableElement`s) defined on the
-     * given `template`.
+     * given `core`.
      */
-    public static List<ExecutableElement> getProcedures(TypeElement template)
+    public static List<ExecutableElement> getProcedures(TypeElement core)
     {
         List<ExecutableElement> rv = new ArrayList<>();
-        for (Element elem : template.getEnclosedElements())
+        for (Element elem : core.getEnclosedElements())
         {
             if (isProcedure(elem)) {
                 rv.add((ExecutableElement) elem);
@@ -386,33 +386,33 @@ public class PaniniModel
 
 
     /**
-     * Inspects the given capsule template, finds the design declaration on it, then returns a
+     * Inspects the given capsule core, finds the design declaration on it, then returns a
      * String representation of a `imports()` method declaration.
      *
-     * <p>For example, if a user-defined capsule template has the form
+     * <p>For example, if a user-defined capsule core has the form
      *
      * <pre><code>
      * &#64;Capsule
-     * public class BazTemplate {
+     * public class BazCore {
      *     &#64;Import Foo foo;
      *     &#64;Import Bar bar;
      *     // ...
      * }
      * </code></pre>
      *
-     * <p>where `foo` and `bar` are the only `@Import`-annotated fields on the template, then this
+     * <p>where `foo` and `bar` are the only `@Import`-annotated fields on the core, then this
      * method would return the `String`
      *
      * <pre><code>
      * public void imports(Foo foo, Bar bar)
      * </code></pre>
      *
-     * <p>Note: If the `template` has no `@Import` capsules, then this method returns `null`.
+     * <p>Note: If the `core` has no `@Import` capsules, then this method returns `null`.
      */
-    public static String buildExportMethodDecl(ProcessingEnvironment context, TypeElement template)
+    public static String buildExportMethodDecl(ProcessingEnvironment context, TypeElement core)
     {
         List<String> paramDecls = new ArrayList<>();
-        for (VariableElement varElem : getImportFieldDecls(context, template)) {
+        for (VariableElement varElem : getImportFieldDecls(context, core)) {
             paramDecls.add(Source.buildVariableDecl(varElem));
         }
 

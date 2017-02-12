@@ -119,7 +119,7 @@ public class CapsuleSerialFactory extends CapsuleProfileFactory
     {
         return Source.format(
                 "private #0 panini$encapsulated = new #0();",
-                this.capsule.getQualifiedName() + PaniniModel.CAPSULE_TEMPLATE_SUFFIX);
+                this.capsule.getQualifiedName() + PaniniModel.CAPSULE_CORE_SUFFIX);
     }
 
     @Override
