@@ -5,7 +5,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 
 @Capsule
-public class TestsTemplate
+public class TestsCore
 {
     public MyInterface getThing() {
         return new MyImplementation();

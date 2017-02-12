@@ -23,7 +23,7 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import static java.text.MessageFormat.format;
 
@@ -55,10 +55,10 @@ import org.paninij.proc.check.duckability.DuckabilityChecks;
  * There are a few ways in which a procedure annotation is invalid. Primarily, a procedure
  * annotation is invalid if it has an {@link Duck @Duck} annotation (either explicitly or implied),
  * but the return type is unduckable. An instance of `DuckabilityChecks` is used to check the
- * duckability of the return types of all `@Duck` procedures of a given capsule template or
- * signature template.
+ * duckability of the return types of all `@Duck` procedures of a given capsule core or
+ * signature core.
  */
-public class CheckProcAnnotations implements TemplateCheck
+public class CheckProcAnnotations implements CoreCheck
 {
     private final DuckabilityChecks checker;
 
@@ -67,9 +67,9 @@ public class CheckProcAnnotations implements TemplateCheck
     }
 
     @Override
-    public Result checkTemplate(TypeElement template, TemplateKind templateKind)
+    public Result checkCore(TypeElement core, CoreKind coreKind)
     {
-        for (Element member : template.getEnclosedElements()) {
+        for (Element member : core.getEnclosedElements()) {
             if (isUnannotatedVoidProcedure(member)) {
                 continue;  // This kind of procedure is ok, so skip the duckability check on it.
             }
@@ -78,9 +78,9 @@ public class CheckProcAnnotations implements TemplateCheck
             if (isDuckProcedure(member)) {
                 Result result = checker.checkDuckability(((ExecutableElement) member).getReturnType());
                 if (! result.ok()) {
-                    String err = "A {0} template has a procedure whose return type cannot be "
+                    String err = "A {0} core has a procedure whose return type cannot be "
                                + "ducked. {1}";
-                    err = format(err, templateKind, result.errMsg());
+                    err = format(err, coreKind, result.errMsg());
                     return error(err, CheckProcAnnotations.class, member);
                 }
             }

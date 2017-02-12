@@ -25,7 +25,7 @@
  *******************************************************************************/
 package org.paninij.soter.cga;
 
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 import org.paninij.soter.util.WalaUtil;
 
 import com.ibm.wala.classLoader.IClass;
@@ -43,31 +43,31 @@ public class CallGraphAnalysisFactory
         this.options = options;
     }
 
-    public CallGraphAnalysis make(CapsuleTemplate template)
+    public CallGraphAnalysis make(CapsuleCore core)
     {
-        return new CallGraphAnalysis(template, cha, options);
+        return new CallGraphAnalysis(core, cha, options);
     }
     
     /**
      * A helper method for making a call graph analysis and performing the build in the default way.
-     * This is useful for building a single call for a template. However, if call graphs for
-     * multiple templates are needed, it is recommended (for performance reasons) separate
+     * This is useful for building a single call for a core. However, if call graphs for
+     * multiple cores are needed, it is recommended (for performance reasons) separate
      * `CallGraphAnalyses` and to call perform on each with resources shared across all of the
      * call graph analyses (e.g. the class * hierarchy analysis).
      * 
-     * @param templateName  The name of the template to be analyzed. Should be something of the form
-     *                      `-Lorg/paninij/soter/FooTemplate`.
+     * @param coreName  The name of the core to be analyzed. Should be something of the form
+     *                      `-Lorg/paninij/soter/FooCore`.
      * @param classPath     A colon-separated list of file system locations in which WALA should
      *                      look for application classes.
      */
-    public static CallGraphAnalysis performStandardAnalysis(String templateName, String classPath)
+    public static CallGraphAnalysis performStandardAnalysis(String coreName, String classPath)
     {
         IClassHierarchy cha = WalaUtil.makeClassHierarchy(classPath);
         AnalysisOptions options = WalaUtil.makeAnalysisOptions(cha);
-        IClass templateClass = WalaUtil.loadTemplateClass(templateName, cha);
-        CapsuleTemplate template = new CapsuleTemplate(templateClass);
+        IClass coreClass = WalaUtil.loadCoreClass(coreName, cha);
+        CapsuleCore core = new CapsuleCore(coreClass);
 
-        CallGraphAnalysis cga = new CallGraphAnalysis(template, cha, options);
+        CallGraphAnalysis cga = new CallGraphAnalysis(core, cha, options);
         cga.perform();
         return cga;
     }

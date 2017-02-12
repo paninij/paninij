@@ -31,7 +31,7 @@ import org.paninij.lang.Test;
 
 /*
 @CapsuleTest
-public class BasicCapsuleTemplate
+public class BasicCapsuleCore
 {
     @Local Foo foo;
     @Local Bar bar;

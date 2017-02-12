@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class MasterTemplate {
+public class MasterCore {
     @Local Arbiter arbiter;
 
     public void run() {

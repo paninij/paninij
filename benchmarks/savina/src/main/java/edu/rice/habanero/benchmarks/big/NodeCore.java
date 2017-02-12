@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class NodeTemplate {
+@Capsule public class NodeCore {
     @Imports int id;
     @Imports Node[] nodes = new Node[BigConfig.W];
     @Imports Sink sink;

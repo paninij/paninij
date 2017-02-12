@@ -31,24 +31,24 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * <p>
- * Used to designate a java class as a template for a capsule.
+ * Used to designate a java class as a core for a capsule.
  * <h3>Purpose</h3>
- * The purpose of this annotation is to designate a java class to act as a template for a capsule.
+ * The purpose of this annotation is to designate a java class to act as a core for a capsule.
  * 
  * <h3>Details</h3>
  * <p>
  * When a class is annotated with &#64;Capsule, it will get processed and capsule artifacts will be generated based on the procedures 
- * and state of the java class. The name of the capsule produced will be the class name of the annotated class with Template removed. 
- * (e.g. HelloWorldTemplate produces HelloWorld capsule) A capsule is subject to a number of restrictions based on the Panini model.
+ * and state of the java class. The name of the capsule produced will be the class name of the annotated class with Core removed. 
+ * (e.g. HelloWorldCore produces HelloWorld capsule) A capsule is subject to a number of restrictions based on the Panini model.
  * <h3>Exceptions</h3>
  * <p>
- * A class annotated with &#64;Capsule must have Template at the end of the class name. (e.g. HelloWorldTemplate)
+ * A class annotated with &#64;Capsule must have Core at the end of the class name. (e.g. HelloWorldCore)
  * <h3>Examples</h3>
  * <p>
  * In this example, a basic capsule is described by a java class. This will generate capsule artifacts which can be run as a capsule system.
  * <blockquote><pre>
  * &#64;Capsule
- * public class HelloWorldShortTemplate {
+ * public class HelloWorldShortCore {
  *     
  *     void run() {
  *         System.out.println("Hello World!");

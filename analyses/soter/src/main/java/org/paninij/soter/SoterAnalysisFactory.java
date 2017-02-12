@@ -31,8 +31,8 @@ import org.paninij.soter.live.CallGraphLiveAnalysis;
 import org.paninij.soter.live.CallGraphLiveAnalysisFactory;
 import org.paninij.soter.live.TransferLiveAnalysis;
 import org.paninij.soter.live.TransferLiveAnalysisFactory;
-import org.paninij.soter.model.CapsuleTemplate;
-import org.paninij.soter.model.CapsuleTemplateFactory;
+import org.paninij.soter.model.CapsuleCore;
+import org.paninij.soter.model.CapsuleCoreFactory;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.transfer.TransferAnalysisFactory;
 import org.paninij.soter.util.WalaUtil;
@@ -48,7 +48,7 @@ public class SoterAnalysisFactory
 {
     protected final IClassHierarchy cha;
     protected final AnalysisOptions options;
-    protected final CapsuleTemplateFactory templateFactory;
+    protected final CapsuleCoreFactory coreFactory;
     protected final CallGraphAnalysisFactory cgaFactory;
     protected final TransferAnalysisFactory taFactory;
     protected final TransferLiveAnalysisFactory tlaFactory;
@@ -62,7 +62,7 @@ public class SoterAnalysisFactory
         cha = WalaUtil.makeClassHierarchy(classPath);
         options = WalaUtil.makeAnalysisOptions(cha);
         
-        templateFactory = new CapsuleTemplateFactory(cha);
+        coreFactory = new CapsuleCoreFactory(cha);
         cgaFactory = new CallGraphAnalysisFactory(cha, options);
         taFactory = new TransferAnalysisFactory(cha);
         tlaFactory = new TransferLiveAnalysisFactory(cha);
@@ -74,12 +74,12 @@ public class SoterAnalysisFactory
      */
     public SoterAnalysis make(String capsuleName)
     {
-        CapsuleTemplate template = templateFactory.make(capsuleName);
-        CallGraphAnalysis cga = cgaFactory.make(template);
-        TransferAnalysis ta = taFactory.make(template, cga);
-        TransferLiveAnalysis tla = tlaFactory.make(template, cga, ta);
-        CallGraphLiveAnalysis cgla = cglaFactory.make(template, cga, ta, tla);
+        CapsuleCore core = coreFactory.make(capsuleName);
+        CallGraphAnalysis cga = cgaFactory.make(core);
+        TransferAnalysis ta = taFactory.make(core, cga);
+        TransferLiveAnalysis tla = tlaFactory.make(core, cga, ta);
+        CallGraphLiveAnalysis cgla = cglaFactory.make(core, cga, ta, tla);
 
-        return new SoterAnalysis(template, cga, ta, tla, cgla, cha);
+        return new SoterAnalysis(core, cga, ta, tla, cgla, cha);
     }
 }

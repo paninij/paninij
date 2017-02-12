@@ -35,7 +35,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class EchoClientTemplate {
+public class EchoClientCore {
     Socket echoSocket;
     PrintWriter out;
     BufferedReader in;

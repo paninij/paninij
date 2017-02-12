@@ -5,7 +5,7 @@ import org.paninij.lang.Handler;
 import org.paninij.lang.Future;
 
 @Capsule
-public class HandlerWithFutureTemplate
+public class HandlerWithFutureCore
 {
     @Handler @Future public void handler(String msg) {
         // Nothing to do here.        

@@ -7,7 +7,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class XTemplate
+public class XCore
 {
     @Local Y y;
 

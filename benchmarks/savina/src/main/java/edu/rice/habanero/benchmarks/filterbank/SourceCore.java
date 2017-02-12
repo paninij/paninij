@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 import org.paninij.lang.Imports;
 
-@Capsule public class SourceTemplate {
+@Capsule public class SourceCore {
     @Imports Producer producer;
     @Imports Branches branches;
 

@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.philosopher;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class ArbiterTemplate {
+@Capsule public class ArbiterCore {
 
     @Local Philosopher[] philosophers = new Philosopher[PhilosopherConfig.N];
 

@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class BigTemplate
+public class BigCore
 {
     @Local Sink sink;
     @Local Node[] nodes = new Node[BigConfig.W];

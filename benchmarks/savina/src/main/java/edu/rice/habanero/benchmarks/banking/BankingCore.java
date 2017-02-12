@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class BankingTemplate
+public class BankingCore
 {
     @Local Teller teller;
 

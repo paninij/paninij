@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class LogisticMapTemplate
+public class LogisticMapCore
 {
     int numTerms = LogisticMapConfig.numTerms;
     int numWorkers = LogisticMapConfig.numSeries;

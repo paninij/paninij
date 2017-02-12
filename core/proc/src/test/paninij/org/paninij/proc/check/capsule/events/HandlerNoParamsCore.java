@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Handler;
 
 @Capsule
-public class HandlerNoParamsTemplate
+public class HandlerNoParamsCore
 {
     @Handler public void handler() {
         // Nothing to do here.        

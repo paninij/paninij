@@ -32,7 +32,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class MatMulTemplate {
+public class MatMulCore {
     @Local Master master;
     @Local MatrixData data;
 

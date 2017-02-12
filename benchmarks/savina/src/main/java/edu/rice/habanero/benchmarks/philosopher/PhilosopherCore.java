@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.philosopher;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class PhilosopherTemplate {
+@Capsule public class PhilosopherCore {
     @Imports Arbiter arbiter;
 
     int roundsSoFar = 0;

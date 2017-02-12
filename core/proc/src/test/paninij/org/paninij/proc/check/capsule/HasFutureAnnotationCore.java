@@ -5,7 +5,7 @@ import org.paninij.lang.Capsule;
 
 @Future
 @Capsule
-public class HasFutureAnnotationTemplate
+public class HasFutureAnnotationCore
 {
     // Nothing needed here
 }

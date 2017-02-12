@@ -6,7 +6,7 @@ import org.paninij.lang.Local;
 import org.paninij.ex.helloworld.Stream;
 
 @Capsule
-public class LocalSignatureTemplate
+public class LocalSignatureCore
 {
     @Local Stream stream;
 }

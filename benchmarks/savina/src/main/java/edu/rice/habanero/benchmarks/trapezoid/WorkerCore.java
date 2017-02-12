@@ -31,7 +31,7 @@ import org.paninij.lang.Future;
 import edu.rice.habanero.benchmarks.trapezoid.TrapezoidalConfig;
 
 @Capsule
-public class WorkerTemplate {
+public class WorkerCore {
 
     @Future public double process(double left, double right, double partitions) {
 

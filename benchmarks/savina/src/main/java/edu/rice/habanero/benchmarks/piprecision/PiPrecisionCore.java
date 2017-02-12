@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class PiPrecisionTemplate
+public class PiPrecisionCore
 {
     @Local Delegator d;
 

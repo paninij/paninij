@@ -6,7 +6,7 @@ import org.paninij.lang.Capsule;
 
 @SuppressWarnings("serial")
 @Capsule
-public class IsSubclassTemplate extends ArrayList<String>
+public class IsSubclassCore extends ArrayList<String>
 {
     // Nothing to do here.
 }

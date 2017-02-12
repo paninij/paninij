@@ -37,7 +37,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class TrapezoidTemplate
+public class TrapezoidCore
 {
     // The array of worker capsules
     @Local Worker[] workers = new Worker[TrapezoidalConfig.W];

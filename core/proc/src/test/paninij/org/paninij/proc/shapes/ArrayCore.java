@@ -5,7 +5,7 @@ import org.paninij.lang.Future;
 
 
 @Capsule
-public class ArrayTemplate
+public class ArrayCore
 {
     @Future
     public int[] primitiveArr() {

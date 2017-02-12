@@ -3,7 +3,7 @@ package org.paninij.proc.codegen;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class HasVarargsMethodTemplate
+public class HasVarargsMethodCore
 {
     public Object foo(Object o, Object i) {
         return new Object();

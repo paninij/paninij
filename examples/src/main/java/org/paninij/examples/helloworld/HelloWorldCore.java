@@ -32,7 +32,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-class HelloWorldTemplate
+class HelloWorldCore
 {
     @Local Console c;
     @Local Greeter g;

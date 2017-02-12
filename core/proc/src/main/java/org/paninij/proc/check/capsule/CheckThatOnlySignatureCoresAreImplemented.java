@@ -37,31 +37,31 @@ import javax.lang.model.type.TypeMirror;
 
 
 /**
- * Check that a capsule template only implements signature templates.
+ * Check that a capsule core only implements signature cores.
  */
-public class CheckThatOnlySignatureTemplatesAreImplemented implements CapsuleCheck
+public class CheckThatOnlySignatureCoresAreImplemented implements CapsuleCheck
 {
     private final ProcessingEnvironment procEnv;
     
-    public CheckThatOnlySignatureTemplatesAreImplemented(ProcessingEnvironment procEnv) {
+    public CheckThatOnlySignatureCoresAreImplemented(ProcessingEnvironment procEnv) {
         this.procEnv = procEnv;
     }
     
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
-        for (TypeMirror type : template.getInterfaces())
+        for (TypeMirror type : core.getInterfaces())
         {
-            if (! isSignatureTemplateType(type)) {
-                String err = format("A capsule template may only implement signature templates, "
-                                  + "but this template implements `{0}`.", type.toString());
-                return error(err, CheckThatOnlySignatureTemplatesAreImplemented.class, template);
+            if (! isSignatureCoreType(type)) {
+                String err = format("A capsule core may only implement signature cores, "
+                                  + "but this core implements `{0}`.", type.toString());
+                return error(err, CheckThatOnlySignatureCoresAreImplemented.class, core);
             }
         }
         return OK;
     }
     
-    private boolean isSignatureTemplateType(TypeMirror tm) {
+    private boolean isSignatureCoreType(TypeMirror tm) {
         return tm.getKind() == DECLARED && isAnnotatedBy(procEnv, tm, "org.paninij.lang.Signature");
     }
 }

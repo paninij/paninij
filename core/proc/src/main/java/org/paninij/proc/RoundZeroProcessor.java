@@ -60,7 +60,7 @@ public class RoundZeroProcessor extends AbstractProcessor {
         for (Element elem : roundEnv.getElementsAnnotatedWith(org.paninij.lang.Capsule.class)) {
             Result result = capsuleChecks.checkCapsule(elem);
             if (result.ok()) {
-                // Make the capsule interface from this capsule template.
+                // Make the capsule interface from this capsule core.
                 Capsule model = CapsuleElement.make((TypeElement) elem);
                 artifactMaker.add(capsuleInterfaceFactory.make(model));
             } else {

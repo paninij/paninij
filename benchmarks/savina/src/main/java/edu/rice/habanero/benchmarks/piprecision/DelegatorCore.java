@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class DelegatorTemplate
+@Capsule public class DelegatorCore
 {
     @Local Worker[] workers = new Worker[PiPrecisionConfig.NUM_WORKERS];
 

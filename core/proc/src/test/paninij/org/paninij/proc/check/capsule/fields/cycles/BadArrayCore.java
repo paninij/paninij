@@ -4,6 +4,6 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
 @Capsule
-class BadArrayTemplate {
+class BadArrayCore {
     @Local BadArray[] badArray;
 }

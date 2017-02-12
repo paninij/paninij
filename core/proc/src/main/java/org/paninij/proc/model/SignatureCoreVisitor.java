@@ -32,11 +32,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.SimpleElementVisitor8;
 
 /**
- * The Template visitor as the main visitor for all capsule templates. This class is used by
- * org.paninij.model.Capsule to convert a Capsule Template to an org.paninij.model.ElementCapsule.
+ * The Core visitor as the main visitor for all capsule cores. This class is used by
+ * org.paninij.model.Capsule to convert a Capsule Core to an org.paninij.model.ElementCapsule.
  * This class is used when org.paninij.model.ElementCapsule.make(TypeElement e) is called.
  */
-public class SignatureTemplateVisitor extends SimpleElementVisitor8<SignatureElement, SignatureElement>
+public class SignatureCoreVisitor extends SimpleElementVisitor8<SignatureElement, SignatureElement>
 {
 
     @Override

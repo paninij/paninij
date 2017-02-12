@@ -37,7 +37,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class HistogramTemplate
+public class HistogramCore
 {
     @Local Printer printer;
     @Local Reader reader;

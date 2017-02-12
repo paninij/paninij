@@ -27,19 +27,19 @@
 package org.paninij.lang;
 /**
  * <p>
- * Used to designate a java interface as a template for a signature.
+ * Used to designate a java interface as a core for a signature.
  * <h3>Purpose</h3>
- * The purpose of this annotation is to designate a java interface to act as a template for a signature.
+ * The purpose of this annotation is to designate a java interface to act as a core for a signature.
  * 
  * <h3>Details</h3>
  * <p>
  * Signatures are used to allow capsules to have common interfaces which makes it easier build modular systems. A signature acts 
- * in the same manner as a java interface. Capsule templates that implement a signature implement the signature template, but the 
- * artifacts that are generated as a result will use the generated types. (e.g. ConsoleTemplate implements StreamTemplate, Console 
+ * in the same manner as a java interface. Capsule cores that implement a signature implement the signature core, but the 
+ * artifacts that are generated as a result will use the generated types. (e.g. ConsoleCore implements StreamCore, Console 
  * implements Stream)
  * <h3>Exceptions</h3>
  * <p>
- * An interface annotated with @Signature must have Template at the end of the class name. (e.g. HelloWorldTemplate)
+ * An interface annotated with @Signature must have Core at the end of the class name. (e.g. HelloWorldCore)
  * <p>
  * An interface annotated with @Signature may not contain default methods.
  * <h3>Examples</h3>
@@ -48,14 +48,14 @@ package org.paninij.lang;
  * can be referred to using this interface type.
  * <blockquote><pre>
  * &#64;Signature
- * public interface StreamTemplate {
+ * public interface StreamCore {
  *     
  *     public void write(String s);
  * }
  * </pre></blockquote>
  * <blockquote><pre>
  * &#64;Capsule
- * public class ConsoleTemplate implements StreamTemplate {
+ * public class ConsoleCore implements StreamCore {
  *     
  *     void write(String s) {
  *         System.out.println(s);

@@ -5,7 +5,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.ex.helloworld.HelloWorldShort;
 
 @Capsule
-public class MissingAnnotationTemplate
+public class MissingAnnotationCore
 {
     HelloWorldShort hello;
 }

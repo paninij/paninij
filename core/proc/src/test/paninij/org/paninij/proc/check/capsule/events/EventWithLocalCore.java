@@ -6,7 +6,7 @@ import org.paninij.lang.Local;
 import org.paninij.lang.Broadcast;
 
 @Capsule
-public class EventWithLocalTemplate
+public class EventWithLocalCore
 {
     @Broadcast @Local public PaniniEvent<String> event;
 }

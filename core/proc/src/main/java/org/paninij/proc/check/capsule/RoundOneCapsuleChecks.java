@@ -35,12 +35,12 @@ import javax.lang.model.element.TypeElement;
 import org.paninij.proc.check.capsule.decl.CheckDesignDecl;
 import org.paninij.proc.check.capsule.decl.CheckInitDecl;
 import org.paninij.proc.check.capsule.decl.CheckRunDecl;
-import org.paninij.proc.check.template.CheckForIllegalMethodNames;
-import org.paninij.proc.check.template.CheckForNestedTypes;
-import org.paninij.proc.check.template.CheckForTypeParameters;
-import org.paninij.proc.check.template.CheckForIllegalSubtyping;
-import org.paninij.proc.check.template.CheckProcAnnotations;
-import org.paninij.proc.check.template.CheckForBadAnnotations;
+import org.paninij.proc.check.core.CheckForIllegalMethodNames;
+import org.paninij.proc.check.core.CheckForNestedTypes;
+import org.paninij.proc.check.core.CheckForTypeParameters;
+import org.paninij.proc.check.core.CheckForIllegalSubtyping;
+import org.paninij.proc.check.core.CheckProcAnnotations;
+import org.paninij.proc.check.core.CheckForBadAnnotations;
 
 
 public class RoundOneCapsuleChecks implements CapsuleCheck
@@ -60,15 +60,15 @@ public class RoundOneCapsuleChecks implements CapsuleCheck
         };
     }
 
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
-        if (! isAnnotatedBy(procEnv, template, "org.paninij.lang.Capsule")) {
-            String err = "Tried to check an element as a capsule template, but it is not annotated "
-                       + "with `@Capsule`: " + template;
+        if (! isAnnotatedBy(procEnv, core, "org.paninij.lang.Capsule")) {
+            String err = "Tried to check an element as a capsule core, but it is not annotated "
+                       + "with `@Capsule`: " + core;
             throw new IllegalArgumentException(err);
         }
         for (CapsuleCheck check: capsuleChecks) {
-            Result result = check.checkCapsule(template);
+            Result result = check.checkCapsule(core);
             if (!result.ok()) {
                 return result;
             }

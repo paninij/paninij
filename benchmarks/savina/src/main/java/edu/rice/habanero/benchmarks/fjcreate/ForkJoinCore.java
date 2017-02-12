@@ -30,7 +30,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ForkJoinTemplate {
+public class ForkJoinCore {
     public void run() {
         ForkJoinConfig.performComputation(37.2);
     }

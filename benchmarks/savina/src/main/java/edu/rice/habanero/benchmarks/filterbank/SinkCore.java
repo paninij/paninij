@@ -27,7 +27,7 @@ package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
 
-@Capsule public class SinkTemplate {
+@Capsule public class SinkCore {
     int printRate = FilterBankConfig.SINK_PRINT_RATE;
     int count = 0;
     int total = 0;

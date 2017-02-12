@@ -3,7 +3,7 @@ package org.paninij.proc.check.capsule.modifiers;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class StaticInitTemplate
+public class StaticInitCore
 {
     static void init() {
         // Nothing.

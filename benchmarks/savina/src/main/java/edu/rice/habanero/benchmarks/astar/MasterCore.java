@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.astar;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterTemplate {
+@Capsule public class MasterCore {
     int numWorkers = GuidedSearchConfig.NUM_WORKERS;
     @Local Worker[] workers = new Worker[numWorkers];
 

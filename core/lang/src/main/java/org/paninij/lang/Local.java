@@ -46,10 +46,10 @@ package org.paninij.lang;
  * <p>
  * In this example, we have two capsules, the first a passive capsule named Greeter and the second an active capsule called HelloWorld. 
  * The active capsule HelloWorld holds a connection to the passive capsule Greeter in order to call on its procedures. This connection is
- * set up by the @Local annotation on the Greeter field of the HelloWorldTemplate.  
+ * set up by the @Local annotation on the Greeter field of the HelloWorldCore.  
  * <blockquote><pre>
  * &#64;Capsule
- * public class GreeterTemplate {
+ * public class GreeterCore {
  *     
  *     String message;
  *     
@@ -65,7 +65,7 @@ package org.paninij.lang;
  * </pre></blockquote>
  * <blockquote><pre>
  * &#64;Capsule
- * public class HelloWorldTemplate {
+ * public class HelloWorldCore {
  *     &#64;Local Greeter g;
  *     
  *     void run() {

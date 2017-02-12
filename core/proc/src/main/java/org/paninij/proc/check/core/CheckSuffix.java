@@ -23,28 +23,45 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import static org.paninij.proc.check.Check.Result.OK;
+
+import static java.text.MessageFormat.format;
 import static org.paninij.proc.check.Check.Result.error;
 
 import javax.lang.model.element.TypeElement;
 
+import org.paninij.proc.util.PaniniModel;
 
-/**
- * Check that a template does not have any type parameters.
- */
-public class CheckForTypeParameters implements TemplateCheck
+
+public class CheckSuffix implements CoreCheck
 {
     @Override
-    public Result checkTemplate(TypeElement template, TemplateKind templateKind)
-    {
-        if (!template.getTypeParameters().isEmpty())
-        {
-            String err = "A {0} template must not have any type parameters.";
-            err = String.format(err, templateKind);
-            return error(err, CheckForTypeParameters.class, template);
+    public Result checkCore(TypeElement core, CoreKind kind) {
+        String expectedSuffix = getExpectedSuffix(kind);
+        String name = core.getSimpleName().toString();
+        String err = null;
+
+        if (!name.endsWith(expectedSuffix)) {
+            err = ("A {0} core name must be suffixed with `{1}`");
+            err = format(err, kind.toString(), expectedSuffix);
+        } else if (name.length() == expectedSuffix.length()) {
+            err = "A {0} core name must not be the same as the expected suffix, `{1}`";
+            err = format(err, kind.toString(), expectedSuffix);
         }
-        return OK;
+
+        return (err == null) ? OK : error(err, CheckSuffix.class, core);
+    }
+    
+    private static String getExpectedSuffix(CoreKind kind) {
+        switch (kind) {
+        case CAPSULE:
+            return PaniniModel.CAPSULE_CORE_SUFFIX;
+        case SIGNATURE:
+            return PaniniModel.SIGNATURE_SPEC_SUFFIX;
+        default:
+            throw new IllegalArgumentException("Unknown core kind: " + kind);
+        }
     }
 }

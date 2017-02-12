@@ -28,7 +28,7 @@ package org.paninij.soter.cga;
 import static org.paninij.soter.util.PaniniModel.getCapsuleMockupClassReference;
 import static org.paninij.soter.util.PaniniModel.getProceduresList;
 import static org.paninij.soter.util.PaniniModel.getRunDecl;
-import static org.paninij.soter.util.PaniniModel.isCapsuleTemplate;
+import static org.paninij.soter.util.PaniniModel.isCapsuleCore;
 import static org.paninij.soter.util.PaniniModel.isProcedure;
 import static org.paninij.soter.util.SoterUtil.isKnownToBeEffectivelyImmutable;
 
@@ -52,28 +52,28 @@ import com.ibm.wala.util.collections.HashSetFactory;
 
 
 /**
- * TODO: Consider re-implementing this with some sort of visitor over the capsule template.
+ * TODO: Consider re-implementing this with some sort of visitor over the capsule core.
  */
-public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
+public class CapsuleCoreEntrypoint extends DefaultEntrypoint
 {
-    protected IClass template;
+    protected IClass core;
     protected int constZeroValueNumber;
 
     /**
-     * @param method Either a `run()` declaration or a procedure on a well-formed capsule template
+     * @param method Either a `run()` declaration or a procedure on a well-formed capsule core
      *               (i.e. a class annotated with `@Capsule` which passed all `@PaniniJ` checks).
      */
-    public CapsuleTemplateEntrypoint(IMethod method)
+    public CapsuleCoreEntrypoint(IMethod method)
     {
         super(method, method.getClassHierarchy());
-        template = method.getDeclaringClass();
-        if (template == null) {
+        core = method.getDeclaringClass();
+        if (core == null) {
             String msg = "Could not get declaring class of given method: " + method.getSignature();
             throw new NullPointerException(msg);
         }
         constZeroValueNumber = 0;
-        if(isCapsuleTemplate(template) == false) {
-            String msg = "Can't make entrypoints on classes unless they are templates.";
+        if(isCapsuleCore(core) == false) {
+            String msg = "Can't make entrypoints on classes unless they are cores.";
             throw new IllegalArgumentException(msg);
         }
     }
@@ -99,8 +99,8 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     {
         constZeroValueNumber = root.addLocal();
         
-        // Instantiate a capsule template instance to serve as this entrypoint's receiver object.
-        // Note that every capsule template must (only) have the default constructor.
+        // Instantiate a capsule core instance to serve as this entrypoint's receiver object.
+        // Note that every capsule core must (only) have the default constructor.
         TypeReference receiverType = method.getParameterType(0);
         SSANewInstruction receiverAllocation = root.addAllocation(receiverType);
         if (receiverAllocation == null)
@@ -109,8 +109,8 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         
         // Make a capsule mockup instance for each of the receiver's fields (i.e. all of its
         // `@Local`, `@Import`, and state fields).
-        for (IField f : template.getAllFields()) {
-            addTemplateFieldInstance(root, f, receiverValueNumber);
+        for (IField f : core.getAllFields()) {
+            addCoreFieldInstance(root, f, receiverValueNumber);
         }
         
         // Initialize the newly created receiver object.
@@ -126,11 +126,11 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
      */
     protected int makeProcedureArgument(AbstractRootMethod root, int i)
     {
-        // This should not be used to make a capsule template receiver object.
+        // This should not be used to make a capsule core receiver object.
         assert i > 0;
 
         // Note that if this is called `method` cannot be a run decl and must be a procedure, since
-        // run decls have exactly one argument: the capsule template reciever object.
+        // run decls have exactly one argument: the capsule core reciever object.
         assert isProcedure(method);
 
         // TODO: Everything! But for now just use the default behavior.
@@ -139,14 +139,14 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     
     
     /**
-     * Makes an invocation instruction on template object with value number `i`, and adds this
+     * Makes an invocation instruction on core object with value number `i`, and adds this
      * instruction to the given fake root method.
      * 
      * @see makeArgument
      */
     protected void makeReceiverInitInvocation(AbstractRootMethod root, int i)
     {
-        IMethod initMethod = PaniniModel.getInitDecl(template);
+        IMethod initMethod = PaniniModel.getInitDecl(core);
         if (initMethod != null)
         {
             CallSiteReference initCall = CallSiteReference.make(root.getStatements().length,
@@ -157,22 +157,22 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     }
     
     /**
-     * Adds an instance to the template field's. The behavior of this method will depend upon the
+     * Adds an instance to the core field's. The behavior of this method will depend upon the
      * field's type and annotations. For example, if a the field is primitive or effectively
      * immutable, nothing is instantiated; if it is a capsule interface, it will delegate to
      * `addCapsuleMockup()`.
      * 
      * @param root  The fake root method to which the instantiation instructions are being added.
-     * @param field A field on `template`.
+     * @param field A field on `core`.
      * @param receiverValueNumber Value number of the receiver instance whose field to which some
      *                            kind of object instance is being added.
      */
-    protected void addTemplateFieldInstance(AbstractRootMethod root, IField field, int receiverValueNumber)
+    protected void addCoreFieldInstance(AbstractRootMethod root, IField field, int receiverValueNumber)
     {
         TypeReference fieldTypeRef = field.getFieldTypeReference();
         
         if (fieldTypeRef.isArrayType()) {
-            addTemplateFieldArrayInstance(root, field, receiverValueNumber);
+            addCoreFieldArrayInstance(root, field, receiverValueNumber);
             return;
         }
 
@@ -194,7 +194,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     /**
      * If appropriate, instantiate and add an array instance in the given fake root.
      */
-    protected void addTemplateFieldArrayInstance(AbstractRootMethod root, IField field,
+    protected void addCoreFieldArrayInstance(AbstractRootMethod root, IField field,
                                                  int receiverValueNumber)
     {
         // Currently, when an array is instantiated it is instantiated with size 1, and when
@@ -234,7 +234,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     
     
     /**
-     * Instantiates a capsule mockup for this capsule template field.
+     * Instantiates a capsule mockup for this capsule core field.
      * 
      * @param root  The fake root method to which the instantiation instructions are being added.
      * @param field A field whose declaring class is a well-formed capsule interface (i.e. a class
@@ -271,7 +271,7 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     
 
     /**
-     * Transitively instantiates the state associated with this capsule template field.
+     * Transitively instantiates the state associated with this capsule core field.
      * 
      * @param root            The fake root method to which the new instruction is being added.
      * @param field           A field whose declaring class is considered a "state" by `@PaniniJ`.
@@ -301,10 +301,10 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
         SSANewInstruction stateAlloc = root.addAllocation(fieldType);
         if (stateAlloc == null)
         {
-            String msg = "While adding a state for the capsule template `{0}`, a 'new' instruction "
+            String msg = "While adding a state for the capsule core `{0}`, a 'new' instruction "
                        + "could not be added to the fake root for the field `{1}` whose "
                        + "`TypeReference` is `{2}`";
-            throw new RuntimeException(MessageFormat.format(msg, template, field, fieldType));
+            throw new RuntimeException(MessageFormat.format(msg, core, field, fieldType));
         }
 
         int stateValueNumber = stateAlloc.getDef();
@@ -314,25 +314,25 @@ public class CapsuleTemplateEntrypoint extends DefaultEntrypoint
     
     
     /**
-     * Returns a set of all of the entrypoints on the given capsule template.
+     * Returns a set of all of the entrypoints on the given capsule core.
      * 
-     * @param template A well-formed capsule template class, annotated with `@Capsule`.
+     * @param core A well-formed capsule core class, annotated with `@Capsule`.
      */
-    public static Set<Entrypoint> makeAll(IClass template)
+    public static Set<Entrypoint> makeAll(IClass core)
     {
-        assert isCapsuleTemplate(template);
+        assert isCapsuleCore(core);
 
         Set<Entrypoint> entrypoints = HashSetFactory.make();
-        final Consumer<IMethod> addEntrypoint = (m -> entrypoints.add(new CapsuleTemplateEntrypoint(m)));
+        final Consumer<IMethod> addEntrypoint = (m -> entrypoints.add(new CapsuleCoreEntrypoint(m)));
 
-        // The way in which `entrypoints` is populated depends on whether the capsule template 
+        // The way in which `entrypoints` is populated depends on whether the capsule core 
         // defines an active or passive capsule. If active, then the only entrypoint is `run()`.
         // If passive, then every procedure is an entrypoint.
-        IMethod runDecl = getRunDecl(template);
+        IMethod runDecl = getRunDecl(core);
         if (runDecl != null) {
             addEntrypoint.accept(runDecl);
         } else {
-            getProceduresList(template).forEach(addEntrypoint);
+            getProceduresList(core).forEach(addEntrypoint);
         }
         return entrypoints;
     }

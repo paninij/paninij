@@ -32,7 +32,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class WorkerTemplate {
+@Capsule public class WorkerCore {
     int blockSize = ApspConfig.B;
     int graphSize = ApspConfig.N;
     int numBlocksInSingleDim = graphSize / blockSize;

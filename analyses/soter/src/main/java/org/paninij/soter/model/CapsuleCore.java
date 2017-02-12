@@ -33,13 +33,13 @@ import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.types.TypeName;
 
-public class CapsuleTemplate
+public class CapsuleCore
 {
     protected TypeName typeName;
     protected String qualifiedName;
 
     // Panini Model Elements:
-    protected IClass template;
+    protected IClass core;
     protected IMethod initDecl;
     protected IMethod designDecl;
     protected IMethod runDecl;
@@ -47,25 +47,25 @@ public class CapsuleTemplate
     protected IdentitySet<IMethod> methods = new IdentitySet<IMethod>();
     
     /**
-     * @param template A capsule template class.
+     * @param core A capsule core class.
      */
-    public CapsuleTemplate(IClass template)
+    public CapsuleCore(IClass core)
     {
-        if (PaniniModel.isCapsuleTemplate(template) == false) {
-            String msg = "The `template` argument is not a capsule template: " + template;
+        if (PaniniModel.isCapsuleCore(core) == false) {
+            String msg = "The `core` argument is not a capsule core: " + core;
             throw new IllegalArgumentException(msg);
         }
 
-        typeName = template.getName();
+        typeName = core.getName();
         qualifiedName = toQualifiedName(typeName);
         
-        initModelElements(template);
+        initModelElements(core);
     }
     
-    private void initModelElements(IClass templateClass)
+    private void initModelElements(IClass coreClass)
     {
-        template = templateClass;
-        for (IMethod method : template.getDeclaredMethods())
+        core = coreClass;
+        for (IMethod method : core.getDeclaredMethods())
         {
             switch (method.getName().toString())
             {
@@ -90,9 +90,9 @@ public class CapsuleTemplate
         }        
     }
 
-    public IClass getTemplateClass()
+    public IClass getCoreClass()
     {
-        return template;
+        return core;
     }
     
     public String getWalaPath()

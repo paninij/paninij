@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.recmatmul;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterTemplate {
+@Capsule public class MasterCore {
 
     final int numWorkers = MatMulConfig.NUM_WORKERS;
     @Local Worker[] workers = new Worker[numWorkers];

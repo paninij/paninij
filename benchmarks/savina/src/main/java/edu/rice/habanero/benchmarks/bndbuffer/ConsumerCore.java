@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.bndbuffer;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class ConsumerTemplate {
+@Capsule public class ConsumerCore {
 
     @Imports Manager manager;
     @Imports int id;

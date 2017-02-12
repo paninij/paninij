@@ -30,7 +30,7 @@ import org.paninij.lang.Imports;
 import edu.rice.habanero.benchmarks.radixsort.RadixSortConfig;
 
 
-@Capsule public class SortTemplate implements AdderTemplate {
+@Capsule public class SortCore implements AdderCore {
     @Imports Adder next;
     @Imports Long radix;
 

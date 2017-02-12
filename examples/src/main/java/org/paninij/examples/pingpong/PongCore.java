@@ -28,7 +28,7 @@ package org.paninij.examples.pingpong;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class PongTemplate {
+@Capsule public class PongCore {
     @Imports Ping ping;
 
     public void pong(int n) {

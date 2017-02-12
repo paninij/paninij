@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class NQueensTemplate
+public class NQueensCore
 {
     @Local Master master;
 

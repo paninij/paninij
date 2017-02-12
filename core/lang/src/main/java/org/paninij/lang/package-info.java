@@ -35,7 +35,7 @@
  * 
  * 
  * <h2>Example 1: Defining a Capsule</h2>
- * <h3>HelloWorldTemplate.java</h3>
+ * <h3>HelloWorldCore.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -43,7 +43,7 @@
  * 
  * &#64;Root
  * &#64;Capsule
- * public class HelloWorldTemplate
+ * public class HelloWorldCore
  * {
  *     public void run() {
  *         System.out.println("Hello world");
@@ -56,7 +56,7 @@
  * </pre></blockquote>
  * 
  * 
- * <p>Example 1 creates a <em>capsule template</em> named <code>HelloWorldTemplate</code>. The
+ * <p>Example 1 creates a <em>capsule core</em> named <code>HelloWorldCore</code>. The
  * &#64;PaniniJ annotation processor will see the <code>&#64;Capsule</code> annotation and will
  * automatically generate an interface named "HelloWorld" to represent the capsule itself.</p>
  * 
@@ -73,33 +73,33 @@
  * <p>A Capsule with a <code>run()</code> method is called an <em>active</em> capsule. Capsules
  * without a <code>run()</code>, are called <em>passive</em> capsules. (More on them below.)</p>
  * 
- * <p>Because we added the <code>&#64;Root</code> annotation to <code>HelloWorldTemplate</code>,
+ * <p>Because we added the <code>&#64;Root</code> annotation to <code>HelloWorldCore</code>,
  * the <code>HelloWorld</code> capsule can be treated as a <em>root</em> capsule. Because of this,
  * we can start a capsule system rooted at the <code>HelloWorld</code> capsule by calling
  * <code>CapsuleSystem.start(HelloWorld.class, args);</code>.</p>
  * 
  * Running the <code>main()</code> method in example will start up and run a capsule system, but it
- * isn't much of a system since `HelloWorldTemplate` does not link to any other capsules: the
+ * isn't much of a system since `HelloWorldCore` does not link to any other capsules: the
  * capsule system will just contain a single capsule instance. The following example illustrates a
  * (slightly) larger system of capsules.
  * 
  * 
  * <h2>Example 2: A System of Capsules</h2>
- * <h3>ConsoleTemplate.java</h3>
+ * <h3>ConsoleCore.java</h3>
  * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
  * 
  * &#64;Capsule
- * public class ConsoleTemplate {
+ * public class ConsoleCore {
  *     public void say(String message) {
  *         System.out.println(message);
  *     }
  * }
  * </pre></blockquote>
  * 
- * <h3>GreeterTemplate.java</h3>
+ * <h3>GreeterCore.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -107,7 +107,7 @@
  * 
  * &#64;Root
  * &#64;Capsule
- * public class GreeterTemplate
+ * public class GreeterCore
  * {
  *     &#64;Local Console console;
  *     
@@ -123,10 +123,10 @@
  * 
  * 
  * <p>Example 2 gives an example of how to make a system with two capsules, <code>Greeter</code> and
- * <code>Console</code>. The example defines two capsule templates (each annotated with
- * <code>&#64;Capsule</code>): <code>GreeterTemplate</code> and <code>ConsoleTemplate</code>.
+ * <code>Console</code>. The example defines two capsule cores (each annotated with
+ * <code>&#64;Capsule</code>): <code>GreeterCore</code> and <code>ConsoleCore</code>.
  * 
- * Similarly to before, each template will be used to automatically generate corresponding capsule
+ * Similarly to before, each core will be used to automatically generate corresponding capsule
  * types (in this case <code>Greeter</code> and <code>Console</code>) and the system can be started
  * using <code>CapsuleSystem.start(Greeter.class, args)</code>. (Note that <code>Console</code>
  * cannot be used to start a capsule system, because only <code>&#64;Root</code>-annotated capsules
@@ -170,14 +170,14 @@
  * 
  * 
  * <h2>Example 3: Ping-Pong</h2>
- * <h3>PingTemplate.java</h3>
+ * <h3>PingCore.java</h3>
  * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
  * 
  * &#64;Capsule
- * public class PingTemplate
+ * public class PingCore
  * {
  *     // A Ping capsule needs a reference to a Pong capsule.
  *     &#64;Imports Pong pong;
@@ -197,16 +197,16 @@
  * }
  * </pre></blockquote>
  * 
- * <h3>PongTemplate.java</h3>
+ * <h3>PongCore.java</h3>
  * <blockquote><pre>
  * package example;
  * 
  * import org.paninij.lang.*;
  * 
  * &#64;Capsule
- * public class PongTemplate
+ * public class PongCore
  * {
- *     // The Pong template needs a reference to a Ping capsule.
+ *     // The Pong core needs a reference to a Ping capsule.
  *     &#64;Imports Ping ping;
  * 
  *     public void pong(int n) {
@@ -218,7 +218,7 @@
  * }
  * </pre></blockquote>
  *
- * <h3>PingPongTemplate.java</h3>
+ * <h3>PingPongCore.java</h3>
  * <blockquote><pre>
  * package example;
  * 
@@ -226,7 +226,7 @@
  * 
  * &#64;Root
  * &#64;Capsule
- * public class PingPongTemplate
+ * public class PingPongCore
  * {
  *     // Declare an instance of a Ping capsule and another of a Pong capsule.
  *     &#64;Local Ping ping;
@@ -313,7 +313,7 @@
  * 
  * <h2>Definitions</h2>
  * <dl>
- * <dt>Capsule Template</dt>
+ * <dt>Capsule Core</dt>
  * <dd>
  * 		<p>User-written code which defines a capsule.</p>
  * </dd>
@@ -321,7 +321,7 @@
  * <dd>
  * 		<p>A modular component that encapsulates state and behavior. The classes which
  *              implement a capsule are automatically generated based on the user-defined capsule
- *              templates.</p>
+ *              cores.</p>
  * </dd>
  * <dt>Capsule System</dt>
  * <dd>
@@ -346,7 +346,7 @@
  * </dd>
  * <dt>Procedure</dt>
  * <dd>
- * 		<p>A non-special* method on a Capsule, these are defined in the capsule templates
+ * 		<p>A non-special* method on a Capsule, these are defined in the capsule cores
  *              of passive capsule. Capsules can invoke procedures on one another.
  * </dd>
  * <dt>Signature</dt>

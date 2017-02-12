@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class SleepingBarberTemplate
+public class SleepingBarberCore
 {
     @Local CustomerFactory factory;
     @Local Barber barber;

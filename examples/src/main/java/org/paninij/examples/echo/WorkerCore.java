@@ -33,7 +33,7 @@ import java.net.*;
 import java.io.*;
 
 @Capsule
-public class WorkerTemplate {
+public class WorkerCore {
 
     // A 'Worker' capsule will have a reference to an EchoServer capsule. The
     // reference will be provided by it's parent capsule (in the design()

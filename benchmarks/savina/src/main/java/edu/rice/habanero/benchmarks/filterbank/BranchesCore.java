@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Imports;
 
-@Capsule public class BranchesTemplate {
+@Capsule public class BranchesCore {
     @Imports Integrator integrator;
     @Local Bank[] banks = new Bank[FilterBankConfig.NUM_CHANNELS];
 

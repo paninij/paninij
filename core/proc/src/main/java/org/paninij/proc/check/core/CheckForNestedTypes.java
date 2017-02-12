@@ -23,7 +23,7 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import static java.text.MessageFormat.format;
 
@@ -41,10 +41,10 @@ import javax.lang.model.element.TypeElement;
 
 
 /**
- * Checks that a capsule template declaration does not declare any nested types, i.e. classes,
+ * Checks that a capsule core declaration does not declare any nested types, i.e. classes,
  * interfaces, enums, and annotations.
  */
-public class CheckForNestedTypes implements TemplateCheck
+public class CheckForNestedTypes implements CoreCheck
 {
     public static final ElementKind[] ILLEGAL_NESTED_KINDS = {
         CLASS,
@@ -64,15 +64,15 @@ public class CheckForNestedTypes implements TemplateCheck
     }
 
     @Override
-    public Result checkTemplate(TypeElement template, TemplateKind templateKind)
+    public Result checkCore(TypeElement core, CoreKind coreKind)
     {
-        for (Element enclosed : template.getEnclosedElements())
+        for (Element enclosed : core.getEnclosedElements())
         {
             ElementKind kind = enclosed.getKind();
             if (isIllegalKind(kind)) {
-                String err = "A {0} template must not contain a nested {1}.";
-                err = format(err, templateKind, kind, enclosed.getSimpleName(),
-                                  template.getSimpleName());
+                String err = "A {0} core must not contain a nested {1}.";
+                err = format(err, coreKind, kind, enclosed.getSimpleName(),
+                                  core.getSimpleName());
                 return error(err, CheckForNestedTypes.class, enclosed);
             }
         }

@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class TellerTemplate {
+@Capsule public class TellerCore {
     @Local Account[] accounts = new Account[BankingConfig.A];
 
     int numCompletedBankings = 0;

@@ -30,7 +30,7 @@ import java.util.Collection;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class CombineTemplate {
+@Capsule public class CombineCore {
 
     @Imports Sink sink;
 

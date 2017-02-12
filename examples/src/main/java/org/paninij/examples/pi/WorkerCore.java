@@ -34,7 +34,7 @@ import org.paninij.lang.Capsule;
  * Each Worker capsule computes a fraction of the total number of samples.
  */
 @Capsule
-public class WorkerTemplate
+public class WorkerCore
 {
     Random prng;
 

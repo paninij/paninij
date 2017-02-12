@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.filterbank;
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
-@Capsule public class ProducerTemplate {
+@Capsule public class ProducerCore {
 
     int numMessagesSent = 0;
     int numSimulations = FilterBankConfig.NUM_SIMULATIONS;

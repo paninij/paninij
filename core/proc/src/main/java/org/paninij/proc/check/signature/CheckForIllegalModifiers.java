@@ -73,7 +73,7 @@ public class CheckForIllegalModifiers implements SignatureCheck
             if (e.getKind() == ElementKind.METHOD) {
                 Modifier illegalModifier = getIllegalModifierIfAny((ExecutableElement) e);
                 if (illegalModifier != null) {
-                    String err = "A signature template method includes an illegal modifier: {0}.";
+                    String err = "A signature core method includes an illegal modifier: {0}.";
                     err = format(err, illegalModifier);
                     return error(err, CheckForIllegalModifiers.class, e);
                 }

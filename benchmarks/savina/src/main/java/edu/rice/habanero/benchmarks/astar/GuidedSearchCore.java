@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class GuidedSearchTemplate
+public class GuidedSearchCore
 {
     @Local Master master;
 

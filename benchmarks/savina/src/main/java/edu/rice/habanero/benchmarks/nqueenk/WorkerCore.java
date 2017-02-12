@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.nqueenk;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class WorkerTemplate {
+@Capsule public class WorkerCore {
     @Imports Master master;
 
     int threshold = NQueensConfig.THRESHOLD;

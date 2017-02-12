@@ -40,7 +40,7 @@ public interface CapsuleCheck extends Check
     default Result checkCapsule(Element elem)
     {
         if (elem.getKind() != ElementKind.CLASS) {
-            String err = Source.format("A capsule template must be a class, but one has `TypeKind` "
+            String err = Source.format("A capsule core must be a class, but one has `TypeKind` "
                                      + "#0: #1", elem.getKind(), elem);
             return error(err, RoundOneCapsuleChecks.class, elem);
         }
@@ -48,8 +48,8 @@ public interface CapsuleCheck extends Check
     }
 
     /**
-     * @param   template  A type element for the capsule template to be checked.
+     * @param   core  A type element for the capsule core to be checked.
      * @return  The result of the check.
      */
-    Result checkCapsule(TypeElement template);
+    Result checkCapsule(TypeElement core);
 }

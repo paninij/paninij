@@ -43,7 +43,7 @@ public class CheckInitDecl extends DeclCheck
     }
 
     @Override
-    public boolean hasValidParameters(TypeElement template, ExecutableElement decl) {
+    public boolean hasValidParameters(TypeElement core, ExecutableElement decl) {
         return decl.getParameters().isEmpty();
     }
 }

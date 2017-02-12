@@ -33,7 +33,7 @@ import org.paninij.lang.Broadcast;
 import org.paninij.lang.Event;
 
 @Capsule
-public class TextAreaUITemplate {
+public class TextAreaUICore {
     @Broadcast Event<String> keyPressed;
     Window window;
 

@@ -38,7 +38,7 @@ public interface SignatureCheck extends Check
 {
     default Result checkSignature(Element elem) {
         if (elem.getKind() != ElementKind.INTERFACE) {
-            String err = "A signature template must be an interface, but an element annotated with "
+            String err = "A signature core must be an interface, but an element annotated with "
                     + "`@Signature` has TypeKind {0}.";
             err = format(err, elem.getKind());
             return error(err, AllSignatureChecks.class, elem);
@@ -46,5 +46,5 @@ public interface SignatureCheck extends Check
         return checkSignature((TypeElement) elem);
     }
 
-    Result checkSignature(TypeElement template);
+    Result checkSignature(TypeElement core);
 }

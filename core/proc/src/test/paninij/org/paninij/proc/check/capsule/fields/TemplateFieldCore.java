@@ -27,10 +27,10 @@ package org.paninij.proc.check.capsule.fields;
 
 import org.paninij.lang.Capsule;
 
-import org.paninij.ex.helloworld.HelloWorldTemplate;
+import org.paninij.ex.helloworld.HelloWorldCore;
 
 @Capsule
-public class TemplateFieldTemplate
+public class CoreFieldCore
 {
-    HelloWorldTemplate template;
+    HelloWorldCore core;
 }

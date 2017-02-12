@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class CustomerFactoryTemplate {
+@Capsule public class CustomerFactoryCore {
 
     @Imports WaitingRoom waitingRoom;
 

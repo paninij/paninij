@@ -35,7 +35,7 @@
 //import org.paninij.runtime.Panini$Capsule;
 //
 //@CapsuleTest
-//public class BasicOwnershipTemplate
+//public class BasicOwnershipCore
 //{
 //    @Local LeakyServer leakyServer;
 //    Integer testerSecret = 42;
@@ -98,12 +98,12 @@
 //
 //
 //    /**
-//     * Attempts to get the client to leak a reference to its template instance (i.e. its `this` ref).
+//     * Attempts to get the client to leak a reference to its core instance (i.e. its `this` ref).
 //     */
 //    @Test
 //    public void unsafeInstanceReturn()
 //    {
-//        leakyServer.getTemplateReference();
+//        leakyServer.getCoreReference();
 //        assertError(leakyServer);
 //    }
 //

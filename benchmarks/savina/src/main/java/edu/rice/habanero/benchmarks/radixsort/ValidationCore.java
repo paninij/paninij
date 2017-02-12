@@ -27,7 +27,7 @@ package edu.rice.habanero.benchmarks.radixsort;
 
 import org.paninij.lang.Capsule;
 
-@Capsule public class ValidationTemplate implements AdderTemplate {
+@Capsule public class ValidationCore implements AdderCore {
 
     int valuesSoFar = 0;
     double sumSoFar = 0.0;

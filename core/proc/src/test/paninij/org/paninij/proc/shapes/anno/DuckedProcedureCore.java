@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Duck;
 
 @Capsule
-public class DuckedProcedureTemplate {
+public class DuckedProcedureCore {
 
     @Duck
     public ProcReturn procA() {

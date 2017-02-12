@@ -4,7 +4,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class BlockedProcedureTemplate
+public class BlockedProcedureCore
 {
     @Block
     public ProcReturn procA() {

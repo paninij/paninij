@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.cigsmok;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class SmokerTemplate {
+@Capsule public class SmokerCore {
     @Imports Arbiter arbiter;
 
     public void smoke(int busyWaitPeriod) {

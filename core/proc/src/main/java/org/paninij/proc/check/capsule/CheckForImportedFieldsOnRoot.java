@@ -40,9 +40,9 @@ import org.paninij.lang.Root;
 public class CheckForImportedFieldsOnRoot implements CapsuleCheck
 {
     @Override
-    public Result checkCapsule(TypeElement template) {
-        if (hasAnnotation(template, Root.class)) {
-            for (Element elem : template.getEnclosedElements()) {
+    public Result checkCapsule(TypeElement core) {
+        if (hasAnnotation(core, Root.class)) {
+            for (Element elem : core.getEnclosedElements()) {
                 if (isImportField(elem)) {
                     String err = "A root capsule cannot have any `@Imports` fields.";
                     return error(err, CheckForImportedFieldsOnRoot.class, elem);

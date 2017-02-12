@@ -37,7 +37,7 @@ import org.paninij.lang.EventConnection;
 import org.paninij.lang.RegisterType;
 
 @Capsule
-public class GameTemplate {
+public class GameCore {
     @Local Step step;
     @Imports View view;
     @Imports Ship ship;

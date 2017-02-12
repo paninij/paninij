@@ -35,7 +35,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class RayTracerTemplate {
+public class RayTracerCore {
     @Local Renderer renderer;
     @Local UserInterface ui;
 

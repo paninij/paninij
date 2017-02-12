@@ -6,7 +6,7 @@ import org.paninij.lang.String;
 import org.paninij.ex.helloworld.Stream;
 
 @Capsule
-public class ImplementsSignatureTemplate implements Stream
+public class ImplementsSignatureCore implements Stream
 {
     @Override
     public void write(String s) {

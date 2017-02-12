@@ -32,7 +32,7 @@ import java.io.IOException;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class ReaderTemplate
+@Capsule public class ReaderCore
 {
     @Imports Bucket[] buckets;
 

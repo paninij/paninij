@@ -49,15 +49,15 @@ import org.paninij.lang.Event;
 
 
 /**
- * Implements various checks related to a capsule template's fields, especially related to the
+ * Implements various checks related to a capsule core's fields, especially related to the
  * `@Local` and `@Imports` annotations.
  */
 public class CheckEventFields implements CapsuleCheck
 {
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
-        for (Element elem: template.getEnclosedElements()) {
+        for (Element elem: core.getEnclosedElements()) {
             if (elem.getKind() == FIELD) {
                 Result result = checkField((VariableElement) elem);
                 if (!result.ok()) {

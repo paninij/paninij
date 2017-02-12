@@ -1,5 +1,5 @@
 /**
- * Checks to validate the user's capsule templates.
+ * Checks to validate the user's capsule cores.
  *
  * @see org.paninij.proc.check.capsule.CapsuleCheck
  * @author dwtj

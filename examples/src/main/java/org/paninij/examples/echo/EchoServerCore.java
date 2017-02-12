@@ -37,7 +37,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class EchoServerTemplate
+public class EchoServerCore
 {
     // An EchoServer will have 10 Worker capsules
     // The @Child annotation will automatically
@@ -71,7 +71,7 @@ public class EchoServerTemplate
      * a reference to an EchoServer. Notice how the first
      * argument is an EchoServer called "self". Self is a
      * an instance of a capsule described by this
-     * EchoServerTemplate.
+     * EchoServerCore.
      */
     public void design(EchoServer self) {
         for (Worker w : this.workers)

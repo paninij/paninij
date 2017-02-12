@@ -4,7 +4,7 @@ import org.paninij.lang.Signature;
 import org.paninij.lang.Handler;;
 
 @Signature
-public interface HasHandlerMethodTemplate
+public interface HasHandlerMethodCore
 {
     @Handler void proc(String msg) {
         // Nothing needed here.

@@ -30,7 +30,7 @@ import org.paninij.lang.Local;
 import org.paninij.lang.Root;
 
 @Root
-@Capsule public class CountTemplate
+@Capsule public class CountCore
 {
     @Local Counter c;
 

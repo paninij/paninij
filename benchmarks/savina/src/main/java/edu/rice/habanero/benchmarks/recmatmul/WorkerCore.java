@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
 
-@Capsule public class WorkerTemplate {
+@Capsule public class WorkerCore {
 
     @Imports Master master;
 

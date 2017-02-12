@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class RadixSortTemplate
+public class RadixSortCore
 {
     int sortCount = (int) (Math.log(RadixSortConfig.M) / Math.log(2));
 

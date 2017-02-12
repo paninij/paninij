@@ -23,31 +23,31 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.check.capsule.CapsuleCheck;
 import org.paninij.proc.check.signature.SignatureCheck;
 
-import static org.paninij.proc.check.template.TemplateKind.CAPSULE;
-import static org.paninij.proc.check.template.TemplateKind.SIGNATURE;
+import static org.paninij.proc.check.core.CoreKind.CAPSULE;
+import static org.paninij.proc.check.core.CoreKind.SIGNATURE;
 
 /**
  * An interface for a check which can act as both a {@link CapsuleCheck} and a {@link
  * SignatureCheck}. By default, calls to {@link #checkCapsule} and {@link #checkSignature} are
- * passed on to a single implementer-defined {@link #checkTemplate} method (without any
+ * passed on to a single implementer-defined {@link #checkCore} method (without any
  * validation).
  */
-public interface TemplateCheck extends CapsuleCheck, SignatureCheck
+public interface CoreCheck extends CapsuleCheck, SignatureCheck
 {
-    default Result checkCapsule(TypeElement template) {
-        return checkTemplate(template, CAPSULE);
+    default Result checkCapsule(TypeElement core) {
+        return checkCore(core, CAPSULE);
     }
 
-    default Result checkSignature(TypeElement template) {
-        return checkTemplate(template, SIGNATURE);
+    default Result checkSignature(TypeElement core) {
+        return checkCore(core, SIGNATURE);
     }
 
-    Result checkTemplate(TypeElement template, TemplateKind kind);
+    Result checkCore(TypeElement core, CoreKind kind);
 }

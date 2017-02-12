@@ -33,7 +33,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ActiveClientTemplate
+public class ActiveClientCore
 {
     @Local LeakyServer server;
     Secret secret = new Secret();

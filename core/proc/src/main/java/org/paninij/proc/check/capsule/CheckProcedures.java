@@ -39,9 +39,9 @@ import javax.lang.model.element.TypeElement;
 
 
 /**
- * If the given template has a run declaration (i.e. some method named "run"), then the template is
+ * If the given core has a run declaration (i.e. some method named "run"), then the core is
  * interpreted to represent an active capsule. Otherwise it is interpreted to be a passive capsule.
- * If given an active capsule, then this check ensures that the template has no procedures.
+ * If given an active capsule, then this check ensures that the core has no procedures.
  * Otherwise, if given a passive capsule, this check ensures that every procedure is well-formed.
  */
 public class CheckProcedures implements CapsuleCheck
@@ -53,13 +53,13 @@ public class CheckProcedures implements CapsuleCheck
     };
 
     @Override
-    public Result checkCapsule(TypeElement template) {
-        return isActive(template) ? checkActiveTemplate(template) : checkPassiveTemplate(template);
+    public Result checkCapsule(TypeElement core) {
+        return isActive(core) ? checkActiveCore(core) : checkPassiveCore(core);
     }
     
-    private static boolean isActive(TypeElement template)
+    private static boolean isActive(TypeElement core)
     {
-        for (Element elem: template.getEnclosedElements()) {
+        for (Element elem: core.getEnclosedElements()) {
             if (elem.getKind() == METHOD && elem.getSimpleName().toString().equals("run")) {
                 return true;
             }
@@ -70,11 +70,11 @@ public class CheckProcedures implements CapsuleCheck
     /**
      * Check that there are no procedures.
      */
-    private Result checkActiveTemplate(TypeElement template)
+    private Result checkActiveCore(TypeElement core)
     {
-        for (Element elem: template.getEnclosedElements()) {
+        for (Element elem: core.getEnclosedElements()) {
             if (isProcedure(elem)) {
-                String err = "An active template cannot have any procedures.";
+                String err = "An active core cannot have any procedures.";
                 return error(err, CheckProcedures.class, elem);
             }
         }
@@ -84,11 +84,11 @@ public class CheckProcedures implements CapsuleCheck
     /**
      * Check that every procedure defined on the given passive capsule is well-formed.
      */
-    private Result checkPassiveTemplate(TypeElement template)
+    private Result checkPassiveCore(TypeElement core)
     {
-        for (Element elem: template.getEnclosedElements()) {
+        for (Element elem: core.getEnclosedElements()) {
             if (isProcedure(elem)) {
-                Result result = checkProcedure(template, (ExecutableElement) elem);
+                Result result = checkProcedure(core, (ExecutableElement) elem);
                 if (!result.ok()) {
                     return result;
                 }
@@ -100,7 +100,7 @@ public class CheckProcedures implements CapsuleCheck
     /**
      * Check that a single procedure defined on the given passive capsule is well-formed.
      */
-    private Result checkProcedure(TypeElement template, ExecutableElement procedure)
+    private Result checkProcedure(TypeElement core, ExecutableElement procedure)
     {
         if (!procedure.getModifiers().contains(PUBLIC)) {
             String err = "A procedure must be declared `public`.";

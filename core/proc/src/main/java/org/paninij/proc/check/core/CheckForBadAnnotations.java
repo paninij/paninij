@@ -24,7 +24,7 @@
  *  Trey Erenberger
  *  Jackson Maddox
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import static org.paninij.proc.check.Check.Result.OK;
 
@@ -41,35 +41,35 @@ import org.paninij.lang.Future;
 import org.paninij.lang.Handler;
 
 /**
- * Check that a template does not have certain bad annotations. For example, capsule and signature
- * templates should not be annotated with {@code @Block}, {@code @Future}, or {@code Duck}.
+ * Check that a core does not have certain bad annotations. For example, capsule and signature
+ * cores should not be annotated with {@code @Block}, {@code @Future}, or {@code Duck}.
  */
-public class CheckForBadAnnotations implements TemplateCheck {
+public class CheckForBadAnnotations implements CoreCheck {
 
     @Override
-    public Result checkTemplate(TypeElement template, TemplateKind kind) {
-        String annoName = findProcedureAnnotation(template);
+    public Result checkCore(TypeElement core, CoreKind kind) {
+        String annoName = findProcedureAnnotation(core);
         if (annoName != null) {
-            String kindText = kind == TemplateKind.CAPSULE ? "capsule" : "signature";
-            String err = "A {0} template must not be annotated with `@{1}`.";
+            String kindText = kind == CoreKind.CAPSULE ? "capsule" : "signature";
+            String err = "A {0} core must not be annotated with `@{1}`.";
             err = format(err, kindText, annoName);
-            return error(err, CheckForBadAnnotations.class, template);
+            return error(err, CheckForBadAnnotations.class, core);
         }
         return OK;
     }
 
-    private String findProcedureAnnotation(TypeElement template) {
-        if (template.getAnnotation(Block.class) != null) {
+    private String findProcedureAnnotation(TypeElement core) {
+        if (core.getAnnotation(Block.class) != null) {
             return "Block";
-        } else if (template.getAnnotation(Future.class) != null) {
+        } else if (core.getAnnotation(Future.class) != null) {
             return "Future";
-        } else if (template.getAnnotation(Duck.class) != null) {
+        } else if (core.getAnnotation(Duck.class) != null) {
             return "Duck";
-        } else if (template.getAnnotation(Handler.class) != null) {
+        } else if (core.getAnnotation(Handler.class) != null) {
             return "Handler";
-        } else if (template.getAnnotation(Chain.class) != null) {
+        } else if (core.getAnnotation(Chain.class) != null) {
             return "Chain";
-        } else if (template.getAnnotation(Broadcast.class) != null) {
+        } else if (core.getAnnotation(Broadcast.class) != null) {
             return "Broadcast";
         }
         return null;

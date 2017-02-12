@@ -28,7 +28,7 @@ package org.paninij.proc.check.capsule.duckability;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class OkTemplate
+public class OkCore
 {
     public ClassWithPrivateFinalMethod proc() {
         return null;

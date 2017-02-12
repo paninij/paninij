@@ -5,7 +5,7 @@ import org.paninij.lang.Signature;
 
 @Future
 @Signature
-public interface HasFutureAnnotationTemplate
+public interface HasFutureAnnotationCore
 {
     // Nothing needed here
 }

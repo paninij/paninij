@@ -52,7 +52,7 @@ import java.lang.annotation.Documented;
  * return the primitive type int and no extra future wrangling is needed to use the result.
  * <blockquote><pre>
  * &#64;Capsule
- * public DoublerTemplate {
+ * public DoublerCore {
  *     
  *     &#64;Block
  *     public int doubleIt(int x) {
@@ -62,7 +62,7 @@ import java.lang.annotation.Documented;
  * </pre></blockquote>
  * <blockquote><pre>
  * &#64;Capsule
- * public RunnerTemplate {
+ * public RunnerCore {
  *     &#64;Local Doubler d;
  *     
  *     void run() {

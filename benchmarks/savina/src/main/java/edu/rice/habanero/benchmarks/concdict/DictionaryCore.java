@@ -33,7 +33,7 @@ import org.paninij.lang.Imports;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
-@Capsule public class DictionaryTemplate {
+@Capsule public class DictionaryCore {
     @Imports Worker[] workers;
     Map<Integer, Integer> dataMap = new HashMap<Integer, Integer>(DictionaryConfig.DATA_MAP);
 

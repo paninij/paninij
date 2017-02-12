@@ -28,7 +28,7 @@ package org.paninij.examples.raytracer;
 
 import org.paninij.lang.Capsule;
 
-@Capsule public class UserInterfaceTemplate {
+@Capsule public class UserInterfaceCore {
 
     int screenWidth;
     int screenHeight;

@@ -33,14 +33,14 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
 import org.paninij.proc.check.capsule.CheckForRootAnnotation;
-import org.paninij.proc.check.template.CheckForIllegalMethodNames;
-import org.paninij.proc.check.template.CheckForNestedTypes;
-import org.paninij.proc.check.template.CheckForTypeParameters;
-import org.paninij.proc.check.template.CheckForIllegalSubtyping;
-import org.paninij.proc.check.template.CheckProcAnnotations;
-import org.paninij.proc.check.template.CheckForBadAnnotations;
-import org.paninij.proc.check.template.CheckPackage;
-import org.paninij.proc.check.template.CheckSuffix;
+import org.paninij.proc.check.core.CheckForIllegalMethodNames;
+import org.paninij.proc.check.core.CheckForNestedTypes;
+import org.paninij.proc.check.core.CheckForTypeParameters;
+import org.paninij.proc.check.core.CheckForIllegalSubtyping;
+import org.paninij.proc.check.core.CheckProcAnnotations;
+import org.paninij.proc.check.core.CheckForBadAnnotations;
+import org.paninij.proc.check.core.CheckPackage;
+import org.paninij.proc.check.core.CheckSuffix;
 
 
 public class AllSignatureChecks implements SignatureCheck
@@ -70,21 +70,21 @@ public class AllSignatureChecks implements SignatureCheck
 
 
     /**
-     * @param  template  An element to be checked as a signature template.
-     * @return An `OK` result if and only if `template` is can be processed as a signature template.
+     * @param  core  An element to be checked as a signature core.
+     * @return An `OK` result if and only if `core` is can be processed as a signature core.
      */
     @Override
-    public Result checkSignature(TypeElement template)
+    public Result checkSignature(TypeElement core)
     {
-        if (! isAnnotatedBy(procEnv, template, "org.paninij.lang.Signature")) {
-            String err = "Tried to check an element as a signature template, but it is not "
-                       + "annotated with `@Signature`: " + template;
+        if (! isAnnotatedBy(procEnv, core, "org.paninij.lang.Signature")) {
+            String err = "Tried to check an element as a signature core, but it is not "
+                       + "annotated with `@Signature`: " + core;
             throw new IllegalArgumentException(err);
         }
 
         for (org.paninij.proc.check.signature.SignatureCheck check: signatureChecks)
         {
-            Result result = check.checkSignature(template);
+            Result result = check.checkSignature(core);
             if (!result.ok()) {
                 return result;
             }

@@ -47,7 +47,7 @@ public class CheckDesignDecl extends DeclCheck
     }
 
     @Override
-    public boolean hasValidParameters(TypeElement template, ExecutableElement decl)
+    public boolean hasValidParameters(TypeElement core, ExecutableElement decl)
     {
         List<? extends VariableElement> params = decl.getParameters();
         if (params.size() != 1) {
@@ -59,8 +59,8 @@ public class CheckDesignDecl extends DeclCheck
         // type around, then we will have fully qualified type information. This is why we compare
         // the `actual` with the suffix of the `expected`.
         TypeMirror self = params.get(0).asType();
-        String actual = self.toString() + "Template";
-        String expected = template.getQualifiedName().toString();
+        String actual = self.toString() + "Core";
+        String expected = core.getQualifiedName().toString();
 
         return expected.endsWith(actual);
     }

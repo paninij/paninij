@@ -30,7 +30,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Imports;
 
-@Capsule public class SeriesWorkerTemplate {
+@Capsule public class SeriesWorkerCore {
     @Local RateComputer computer;
 
     @Imports int id;

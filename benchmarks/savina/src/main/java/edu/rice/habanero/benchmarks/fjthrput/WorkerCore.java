@@ -27,7 +27,7 @@ package edu.rice.habanero.benchmarks.fjthrput;
 
 import org.paninij.lang.Capsule;
 
-@Capsule public class WorkerTemplate
+@Capsule public class WorkerCore
 {
     int messagesProcessed = 0;
 

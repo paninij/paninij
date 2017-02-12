@@ -30,7 +30,7 @@ import org.paninij.lang.Local;
 import org.paninij.lang.Root;
 
 @Root
-@Capsule public class FilterBankTemplate
+@Capsule public class FilterBankCore
 {
     @Local Producer producer;
     @Local Source source;

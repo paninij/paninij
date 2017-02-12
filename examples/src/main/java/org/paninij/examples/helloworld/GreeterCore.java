@@ -32,7 +32,7 @@ import org.paninij.lang.Imports;
 import org.paninij.lang.String;
 
 @Capsule
-class GreeterTemplate
+class GreeterCore
 {
     String message;
     @Imports Stream s;

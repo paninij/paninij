@@ -37,7 +37,7 @@ import java.util.Set;
 
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.cga.CallGraphAnalysis;
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 import org.paninij.soter.util.Analysis;
 import org.paninij.soter.util.SoterUtil;
 
@@ -54,7 +54,7 @@ import com.ibm.wala.util.intset.MutableIntSet;
 
 public class TransferAnalysis extends Analysis
 {
-    protected final CapsuleTemplate template;
+    protected final CapsuleCore core;
     protected final CallGraphAnalysis cga;
     protected final IClassHierarchy cha;
 
@@ -82,10 +82,10 @@ public class TransferAnalysis extends Analysis
     // transfer is known to be safe.
     // TODO: Refactor this so that it uses dependency injection for selecting whether a particular
     // transfer is "transferring" and/or "relevant".
-    public TransferAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
+    public TransferAnalysis(CapsuleCore core, CallGraphAnalysis cga,
                                  IClassHierarchy cha)
     {
-        this.template = template;
+        this.core = core;
         this.cga = cga;
         this.cha = cha;
 
@@ -99,9 +99,9 @@ public class TransferAnalysis extends Analysis
         for (CGNode node : cga.getCallGraph())
         {
             // Only add transfer sites from nodes whose methods are declared directly on the capsule
-            // template. Ignore any others. This is done because transfer points can only be defined
-            // within the capsule template itself.
-            if (template.getTemplateClass().equals(node.getMethod().getDeclaringClass())) {
+            // core. Ignore any others. This is done because transfer points can only be defined
+            // within the capsule core itself.
+            if (core.getCoreClass().equals(node.getMethod().getDeclaringClass())) {
                 findTransferSites(node);
             }
         }

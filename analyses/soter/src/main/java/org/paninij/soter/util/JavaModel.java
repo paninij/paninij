@@ -125,7 +125,7 @@ public class JavaModel
 
     /**
      * @param clazz
-     * @return A list of all of the "application" (i.e. not "primordial") methods on the template.
+     * @return A list of all of the "application" (i.e. not "primordial") methods on the core.
      */
     public static Stream<IMethod> getApplicationMethods(IClass clazz)
     {
@@ -139,7 +139,7 @@ public class JavaModel
      * TODO: Should be deprecated in favor of using `getApplicationMethods()` directly.
      * 
      * @param clazz
-     * @return A list of all of the "application" (i.e. not "primordial") methods on the template.
+     * @return A list of all of the "application" (i.e. not "primordial") methods on the core.
      */
     public static List<IMethod> getApplicationMethodsList(IClass clazz)
     {

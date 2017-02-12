@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.banking;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class AccountTemplate {
+@Capsule public class AccountCore {
 
     @Imports Teller teller;
     @Imports Account[] accounts = new Account[BankingConfig.A];

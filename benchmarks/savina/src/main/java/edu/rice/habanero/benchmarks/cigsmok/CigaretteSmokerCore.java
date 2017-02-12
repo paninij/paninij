@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class CigaretteSmokerTemplate
+public class CigaretteSmokerCore
 {
     @Local Arbiter arbiter;
 

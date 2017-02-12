@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.concdict;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterTemplate {
+@Capsule public class MasterCore {
 
     @Local Worker[] workers = new Worker[DictionaryConfig.NUM_ENTITIES];
     @Local Dictionary dictionary;

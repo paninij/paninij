@@ -33,7 +33,7 @@ import java.lang.annotation.Documented;
  * Used to declare a procedure as 'futurized' behavior.
  * <h3>Purpose</h3>
  * The &#64;Future annotation specifies that a procedure will return a result that implements the Future{@literal <}T{@literal >} interface 
- * where T is the type specified by the template method's return type.
+ * where T is the type specified by the core method's return type.
  * <h3>Details</h3>
  * <p>
  * This annotation is used in cases where the type returned by the procedure is unable to be ducked but the flexibility
@@ -55,8 +55,8 @@ import java.lang.annotation.Documented;
  * None
  * <h3>Examples</h3>
  * <p>
- * In this example we have two capsule templates. The first being SquarerTemplate, which has one procedure annotated with
- * &#64;Future. The second is the MathDemonstratorTemplate, which is linked to the Squarer capsule and has a run method that
+ * In this example we have two capsule cores. The first being SquarerCore, which has one procedure annotated with
+ * &#64;Future. The second is the MathDemonstratorCore, which is linked to the Squarer capsule and has a run method that
  * calls on the getSquare procedure of Squarer.
  * <p>
  * One key point of this example is the promotion of the primitive type that the getSquare procedure returns from int to
@@ -71,7 +71,7 @@ import java.lang.annotation.Documented;
  * 
  * <blockquote><pre>
  * &#64;Capsule
- * public SquarerTemplate {
+ * public SquarerCore {
  * 
  *     &#64;Future
  *     public int getSquare(int x) {
@@ -82,7 +82,7 @@ import java.lang.annotation.Documented;
  * Example Caller of &#64;Future procedure.
  * <blockquote><pre>
  * &#64;Capsule
- * public MathDemonstratorTemplate {
+ * public MathDemonstratorCore {
  *     &#64;Local Squarer squarer;
  * 
  *     public run() {

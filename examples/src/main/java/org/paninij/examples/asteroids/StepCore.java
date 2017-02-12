@@ -34,7 +34,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Event;
 
 @Capsule
-public class StepTemplate {
+public class StepCore {
     @Broadcast Event<Void> step;
     ScheduledThreadPoolExecutor ex;
 

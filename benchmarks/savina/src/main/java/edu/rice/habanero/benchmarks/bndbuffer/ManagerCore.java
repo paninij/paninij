@@ -32,7 +32,7 @@ import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class ManagerTemplate {
+@Capsule public class ManagerCore {
 
     int numConsumers = ProdConsBoundedBufferConfig.numConsumers;
     int numProducers = ProdConsBoundedBufferConfig.numProducers;

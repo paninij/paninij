@@ -30,7 +30,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
 @Capsule
-public class ViewTemplate {
+public class ViewCore {
     @Imports TextAreaUI ui;
     @Imports Game game;
 

@@ -23,27 +23,27 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import javax.lang.model.element.TypeElement;
 
 import static org.paninij.proc.check.Check.Result.error;
 
 /**
- * Check that the given template is in an okay package. Currently, the only invalid package is the
+ * Check that the given core is in an okay package. Currently, the only invalid package is the
  * default package (i.e. no package).
  */
-public class CheckPackage implements TemplateCheck {
+public class CheckPackage implements CoreCheck {
 
 	private boolean checkInDefault(TypeElement e) {
 		return e.getQualifiedName().equals(e.getSimpleName());
 	}
 	
 	@Override
-	public Result checkTemplate(TypeElement template, TemplateKind templateKind) {
-		if (checkInDefault(template)) {
-            String errMsg = "Templates cannot be in the default package.";
-			return error(errMsg, CheckPackage.class, template);
+	public Result checkCore(TypeElement core, CoreKind coreKind) {
+		if (checkInDefault(core)) {
+            String errMsg = "Cores cannot be in the default package.";
+			return error(errMsg, CheckPackage.class, core);
 		}
 		return Result.OK;
 	}

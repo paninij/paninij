@@ -35,7 +35,7 @@ package org.paninij.lang;
  * <p>
  * The @Imports annotation is used to create a connection between capsules. It is used to signify that the reference to the capsule must be passed in 
  * at initialization. The field with the @Imports annotation specifies a connection to another capsule that this capsule does not initialize. The parent of the
- * capsule template with the @Imports field must supply the reference via a design method call. 
+ * capsule core with the @Imports field must supply the reference via a design method call. 
  * <p>
  * The difference between @Local and @Imports is that the @Local reference is created and managed by the capsule that includes it as a field. An @Imports 
  * requires that the reference be passed into the capsule at initialization time.
@@ -46,16 +46,16 @@ package org.paninij.lang;
  * <p>
  * In this example, we have three capsules, the first is a passive capsule named Console, the second is a passive capsule named Greeter and the third is an active capsule called HelloWorld. 
  * The active capsule HelloWorld holds a connection to the passive capsules Greeter and Console in order to call on its procedures. This connection is
- * set up by the @Local annotation on the Greeter and Console field of the HelloWorldTemplate. 
+ * set up by the @Local annotation on the Greeter and Console field of the HelloWorldCore. 
  * <p>
  * The capsule Greeter has a field of type Console that is annotated with the @Imports. This means
  * that the Greeter wants to call procedures of a Console capsule, but does not want to create the instance of the capsule. By using @Imports, it specifies that the parent capsule of the Greeter
- * must supply the reference to the Console capsule. This is shown in the HelloWorldTemplate in the design method where g.imports is called and the reference to the Console capsule is passed as
+ * must supply the reference to the Console capsule. This is shown in the HelloWorldCore in the design method where g.imports is called and the reference to the Console capsule is passed as
  * a parameter.  
- * <h4>ConsoleTemplate.java</h4>
+ * <h4>ConsoleCore.java</h4>
  * <blockquote><pre>
  * &#64;Capsule
- * public class ConsoleTemplate {
+ * public class ConsoleCore {
  *     
  *     &#64;Block
  *     public void write(String s) {
@@ -63,10 +63,10 @@ package org.paninij.lang;
  *     }
  * }
  * </pre></blockquote>
- * <h4>GreeterTemplate.java</h4>
+ * <h4>GreeterCore.java</h4>
  * <blockquote><pre>
  * &#64;Capsule
- * public class GreeterTemplate {
+ * public class GreeterCore {
  *     
  *     &#64;Imports Console c;
  *     String message;
@@ -81,10 +81,10 @@ package org.paninij.lang;
  *     }
  * }
  * </pre></blockquote>
- * <h4>HelloWorldTemplate.java</h4>
+ * <h4>HelloWorldCore.java</h4>
  * <blockquote><pre>
  * &#64;Capsule
- * public class HelloWorldTemplate {
+ * public class HelloWorldCore {
  *     &#64;Local Greeter g;
  *     &#64;Local Console c;
  *     

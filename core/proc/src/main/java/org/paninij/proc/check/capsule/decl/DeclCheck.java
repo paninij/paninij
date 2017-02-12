@@ -45,7 +45,7 @@ import org.paninij.proc.check.capsule.CapsuleCheck;
 
 /**
  * An abstract class extended by checks. Subclasses are meant to check whether one of a capsule
- * template's declarations is well-formed one. (`CheckForTooManyDecls` should probably be run before
+ * core's declarations is well-formed one. (`CheckForTooManyDecls` should probably be run before
  * running any checks which extend this class.)
  */
 public abstract class DeclCheck implements CapsuleCheck
@@ -54,15 +54,15 @@ public abstract class DeclCheck implements CapsuleCheck
     
     public abstract String getDeclName();
     
-    public abstract boolean hasValidParameters(TypeElement template, ExecutableElement decl);
+    public abstract boolean hasValidParameters(TypeElement core, ExecutableElement decl);
 
     
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
-        // Collect list of the casted references to the template's methods.
+        // Collect list of the casted references to the core's methods.
         List<ExecutableElement> methods = new ArrayList<>();
-        for (Element enclosed: template.getEnclosedElements()) {
+        for (Element enclosed: core.getEnclosedElements()) {
             if (enclosed.getKind() == ElementKind.METHOD) {
                 methods.add((ExecutableElement) enclosed);
             }
@@ -75,13 +75,13 @@ public abstract class DeclCheck implements CapsuleCheck
                 decl = method;
             }
         }
-        return (decl == null) ? OK : check(template, decl);
+        return (decl == null) ? OK : check(core, decl);
     }
 
 
-    private Result check(TypeElement template, ExecutableElement init)
+    private Result check(TypeElement core, ExecutableElement init)
     {
-        assert template != null && init != null;
+        assert core != null && init != null;
         
         if (init.getReturnType().getKind() != TypeKind.VOID) {
             String err = "A {0} declaration must have `void` return type.";
@@ -89,10 +89,10 @@ public abstract class DeclCheck implements CapsuleCheck
             return error(err, getErrorSource(), init);
         }
         
-        if (!hasValidParameters(template, init)) {
+        if (!hasValidParameters(core, init)) {
             // TODO: Make this message more specific and instructive for the user.
             String err = "A {0} declaration has invalid parameters.";
-            err = format(err, getDeclName(), template.getSimpleName());
+            err = format(err, getDeclName(), core.getSimpleName());
             return error(err, getErrorSource(), init);
         }
 

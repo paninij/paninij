@@ -23,7 +23,7 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import static java.text.MessageFormat.format;
 
@@ -35,10 +35,10 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 /**
- * Check that a template does not have certain illegal or reserved method names. For example, a
- * capusle or signature template cannot have a method named {@code imports()} or {@code exit()}.
+ * Check that a core does not have certain illegal or reserved method names. For example, a
+ * capusle or signature core cannot have a method named {@code imports()} or {@code exit()}.
  */
-public class CheckForIllegalMethodNames implements TemplateCheck
+public class CheckForIllegalMethodNames implements CoreCheck
 {
     private static final String[] BAD_METHOD_NAMES = {
         "imports",
@@ -46,10 +46,10 @@ public class CheckForIllegalMethodNames implements TemplateCheck
     };
     
     @Override
-    public Result checkTemplate(TypeElement template, TemplateKind kind) {
-        for (Element elem : template.getEnclosedElements()) {
+    public Result checkCore(TypeElement core, CoreKind kind) {
+        for (Element elem : core.getEnclosedElements()) {
             if (isMethodWithBadName(elem)) {
-                String err = "A {0} template cannot declare a method named `{1}()`.";
+                String err = "A {0} core cannot declare a method named `{1}()`.";
                 err = format(err, kind, elem.getSimpleName());
                 return error(err, CheckForIllegalMethodNames.class, elem);
             }

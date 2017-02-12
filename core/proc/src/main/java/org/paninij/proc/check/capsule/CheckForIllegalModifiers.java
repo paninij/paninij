@@ -35,8 +35,8 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 
 /**
- * Checks that a template and its members do not have illegal modifiers. This does not do certain
- * checks related to specific template declarations (e.g. `init()`, whose checks are in
+ * Checks that a core and its members do not have illegal modifiers. This does not do certain
+ * checks related to specific core declarations (e.g. `init()`, whose checks are in
  * `CheckInitDecl`).
  */
 public class CheckForIllegalModifiers implements CapsuleCheck
@@ -54,7 +54,7 @@ public class CheckForIllegalModifiers implements CapsuleCheck
     public final static Modifier[] ILLEGAL_FIELD_MODIFIERS = {
         PUBLIC,
         PROTECTED,
-        PRIVATE,   // A capsule needs to be able to access fields of its encapsulated template.
+        PRIVATE,   // A capsule needs to be able to access fields of its encapsulated core.
         ABSTRACT,
         STATIC,
         TRANSIENT,
@@ -92,15 +92,15 @@ public class CheckForIllegalModifiers implements CapsuleCheck
     };
 
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
-        Modifier illegalModifier = getIllegalModifier(template, ILLEGAL_TEMPLATE_MODIFIERS);
+        Modifier illegalModifier = getIllegalModifier(core, ILLEGAL_TEMPLATE_MODIFIERS);
         if (illegalModifier != null) {
-            String err = "A capsule template has an illegal modifier: " + illegalModifier;
-            return error(err, CheckForIllegalModifiers.class, template);
+            String err = "A capsule core has an illegal modifier: " + illegalModifier;
+            return error(err, CheckForIllegalModifiers.class, core);
         }
         
-        for (Element member : template.getEnclosedElements())
+        for (Element member : core.getEnclosedElements())
         {
             Modifier[] illegalModifiers = lookupIllegalModifiers(member);
             if (illegalModifiers == EMPTY) {
@@ -109,7 +109,7 @@ public class CheckForIllegalModifiers implements CapsuleCheck
             illegalModifier = getIllegalModifier(member, illegalModifiers);
             if (illegalModifier != null)
             {
-                String err = "A capsule template member has an illegal modifier: " + illegalModifier;
+                String err = "A capsule core member has an illegal modifier: " + illegalModifier;
                 return error(err, CheckForIllegalModifiers.class, member);
             }
         }

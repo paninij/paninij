@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.transfer.TransferSite;
 import org.paninij.soter.transfer.TransferSite.Kind;
@@ -69,7 +69,7 @@ import com.ibm.wala.util.intset.OrdinalSetMapping;
 public class CallGraphLiveAnalysis extends Analysis
 {
     // Analysis dependencies.
-    protected final CapsuleTemplate template;
+    protected final CapsuleCore core;
     protected final CallGraphAnalysis cga;
     protected final TransferAnalysis ta;
     protected final TransferLiveAnalysis tla;
@@ -82,11 +82,11 @@ public class CallGraphLiveAnalysis extends Analysis
     BitVectorSolver<CGNode> dataFlowSolver;
 
 
-    public CallGraphLiveAnalysis(CapsuleTemplate template, CallGraphAnalysis cga,
+    public CallGraphLiveAnalysis(CapsuleCore core, CallGraphAnalysis cga,
                                  TransferAnalysis ta, TransferLiveAnalysis tla,
                                  IClassHierarchy cha)
     {
-        this.template = template;
+        this.core = core;
         this.cga = cga;
         this.ta = ta;
         this.tla = tla;

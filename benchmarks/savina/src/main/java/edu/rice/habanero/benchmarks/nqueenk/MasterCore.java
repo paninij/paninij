@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.nqueenk;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterTemplate {
+@Capsule public class MasterCore {
 
     long solutionsLimit = NQueensConfig.SOLUTIONS_LIMIT;
     int numWorkers = NQueensConfig.NUM_WORKERS;

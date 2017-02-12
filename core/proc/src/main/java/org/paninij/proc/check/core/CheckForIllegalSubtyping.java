@@ -23,7 +23,7 @@
  * 	David Johnston,
  * 	Trey Erenberger
  *******************************************************************************/
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 import static org.paninij.proc.check.Check.Result.OK;
 import static org.paninij.proc.check.Check.Result.error;
@@ -39,7 +39,7 @@ import org.paninij.proc.check.signature.SignatureCheck;
 
 
 /**
- * Checks that that a capsule template or signature template is not a subclass of anything except
+ * Checks that that a capsule core or signature core is not a subclass of anything except
  * `java.lang.Object`.
  */
 public class CheckForIllegalSubtyping implements CapsuleCheck, SignatureCheck
@@ -51,21 +51,21 @@ public class CheckForIllegalSubtyping implements CapsuleCheck, SignatureCheck
     }
 
     @Override
-    public Result checkSignature(TypeElement template) {
-        List<? extends TypeMirror> interfaces = template.getInterfaces();
+    public Result checkSignature(TypeElement core) {
+        List<? extends TypeMirror> interfaces = core.getInterfaces();
         if (!interfaces.isEmpty()) {
-            String err = "A signature template must not be a subinterface.";
-            return error(err, CheckForIllegalSubtyping.class, template);
+            String err = "A signature core must not be a subinterface.";
+            return error(err, CheckForIllegalSubtyping.class, core);
         }
         return OK;
     }
 
     @Override
-    public Result checkCapsule(TypeElement template) {
+    public Result checkCapsule(TypeElement core) {
         TypeMirror object = procEnv.getElementUtils().getTypeElement("java.lang.Object").asType();
-        if (! procEnv.getTypeUtils().isSameType(template.getSuperclass(), object)) {
-            String err = "A capsule template must not extend anything except `java.lang.Object`.";
-            return error(err, CheckForIllegalSubtyping.class, template);
+        if (! procEnv.getTypeUtils().isSameType(core.getSuperclass(), object)) {
+            String err = "A capsule core must not extend anything except `java.lang.Object`.";
+            return error(err, CheckForIllegalSubtyping.class, core);
         }
         return OK;
     }

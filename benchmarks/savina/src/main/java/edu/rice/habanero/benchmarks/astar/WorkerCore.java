@@ -33,7 +33,7 @@ import org.paninij.lang.Imports;
 
 import edu.rice.habanero.benchmarks.astar.GuidedSearchConfig.GridNode;
 
-@Capsule public class WorkerTemplate {
+@Capsule public class WorkerCore {
     @Imports Master master;
 
     int threshold = GuidedSearchConfig.THRESHOLD;

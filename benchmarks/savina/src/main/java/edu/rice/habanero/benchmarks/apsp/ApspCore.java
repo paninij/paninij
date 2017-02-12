@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ApspTemplate
+public class ApspCore
 {
     @Local Master master;
 

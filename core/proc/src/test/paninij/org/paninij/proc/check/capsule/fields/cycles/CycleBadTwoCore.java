@@ -4,6 +4,6 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
 @Capsule
-public class CycleBadTwoTemplate {
+public class CycleBadTwoCore {
     @Local CycleBadOne one;
 }

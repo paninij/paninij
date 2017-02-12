@@ -5,7 +5,7 @@ import org.paninij.lang.Signature;
 
 @Duck
 @Signature
-public interface HasDuckAnnotationTemplate
+public interface HasDuckAnnotationCore
 {
     // Nothing needed here
 }

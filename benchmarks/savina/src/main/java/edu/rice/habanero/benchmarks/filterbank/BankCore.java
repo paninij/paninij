@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Imports;
 
-@Capsule public class BankTemplate implements ProcessorTemplate {
+@Capsule public class BankCore implements ProcessorCore {
 
     @Imports int sourceId;
     @Imports int numColumns;

@@ -26,7 +26,7 @@
 package org.paninij.soter.live;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 import org.paninij.soter.transfer.TransferAnalysis;
 
 import com.ibm.wala.ipa.cha.IClassHierarchy;
@@ -40,10 +40,10 @@ public class TransferLiveAnalysisFactory
         this.cha = cha;
     }
 
-    public TransferLiveAnalysis make(CapsuleTemplate template, CallGraphAnalysis cga,
+    public TransferLiveAnalysis make(CapsuleCore core, CallGraphAnalysis cga,
                                      TransferAnalysis ta)
     {
         LocalLiveAnalysisFactory llaFactory = new LocalLiveAnalysisFactory(cga);
-        return new TransferLiveAnalysis(template, llaFactory, ta, cga, cha);
+        return new TransferLiveAnalysis(core, llaFactory, ta, cga, cha);
     }
 }

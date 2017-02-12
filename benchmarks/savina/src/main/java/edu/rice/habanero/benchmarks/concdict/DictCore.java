@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class DictTemplate
+public class DictCore
 {
     @Local Master master;
 

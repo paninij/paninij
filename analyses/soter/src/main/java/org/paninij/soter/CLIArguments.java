@@ -58,13 +58,13 @@ public class CLIArguments
     private static final String ORIG_BYTECODE_DESCRIPTION =
             "The path to the directory in which uninstrumented bytecode should be logged. "
             + "A disassembly code file (generated from `javap -c`) is created for each capsule "
-            + "templates. If this option is not set, then no such files are created.";
+            + "cores. If this option is not set, then no such files are created.";
     
     private static final String NO_INSTRUMENT_DESCRIPTION =
             "Set this flag to disable class file instrumentation (which is enabled by default).";
 
     private static final String CAPSULE_TEMPLATES_DESCRIPTION =
-            "A sequence of fully qualified capsule templates (e.g. `com.example.foo.FooTemplate`) "
+            "A sequence of fully qualified capsule cores (e.g. `com.example.foo.FooCore`) "
             + "to be analyzed and instrumented.";
     
     @Parameter(names = "-classOutput", description = CLASS_OUTPUT_DESCRIPTION)

@@ -68,8 +68,8 @@ import java.lang.annotation.Documented;
  * <h3>Internal Notes</h3>
  * <p>
  * The naming convention of the resulting duck takes into account the fully qualified origin of the
- * return type and the signature of the template method. This reduces the number of ducks created for 
- * some capsule templates while ensuring that similarly named return types do not clash.
+ * return type and the signature of the core method. This reduces the number of ducks created for 
+ * some capsule cores while ensuring that similarly named return types do not clash.
  * <h3>Associated Annotations</h3>
  * <p>
  * This annotation is one of the three which can define the behavior

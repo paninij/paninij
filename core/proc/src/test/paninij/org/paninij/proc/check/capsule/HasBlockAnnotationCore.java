@@ -5,7 +5,7 @@ import org.paninij.lang.Capsule;
 
 @Block
 @Capsule
-public class HasBlockAnnotationTemplate
+public class HasBlockAnnotationCore
 {
     // Nothing needed here
 }

@@ -26,7 +26,7 @@
 package org.paninij.soter.instrument;
 
 import org.paninij.soter.SoterAnalysis;
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.ShrikeClass;
@@ -45,21 +45,21 @@ public class SoterInstrumenterFactory
 
     public SoterInstrumenter make(SoterAnalysis sa)
     {
-        CapsuleTemplate template = sa.getCapsuleTemplate();
-        IClass templateClass = template.getTemplateClass();
-        if (templateClass instanceof ShrikeClass == false) {
-            String msg = "Could not cast the template's `IClass` to a `ShrikeClass`";
+        CapsuleCore core = sa.getCapsuleCore();
+        IClass coreClass = core.getCoreClass();
+        if (coreClass instanceof ShrikeClass == false) {
+            String msg = "Could not cast the core's `IClass` to a `ShrikeClass`";
             throw new IllegalArgumentException(msg);
         }
-        ShrikeClass templateShrike = (ShrikeClass) templateClass;
+        ShrikeClass coreShrike = (ShrikeClass) coreClass;
         
         try
         {
-            ClassInstrumenter instrumenter = new ClassInstrumenter(template.getWalaPath(),
-                                                                   templateShrike.getReader(),
+            ClassInstrumenter instrumenter = new ClassInstrumenter(core.getWalaPath(),
+                                                                   coreShrike.getReader(),
                                                                    new ClassHierarchyStore(),
                                                                    false);
-            return new SoterInstrumenter(template, outputDir, sa, instrumenter);
+            return new SoterInstrumenter(core, outputDir, sa, instrumenter);
         }
         catch (InvalidClassFileException ex)
         {

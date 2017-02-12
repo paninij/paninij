@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class IntSourceTemplate {
+@Capsule public class IntSourceCore {
     Random random = new Random(RadixSortConfig.S);
     @Imports Adder head;
 

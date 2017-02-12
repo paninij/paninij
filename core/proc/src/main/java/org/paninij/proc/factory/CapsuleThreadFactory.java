@@ -308,7 +308,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
 
         // `duck` will need to be resolved if and only if `procedure` has a return value.
         if (shape.category == MessageShape.Category.SIMPLE) {
-            // Simply call the template isntance's method with the args encapsulated in the duck.
+            // Simply call the core isntance's method with the args encapsulated in the duck.
             List<String> src = Source.lines(
                     "case #0:",
                     "    #1;",
@@ -322,7 +322,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
         Type r = procedure.getReturnType();
         // A void wrapper cannot be instantiated, so we have to resolve with null
         if (r.isVoid()) {
-            // Call the template instance's method and resolve the duck using null.
+            // Call the core instance's method and resolve the duck using null.
             List<String> src = Source.lines("case #0:",
                                             "    #1;",
                                             "    ((Panini$Future<#2>) msg).panini$resolve(null);",
@@ -332,7 +332,7 @@ public class CapsuleThreadFactory extends CapsuleProfileFactory
                     this.generateEncapsulatedMethodCall(shape),
                     procedure.getReturnType().wrapped());
         } else {
-            // Call the template instance's method and resolve the duck using the result.
+            // Call the core instance's method and resolve the duck using the result.
             List<String> src = Source.lines("case #0: {",
                                             "    #1 result = #2;",
                                             "    #3;",

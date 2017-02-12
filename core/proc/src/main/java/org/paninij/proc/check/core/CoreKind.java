@@ -1,9 +1,9 @@
-package org.paninij.proc.check.template;
+package org.paninij.proc.check.core;
 
 /**
  * @author dwtj
  */
-public enum TemplateKind
+public enum CoreKind
 {
     CAPSULE,
     SIGNATURE;
@@ -12,7 +12,7 @@ public enum TemplateKind
         switch (this) {
             case CAPSULE: return "capsule";
             case SIGNATURE: return "signature";
-            default: throw new IllegalStateException("Unknown `TemplateKind`: " + this);
+            default: throw new IllegalStateException("Unknown `CoreKind`: " + this);
         }
     }
 }

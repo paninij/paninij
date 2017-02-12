@@ -36,18 +36,18 @@ import javax.lang.model.element.TypeElement;
 
 /**
  * For each of the three `@PaniniJ` declarations kinds (`run()`, `init()`, and `design()`) this
- * checks that there are only zero or one of declaration of that kind in a capsule template.
+ * checks that there are only zero or one of declaration of that kind in a capsule core.
  */
 public class CheckForTooManyDecls implements CapsuleCheck
 {
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
         int run = 0;
         int init = 0;
         int design = 0;
         
-        for (Element elem : template.getEnclosedElements()) {
+        for (Element elem : core.getEnclosedElements()) {
             if (elem.getKind() == METHOD) {
                 switch (elem.getSimpleName().toString()) {
                 case "run":
@@ -65,23 +65,23 @@ public class CheckForTooManyDecls implements CapsuleCheck
             }
         }
         if (run > 1) {
-            return makeError(template, "run");
+            return makeError(core, "run");
         }
         if (init > 1) {
-            return makeError(template, "init");
+            return makeError(core, "init");
         }
         if (design > 1) {
-            return makeError(template, "design");
+            return makeError(core, "design");
         }
 
         return OK;
     }
     
-    private static Result makeError(TypeElement template, String decl)
+    private static Result makeError(TypeElement core, String decl)
     {
-        String err = "Capsule templates must contain either 0 or 1 `{0}()` declarations "
+        String err = "Capsule cores must contain either 0 or 1 `{0}()` declarations "
                    + "(i.e. methods).";
         err = format(err, decl);
-        return error(err, CheckForTooManyDecls.class, template);
+        return error(err, CheckForTooManyDecls.class, core);
     }
 }

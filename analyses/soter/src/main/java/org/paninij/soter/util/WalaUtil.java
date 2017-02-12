@@ -193,22 +193,22 @@ public class WalaUtil
 
     /**
      * @param cha
-     * @param templateName The name of the template to be analyzed. Should be something of the form
-     *                 `-Lorg/paninij/soter/FooTemplate`.
+     * @param coreName The name of the core to be analyzed. Should be something of the form
+     *                 `-Lorg/paninij/soter/FooCore`.
      */
-    public static IClass loadTemplateClass(String templateName, IClassHierarchy cha)
+    public static IClass loadCoreClass(String coreName, IClassHierarchy cha)
     {
         AnalysisScope scope = cha.getScope();
         ClassLoaderReference appLoaderRef = scope.getApplicationLoader();
-		TypeReference typeRef = TypeReference.findOrCreate(appLoaderRef, templateName);
+		TypeReference typeRef = TypeReference.findOrCreate(appLoaderRef, coreName);
 
-        IClass templateClass = cha.lookupClass(typeRef);
-        if (templateClass == null)
+        IClass coreClass = cha.lookupClass(typeRef);
+        if (coreClass == null)
         {
-            String msg = "Failed to load a template's `IClass`: " + templateName;
+            String msg = "Failed to load a core's `IClass`: " + coreName;
             throw new IllegalArgumentException(msg);
         }
-        return templateClass;
+        return coreClass;
     }
     
     public static String fromQualifiedNameToWalaPath(String name)

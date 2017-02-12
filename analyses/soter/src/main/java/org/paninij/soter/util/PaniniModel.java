@@ -43,7 +43,7 @@ import static org.paninij.soter.util.JavaModel.*;
 
 /**
  * Note that all helper methods here assume that any given @PaniniJ artifacts (e.g. capsules,
- * capsule templates, capsule interfaces, etc.) are well-formed, that is, they were constructed
+ * capsule cores, capsule interfaces, etc.) are well-formed, that is, they were constructed
  * by @PaniniJ and passed all correctness checks. In particular, if an artifact has an @PaniniJ
  * annotation, then it is assumed to be well-formed.
  */
@@ -58,7 +58,7 @@ public class PaniniModel
     /**
      * @param clazz An arbitrary class.
      */
-    public static boolean isCapsuleTemplate(IClass clazz)
+    public static boolean isCapsuleCore(IClass clazz)
     {
         return hasAnnotationNamed(clazz, CAPSULE_ANNOTATION_NAME);
     }
@@ -74,11 +74,11 @@ public class PaniniModel
     
     
     /**
-     * @param method An arbitrary method on a template class annotated with `@Capsule`.
+     * @param method An arbitrary method on a core class annotated with `@Capsule`.
      */
     public static boolean isSpecialCapsuleDecl(IMethod method)
     {
-        assert isCapsuleTemplate(method.getDeclaringClass());
+        assert isCapsuleCore(method.getDeclaringClass());
         return isNamed(method, "init")
             || isNamed(method, "design")
             || isNamed(method, "run");
@@ -86,11 +86,11 @@ public class PaniniModel
     
 
     /**
-     * @param method An arbitrary method declared on a template class annotated with `@Capsule`.
+     * @param method An arbitrary method declared on a core class annotated with `@Capsule`.
      */
     public static boolean isProcedure(IMethod method)
     {
-        assert isCapsuleTemplate(method.getDeclaringClass());
+        assert isCapsuleCore(method.getDeclaringClass());
         return method.isPublic() == true  // Only a capsule's public methods are procedures.
             && isSpecialCapsuleDecl(method) == false;  // Don't count special decls as procedures.
     }
@@ -98,13 +98,13 @@ public class PaniniModel
     
 
     /**
-     * @param template A capsule template class annotated with `@Capsule`.
-     * @return The template's run declaration, if it defines an active capsule. Otherwise `null`.
+     * @param core A capsule core class annotated with `@Capsule`.
+     * @return The core's run declaration, if it defines an active capsule. Otherwise `null`.
      */
-    public static IMethod getRunDecl(IClass template)
+    public static IMethod getRunDecl(IClass core)
     {
-        assert isCapsuleTemplate(template);
-        return JavaModel.getApplicationMethodsList(template)
+        assert isCapsuleCore(core);
+        return JavaModel.getApplicationMethodsList(core)
                  .stream()
                  .filter(m -> isNamed(m, "run"))
                  .findFirst()
@@ -113,13 +113,13 @@ public class PaniniModel
     
 
     /**
-     * @param template A capsule template class annotated with `@Capsule`.
-     * @return The template's `init()` declaration, if it has one. Otherwise `null`.
+     * @param core A capsule core class annotated with `@Capsule`.
+     * @return The core's `init()` declaration, if it has one. Otherwise `null`.
      */
-    public static IMethod getInitDecl(IClass template)
+    public static IMethod getInitDecl(IClass core)
     {
-        assert isCapsuleTemplate(template);
-        return JavaModel.getApplicationMethodsList(template)
+        assert isCapsuleCore(core);
+        return JavaModel.getApplicationMethodsList(core)
                  .stream()
                  .filter(m -> isNamed(m, "init"))
                  .findFirst()
@@ -128,39 +128,39 @@ public class PaniniModel
     
     
     /**
-     * @param template A capsule template class annotated with `@Capsule`.
-     * @return Stream of the template's fields which are annotated with `@Local`.
+     * @param core A capsule core class annotated with `@Capsule`.
+     * @return Stream of the core's fields which are annotated with `@Local`.
      */
-    public static Stream<IField> getLocalDecls(IClass template)
+    public static Stream<IField> getLocalDecls(IClass core)
     {
-        assert isCapsuleTemplate(template);
-        return template.getAllFields()
+        assert isCapsuleCore(core);
+        return core.getAllFields()
                        .stream()
                        .filter(a -> hasAnnotationNamed(a, "Local"));
     }
     
 
     /**
-     * @param template A capsule template class annotated with `@Capsule`.
-     * @return Stream of the template's fields which are annotated with `@Import`.
+     * @param core A capsule core class annotated with `@Capsule`.
+     * @return Stream of the core's fields which are annotated with `@Import`.
      */
-    public static Stream<IField> getImportDecls(IClass template)
+    public static Stream<IField> getImportDecls(IClass core)
     {
-        assert isCapsuleTemplate(template);
-        return template.getAllFields()
+        assert isCapsuleCore(core);
+        return core.getAllFields()
                        .stream()
                        .filter(a -> hasAnnotationNamed(a, "Import"));
     }
     
     
     /**
-     * @param template A capsule template class annotated with `@Capsule`.
-     * @return Stream of the template's fields that are states (i.e. neither `@Local` or `@Import`).
+     * @param core A capsule core class annotated with `@Capsule`.
+     * @return Stream of the core's fields that are states (i.e. neither `@Local` or `@Import`).
      */
-    public static Stream<IField> getStateDecls(IClass template)
+    public static Stream<IField> getStateDecls(IClass core)
     {
-        assert isCapsuleTemplate(template);
-        return template.getAllFields()
+        assert isCapsuleCore(core);
+        return core.getAllFields()
                        .stream()
                        .filter(a -> hasAnnotationNamed(a, "Local") == false
                                  && hasAnnotationNamed(a, "Import") == false);
@@ -168,12 +168,12 @@ public class PaniniModel
  
     
     /**
-     * @param template A capsule template class annotated with `@Capsule`.
+     * @param core A capsule core class annotated with `@Capsule`.
      */
-    public static Stream<IMethod> getProcedures(IClass template)
+    public static Stream<IMethod> getProcedures(IClass core)
     {
-        assert isCapsuleTemplate(template);
-        return JavaModel.getApplicationMethodsList(template)
+        assert isCapsuleCore(core);
+        return JavaModel.getApplicationMethodsList(core)
                  .stream()
                  .filter(m -> isProcedure(m));
     }
@@ -182,12 +182,12 @@ public class PaniniModel
     /**
      * TODO: Should be deprecated in favor of using `getProcedures()` directly.
      * 
-     * @param template A capsule template class annotated with `@Capsule`.
+     * @param core A capsule core class annotated with `@Capsule`.
      */
-    public static List<IMethod> getProceduresList(IClass template)
+    public static List<IMethod> getProceduresList(IClass core)
     {
-        assert isCapsuleTemplate(template);
-        return getProcedures(template).collect(toList());
+        assert isCapsuleCore(core);
+        return getProcedures(core).collect(toList());
     }
     
     

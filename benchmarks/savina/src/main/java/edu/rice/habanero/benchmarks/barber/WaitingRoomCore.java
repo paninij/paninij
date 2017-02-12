@@ -32,7 +32,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class WaitingRoomTemplate {
+@Capsule public class WaitingRoomCore {
 
     @Imports Barber barber;
 

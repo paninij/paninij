@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.pingpong;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class PongTemplate {
+@Capsule public class PongCore {
     @Imports Ping ping;
     int pongs = 0;
 

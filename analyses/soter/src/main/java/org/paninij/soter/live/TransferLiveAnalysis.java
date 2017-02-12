@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.paninij.soter.cga.CallGraphAnalysis;
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 import org.paninij.soter.transfer.TransferAnalysis;
 import org.paninij.soter.transfer.TransferSite;
 import org.paninij.soter.util.Analysis;
@@ -42,7 +42,7 @@ import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.ISSABasicBlock;
 
 /**
- * When performed, the analysis analyzes the capsule template and the call graph analysis to
+ * When performed, the analysis analyzes the capsule core and the call graph analysis to
  * generate information about the variables which are alive at the capsule's "relevant" transfer
  * sites and call sites.
  * 
@@ -51,7 +51,7 @@ import com.ibm.wala.ssa.ISSABasicBlock;
 public class TransferLiveAnalysis extends Analysis
 {
     // The analysis's dependencies:
-    final protected CapsuleTemplate template;
+    final protected CapsuleCore core;
     final protected LocalLiveAnalysisFactory llaFactory;
     final protected TransferAnalysis ta;
     final protected CallGraphAnalysis cga;
@@ -60,13 +60,13 @@ public class TransferLiveAnalysis extends Analysis
     // The results of the analysis:
     protected final Map<TransferSite, Set<PointerKey>> liveVariables;
 
-    public TransferLiveAnalysis(CapsuleTemplate template,
+    public TransferLiveAnalysis(CapsuleCore core,
                                 LocalLiveAnalysisFactory llaFactory,
                                 TransferAnalysis ta,
                                 CallGraphAnalysis cga,
                                 IClassHierarchy cha)
     {
-        this.template = template;
+        this.core = core;
         this.llaFactory = llaFactory;
         this.ta = ta;
         this.cga = cga;

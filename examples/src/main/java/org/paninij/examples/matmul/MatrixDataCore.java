@@ -28,7 +28,7 @@ package org.paninij.examples.matmul;
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
-@Capsule public class MatrixDataTemplate {
+@Capsule public class MatrixDataCore {
 
     int length = Config.DATA_LENGTH;
 

@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Imports;
 
-@Capsule public class MasterTemplate {
+@Capsule public class MasterCore {
     int numWorkers = Config.NUM_WORKERS;
 
     @Imports MatrixData data;

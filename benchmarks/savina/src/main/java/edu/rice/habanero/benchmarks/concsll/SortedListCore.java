@@ -30,7 +30,7 @@ import org.paninij.lang.Imports;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
-@Capsule public class SortedListTemplate {
+@Capsule public class SortedListCore {
     @Imports Worker[] workers;
     SortedLinkedList<Integer> dataList = new SortedLinkedList<Integer>();
 

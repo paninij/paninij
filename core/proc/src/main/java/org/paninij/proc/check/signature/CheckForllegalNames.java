@@ -70,7 +70,7 @@ public class CheckForllegalNames implements SignatureCheck
     {
         Element illegalMethod = getIllegalMethodNameIfAny(signature);
         if (illegalMethod != null) {
-            String err = "A signature template method has an illegal name: `{0}()`";
+            String err = "A signature core method has an illegal name: `{0}()`";
             err = format(err, illegalMethod.getSimpleName());
             return error(err, CheckForllegalNames.class, illegalMethod);
         }

@@ -84,8 +84,8 @@ public class CheckHandlers implements CapsuleCheck {
     }
 
     @Override
-    public Result checkCapsule(TypeElement template) {
-        for (Element e : template.getEnclosedElements()) {
+    public Result checkCapsule(TypeElement core) {
+        for (Element e : core.getEnclosedElements()) {
             if (e.getKind() == ElementKind.METHOD) {
                 Result result = checkMethod((ExecutableElement) e);
                 if (!result.ok()) {

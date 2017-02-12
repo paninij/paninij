@@ -36,7 +36,7 @@ import java.util.Map.Entry;
 import org.paninij.runtime.check.DynamicOwnershipTransfer;
 import org.paninij.runtime.util.IdentitySet;
 import org.paninij.soter.SoterAnalysis;
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 import org.paninij.soter.transfer.TransferSite;
 
 import com.ibm.wala.classLoader.IMethod;
@@ -55,26 +55,26 @@ import com.ibm.wala.shrikeCT.InvalidClassFileException;
 
 public class SoterInstrumenter
 {
-    protected final CapsuleTemplate template;
+    protected final CapsuleCore core;
     protected final SoterAnalysis sa;
     protected final String outputDir;
-    protected final ClassInstrumenter instrumenter;  // Instrumenter of the capsule template class.
+    protected final ClassInstrumenter instrumenter;  // Instrumenter of the capsule core class.
     
     protected final String outputFilePath;
     protected final ShrikeClass shrikeClass;
     protected final Map<String, IdentitySet<TransferSite>> unsafeTransferSitesMap;
     protected final MethodInstrumenter methodInstrumenter;
 
-    public SoterInstrumenter(CapsuleTemplate template, String outputDir, SoterAnalysis sa,
+    public SoterInstrumenter(CapsuleCore core, String outputDir, SoterAnalysis sa,
                              ClassInstrumenter instrumenter) throws InvalidClassFileException
     {
-        this.template = template;
+        this.core = core;
         this.sa = sa;
         this.outputDir = outputDir;
         this.instrumenter = instrumenter;
 
         outputFilePath = outputDir + separator + instrumenter.getReader().getName() + ".class";
-        shrikeClass = (ShrikeClass) template.getTemplateClass();
+        shrikeClass = (ShrikeClass) core.getCoreClass();
         unsafeTransferSitesMap = new HashMap<String, IdentitySet<TransferSite>>();
         methodInstrumenter = new MethodInstrumenter();
     }
@@ -131,7 +131,7 @@ public class SoterInstrumenter
                              + methodData.getSignature();
             IdentitySet<TransferSite> unsafeTransferSites = unsafeTransferSitesMap.get(signature);
 
-            // Ignore any methods on the template in which there are no unsafe transfer sites.
+            // Ignore any methods on the core in which there are no unsafe transfer sites.
             if (unsafeTransferSites == null || unsafeTransferSites.isEmpty()) {
                 return;
             }

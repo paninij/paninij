@@ -33,36 +33,36 @@ import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.TypeReference;
 
-public class CapsuleTemplateFactory
+public class CapsuleCoreFactory
 {
     IClassHierarchy cha;
 
-    public CapsuleTemplateFactory(IClassHierarchy cha)
+    public CapsuleCoreFactory(IClassHierarchy cha)
     {
         this.cha = cha;
     }
     
     /**
-     * @param capsuleTemplate A fully qualified name of a capsule (e.g. "org.paninij.examples.pi.Pi").
+     * @param capsuleCore A fully qualified name of a capsule (e.g. "org.paninij.examples.pi.Pi").
      */
-    public CapsuleTemplate make(String capsuleName)
+    public CapsuleCore make(String capsuleName)
     {
-        String templatePath = WalaUtil.fromQualifiedNameToWalaPath(capsuleName) + "Template";
+        String corePath = WalaUtil.fromQualifiedNameToWalaPath(capsuleName) + "Core";
 
-        TypeReference templateReference = TypeReference.find(Application, templatePath);
-        if (templateReference == null)
+        TypeReference coreReference = TypeReference.find(Application, corePath);
+        if (coreReference == null)
         {
-            String msg = "Could not find the `TypeReference` for template: " + templatePath;
+            String msg = "Could not find the `TypeReference` for core: " + corePath;
             throw new RuntimeException(msg);
         }
         
-        IClass templateClass = cha.lookupClass(templateReference);
-        if (templateClass == null)
+        IClass coreClass = cha.lookupClass(coreReference);
+        if (coreClass == null)
         {
-            String msg = "Could not find the `IClass` for template: " + templatePath;
+            String msg = "Could not find the `IClass` for core: " + corePath;
             throw new RuntimeException(msg);
         }
 
-        return new CapsuleTemplate(templateClass);
+        return new CapsuleCore(coreClass);
     }
 }

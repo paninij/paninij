@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ThroughputTemplate
+public class ThroughputCore
 {
     @Local Worker[] workers = new Worker[ThroughputConfig.A];
 

@@ -41,7 +41,7 @@ import org.paninij.lang.Root;
  */
 @Root
 @Capsule
-public class PiTemplate
+public class PiCore
 {
     // an array of worker capsules
     @Local Worker[] workers = new Worker[WORKER_COUNT];

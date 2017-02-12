@@ -25,7 +25,7 @@
  *******************************************************************************/
 package org.paninij.lang;
 /**
- * <p>Used to designate a capsule template as the root capsule.
+ * <p>Used to designate a capsule core as the root capsule.
  * 
  * <h3>Purpose</h3>
  * <p>The purpose of this annotation is to designate a java class to act as a root capsule.
@@ -51,11 +51,11 @@ package org.paninij.lang;
  * <p>In this example, we create a capsule called HelloWorldShort and designate it as the root capsule. A main
  * method is added which starts the root capsule.
  *
- * <h4>HelloWorldShortTemplate.java</h4>
+ * <h4>HelloWorldShortCore.java</h4>
  * <blockquote><pre>
  * &#64;Root
  * &#64;Capsule
- * public class HelloWorldShortTemplate {
+ * public class HelloWorldShortCore {
  * 	public void run() {
  * 		System.out.println("Hello World!");
  *	}

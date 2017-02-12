@@ -33,7 +33,7 @@ import java.util.Map;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class IntegratorTemplate {
+@Capsule public class IntegratorCore {
     @Imports Combine combine;
     int numChannels = FilterBankConfig.NUM_CHANNELS;
     final List<Map<Integer, Double>> data = new ArrayList<Map<Integer, Double>>();

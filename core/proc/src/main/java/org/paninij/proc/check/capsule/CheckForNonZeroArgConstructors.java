@@ -33,26 +33,26 @@ import javax.lang.model.element.TypeElement;
 import static org.paninij.proc.check.Check.Result.error;
 
 /**
- * Checks that any capsule template constructor only has zero arguments.
+ * Checks that any capsule core constructor only has zero arguments.
  */
 public class CheckForNonZeroArgConstructors implements CapsuleCheck
 {
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
         // Ideally, this would be checking that there are no constructors except for the implicit
         // default constructor. However, I don't know how to use the `javax.lang.model` API to
         // differentiate between an implicit default constructor and some user-defined zero-arg
         // constructor.
 
-        for (Element elem: template.getEnclosedElements())
+        for (Element elem: core.getEnclosedElements())
         {
             if (elem.getKind() == ElementKind.CONSTRUCTOR)
             {
                 int numParams = ((ExecutableElement) elem).getParameters().size();
                 if (numParams > 0)
                 {
-                    String err = "A capsule template must not contain any constructors.";
+                    String err = "A capsule core must not contain any constructors.";
                     return error(err, CheckForNonZeroArgConstructors.class, elem);
                 }
             }

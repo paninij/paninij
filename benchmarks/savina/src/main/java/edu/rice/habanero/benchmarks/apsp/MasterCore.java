@@ -31,7 +31,7 @@ import java.util.List;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterTemplate {
+@Capsule public class MasterCore {
     long[][] graphData = ApspUtils.graphData();
     int numNodes = ApspConfig.N;
     int blockSize = ApspConfig.B;

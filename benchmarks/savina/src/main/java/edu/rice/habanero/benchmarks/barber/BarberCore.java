@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class BarberTemplate {
+@Capsule public class BarberCore {
 
     @Imports WaitingRoom waitingRoom;
     @Imports CustomerFactory factory;

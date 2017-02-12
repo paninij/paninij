@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 
 @Capsule
-public class FooTemplate implements FooSignatureTemplate
+public class FooCore implements FooSignatureCore
 {
     String greeting;
 

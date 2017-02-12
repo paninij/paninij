@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.threadring;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class NodeTemplate {
+@Capsule public class NodeCore {
     @Imports Node next;
 
     public void finish() {

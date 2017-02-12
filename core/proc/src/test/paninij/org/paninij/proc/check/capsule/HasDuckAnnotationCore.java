@@ -5,7 +5,7 @@ import org.paninij.lang.Capsule;
 
 @Duck
 @Capsule
-public class HasDuckAnnotationTemplate
+public class HasDuckAnnotationCore
 {
     // Nothing needed here
 }

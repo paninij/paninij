@@ -45,7 +45,7 @@ public class SignatureElement implements Signature
 
     public static Signature make(TypeElement e) {
         SignatureElement signature = new SignatureElement();
-        SignatureTemplateVisitor visitor = new SignatureTemplateVisitor();
+        SignatureCoreVisitor visitor = new SignatureCoreVisitor();
         e.accept(visitor,  signature);
         return signature;
     }

@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Duck;
 
 @Capsule
-public class NoReturnTypeTemplate {
+public class NoReturnTypeCore {
     @Duck public void proc() {
         // Nothing needed here.
     }

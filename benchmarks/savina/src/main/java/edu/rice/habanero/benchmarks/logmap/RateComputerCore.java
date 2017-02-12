@@ -29,7 +29,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class RateComputerTemplate {
+@Capsule public class RateComputerCore {
 
     @Imports int id;
     double rate;

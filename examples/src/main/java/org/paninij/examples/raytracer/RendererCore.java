@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class RendererTemplate {
+@Capsule public class RendererCore {
 
     int CHUNKS = 16;
     @Local Tracer[] tracers = new Tracer[CHUNKS];

@@ -37,7 +37,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class GossipyClientTemplate
+public class GossipyClientCore
 {
     @Local LeakyServer servers[] = new LeakyServer[NUM_SERVERS];
     @Local LeakyServer importantServer;

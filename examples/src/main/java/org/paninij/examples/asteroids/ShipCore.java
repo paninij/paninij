@@ -35,7 +35,7 @@ import org.paninij.lang.Event;
 import org.paninij.lang.RegisterType;
 
 @Capsule
-public class ShipTemplate {
+public class ShipCore {
     @Imports TextAreaUI ui;
     @Broadcast Event<Integer> updatePosition;
     @Broadcast Event<Void> firing;

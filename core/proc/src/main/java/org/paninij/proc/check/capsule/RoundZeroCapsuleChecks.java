@@ -3,15 +3,15 @@ package org.paninij.proc.check.capsule;
 import org.paninij.proc.check.capsule.decl.CheckDesignDecl;
 import org.paninij.proc.check.capsule.decl.CheckInitDecl;
 import org.paninij.proc.check.capsule.decl.CheckRunDecl;
-import org.paninij.proc.check.template.CheckForBadAnnotations;
-import org.paninij.proc.check.template.CheckForIllegalMethodNames;
-import org.paninij.proc.check.template.CheckForIllegalSubtyping;
-import org.paninij.proc.check.template.CheckForNestedTypes;
-import org.paninij.proc.check.template.CheckForTypeParameters;
-import org.paninij.proc.check.template.CheckPackage;
-import org.paninij.proc.check.template.CheckProcAnnotations;
-import org.paninij.proc.check.template.CheckSuffix;
-import org.paninij.proc.check.template.TemplateCheck;
+import org.paninij.proc.check.core.CheckForBadAnnotations;
+import org.paninij.proc.check.core.CheckForIllegalMethodNames;
+import org.paninij.proc.check.core.CheckForIllegalSubtyping;
+import org.paninij.proc.check.core.CheckForNestedTypes;
+import org.paninij.proc.check.core.CheckForTypeParameters;
+import org.paninij.proc.check.core.CheckPackage;
+import org.paninij.proc.check.core.CheckProcAnnotations;
+import org.paninij.proc.check.core.CheckSuffix;
+import org.paninij.proc.check.core.CoreCheck;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
@@ -21,7 +21,7 @@ import static org.paninij.proc.util.JavaModel.isAnnotatedBy;
 
 
 /**
- * Performs some initial checks on capsule and signature template at the beginning of the round in
+ * Performs some initial checks on capsule and signature core at the beginning of the round in
  * which those sources are first seen.
  *
  * @author dwtj
@@ -49,7 +49,7 @@ public class RoundZeroCapsuleChecks implements CapsuleCheck {
             new CheckForIllegalModifiers(),
             new CheckForIllegalMethodNames(),
             new CheckForBadAnnotations(),
-            new CheckThatOnlySignatureTemplatesAreImplemented(procEnv),
+            new CheckThatOnlySignatureCoresAreImplemented(procEnv),
             new CheckHandlers(),
             new CheckEventFields(),
         };
@@ -57,14 +57,14 @@ public class RoundZeroCapsuleChecks implements CapsuleCheck {
 
 
     @Override
-    public Result checkCapsule(TypeElement template) {
-        if (! isAnnotatedBy(procEnv, template, "org.paninij.lang.Capsule")) {
-            String err = "Tried to check an element as a capsule template, but it is not " +
-                         "annotated with `@Capsule`: " + template.getQualifiedName();
+    public Result checkCapsule(TypeElement core) {
+        if (! isAnnotatedBy(procEnv, core, "org.paninij.lang.Capsule")) {
+            String err = "Tried to check an element as a capsule core, but it is not " +
+                         "annotated with `@Capsule`: " + core.getQualifiedName();
             throw new IllegalArgumentException(err);
         }
         for (CapsuleCheck check : roundZeroChecks) {
-            Result result = check.checkCapsule(template);
+            Result result = check.checkCapsule(core);
             if (! result.ok()) {
                 return result;
             }

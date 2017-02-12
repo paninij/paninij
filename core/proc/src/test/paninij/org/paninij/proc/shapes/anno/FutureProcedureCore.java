@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 
 @Capsule
-public class FutureProcedureTemplate
+public class FutureProcedureCore
 {
     @Future
     public ProcReturn procA() {

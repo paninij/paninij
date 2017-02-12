@@ -96,7 +96,7 @@ public class CodeWasGeneratedTest
 //    public void testDuckGenerated() {
 //        String runtime = "ducks.org_paninij_proc_codegen_ForDuck$Duck$";
 //
-//        drive("DuckedProcedureTemplate");
+//        drive("DuckedProcedureCore");
 //        testGeneratedList(runtimePackage + ".", runtime);
 //        testGeneratedList(classPackage + ".DuckedProcedure", normals);
 //    }
@@ -106,7 +106,7 @@ public class CodeWasGeneratedTest
 //    public void testFutureGenerated() {
 //        String runtime = "futures.org_paninij_proc_codegen_ForFuture$Future$";
 //
-//        drive("FutureProcedureTemplate");
+//        drive("FutureProcedureCore");
 //        testGeneratedList(runtimePackage + ".", runtime);
 //        testGeneratedList(classPackage + ".FutureProcedure", normals);
 //    }
@@ -115,7 +115,7 @@ public class CodeWasGeneratedTest
 //    public void testBlockedGenerated() {
 //        String runtime = "futures.org_paninij_proc_codegen_ForBlock$Future$";
 //
-//        drive("BlockedProcedureTemplate");
+//        drive("BlockedProcedureCore");
 //        testGeneratedList(runtimePackage + ".", runtime);
 //        testGeneratedList(classPackage + ".BlockedProcedure", normals);
 //    }

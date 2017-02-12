@@ -25,7 +25,7 @@
  *******************************************************************************/
 package org.paninij.soter.cga;
 
-import org.paninij.soter.model.CapsuleTemplate;
+import org.paninij.soter.model.CapsuleCore;
 import org.paninij.soter.util.Analysis;
 
 import com.ibm.wala.analysis.pointers.BasicHeapGraph;
@@ -46,7 +46,7 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
 
 /**
  * Builds Zero-One CFA call graph using flow insensitive Andersen style points-to analysis with
- * entrypoints stemming from the procedures of a single template class.
+ * entrypoints stemming from the procedures of a single core class.
  */
 public class CallGraphAnalysis extends Analysis
 {
@@ -56,7 +56,7 @@ public class CallGraphAnalysis extends Analysis
                                             | ZeroXInstanceKeys.SMUSH_THROWABLES;
     
     // Analysis dependencies:
-    protected final CapsuleTemplate template;
+    protected final CapsuleCore core;
     protected final IClassHierarchy cha;
     protected final AnalysisOptions options;
     protected final AnalysisCache cache;
@@ -67,15 +67,15 @@ public class CallGraphAnalysis extends Analysis
     protected HeapModel heapModel;
     protected HeapGraph<InstanceKey> heapGraph;
     
-    public CallGraphAnalysis(CapsuleTemplate template, IClassHierarchy cha, AnalysisOptions options)
+    public CallGraphAnalysis(CapsuleCore core, IClassHierarchy cha, AnalysisOptions options)
     {
-        this(template, cha, options, new AnalysisCache());
+        this(core, cha, options, new AnalysisCache());
     }
     
-    public CallGraphAnalysis(CapsuleTemplate template, IClassHierarchy cha, AnalysisOptions options,
+    public CallGraphAnalysis(CapsuleCore core, IClassHierarchy cha, AnalysisOptions options,
                              AnalysisCache cache)
     {
-        this.template = template;
+        this.core = core;
         this.cha = cha;
         this.options = options;
         this.cache = cache;
@@ -92,7 +92,7 @@ public class CallGraphAnalysis extends Analysis
     @SuppressWarnings("unchecked")
     public void performAnalysis()
     {
-        options.setEntrypoints(CapsuleTemplateEntrypoint.makeAll(template.getTemplateClass()));
+        options.setEntrypoints(CapsuleCoreEntrypoint.makeAll(core.getCoreClass()));
 
         ContextSelector contextSelector = new ReceiverInstanceContextSelector();
         PropagationCallGraphBuilder builder = ZeroXCFABuilder.make(cha, options, cache,
@@ -108,7 +108,7 @@ public class CallGraphAnalysis extends Analysis
         catch (CallGraphBuilderCancelException ex)
         {
             String msg = "Call graph construction was unexpectedly cancelled: ";
-            throw new IllegalArgumentException(msg + template.toString());
+            throw new IllegalArgumentException(msg + core.toString());
         }
     }
     

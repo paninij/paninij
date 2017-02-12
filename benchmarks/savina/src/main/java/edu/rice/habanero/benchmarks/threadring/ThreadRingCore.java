@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ThreadRingTemplate
+public class ThreadRingCore
 {
     @Local Node[] nodes = new Node[ThreadRingConfig.N];
 

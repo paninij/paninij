@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class ArbiterTemplate {
+@Capsule public class ArbiterCore {
     @Local Smoker[] smokers = new Smoker[CigaretteSmokerConfig.S];
     Random random = new Random(CigaretteSmokerConfig.R * CigaretteSmokerConfig.S);
     int roundsSoFar = 0;

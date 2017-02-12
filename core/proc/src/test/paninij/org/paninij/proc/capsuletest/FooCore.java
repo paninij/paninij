@@ -30,7 +30,7 @@ import org.paninij.lang.Imports;
 
 /*
 @Capsule
-public class FooTemplate
+public class FooCore
 {
     @Import Bar bar;
     int count;

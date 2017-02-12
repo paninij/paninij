@@ -1,6 +1,6 @@
 import org.paninij.lang.Signature;
 
 @Signature
-public interface SignatureInDefaultTemplate {
+public interface SignatureInDefaultCore {
 
 }

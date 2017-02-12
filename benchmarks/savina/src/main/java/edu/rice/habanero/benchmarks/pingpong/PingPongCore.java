@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class PingPongTemplate
+public class PingPongCore
 {
     @Local Ping ping;
     @Local Pong pong;

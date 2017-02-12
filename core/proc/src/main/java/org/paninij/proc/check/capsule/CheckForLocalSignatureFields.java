@@ -49,8 +49,8 @@ public class CheckForLocalSignatureFields implements CapsuleCheck {
     }
 
     @Override
-    public Result checkCapsule(TypeElement template) {
-        for (Element element : template.getEnclosedElements()) {
+    public Result checkCapsule(TypeElement core) {
+        for (Element element : core.getEnclosedElements()) {
             if (element.getKind() == ElementKind.FIELD) {
                 if (hasLocalSignatureField(element)) {
                     String err = "Cannot have a `@Local` field whose type is a signature.";

@@ -34,17 +34,17 @@ import org.paninij.lang.Root;
 import org.paninij.proc.check.signature.SignatureCheck;
 
 /**
- * Check that a signature template is not annotated with {@code @Root}.
+ * Check that a signature core is not annotated with {@code @Root}.
  */
 public class CheckForRootAnnotation implements SignatureCheck
 {
     @Override
-    public Result checkSignature(TypeElement template) {
-        if (template.getAnnotation(Root.class) == null) {
+    public Result checkSignature(TypeElement core) {
+        if (core.getAnnotation(Root.class) == null) {
             return OK;
         } else {
-            String err = "A signature template must not be annotated with `@Root`.";
-            return error(err, CheckForRootAnnotation.class, template);
+            String err = "A signature core must not be annotated with `@Root`.";
+            return error(err, CheckForRootAnnotation.class, core);
         }
     }
 }

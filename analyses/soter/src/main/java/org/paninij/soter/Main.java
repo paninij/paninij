@@ -49,7 +49,7 @@ import com.beust.jcommander.JCommander;
 
 
 /**
- * This class defines a simple executable which analyzes capsule templates using the SOTER analysis
+ * This class defines a simple executable which analyzes capsule cores using the SOTER analysis
  * and instruments them accordingly.
  */
 public class Main
@@ -119,11 +119,11 @@ public class Main
         }
     }
     
-    public void logAllTemplatesDisassembledBytecode() throws IOException, InterruptedException
+    public void logAllCoresDisassembledBytecode() throws IOException, InterruptedException
     {
-        for (String capsuleTemplate: cliArguments.capsules)
+        for (String capsuleCore: cliArguments.capsules)
         {
-            logDisassembledBytecode(capsuleTemplate + "Template",
+            logDisassembledBytecode(capsuleCore + "Core",
                                     cliArguments.classPath,
                                     cliArguments.origBytecode);
         } 
@@ -191,7 +191,7 @@ public class Main
         Main main = new Main(cliArguments);
         
         if (cliArguments.origBytecode != null) {
-            main.logAllTemplatesDisassembledBytecode();
+            main.logAllCoresDisassembledBytecode();
         }
         
         for (String capsule : cliArguments.capsules) {

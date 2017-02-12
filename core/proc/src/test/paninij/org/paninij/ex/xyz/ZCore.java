@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
 @Capsule
-public class ZTemplate {
+public class ZCore {
 
     @Imports X x;
     @Imports Y y;

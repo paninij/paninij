@@ -6,7 +6,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
 @Capsule
-public class RunTestsTemplate
+public class RunTestsCore
 {
     @Local Tests test;
 

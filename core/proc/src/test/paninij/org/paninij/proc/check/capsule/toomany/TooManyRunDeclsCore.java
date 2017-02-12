@@ -3,7 +3,7 @@ package org.paninij.proc.check.capsule.toomany;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class TooManyRunDeclsTemplate
+public class TooManyRunDeclsCore
 {
     void run() {
         // Nothing.

@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class SLLTemplate
+public class SLLCore
 {
     @Local Master master;
 

@@ -4,6 +4,6 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
 @Capsule
-public class CycleOkTwoTemplate {
+public class CycleOkTwoCore {
     @Imports CycleOkOne one;
 }

@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ProdConsTemplate
+public class ProdConsCore
 {
     @Local Manager manager;
 

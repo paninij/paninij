@@ -66,11 +66,11 @@ public class CapsuleElement implements Capsule
     /*
      * Generate a Capsule from a TypeElement. The TypeElement should already be checked for
      * any errors. The TypeElement should be annotated with @Capsule and should represent
-     * a CapsuleTemplate
+     * a CapsuleCore
      */
     public static Capsule make(TypeElement e) {
         CapsuleElement capsule = new CapsuleElement();
-        CapsuleTemplateVisitor visitor = new CapsuleTemplateVisitor();
+        CapsuleCoreVisitor visitor = new CapsuleCoreVisitor();
         e.accept(visitor, capsule);
         return capsule;
     }

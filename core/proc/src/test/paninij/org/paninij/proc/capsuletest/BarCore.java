@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 
 /*
 @Capsule
-public class BarTemplate
+public class BarCore
 {
     int count;
     

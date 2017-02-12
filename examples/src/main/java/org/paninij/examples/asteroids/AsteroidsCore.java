@@ -33,7 +33,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class AsteroidsTemplate {
+public class AsteroidsCore {
     @Local TextAreaUI ui;
     @Local Game game;
     @Local View view;

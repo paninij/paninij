@@ -29,7 +29,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class LeakyServerTemplate
+public class LeakyServerCore
 {
     Secret serverSecret = new Secret();
     
@@ -51,7 +51,7 @@ public class LeakyServerTemplate
     }
     
     @Block
-    public LeakyServerTemplate getTemplateReference() {
+    public LeakyServerCore getCoreReference() {
         return this;
     }
 }

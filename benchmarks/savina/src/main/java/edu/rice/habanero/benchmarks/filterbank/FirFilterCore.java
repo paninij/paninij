@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.filterbank;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imports;
 
-@Capsule public class FirFilterTemplate implements ProcessorTemplate {
+@Capsule public class FirFilterCore implements ProcessorCore {
 
     @Imports Processor next;
     @Imports String sourceId;

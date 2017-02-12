@@ -51,7 +51,7 @@ import org.paninij.lang.SignatureInterface;
 
 
 /**
- * Implements various checks related to a capsule template's fields, especially related to the
+ * Implements various checks related to a capsule core's fields, especially related to the
  * `@Local` and `@Imports` annotations.
  */
 public class CheckFields implements CapsuleCheck
@@ -63,11 +63,11 @@ public class CheckFields implements CapsuleCheck
     }
 
     @Override
-    public Result checkCapsule(TypeElement template)
+    public Result checkCapsule(TypeElement core)
     {
-        for (Element elem: template.getEnclosedElements()) {
+        for (Element elem: core.getEnclosedElements()) {
             if (elem.getKind() == FIELD) {
-                Result result = checkField(template, (VariableElement) elem);
+                Result result = checkField(core, (VariableElement) elem);
                 if (!result.ok()) {
                     return result;
                 }
@@ -77,7 +77,7 @@ public class CheckFields implements CapsuleCheck
         return OK;
     }
 
-    private Result checkField(TypeElement template, VariableElement field)
+    private Result checkField(TypeElement core, VariableElement field)
     {
         assert field.getKind() == FIELD;
 
@@ -89,9 +89,9 @@ public class CheckFields implements CapsuleCheck
             return error(err, CheckFields.class, field);
         }
         
-        if (isCapsuleTemplateField(field))
+        if (isCapsuleCoreField(field))
         {
-            String err = "Found a field whose type is a capsule or signature template. Use the "
+            String err = "Found a field whose type is a capsule or signature core. Use the "
                        + "generated capsule or signature interface instead.";
             return error(err, CheckFields.class, field);
         }
@@ -117,7 +117,7 @@ public class CheckFields implements CapsuleCheck
             if (hasLocal) {
                 String err = "Found a field annotated with `@Local`, but its type seems to not be "
                            + "a capsule.";
-                err = format(err, field.asType(), field, template.getQualifiedName());
+                err = format(err, field.asType(), field, core.getQualifiedName());
                 return error(err, CheckFields.class, field);
             }
         }
@@ -125,7 +125,7 @@ public class CheckFields implements CapsuleCheck
         return OK;
     }
     
-    private boolean isCapsuleTemplateField(VariableElement field)
+    private boolean isCapsuleCoreField(VariableElement field)
     {
         assert field.getKind() == FIELD;
         

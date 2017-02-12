@@ -34,7 +34,7 @@ import org.paninij.lang.Imports;
  * Each Bucket holds the count for an ascii character.
  * Buckets also require a Printer capsule.
  */
-@Capsule public class BucketTemplate
+@Capsule public class BucketCore
 {
     @Imports Printer p;
 

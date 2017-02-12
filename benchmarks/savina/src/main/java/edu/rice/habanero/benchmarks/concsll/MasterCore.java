@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.concsll;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterTemplate {
+@Capsule public class MasterCore {
 
     @Local Worker[] workers = new Worker[SortedListConfig.NUM_ENTITIES];
     @Local SortedList sortedList;

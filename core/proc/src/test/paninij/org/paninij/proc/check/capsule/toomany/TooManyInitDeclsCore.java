@@ -3,7 +3,7 @@ package org.paninij.proc.check.capsule.toomany;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class TooManyInitDeclsTemplate
+public class TooManyInitDeclsCore
 {
     void init() {
         // Nothing.

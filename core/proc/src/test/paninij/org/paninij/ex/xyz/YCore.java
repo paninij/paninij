@@ -5,7 +5,7 @@ import org.paninij.lang.Local;
 import org.paninij.lang.Imports;
 
 @Capsule
-public class YTemplate
+public class YCore
 {
     @Imports X x;
     @Local Z z;

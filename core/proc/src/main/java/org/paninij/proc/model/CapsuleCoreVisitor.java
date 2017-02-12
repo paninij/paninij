@@ -43,11 +43,11 @@ import org.paninij.lang.Broadcast;
 import org.paninij.lang.Imports;
 
 /**
- * The Template visitor as the main visitor for all capsule templates. This class is used by
- * org.paninij.model.Capsule to convert a Capsule Template to an org.paninij.model.ElementCapsule.
+ * The Core visitor as the main visitor for all capsule cores. This class is used by
+ * org.paninij.model.Capsule to convert a Capsule Core to an org.paninij.model.ElementCapsule.
  * This class is used when org.paninij.model.ElementCapsule.make(TypeElement e) is called.
  */
-public class CapsuleTemplateVisitor extends SimpleElementVisitor8<CapsuleElement, CapsuleElement>
+public class CapsuleCoreVisitor extends SimpleElementVisitor8<CapsuleElement, CapsuleElement>
 {
     @Override
     public CapsuleElement visitType(TypeElement e, CapsuleElement capsule) {

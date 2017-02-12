@@ -7,7 +7,7 @@ import org.paninij.lang.Imports;
 import org.paninij.ex.helloworld.HelloWorldShort;
 
 @Capsule
-public class BothAnnotationsTemplate
+public class BothAnnotationsCore
 {
     @Local @Imports HelloWorldShort helloWorld;
 }

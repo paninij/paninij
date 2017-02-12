@@ -46,7 +46,7 @@ public class TestWalaClassLoading
     private static final String CLASSPATH = System.getProperty("java.class.path");
 
     private static final String NORMAL_TYPE = "Lorg/paninij/apt/soter/Secret";
-    private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/apt/soter/LeakyServerTemplate";
+    private static final String CAPSULE_TEMPLATE_TYPE = "Lorg/paninij/apt/soter/LeakyServerCore";
     private static final String CAPSULE_INTERFACE_TYPE = "Lorg/paninij/apt/soter/LeakyServer";
     private static final String CAPSULE_IMPLEMENTATION_TYPE = "Lorg/paninij/apt/soter/LeakyServer$Thread";
     
@@ -68,7 +68,7 @@ public class TestWalaClassLoading
     }
     
     @Test
-    public void loadCapsuleTemplate() {
+    public void loadCapsuleCore() {
         loadTest(CAPSULE_TEMPLATE_TYPE);
     }
     

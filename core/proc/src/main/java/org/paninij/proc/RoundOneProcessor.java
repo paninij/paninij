@@ -83,9 +83,9 @@ public class RoundOneProcessor extends AbstractProcessor {
 
         // TODO: What about if an error was raised in the prior round? See: roundEnv.errorRaised()
 
-        // Perform all remaining code-gen on OK capsule templates:
-        for (TypeElement template : getOkCapsuleTemplates(roundEnv)) {
-            Capsule model = CapsuleElement.make(template);
+        // Perform all remaining code-gen on OK capsule cores:
+        for (TypeElement core : getOkCapsuleCores(roundEnv)) {
+            Capsule model = CapsuleElement.make(core);
             for (Procedure procedure : model.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
@@ -95,9 +95,9 @@ public class RoundOneProcessor extends AbstractProcessor {
             artifactMaker.add(capsuleTaskFactory.make(model));
         }
 
-        // Perform all remaining code-gen on OK signature templates:
-        for (TypeElement template : getOkSignatureTemplates(roundEnv)) {
-            Signature model = SignatureElement.make(template);
+        // Perform all remaining code-gen on OK signature cores:
+        for (TypeElement core : getOkSignatureCores(roundEnv)) {
+            Signature model = SignatureElement.make(core);
             for (Procedure procedure : model.getProcedures()) {
                 artifactMaker.add(messageFactory.make(procedure));
             }
@@ -108,39 +108,39 @@ public class RoundOneProcessor extends AbstractProcessor {
     }
 
     /**
-     * <p>Get all OK capsule templates whose capsule interfaces were generated in the last round. We
-     * consider a capsule template to be OK if it passes all checks (i.e. all checks return an OK
+     * <p>Get all OK capsule cores whose capsule interfaces were generated in the last round. We
+     * consider a capsule core to be OK if it passes all checks (i.e. all checks return an OK
      * {@link Result}).
      *
-     * <p>If some capsule template whose capsule interface was generated in the last round does not
+     * <p>If some capsule core whose capsule interface was generated in the last round does not
      * pass some check, then this method has the side effect of reporting this failed check via
      * {@link #error}.
      *
-     * <p>Code generation ought to be able to be performed on all capsule templates returned from
+     * <p>Code generation ought to be able to be performed on all capsule cores returned from
      * this method.
      *
      * @param roundEnv
      *          The current round environment, in which we lookup capsule interfaces generated in
      *          the last round.
      * @return
-     *          A newly instantiated set of type elements of capsule templates adhering to the
+     *          A newly instantiated set of type elements of capsule cores adhering to the
      *          above description.
      */
-    private Set<TypeElement> getOkCapsuleTemplates(RoundEnvironment roundEnv) {
+    private Set<TypeElement> getOkCapsuleCores(RoundEnvironment roundEnv) {
         Set<TypeElement> set = new HashSet<>();
 
         for (Element iface : roundEnv.getElementsAnnotatedWith(CapsuleInterface.class)) {
-            String templateName = iface + CAPSULE_CORE_SUFFIX;
-            TypeElement template = elementUtils.getTypeElement(templateName);
-            if (template == null) {
+            String coreName = iface + CAPSULE_CORE_SUFFIX;
+            TypeElement core = elementUtils.getTypeElement(coreName);
+            if (core == null) {
                 String msg = "Found a capsule interface, but could not find its corresponding "
-                           + "capsule template: " + templateName;
+                           + "capsule core: " + coreName;
                 throw new IllegalStateException(msg);
             }
 
-            Result result = capsuleCheck.checkCapsule(template);
+            Result result = capsuleCheck.checkCapsule(core);
             if (result.ok()) {
-                set.add(template);
+                set.add(core);
             } else {
                 error(result.errMsg(), result.offender());
             }
@@ -150,10 +150,10 @@ public class RoundOneProcessor extends AbstractProcessor {
         // the prior checks need to have already been performed before this check will behave
         // correctly.
         Set<TypeElement> filteredSet = new HashSet<>();
-        for (TypeElement template : set) {
-            Result result = cycleCheck.checkCapsule(template);
+        for (TypeElement core : set) {
+            Result result = cycleCheck.checkCapsule(core);
             if (result.ok()) {
-                filteredSet.add(template);
+                filteredSet.add(core);
             } else {
                 error(result.errMsg(), result.offender());
             }
@@ -163,21 +163,21 @@ public class RoundOneProcessor extends AbstractProcessor {
     }
 
     /**
-     * Just like {@link #getOkCapsuleTemplates(RoundEnvironment)} but for signature templates.
+     * Just like {@link #getOkCapsuleCores(RoundEnvironment)} but for signature cores.
      */
-    private Set<TypeElement> getOkSignatureTemplates(RoundEnvironment roundEnv) {
-        // Note: In the current implementation, all signature template checks will have already been
+    private Set<TypeElement> getOkSignatureCores(RoundEnvironment roundEnv) {
+        // Note: In the current implementation, all signature core checks will have already been
         // performed in the previous round, and no more checks need to be performed here.
         Set<TypeElement> set = new HashSet<>();
         for (Element iface : roundEnv.getElementsAnnotatedWith(SignatureInterface.class)) {
-            String templateName = iface + SIGNATURE_SPEC_SUFFIX;
-            TypeElement template = elementUtils.getTypeElement(templateName);
-            if (template == null) {
+            String coreName = iface + SIGNATURE_SPEC_SUFFIX;
+            TypeElement core = elementUtils.getTypeElement(coreName);
+            if (core == null) {
                 String msg = "Found a signature interface, but could not find its corresponding "
-                           + "signature template: " + templateName;
+                           + "signature core: " + coreName;
                 throw new IllegalStateException(msg);
             }
-            set.add(template);
+            set.add(core);
         }
         return set;
     }
