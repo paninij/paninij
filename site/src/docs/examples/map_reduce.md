@@ -5,7 +5,7 @@ title: "Example: Map Reduce"
 
 ``` java
 @Capsule
-class SupervisorTemplate {
+class SupervisorCore {
     static final M = 10;
     static final R = 5;
 
@@ -34,7 +34,7 @@ class SupervisorTemplate {
 
 ``` java
 @Capsule
-class MapperTemplate {
+class MapperCore {
     @Imported Reducer reducers;
     @Future Void map(Items w) {
         for (Item i : w) {
@@ -47,7 +47,7 @@ class MapperTemplate {
 
 ``` java
 @Capsule
-class ReducerTemplate {
+class ReducerCore {
     private State s;
     Result reduce() {
         ...
