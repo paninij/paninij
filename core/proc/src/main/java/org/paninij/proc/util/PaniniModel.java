@@ -49,7 +49,7 @@ public class PaniniModel
     public static final String CAPSULE_CORE_SUFFIX = "Core";
     public static final String CAPSULE_TEST_CORE_SUFFIX = "Core";
     public static final String CAPSULE_TEST_SUFFIX = "Test";
-    public static final String SIGNATURE_SPEC_SUFFIX = "Spec";
+    public static final String SIGNATURE_SPEC_SUFFIX = "Core";
 
     public static final String[] specialPaniniDecls = {"init", "design", "run"};
 
