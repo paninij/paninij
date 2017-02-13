@@ -3,7 +3,7 @@ layout: home
 title: "@PaniniJ"
 ---
 
-#### What is it?
+## What is it?
 
 @PaniniJ is a Java extension for safer and more modular concurrent
 programming. It adds **capsules** to Java via an easy-to-integrate compiler
@@ -18,7 +18,7 @@ Adding @PaniniJ to your Java project is as simple as adding a JAR or a
 Maven-style dependency.
 
 
-#### Why?
+## Why?
 
 Existing concurrent programming practices leave practitioners with no choice but
 to program using unbridled concurrency mechanisms, and then find and remove
@@ -34,7 +34,7 @@ concurrency errors that can be eliminated from capsule-oriented programs by
 construction.
 
 
-#### Goals
+## Goals
 
 - **Solve pervasive and oblivious interference problems:** enable modular
   reasoning about concurrent programs.
