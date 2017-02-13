@@ -2,10 +2,6 @@
 ---
 
 header {
-  div#header-banner-flex-space {
-    flex-grow: 2;
-  }
-
   #banner-logo {
     font-size: 14px;
   }
@@ -49,7 +45,7 @@ header {
     h2 {
       font-size: 1rem;
       font-weight: lighter;
-      margin-bottom: 1rem;
+      margin-bottom: 0rem;
       color: #9F211A;
     }
   }
