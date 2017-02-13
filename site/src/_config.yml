@@ -35,6 +35,8 @@ collections:
     output: true
   papers:
     output: true
+  man:
+    output: true
 
 # Set default layout for each collection.
 defaults:
@@ -53,3 +55,8 @@ defaults:
       path: ""
     values:
       layout: paper
+  - scope:
+      type: man
+      path: ""
+    values:
+      layout: man/page
