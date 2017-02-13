@@ -2,64 +2,8 @@
 layout: base
 ---
 
-<div class="container">
-  <div class="flex-separate">
-    <header>
-      <a href="/" id="header-logo">
-        <img src="/img/logo.svg" alt="@PaniniJ Logo"/>
-      </a>
-      <div id="header-text">
-        <h1>&#64;PaniniJ</h1>
-        <h2>Better Modularity &#8658; Better Concurrency</h2>
-      </div>
-    </header>
-    <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#collapseNav">&#9776;</button>
-  </div>
-
-  <nav class="navbar navbar-dark row">
-    <div class="collapse navbar-toggleable-xs" id="collapseNav">
-      <ul class="nav navbar-nav">
-        <li class="nav-item btn-group col-xs-12 col-sm-2">
-          <a class="dropdown-toggle nav-link" id="intro-menu-toggler" data-toggle="dropdown" href="#">Intro</a>
-          <div class="dropdown-menu">
-            {% for intro in site.intros %}
-            <a class="dropdown-item" href="{{ intro.url }}">{{ intro.short_title }}</a>
-            {% endfor %}
-          </div>
-        </li>
-        <li class="nav-item btn-group col-xs-12 col-sm-2">
-          <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Setup</a>
-          <div class="dropdown-menu">
-            {% for setup in site.setups %}
-            <a class="dropdown-item" href="{{ setup.url }}">{{ setup.short_title }}</a>
-            {% endfor %}</div>
-        </li>
-        <li class="nav-item btn-group col-xs-12 col-sm-2">
-          <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="/docs/glossary.html">Glossary</a>
-            <a class="dropdown-item" href="/docs/javadoc/">Javadoc</a>
-            <a class="dropdown-item" href="/docs/examples/hello_world.html">Example: Hello World</a>
-            <a class="dropdown-item" href="/docs/examples/map_reduce.html">Example: Map-Reduce</a>
-            <a class="dropdown-item" href="/docs/history.html">History</a>
-          </div>
-        </li>
-        <li class="nav-item col-xs-12 col-sm-2">
-          <a class="nav-link" href="/posts/">Posts</a>
-        </li>
-        <li class="nav-item col-xs-12 col-sm-2">
-          <a class="nav-link" href="/papers/">Papers</a>
-        </li>
-        <li class="nav-item col-xs-12 col-sm-2">
-          <a class="nav-link" href="/people/">People</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-</div>
-
+{% include header/header.html %}
 <br />
-
 {{ content }}
-
-{% include github_corner.html %}
+<!--{% include footer.html %}-->
+{% include header/github_corner.html %}
