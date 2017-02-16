@@ -26,13 +26,13 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class DelayCore implements ProcessorCore {
 
-    @Imports Processor next;
-    @Imports String sourceId;
-    @Imports int delayLength;
+    @Imported Processor next;
+    @Imported String sourceId;
+    @Imported int delayLength;
 
     int placeHolder = 0;
     double[] state;

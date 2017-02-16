@@ -26,10 +26,10 @@
 package edu.rice.habanero.benchmarks.nqueenk;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class WorkerCore {
-    @Imports Master master;
+    @Imported Master master;
 
     int threshold = NQueensConfig.THRESHOLD;
     int size = NQueensConfig.SIZE;

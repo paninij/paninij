@@ -1,9 +1,9 @@
 package org.paninij.proc.check.capsule.fields.cycles;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule
 public class OkCore {
-    @Imports Ok ok;
+    @Imported Ok ok;
 }

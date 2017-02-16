@@ -28,12 +28,15 @@ package edu.rice.habanero.benchmarks.big;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class NodeCore {
-    @Imports int id;
-    @Imports Node[] nodes = new Node[BigConfig.W];
-    @Imports Sink sink;
+    @Imported
+    int id;
+    @Imported
+    Node[] nodes = new Node[BigConfig.W];
+    @Imported
+    Sink sink;
 
     int numPings = 0;
     int numMessages = BigConfig.N;

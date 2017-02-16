@@ -27,14 +27,16 @@ package edu.rice.habanero.benchmarks.logmap;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
+import org.paninij.lang.Imported;
 import org.paninij.lang.Local;
-import org.paninij.lang.Imports;
 
 @Capsule public class SeriesWorkerCore {
     @Local RateComputer computer;
 
-    @Imports int id;
-    @Imports double term;
+    @Imported
+    int id;
+    @Imported
+    double term;
 
     public void design(SeriesWorker self) {
         computer.imports(id);

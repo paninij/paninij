@@ -34,10 +34,10 @@ package org.paninij.lang;
  * <h3>Details</h3>
  * <p>
  * The @Local annotation is used to set up a relationship between two capsules. When a capsule wishes to utilize procedures on
- * another capsule, it must declare it as a field and annotate it with either @Local or @Imports. This allows the Panini System 
+ * another capsule, it must declare it as a field and annotate it with either @Local or @Imported. This allows the Panini System 
  * to create static connections between capsules and ensure safe concurrency.
  * <p>
- * The difference between @Local and @Imports is that the @Local reference is created and managed by the capsule that includes it as a field. An @Imports 
+ * The difference between @Local and @Imported is that the @Local reference is created and managed by the capsule that includes it as a field. An @Imported 
  * requires that the reference be passed into the capsule at initialization time.
  * <h3>Exceptions</h3>
  * <p>
@@ -78,7 +78,8 @@ package org.paninij.lang;
  * None
  * <h3>Associated Annotations</h3>
  * <p>
- * This annotation and {@link org.paninij.lang.Imports @Imports} are used to define capsule state and connections between capsules in a system.
+ * This annotation and {@link org.paninij.lang.Imported @Imported} are used to define capsule
+ * state and connections between capsules in a system.
  *
  */
 public @interface Local { /* No annotation arguments. */ }

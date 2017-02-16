@@ -26,10 +26,10 @@
 package org.paninij.examples.pingpong;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class PongCore {
-    @Imports Ping ping;
+    @Imported Ping ping;
 
     public void pong(int n) {
         ping.ping();

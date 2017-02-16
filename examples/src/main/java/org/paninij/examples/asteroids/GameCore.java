@@ -31,7 +31,7 @@ import java.util.Random;
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Handler;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 import org.paninij.lang.Local;
 import org.paninij.lang.EventConnection;
 import org.paninij.lang.RegisterType;
@@ -39,8 +39,8 @@ import org.paninij.lang.RegisterType;
 @Capsule
 public class GameCore {
     @Local Step step;
-    @Imports View view;
-    @Imports Ship ship;
+    @Imported View view;
+    @Imported Ship ship;
 
     short[] asteroidPositions;
     int asteroidPos;

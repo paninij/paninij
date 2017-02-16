@@ -33,7 +33,7 @@ package org.paninij.lang;
  * <h3>Details</h3>
  * <p>A root capsule is a capsule from which a capsule  system can be started (often also an
  * active capsule.) A root capsule cannot have any fields annotated with {@link
- * org.paninij.lang.Imports &#64;Imports} (i.e. it cannot have any dependencies). Root capsules are
+ * org.paninij.lang.Imported &#64;Imports} (i.e. it cannot have any dependencies). Root capsules are
  * only allowed to send outgoing messages. Therefore it is common for a root capsule to have {@link
  * org.paninij.lang.Local &#64;Local} fields.
  * 
@@ -45,7 +45,7 @@ package org.paninij.lang;
  * &#64;Capsule}.
  *
  * <p>A class annotated with &#64;Root must not contain any fields annotated with {@link
- * org.paninij.lang.Imports &#64;Imports}.
+ * org.paninij.lang.Imported &#64;Imports}.
  * 
  * <h3>Examples</h3>
  * <p>In this example, we create a capsule called HelloWorldShort and designate it as the root capsule. A main

@@ -30,11 +30,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class ReaderCore
 {
-    @Imports Bucket[] buckets;
+    @Imported Bucket[] buckets;
 
     public void read(String[] filenames) {
         if (filenames.length == 0) process("shaks12.txt");

@@ -28,14 +28,14 @@ package org.paninij.examples.helloworld;
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 import org.paninij.lang.String;
 
 @Capsule
 class GreeterCore
 {
     String message;
-    @Imports Stream s;
+    @Imported Stream s;
 
     void init() {
         message = new String("Hello World!");

@@ -40,7 +40,7 @@ import org.paninij.lang.Local;
 import org.paninij.lang.Event;
 
 import org.paninij.lang.Broadcast;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 /**
  * The Core visitor as the main visitor for all capsule cores. This class is used by
@@ -80,7 +80,7 @@ public class CapsuleCoreVisitor extends SimpleElementVisitor8<CapsuleElement, Ca
 
         if (e.getAnnotation(Local.class) != null) {
             capsule.addLocals(variable);
-        } else if (e.getAnnotation(Imports.class) != null) {
+        } else if (e.getAnnotation(Imported.class) != null) {
             capsule.addImportDecl(variable);
         } else if (eventName.equals(fullTypeName)) {
             if (e.getAnnotation(Broadcast.class) != null) {

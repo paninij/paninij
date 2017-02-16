@@ -26,12 +26,12 @@
 package edu.rice.habanero.benchmarks.concsll;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
 @Capsule public class SortedListCore {
-    @Imports Worker[] workers;
+    @Imported Worker[] workers;
     SortedLinkedList<Integer> dataList = new SortedLinkedList<Integer>();
 
     public void write(int value, int id) {

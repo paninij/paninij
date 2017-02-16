@@ -34,7 +34,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 import org.paninij.lang.Root;
 
 public class CheckForImportedFieldsOnRoot implements CapsuleCheck
@@ -44,7 +44,7 @@ public class CheckForImportedFieldsOnRoot implements CapsuleCheck
         if (hasAnnotation(core, Root.class)) {
             for (Element elem : core.getEnclosedElements()) {
                 if (isImportField(elem)) {
-                    String err = "A root capsule cannot have any `@Imports` fields.";
+                    String err = "A root capsule cannot have any `@Imported` fields.";
                     return error(err, CheckForImportedFieldsOnRoot.class, elem);
                 }
             }
@@ -58,6 +58,6 @@ public class CheckForImportedFieldsOnRoot implements CapsuleCheck
     
     private static boolean isImportField(Element elem) {
         return elem.getKind() == ElementKind.FIELD
-            && hasAnnotation(elem, Imports.class);
+            && hasAnnotation(elem, Imported.class);
     }
 }

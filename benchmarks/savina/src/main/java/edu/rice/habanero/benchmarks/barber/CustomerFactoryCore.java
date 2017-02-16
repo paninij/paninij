@@ -29,11 +29,12 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class CustomerFactoryCore {
 
-    @Imports WaitingRoom waitingRoom;
+    @Imported
+    WaitingRoom waitingRoom;
 
     Random random = new Random();
     int numHaircutsSoFar = 0;

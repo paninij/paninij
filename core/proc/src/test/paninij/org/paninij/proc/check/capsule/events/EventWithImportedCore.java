@@ -2,11 +2,11 @@ package org.paninij.proc.check.capsule.events;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.PaniniEvent;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 import org.paninij.lang.Broadcast;
 
 @Capsule
-public class EventWithImportsCore
+public class EventWithImportedCore
 {
-    @Broadcast @Imports public PaniniEvent<String> event;
+    @Broadcast @Imported public PaniniEvent<String> event;
 }

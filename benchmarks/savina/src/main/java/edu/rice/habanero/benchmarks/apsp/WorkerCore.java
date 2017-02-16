@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class WorkerCore {
     int blockSize = ApspConfig.B;
@@ -38,9 +38,12 @@ import org.paninij.lang.Imports;
     int numBlocksInSingleDim = graphSize / blockSize;
     int numNeighbors = 2 * (numBlocksInSingleDim - 1);
 
-    @Imports Master master;
-    @Imports Worker[] neighbors = new Worker[numNeighbors];
-    @Imports int myBlockId;
+    @Imported
+    Master master;
+    @Imported
+    Worker[] neighbors = new Worker[numNeighbors];
+    @Imported
+    int myBlockId;
 
     int rowOffset;
     int colOffset;

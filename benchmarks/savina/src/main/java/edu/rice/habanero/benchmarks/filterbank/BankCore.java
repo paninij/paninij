@@ -27,15 +27,15 @@ package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class BankCore implements ProcessorCore {
 
-    @Imports int sourceId;
-    @Imports int numColumns;
-    @Imports double[] H;
-    @Imports double[] F;
-    @Imports Integrator integrator;
+    @Imported int sourceId;
+    @Imported int numColumns;
+    @Imported double[] H;
+    @Imported double[] F;
+    @Imported Integrator integrator;
 
     @Local Delay delay1;
     @Local FirFilter fir1;

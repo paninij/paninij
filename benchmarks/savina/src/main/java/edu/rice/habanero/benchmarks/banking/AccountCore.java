@@ -26,12 +26,12 @@
 package edu.rice.habanero.benchmarks.banking;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class AccountCore {
 
-    @Imports Teller teller;
-    @Imports Account[] accounts = new Account[BankingConfig.A];
+    @Imported Teller teller;
+    @Imported Account[] accounts = new Account[BankingConfig.A];
 
     double balance = BankingConfig.INITIAL_BALANCE;
 

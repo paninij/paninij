@@ -44,7 +44,7 @@ import javax.lang.model.type.TypeMirror;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.CapsuleInterface;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 import org.paninij.lang.Local;
 import org.paninij.lang.Signature;
 import org.paninij.lang.SignatureInterface;
@@ -52,7 +52,7 @@ import org.paninij.lang.SignatureInterface;
 
 /**
  * Implements various checks related to a capsule core's fields, especially related to the
- * `@Local` and `@Imports` annotations.
+ * `@Local` and `@Imported` annotations.
  */
 public class CheckFields implements CapsuleCheck
 {
@@ -81,11 +81,11 @@ public class CheckFields implements CapsuleCheck
     {
         assert field.getKind() == FIELD;
 
-        final boolean hasImports = hasAnnotation(field, Imports.class);
+        final boolean hasImports = hasAnnotation(field, Imported.class);
         final boolean hasLocal = hasAnnotation(field, Local.class);
         
         if (hasImports && hasLocal) {
-            String err = "A field cannot be annotated with both `@Local` and `@Imports`.";
+            String err = "A field cannot be annotated with both `@Local` and `@Imported`.";
             return error(err, CheckFields.class, field);
         }
         
@@ -100,7 +100,7 @@ public class CheckFields implements CapsuleCheck
         {
             if (!hasImports && !hasLocal) {
                 String err = "Found a field whose type seems to be a capsule, but it is not "
-                           + "annotated with either `@Local` or `@Imports`.";
+                           + "annotated with either `@Local` or `@Imported`.";
                 return error(err, CheckFields.class, field);
             }
             
@@ -110,7 +110,7 @@ public class CheckFields implements CapsuleCheck
                 return error(err, CheckFields.class, field);
             }
             
-            // TODO: Check that @Local and @Imports fields don't have initializers.
+            // TODO: Check that @Local and @Imported fields don't have initializers.
         }
         else
         {

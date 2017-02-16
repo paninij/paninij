@@ -27,12 +27,12 @@ package org.paninij.examples.matmul;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class MasterCore {
     int numWorkers = Config.NUM_WORKERS;
 
-    @Imports MatrixData data;
+    @Imported MatrixData data;
     @Local Worker[] workers = new Worker[numWorkers];
 
     int numWorkSent = 0;

@@ -43,14 +43,14 @@ import javax.lang.model.type.TypeMirror;
 
 import org.paninij.lang.Broadcast;
 import org.paninij.lang.Chain;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 import org.paninij.lang.Local;
 import org.paninij.lang.Event;
 
 
 /**
  * Implements various checks related to a capsule core's fields, especially related to the
- * `@Local` and `@Imports` annotations.
+ * `@Local` and `@Imported` annotations.
  */
 public class CheckEventFields implements CapsuleCheck
 {
@@ -97,9 +97,9 @@ public class CheckEventFields implements CapsuleCheck
             return error(err, CheckFields.class, field);
         }
 
-        if (!nonEventType && (hasAnnotation(field, Imports.class) 
+        if (!nonEventType && (hasAnnotation(field, Imported.class) 
                 || hasAnnotation(field, Local.class))) {
-            String err = "An event cannot be annotated with `@Local` or `@Imports`";
+            String err = "An event cannot be annotated with `@Local` or `@Imported`";
             return error(err, CheckFields.class, field);
         }
 

@@ -26,12 +26,12 @@
 package edu.rice.habanero.benchmarks.bndbuffer;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class ProducerCore {
 
-    @Imports Manager manager;
-    @Imports int id;
+    @Imported Manager manager;
+    @Imported int id;
 
     double prodItem = 0;
     int numItemsToProduce = ProdConsBoundedBufferConfig.numItemsPerProducer;

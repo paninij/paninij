@@ -26,7 +26,7 @@
 package org.paninij.proc.capsuletest;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 /*
 @Capsule

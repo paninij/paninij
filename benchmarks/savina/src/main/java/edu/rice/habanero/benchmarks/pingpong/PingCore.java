@@ -26,11 +26,11 @@
 package edu.rice.habanero.benchmarks.pingpong;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class PingCore {
     int pings = PingPongConfig.N;
-    @Imports Pong pong;
+    @Imported Pong pong;
 
     public void doPing() {
         pings--;

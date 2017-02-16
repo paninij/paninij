@@ -26,11 +26,11 @@
 package org.paninij.examples.matmul;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class WorkerCore {
-    @Imports Master master;
-    @Imports MatrixData data;
+    @Imported Master master;
+    @Imported MatrixData data;
 
     public void doWork(Work work) {
         int srA = work.srA;

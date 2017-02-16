@@ -28,12 +28,14 @@ package edu.rice.habanero.benchmarks.barber;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class BarberCore {
 
-    @Imports WaitingRoom waitingRoom;
-    @Imports CustomerFactory factory;
+    @Imported
+    WaitingRoom waitingRoom;
+    @Imported
+    CustomerFactory factory;
 
     Random random = new Random();
 

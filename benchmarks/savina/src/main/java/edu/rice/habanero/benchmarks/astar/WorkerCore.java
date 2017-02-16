@@ -29,12 +29,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 import edu.rice.habanero.benchmarks.astar.GuidedSearchConfig.GridNode;
 
 @Capsule public class WorkerCore {
-    @Imports Master master;
+    @Imported
+    Master master;
 
     int threshold = GuidedSearchConfig.THRESHOLD;
 

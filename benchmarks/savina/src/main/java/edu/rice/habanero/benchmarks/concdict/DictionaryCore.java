@@ -29,12 +29,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
 @Capsule public class DictionaryCore {
-    @Imports Worker[] workers;
+    @Imported Worker[] workers;
     Map<Integer, Integer> dataMap = new HashMap<Integer, Integer>(DictionaryConfig.DATA_MAP);
 
     public void write(int key, int value, int id) {

@@ -30,11 +30,12 @@ import java.util.Queue;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class WaitingRoomCore {
 
-    @Imports Barber barber;
+    @Imported
+    Barber barber;
 
     Queue<Customer> waitingCustomers = new LinkedList<Customer>();
     boolean barberAsleep = true;

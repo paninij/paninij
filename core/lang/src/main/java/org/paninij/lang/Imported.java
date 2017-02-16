@@ -33,11 +33,11 @@ package org.paninij.lang;
  * 
  * <h3>Details</h3>
  * <p>
- * The @Imports annotation is used to create a connection between capsules. It is used to signify that the reference to the capsule must be passed in 
- * at initialization. The field with the @Imports annotation specifies a connection to another capsule that this capsule does not initialize. The parent of the
- * capsule core with the @Imports field must supply the reference via a design method call. 
+ * The @Imported annotation is used to create a connection between capsules. It is used to signify that the reference to the capsule must be passed in 
+ * at initialization. The field with the @Imported annotation specifies a connection to another capsule that this capsule does not initialize. The parent of the
+ * capsule core with the @Imported field must supply the reference via a design method call. 
  * <p>
- * The difference between @Local and @Imports is that the @Local reference is created and managed by the capsule that includes it as a field. An @Imports 
+ * The difference between @Local and @Imported is that the @Local reference is created and managed by the capsule that includes it as a field. An @Imported 
  * requires that the reference be passed into the capsule at initialization time.
  * <h3>Exceptions</h3>
  * <p>
@@ -48,8 +48,8 @@ package org.paninij.lang;
  * The active capsule HelloWorld holds a connection to the passive capsules Greeter and Console in order to call on its procedures. This connection is
  * set up by the @Local annotation on the Greeter and Console field of the HelloWorldCore. 
  * <p>
- * The capsule Greeter has a field of type Console that is annotated with the @Imports. This means
- * that the Greeter wants to call procedures of a Console capsule, but does not want to create the instance of the capsule. By using @Imports, it specifies that the parent capsule of the Greeter
+ * The capsule Greeter has a field of type Console that is annotated with the @Imported. This means
+ * that the Greeter wants to call procedures of a Console capsule, but does not want to create the instance of the capsule. By using @Imported, it specifies that the parent capsule of the Greeter
  * must supply the reference to the Console capsule. This is shown in the HelloWorldCore in the design method where g.imports is called and the reference to the Console capsule is passed as
  * a parameter.  
  * <h4>ConsoleCore.java</h4>
@@ -103,4 +103,4 @@ package org.paninij.lang;
  * This annotation and {@link org.paninij.lang.Local @Local} are used to define capsule state and connections between capsules in a system.
  *
  */
-public @interface Imports { /* No annotation arguments. */ }
+public @interface Imported { /* No annotation arguments. */ }

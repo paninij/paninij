@@ -2,12 +2,12 @@ package org.paninij.ex.xyz;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule
 public class YCore
 {
-    @Imports X x;
+    @Imported X x;
     @Local Z z;
 
     public void design(Y self) {

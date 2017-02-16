@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class IntegratorCore {
-    @Imports Combine combine;
+    @Imported Combine combine;
     int numChannels = FilterBankConfig.NUM_CHANNELS;
     final List<Map<Integer, Double>> data = new ArrayList<Map<Integer, Double>>();
 

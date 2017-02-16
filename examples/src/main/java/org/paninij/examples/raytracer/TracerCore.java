@@ -27,14 +27,14 @@ package org.paninij.examples.raytracer;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class TracerCore {
 
-	@Imports int chunk;
-    @Imports int chunkHeight;
-    @Imports int screenWidth;
-    @Imports int screenHeight;
+	@Imported int chunk;
+    @Imported int chunkHeight;
+    @Imported int screenWidth;
+    @Imported int screenHeight;
 
     @Future
     public Pixel[] renderChunk(Scene scene) {

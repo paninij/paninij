@@ -28,11 +28,11 @@ package edu.rice.habanero.benchmarks.radixsort;
 import java.util.Random;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class IntSourceCore {
     Random random = new Random(RadixSortConfig.S);
-    @Imports Adder head;
+    @Imported Adder head;
 
     public void start() {
         for (int i = 0; i < RadixSortConfig.N; i++) {

@@ -26,12 +26,12 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class TaggedForwardCore implements ProcessorCore {
 
-    @Imports Integrator integrator;
-    @Imports int sourceId;
+    @Imported Integrator integrator;
+    @Imported int sourceId;
 
     @Override
     public void process(double value) {

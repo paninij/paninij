@@ -27,11 +27,11 @@ package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class SourceCore {
-    @Imports Producer producer;
-    @Imports Branches branches;
+    @Imported Producer producer;
+    @Imported Branches branches;
 
     int maxValue = 1000;
     int current = 0;

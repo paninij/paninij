@@ -25,14 +25,14 @@
  *******************************************************************************/
 package edu.rice.habanero.benchmarks.radixsort;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 import edu.rice.habanero.benchmarks.radixsort.RadixSortConfig;
 
 
 @Capsule public class SortCore implements AdderCore {
-    @Imports Adder next;
-    @Imports Long radix;
+    @Imported Adder next;
+    @Imported Long radix;
 
     int valuesSoFar = 0;
 

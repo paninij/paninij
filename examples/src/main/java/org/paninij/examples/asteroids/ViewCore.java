@@ -27,12 +27,12 @@
 package org.paninij.examples.asteroids;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule
 public class ViewCore {
-    @Imports TextAreaUI ui;
-    @Imports Game game;
+    @Imported TextAreaUI ui;
+    @Imported Game game;
 
     private void paintHorizBorder(StringBuilder builder) {
         for (int i = 0; i <= Constants.WIDTH; i++) {

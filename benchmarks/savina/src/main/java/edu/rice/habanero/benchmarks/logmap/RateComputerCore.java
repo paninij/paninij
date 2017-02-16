@@ -27,11 +27,12 @@ package edu.rice.habanero.benchmarks.logmap;
 
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class RateComputerCore {
 
-    @Imports int id;
+    @Imported
+    int id;
     double rate;
 
     public void init() {

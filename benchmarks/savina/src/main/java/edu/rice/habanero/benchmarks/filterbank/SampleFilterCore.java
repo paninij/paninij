@@ -26,12 +26,12 @@
 package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class SampleFilterCore implements ProcessorCore {
 
-    @Imports Processor next;
-    @Imports int sampleRate;
+    @Imported Processor next;
+    @Imported int sampleRate;
 
     int samplesReceived = 0;
 

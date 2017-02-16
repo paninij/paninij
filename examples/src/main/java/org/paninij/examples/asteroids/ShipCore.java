@@ -30,13 +30,13 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Broadcast;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Handler;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 import org.paninij.lang.Event;
 import org.paninij.lang.RegisterType;
 
 @Capsule
 public class ShipCore {
-    @Imports TextAreaUI ui;
+    @Imported TextAreaUI ui;
     @Broadcast Event<Integer> updatePosition;
     @Broadcast Event<Void> firing;
     

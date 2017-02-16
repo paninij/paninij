@@ -26,10 +26,10 @@
 package edu.rice.habanero.benchmarks.cigsmok;
 
 import org.paninij.lang.Capsule;
-import org.paninij.lang.Imports;
+import org.paninij.lang.Imported;
 
 @Capsule public class SmokerCore {
-    @Imports Arbiter arbiter;
+    @Imported Arbiter arbiter;
 
     public void smoke(int busyWaitPeriod) {
         arbiter.notifySmoking();
