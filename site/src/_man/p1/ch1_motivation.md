@@ -1,6 +1,6 @@
 ---
 part: 1
-chapter: 2
+chapter: 1
 title: Motivation
 lede: >
   The Panini programming language is designed to enable implicit concurrency as

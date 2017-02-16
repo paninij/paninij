@@ -1,6 +1,6 @@
 ---
 part: 1
-chapter: 3
+chapter: 2
 title: Getting Started
 ---
 
