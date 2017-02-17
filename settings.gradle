@@ -4,6 +4,8 @@ include ':core'
 include ':core:lang'
 include ':core:proc'
 
+include ':examples'
+
 include ':jdt'
 include ':jdt:plugin'
 

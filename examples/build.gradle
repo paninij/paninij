@@ -5,19 +5,12 @@ plugins {
   id 'idea'
 }
 
-group = 'org.paninij'
-version = '0.2.1-SNAPSHOT'
-
 description = '''@PaniniJ Examples'''
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-  compile 'org.paninij:lang:0.2.1-SNAPSHOT'
-  apt 'org.paninij:proc:0.2.1-SNAPSHOT'
-}
-
-repositories {
-  mavenLocal()
+  apt project(':core:proc')
+  compile project(':core:lang')
 }
