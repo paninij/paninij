@@ -15,7 +15,7 @@ For example, consider the listing below.
 
 **Listing 8.1:** *Confinement violation between capsule instances*
 
-```
+``` java
 import java.util.ArrayList;
 capsule C(C other) {
  ArrayList<Integer> privList = new ArrayList<Integer>();
@@ -34,6 +34,7 @@ capsule TConfineInstance {
  }
 }
 ```
+{: .code-with-line-numbers}
 
 When compiled the Panini compiler will produce a compile-time error:
 
@@ -79,6 +80,8 @@ capsule ConfineTest {
   }
 }
 ```
+{: .code-with-line-numbers}
+
 
 ## Confinement Violation in Return Statements
 
@@ -109,6 +112,8 @@ capsule ConfineTest {
   }
 }
 ```
+{: .code-with-line-numbers}
+
 
 ## Resolving Confinement Violation
 

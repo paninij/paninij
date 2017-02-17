@@ -11,7 +11,7 @@ capsule, of type Distributor, distributes the computation work among the worker
 capsules.
 
 **Listing 12.1:** *Fibonacci Example*
-{% highlight java linenos %}
+``` java
 signature Worker {
     Number execute(int num);
 }
@@ -71,7 +71,8 @@ class Sum extends Number {
     Sum(Number left, Number right){ super(0); this.left = left; this.right = right; }
     @Override int v() { return left.v()+right.v(); }
 }
-{% endhighlight %}
+```
+{: .code-with-line-numbers}
 
 The system capsule of Fibonacci, lines 32–46, declares a system design with 10
 Fibworker capsule instances, line 34, and 1 Distributor capsule instance,

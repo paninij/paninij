@@ -25,7 +25,15 @@ the running average, total, minimum and maximum price of a stock in a day.
 
 ## Architecture and design
 
-In capsule-oriented programming better design leads to better implicit concurrency, i.e. better designed programs often run faster, so it is valuable to start off with the architecture and design. As an overview, the Panini programmer specifies a design block as a collection of capsules, signatures and ordinary object-oriented classes. A capsule is an abstraction for decomposing a software into its parts and a design block is a mechanism for composing these parts together. So the first order of business is to come up with this capsule-oriented design. This involves creating capsules and assigning subtasks to these capsules. To start off:
+In capsule-oriented programming better design leads to better implicit
+concurrency, i.e. better designed programs often run faster, so it is valuable
+to start off with the architecture and design. As an overview, the Panini
+programmer specifies a design block as a collection of capsules, signatures and
+ordinary object-oriented classes. A capsule is an abstraction for decomposing a
+software into its parts and a design block is a mechanism for composing these
+parts together. So the first order of business is to come up with this
+capsule-oriented design. This involves creating capsules and assigning subtasks
+to these capsules. To start off:
 
 1.  Divide the problems into subproblems. In our case:
     a. computing average, sum, min, max
@@ -44,12 +52,13 @@ In capsule-oriented programming better design leads to better implicit concurren
     **Listing 11.1:** *Signature of any of all our pipeline stages*
     ``` java
     signature Stage {
-        // handles pipeline stage input
-        void consume(long n);
-        // reports the current state of the pipeline stage
-        void report();
+      /** Handles pipeline stage input. */
+      void consume(long n);
+      /** reports the current state of the pipeline stage */
+      void report();
     }
     ```
+    {: .code-with-line-numbers}
 
     Now that we have a signature we can create the capsules that represent the
     pipeline stages. Each of the stages that are interchangeable expect a Stage
@@ -61,17 +70,19 @@ In capsule-oriented programming better design leads to better implicit concurren
     capsule Sum(Stage next) implements Stage {...}
     capsule Min(Stage next) implements Stage {...}
     capsule Max(Stage next) implements Stage {...}
-    //we create an additional stage that is used to seal off the pipeline
+    /** An additional stage used to seal off the pipeline. */
     capsule Sink() implements Stage {...}
     ```
+    {: .code-with-line-numbers}
 
     And the only capsule left to define is the one that feeds numbers into the
     pipeline:
 
     **Listing 11.3:** *Pipeline capsule*
     ``` java
-    capsule Pipeline(){...}
+    capsule Pipeline() {...}
     ```
+    {: .code-with-line-numbers}
 
 4.  Integrate capsules to form a design block. We know that we need one Pipeline
     capsule and at least one sink, all other capsules could be composed as often
@@ -88,22 +99,24 @@ In capsule-oriented programming better design leads to better implicit concurren
       void run() {...}
     }
     ```
+    {: .code-with-line-numbers}
 
     Every capsule can have a design block, it effectively marks the capsule as a
     high level component that is composed out of other capsules. In our case,
     the best choice would be to give the Pipeline capsule such a block. This
     declarative design block (lines 2-5) declares one of each Stage capsule
-    types (line 3). On line 4 we link each pipeline stage in the order: Average �
-    Sum � Min � Max � Sink.
+    types (line 3). On line 4 we link each pipeline stage in the order: Average
+    &rarr; Sum &rarr; Min &rarr; Max &rarr; Sink.
+
 
 ## Implementation
 
 ### Capsules implementing Stage
 
-The behaviour of these capsules is fairly straightforward. Every time the
-consume is called they accumulate state and then call the consume procedure on
+The behavior of these capsules is fairly straightforward. Every time `consume()`
+is called, they accumulate state and then call the `consume()` procedure on
 the next capsule (line 4) in the pipeline. They behave in a similar manner for
-the report procedure as well.
+the `report()` procedure as well.
 
 **Listing 11.5:** *Implementations of the pipeline stages*
 ``` java
@@ -142,7 +155,7 @@ capsule Max (Stage next) implements Stage {
 
     void report() {
         next.report();
-        System.out.println("Max␣of␣numbers␣was␣" + max + ".");
+        System.out.println("Max of numbers was " + max + ".");
     }
 }
 
@@ -154,11 +167,12 @@ capsule Sink(long num) implements Stage {
 
     void report() {
         if (count != num)
-            throw new RuntimeException("count␣should␣be:␣" + num + ";␣but␣was:␣" + count);
-        System.out.println("Successful␣" + count + "␣runs!!");
+            throw new RuntimeException("count should be: " + num + "; but was: " + count);
+        System.out.println("Successful " + count + " runs!!");
     }
 }
 ```
+{: .code-with-line-numbers}
 
 The implementation of the compute procedures should be easily understood by any
 Java programmer, it has the same syntax. As for the semantics, a call to a
@@ -192,6 +206,7 @@ capsule Pipeline () {
     }
 }
 ```
+{: .code-with-line-numbers}
 
 The execution of this program begins by allocating memory for all capsule
 instances, and connecting them together as specified in the design declaration

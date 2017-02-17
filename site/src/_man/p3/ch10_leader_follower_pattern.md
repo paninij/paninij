@@ -9,7 +9,7 @@ title: Leader-Follower Pattern
 Servers are naturally concurrent applications, they have to be able to respond
 to requests from clients at any point in time and can make no assumptions about
 when these requests arrive. Panini’s features allow the programmer to write a
-server application as if he/she were writting a sequential program and get the
+server application as if he/she were writing a sequential program and get the
 concurrency needed to make the application viable in a real world setting via
 implicit concurrency. To illustrate we will be coding a simple EchoServer that
 simply repeats everything the clients say.
@@ -29,7 +29,7 @@ simply repeats everything the clients say.
     and assigning subtasks to these capsules.
 
 3.  Make key design decisions. In our case, we want our server to be able to
-    respons to multiple quasi-simultaneous incoming requests with ease.
+    response to multiple quasi-simultaneous incoming requests with ease.
 
 4.  Create capsules and assign responsibilities to capsules. We will start by
     defining the capsule EchoServer.
@@ -38,6 +38,7 @@ simply repeats everything the clients say.
     ``` java
     capsule EchoServer {...}
     ```
+    {: .code-with-line-numbers}
 
     Now that we have a simple name to refer to the server we will define the
     capsule ConnectionHandler which needs to communicate with the server.
@@ -46,6 +47,7 @@ simply repeats everything the clients say.
     ``` java
     capsule ConnectionHandler(EchoServer server) {...}
     ```
+    {: .code-with-line-numbers}
 
     As a separate program we define the client. As you can see bellow the
     EchoClient does not need to know about the capsule EchoServer, it will
@@ -57,6 +59,7 @@ simply repeats everything the clients say.
     ``` java
     capsule EchoClient() {...}
     ```
+    {: .code-with-line-numbers}
 
     integrate capsules to form a design block. Since we want our server to
     handle multiple connections at the same time it makes sense to have multiple
@@ -71,6 +74,7 @@ simply repeats everything the clients say.
       }
     }
     ```
+    {: .code-with-line-numbers}
 
     Every capsule can have a design block, it effectively marks the capsule as a
     high level component that is composed out of other capsules. In our case,
@@ -112,6 +116,7 @@ capsule EchoServer() {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 To allow other capsules to change its state, a capsule can provide capsule
 procedures, procedures for short. A capsule procedure is syntactically similar
@@ -163,6 +168,7 @@ capsule ConnectionHandler(EchoServer server) {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 Any capsule with a run procedure begins executing independently as soon as the
 initialization and interconnection of all capsules is complete and may generate
@@ -230,6 +236,7 @@ capsule EchoClient() {...}
   }
 }
 ```
+{: .code-with-line-numbers}
 
 As you can see, capsules can declare helper procedures: open (line 25) and close
 (line 38). These are accessible only by the owner capsule.

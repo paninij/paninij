@@ -1,5 +1,8 @@
-Chapter 7
-Signature Declarations
+---
+part: 2
+chapter: 7
+title: Signature Declarations
+---
 
 A signature is to a capsule as an interface is to a class. A signature is the
 equivalent of an interface in object-oriented programming. It contains one or
@@ -17,16 +20,18 @@ signature BankAccountSig{
   void deposit(double money);
 }
 ```
+{: .code-with-line-numbers}
 
 To have the `BankAccount` make use of this signature we write:
 
 **Listing 7.2:** *Implementing a signature*
 
 ``` java
-/* since both methods of declared in the signature where
-   already present in the original source code this is
-   the only line that needs modification. */
-capsule BankAccount implements BankAccountSig{
+/* Since both methods declared in the signature were
+   already present in our previous implementation of
+   BankAccount, only this first line needs to be
+   modified. */
+capsule BankAccount implements BankAccountSig {
   double balance;
   => {
    balance = 100.0;
@@ -44,3 +49,4 @@ capsule BankAccount implements BankAccountSig{
   }
 }
 ```
+{: .code-with-line-numbers}

@@ -76,8 +76,10 @@ declaration just gives the capsule a name C.
 **Listing 5.2:** *An empty capsule declaration*
 ``` java
 capsule C {
+    // Nothing in here.
 }
 ```
+{: .code-with-line-numbers}
 
 Capsules can require access to instances of other capsules. For example, in
 listing 5.3 is a new version of the capsule C that requires access to an
@@ -94,6 +96,7 @@ capsule C (D d) {
     ...
 }
 ```
+{: .code-with-line-numbers}
 
 Capsules can also require access to primitive, reference, or array values. For
 example, in listing 5.4 is another version of capsule C that requires access to
@@ -110,22 +113,24 @@ capsule C (D d, boolean b, String s, String[] args) {
     ...
 }
 ```
+{: .code-with-line-numbers}
 
 Capsules can implement signatures. An example is shown in listing 12.1. In this
 listing an empty signature S is implemented by the capsule D.
 
 **Listing 5.5:** *Signatures and capsules*
 
-```
+``` java
 signature S {
 }
 capsule D () implements S {
-        ...
+    ...
 }
 capsule C (S d, boolean b, String s, String[] args) {
-        ...
+    ...
 }
 ```
+{: .code-with-line-numbers}
 
 Capsules can require access to another capsule instance that implement certain
 signatures. For example, in listing 12.1 capsule C now requires access to an
@@ -160,15 +165,16 @@ import java.util.ArrayList;
 signature S {
 }
 capsule D () implements S {
-         String name = "D";
-         ...
+    String name = "D";
+    ...
 }
 capsule C (S d, boolean b, String s, String[] args) {
-         int i;
-         ArrayList<Integer> privList = new ArrayList<Integer>();
-         ...
+    int i;
+    ArrayList<Integer> privList = new ArrayList<Integer>();
+    ...
 }
 ```
+{: .code-with-line-numbers}
 
 A state looks similar to a field in traditional class declarations, but there
 are two major differences.
@@ -220,6 +226,8 @@ capsule C (S d, boolean b, String s, String[] args) {
     ...
 }
 ```
+{: .code-with-line-numbers}
+
 A capsule initializer runs without interruption until completion. A desirable
 initializer should terminate, although there are no restrictions in Panini on
 initializer’s structure to ensure termination.
@@ -242,7 +250,7 @@ takes a single argument s of type String, adds s to name and returns s.
 import java.util.ArrayList;
 
 signature S {
-        String append (String s);
+    String append (String s);
 }
 
 capsule D () implements S {
@@ -269,6 +277,7 @@ capsule C (S d, boolean b, String s, String[] args) {
     ...
 }
 ```
+{: .code-with-line-numbers}
 
 A capsule procedure looks similar to a method in traditional class declarations,
 but there are three major differences.
@@ -337,6 +346,7 @@ capsule C (S d, boolean b, String s, String[] args) {
     }
 }
 ```
+{: .code-with-line-numbers}
 
 For example, in listing 5.9 on lines 24-29 there is an autonomous procedure run
 that runs as soon as memory allocation and initialization for capsules is
@@ -372,6 +382,7 @@ void run() {
     }
 }
 ```
+{: .code-with-line-numbers}
 
 In listing 5.9 on line 4 is another example of calling external capsule
 procedure append. This call waits until the caller has finished running the
@@ -423,6 +434,7 @@ capsule BankAccount() {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 
 ## Implicit concurrency
@@ -434,20 +446,21 @@ Below is an example of such a design where the potential for error is eliminated
 **Listing 5.12:** *Multiple Clients of the Bank Account Capsule*
 
 ``` java
-capsule Bank{
+capsule Bank {
  design {
   BankClient client1;
   BankClient client2;
   BankAccount jointAccount;
 
-  /* since client1 and client2 are both instantiations
-     of a capsule with a run procedure they will be
-     executed concurrently. And they will safely access
+  /* Since client1 and client2 are both instantiations
+     of a capsule with a run procedure, they will be
+     executed concurrently. They will safely access
      the bank account with no need to modify the original
-     implmentation of either the BankClient or BankAccount
-     capsules. */
+     implementation of either the BankClient or the
+     BankAccount capsules. */
   client1(jointAccount);
   client2(jointAccount);
  }
 }
 ```
+{: .code-with-line-numbers}

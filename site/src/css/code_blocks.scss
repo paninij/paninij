@@ -1,0 +1,39 @@
+---
+---
+
+@import url("pygments_themes/default.css");
+
+div.highlight {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 0.4rem;
+  font-size: 0.8rem;
+  font-family: monospace;
+  overflow: auto;
+
+  // Line numbers are disabled by default.
+  pre.lineno {
+    display: none;
+  }
+
+  margin-bottom: 1rem;
+  pre {
+    margin-bottom: 0rem;
+  }
+}
+
+// Add `code-with-line-numbers` to a markdown code block to add line numbers.
+div.code-with-line-numbers {
+  div.highlight {
+    pre.lineno {
+      display: block;
+      padding-right: 0.7rem;
+      margin-right: 0.7rem;
+      color: #aaa;
+      border-radius: 0;
+      border: none;
+      border-right: solid 1px;
+      word-wrap: normal;
+    }
+  }
+}

@@ -29,6 +29,6 @@ is a mechanism for composing instances of capsules to form a subsystem or even
 an entire program.
 
 - [Chapter 5. Capsule Declarations](/man/p2/ch5_capsule_declarations.html)
-- [Chapter 6. Design Declarations](man/p2/ch6_design_declarations.html)
-- [Chapter 7. Signature Declarations](man/p2/ch7_signature_declarations.html)
-- [Chapter 8. Capsule State Confinement](man/p2/ch8_capsule_state_confinement.html)
+- [Chapter 6. Design Declarations](/man/p2/ch6_design_declarations.html)
+- [Chapter 7. Signature Declarations](/man/p2/ch7_signature_declarations.html)
+- [Chapter 8. Capsule State Confinement](/man/p2/ch8_capsule_state_confinement.html)

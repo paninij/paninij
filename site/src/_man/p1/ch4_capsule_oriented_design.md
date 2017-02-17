@@ -84,6 +84,7 @@ capsule UI() { }
 capsule Input() { }
 capsule Asteroids () { }
 ```
+{: .code-with-line-numbers}
 
 This decision, to implement these components using the capsule abstraction,
 automatically handles four concurrency concerns mentioned above. Each capsule
@@ -130,6 +131,7 @@ capsule UI(Game g) { }
 capsule Input(Ship s) { }
 capsule Asteroids () { }
 ```
+{: .code-with-line-numbers}
 
 The third line says that the UI capsule could be connected with an external Game
 capsule. Alternatively, we could read the third line as: “the UI capsule
@@ -162,6 +164,7 @@ capsule Asteroids () {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 Lines six to nine are the new parts of the design for this system. They define
 the internal design for the Asteroids capsule. This declarative design says that
@@ -209,6 +212,7 @@ capsule Asteroids () {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 To compile this program simply run:
 
@@ -248,6 +252,7 @@ capsule Ship {
   int x = 5;
 }
 ```
+{: .code-with-line-numbers}
 
 The listing above shows two states on lines 2 and 3. You could also write state
 initializers to give them initial values, or you could write a capsule
@@ -264,6 +269,7 @@ capsule Ship {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 To allow other capsules to change its state, a capsule can provide capsule
 procedures, procedures for short. A capsule procedure is syntactically similar
@@ -293,6 +299,7 @@ capsule Ship {
   void moveRight() { if (x<10) x++; }
 }
 ```
+{: .code-with-line-numbers}
 
 *Concurrency concerns in Ship’s Design.* Recall from our previous discussion
 that a ship’s data is accessed by both the user input component and the
@@ -337,6 +344,7 @@ capsule Asteroids {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 The execution of this program begins by allocating memory for all capsule
 instances, and connecting them together as specified in the design declaration
@@ -376,6 +384,7 @@ capsule Input (Ship ship) {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 This implementation continually checks for user input and directs the ship to
 move left, right or fire based on the key pressed.

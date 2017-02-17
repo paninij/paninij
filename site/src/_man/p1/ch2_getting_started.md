@@ -33,6 +33,7 @@ capsule HelloWorld {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 This program declares a capsule called HelloWorld. The declaration of this
 capsule starts on line 1 and ends on line 7. The capsule HelloWorld contains
@@ -115,6 +116,7 @@ capsule HelloWorld {
  }
 }
 ```
+{: .code-with-line-numbers}
 
 This new version declares a capsule Console on line 1. This capsule declares a
 single procedure write on line 2 that writes its argument s on the standard

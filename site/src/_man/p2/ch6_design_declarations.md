@@ -17,18 +17,19 @@ For our banking example a design declaration could look like:
 
 ``` java
 capsule Bank {
- design {
-  /* these two lines specify the capsule instances
-     that will be participating in the design */
-  BankAccount account;
-  BankClient client;
+  design {
+    /* These two lines specify the capsule instances
+       that will be participating in the design. */
+    BankAccount account;
+    BankClient client;
 
-  /* this line describes how the capsule instances
-     are connected with each other */
-  client(account);
- }
+    /* This line describes how the capsule instances
+       are connected with each other */
+      client(account);
+  }
 }
 ```
+{: .code-with-line-numbers}
 
 This design declaration spans lines 2-11. On line 5 and 6 this design
 declaration specifies parts (or internal components) of the capsule Bank and on
@@ -60,6 +61,7 @@ capsule BankClient (BankAccountSig account) {
   }
 }
 ```
+{: .code-with-line-numbers}
 
 Two checks are performed on the design declaration to determine if all capsule
 instances are being properly wired.
@@ -79,21 +81,23 @@ capsule Test {
  }
 }
 ```
+{: .code-with-line-numbers}
 
 The second check ensures that any capsule with arguments are properly wired. For
 example, in the following capsule-oriented program the wiring declarations are
 incomplete.
 
 ``` java
-Capsule C{}
-Capsule D(int i){}
+capsule C {}
+capsule D(int i) {}
 capsule Test {
- design {
-  C c;
-  D d;
- }
+  design {
+    C c;
+    D d;
+  }
 }
 ```
+{: .code-with-line-numbers}
 
 So the compiler will report an error error: Capsule instance d may not be
 correctly initialized. since the capsule instance d on line 6 expects an initial
@@ -107,16 +111,17 @@ instantiated. The syntax is the same as Java’s.
 
 ``` java
 capsule Bank{
- design {
-  BankAccount accounts[5];
-  BankClient client[5];
+  design {
+    BankAccount accounts[5];
+    BankClient client[5];
 
-  for (int i = 0; i &lt; accounts.length; i++) {
-    client[i](accounts[i]);
+    for (int i = 0; i &lt; accounts.length; i++) {
+      client[i](accounts[i]);
+    }
   }
- }
 }
 ```
+{: .code-with-line-numbers}
 
 ## Topology operators in design declarations
 
@@ -151,7 +156,7 @@ then writing
 
 ``` java
 ring(cs);
-``` java
+```
 
 is the same as writing the following n wiring declarations.
 

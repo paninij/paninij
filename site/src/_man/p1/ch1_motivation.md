@@ -81,7 +81,7 @@ needed? A human expert might reach the following conclusions, shown in listing
 
 **Listing 2.1:** Program for a simplified arcade game Asteroids.
 
-{% highlight java linenos %}
+``` java
 class Ship {
     private short state = 0;
     synchronized void die() { state = 2; }
@@ -136,7 +136,8 @@ public class Asteroids extends Thread {
 class UI { /* provides repaint, endgame */ }
 class Input extends Thread { /* reads player input */ }
 class Logic { /* provides step */ }
-{% endhighlight %}
+```
+{: .code-with-line-numbers}
 
 None of the conclusions above, in itself, is difficult to implement in Java.
 Rather, in practice it is the process of visualizing the interactions between

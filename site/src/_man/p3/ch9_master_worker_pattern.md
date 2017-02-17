@@ -12,16 +12,18 @@ method is that we use the ratio, R, between the area of an enclosing square and
 the area on an enclosed circle, R  = pi/4. We then proceed to randomly
 generating points within the above mentioned area of the square and count how
 many of them land in the enclosed circle. The ratio of points that land strictly
-withing the circle to the total number of points is a good approximation of the
+within the circle to the total number of points is a good approximation of the
 ratio R. We then multiply the result by 4 to get an estimate on the value of pi.
 
 ## Architecture and design
 
-In capsule-oriented programming better design leads to better implicit concurrency, i.e. better designed programs often run faster, so it is valuable to start off with the architecture and design.
+In capsule-oriented programming better design leads to better implicit
+concurrency, i.e. better designed programs often run faster, so it is valuable
+to start off with the architecture and design.
 
 1.  Divide the problems into subproblems. In our case, the subproblems are:
     a. randomly generate a point and test if it’s in the boundary of the circle
-    b. agreggate the results
+    b. aggregate the results
 
 2.  The Panini programmer specifies a system as a collection of capsules and
     ordinary object-oriented classes. A capsule is an abstraction for
@@ -37,7 +39,7 @@ In capsule-oriented programming better design leads to better implicit concurren
     generative capsules.
 
     This suggests capsules: Pi, Worker. For convenience we will be creating a
-    wrapper class Number that implicitely handles conversions from integers to
+    wrapper class Number that implicitly handles conversions from integers to
     doubles and back.
 
     **Listing 9.1:** *Declaration of our capsules*
@@ -45,6 +47,7 @@ In capsule-oriented programming better design leads to better implicit concurren
     capsule Pi(String args[]) { }
     capsule Worker() { }
     ```
+    {: .code-with-line-numbers}
 
     As you can see above, capsule Pi will be the one that receives command line
     parameters.
@@ -58,7 +61,7 @@ In capsule-oriented programming better design leads to better implicit concurren
     high level component that is composed out of other capsules. In our case the
     best choice would be to give the Pi capsule such a block. From the
     description of the problem we can see that the Pi capsule needs to know
-    about the Worker capsules, but not the other way arround.
+    about the Worker capsules, but not the other way around.
 
     Let us look at the public interfaces of each capsule and the design block:
 
@@ -77,6 +80,7 @@ In capsule-oriented programming better design leads to better implicit concurren
         void run(){ ... }
     }
     ```
+    {: .code-with-line-numbers}
 
     This declarative design block(lines 10-12) states that the program should
     have a set of 10 Worker capsules.
@@ -100,7 +104,7 @@ parallelism in Panini programs. In this particular case the only state of our
 capsule is the random number generator.
 
 **Listing 9.3:** *Public interfaces of the capsules*
-{% highlight java linenos %}
+``` java
 capsule Worker () {
   Random prng = new Random ();
 
@@ -114,7 +118,8 @@ capsule Worker () {
     return _circleCount;
   }
 }
-{% endhighlight %}
+```
+{: .code-with-line-numbers}
 
 The implementation of the compute procedure should be easily understood by any
 Java programmer, it has the same syntax. As for the semantics, a call to a
@@ -128,10 +133,10 @@ called procedure completes running.
 ### Capsule Pi
 
 Line 5 declares a procedure run, every capsule can optionally declare such a
-method and it is implicitely invoked at the start of the program.
+method and it is implicitly invoked at the start of the program.
 
 **Listing 9.4:** *Public interfaces of the capsules*
-{% highlight java linenos %}
+``` java
 capsule Worker () { /* ... */ }
 capsule Pi (String[] args) {
   design {
@@ -159,7 +164,8 @@ capsule Pi (String[] args) {
                        " samples was:" + (endTime - startTime) + "ms.");
   }
 }
-{% endhighlight %}
+```
+{: .code-with-line-numbers}
 
 ## Implicit concurrency
 
