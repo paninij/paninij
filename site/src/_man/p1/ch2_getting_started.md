@@ -9,23 +9,30 @@ title: Getting Started
 A central goal of capsule-oriented programming and the Panini language is to
 help programmers deal with the challenges of concurrent program design.
 
-The value proposition of the programming paradigm and the programming language
-is to enable greater program modularity and in doing so automatically enable
-greater program concurrency. In fact, Panini does not use explicit concurrency
+The value proposition of the programming paradigm and the compiler plugin is to
+enable greater program modularity and, in doing so, to automatically enable
+greater program concurrency. In fact, @PaniniJ does not use explicit concurrency
 features. Instead, the programmer modularizes a program using capsules, which
-implicitly specify boundaries outside of which concurrency can occur. The Panini
-runtime will automatically enable concurrency in between the boundaries of
-capsules when safe to do so.
+implicitly specify boundaries outside of which concurrency can occur. The
+@PaniniJ runtime will automatically enable concurrency in between the boundaries
+of capsules when it is safe to do so.
+
 
 ## Hello World!
 
-A Panini program is a collection of zero or more capsules. For example, a simple
-"hello world" program in Panini can be written as follows:
+An @PaniniJ program is a collection of one or more capsules. A simple
+"Hello World" capsule can be written as follows.
 
-Listing 3.1: Hello World in Panini
+**Listing 2.1:** Hello World in @PaniniJ
 
 ``` java
-capsule HelloWorld {
+package hello;
+
+import org.paninij.lang.Capsule;
+import org.paninij.lang.Root;
+
+@Root @Capsule
+class HelloWorldCore {
   void run(){
     System.out.println("Panini: Hello World!");
     long time = System.currentTimeMillis();
@@ -35,52 +42,93 @@ capsule HelloWorld {
 ```
 {: .code-with-line-numbers}
 
-This program declares a capsule called HelloWorld. The declaration of this
-capsule starts on line 1 and ends on line 7. The capsule HelloWorld contains
-only one procedure, run on line 2, which prints a message “Panini: Hello World!”
-on line 3 and prints current time on line 5.
+Notice that `HelloWorldCore` is just a plain old Java class. Any standard Java
+compiler will accept and compile this code. However, when the @PaniniJ compiler
+plugin is added to a Java compiler, the annotations on line 6 give this class
+*extra meaning* to the compiler. Because of these annotations, extra compiler
+checks and extra code generation will be performed by the compiler.
 
-This is a complete Panini program that can be compiled and executed.
+In particular, because of the `@Capsule` annotation, this class is interpreted
+by our @PaniniJ-supported Java compiler as a *capsule declaration*: it declares
+a capsule named `HelloWorld`.
 
-When this program is executed, since it has only one capsule, and that capsule
-has a procedure named run, code inside that procedure is executed.
+Also, the `run()` method, spanning lines 9-13, doesn't just declare and define a
+method. `run()` is also interpreted as the `HelloWorld` capsule's run
+declaration. This run declaration is the code which a `HelloWorld` capsule
+instance will run once that capsule is started. A run declaration just contains
+normal Java expressions and statements. In particular, this run declaration says
+that this capsule will just print the hello world message, print the current
+time, and then terminate.
+
+An @PaniniJ capsule such as `HelloWorld` can only be started and executed as
+part of *a capsule system*. On lines 6-8 of the Listing 2.2 below, we see a
+normal Java `main()` method which calls `CapsuleSystem#start()`. This is one
+way to start a capsule system.
+
+**Listing 2.2:** Starting a capsule system with `HelloWorld` as its root.
+
+``` java
+package hello;
+
+import org.paninij.lang.CapsuleSystem;
+
+class Main {
+  public static void main(String[] args) {
+    CapsuleSystem.start(HelloWorld.class, args);
+  }
+}
+```
+{: .code-with-line-numbers}
+
+The `Main` class, the `HelloWorldCore` class, and the `HelloWorld` capsule
+together form a complete @PaniniJ program that can be compiled and executed.
+When this program is executed, it appears to just run the body of the run
+declaration.
 
 
-## Compiling and running Hello World!
+## Compiling and Running Hello World
 
-To compile and run this program, you will need the Panini compiler panc and the
-Panini executable panini. Both these applications are available from the Panini
-web-page http://paninij.org for download. For more information about installing
-and running the compiler see chapter 13.
+There are various ways set up your Java development environment to compile and
+run this program. You can use your favorite Java IDE (e.g. Eclipse, IntelliJ
+IDEA) and/or your favorite build tool (e.g. Maven, Gradle). (See [Chapter
+3](/man/p4/ch3_development_environment.html) for more information.)
 
-Once you have downloaded and installed the Panini distribution, open your
-favorite text editor and save the HelloWorld program in listing 3.1 in a new
-file HelloWorld.java.
+But at a minimum, you need a standard Java 8 compiler, two @PaniniJ JARs, and
+the JVM. The latest @PaniniJ JARs can be downloaded from the
+[@PaniniJ GitHub releases page](https://github.com/paninij/paninij/releases).
 
-To compile this program simply run:
+Once you have downloaded the @Panini JARs, open your favorite text editor along
+side of them, then save Listing 2.1 to a file `hello/HelloWorldCore.java` and
+save Listing 2.2 to a file `hello/Main.java`. Your directory hierarchy should
+look like this:
 
 ```
-$ panc HelloWorld.java
-You can then run this panini program with:
-$ panini HelloWorld
-Panini: Hello World!
-Time is now: 1375940448626
+TODO
 ```
+
+**TODO:** Add `javac` and `java` instructions here.
 
 The printed time is the difference, measured in milliseconds, between the time
 at which this command was issued and midnight, January 1, 1970 UTC.
+
+As per usual with a hello world example, this behavior isn't terribly
+interesting. This is because this capsule system just contains a single capsule
+which runs to completion. We aren't yet seeing capsules run concurrently and
+interacting with one another. The next section demonstrates how to specify a
+graph of concurrently running capsules and to make one capsule invoke the
+procedures of another.
 
 
 ## Decomposing a Program into Capsules
 
 A capsule-oriented program can have more than one capsules. To illustrate, let
-us decompose our HelloWorld program from previous section into two parts.
+us decompose our hello world program from previous section into two parts.
 Throughout this book we will use David Parnas’s information hiding principle as
 our guide for program design. In essence, this principle says that one should
 decompose a program into parts in a manner such that each part is designed to
 “know about” and “hide” certain key decisions about how that program is
 implemented. This is done so that, if necessary, those decisions can be changed
-later by us and others.1
+later by us and others.
 
 We can decompose our HelloWorld program into three parts: a Greeter capsule that
 knows about the method of proper greeting, e.g. “Hello” in English, “Namaste” in
@@ -88,32 +136,36 @@ Hindi, a Console capsule that knows about the medium that will be used to convey
 the greeting, e.g. standard output, a file, and a HelloWorld capsule that puts
 these parts together.
 
-**Listing 3.2:** Hello World Decomposed!
+**Listing 2.3:** Hello World Decomposed!
 
 ``` java
-capsule Console {
+@Capsule
+class ConsoleCore {
   void write(String s) {
-   System.out.println(s);
+    System.out.println(s);
   }
 }
 
-capsule Greeter ( Console c ) {
+@Capsule
+class GreeterCore {
+  @Imported Console c;
   void greet() {
-    c.write("Panini:␣Hello␣World,␣Decomposed!");
+    c.write("Panini: Hello World, Decomposed!");
     long time = System.currentTimeMillis();
-    c.write("Time␣is␣now:␣" + time);
+    c.write("Time is now: " + time);
   }
 }
 
-capsule HelloWorld {
- design {
-  Console c;
-  Greeter g;
-  g(c);
- }
- void run() {
-  g.greet();
- }
+@Root @Capsule
+class HelloWorldCore {
+  @Local Console c;
+  @Local Greeter g;
+  void design() {
+    g.imports(c);
+  }
+  void run() {
+    g.greet();
+  }
 }
 ```
 {: .code-with-line-numbers}
