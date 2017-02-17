@@ -80,6 +80,13 @@ class Main {
 ```
 {: .code-with-line-numbers}
 
+It may seem strange to use `HelloWorld.class` even though we haven't defined
+such a class yet. This is okay, because we are relying on the @PaniniJ compiler
+plugin to inspect `HelloWorld` capsule declaration (i.e. the `HelloWorldCore`
+class) and to then create `HelloWorld` for us. This distinction between a
+user-written capsule core and the @PaniniJ-generated capsule is very important.
+We will discuss why later in this manual.
+
 The `Main` class, the `HelloWorldCore` class, and the `HelloWorld` capsule
 together form a complete @PaniniJ program that can be compiled and executed.
 When this program is executed, it appears to just run the body of the run
@@ -103,20 +110,75 @@ save Listing 2.2 to a file `hello/Main.java`. Your directory hierarchy should
 look like this:
 
 ```
-TODO
+$ tree .
+.
+├── hello
+│   ├── HelloWorldCore.java
+│   └── Main.java
+├── org.paninij-lang-0.2.0.jar
+└── org.paninij-proc-0.2.0.jar
+
+1 directory, 4 files
 ```
 
-**TODO:** Add `javac` and `java` instructions here.
+Now, to compile and execute the program, just run the following commands.
 
-The printed time is the difference, measured in milliseconds, between the time
-at which this command was issued and midnight, January 1, 1970 UTC.
+```
+$ javac -cp org.paninij-lang-0.2.0.jar:org.paninij-proc-0.2.0.jar hello/*.java
+$ java -cp .:org.paninij-lang-0.2.0.jar hello.Main
+Panini: Hello World!
+Time is now: 1487326874036
+```
 
-As per usual with a hello world example, this behavior isn't terribly
-interesting. This is because this capsule system just contains a single capsule
+The first command says to compile both of the java files under `hello/`,
+searching in the @PaniniJ `lang` and `proc` JARs for classes. The second
+command says to run the JVM, using our `hello.Main` class as the entry point,
+and when looking for classes, searching our JARs and also the files which we
+just built. The last two lines are STDOUT from the program. (The time is the
+number of milliseconds since [the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time).)
+
+Notice how easy it was to use the @PaniniJ compiler plugin. We didn't need to
+change or configure the Java compiler at all. Just by including these JARs on
+the compiler classpath, `javac` discovers and uses the @PaniniJ compiler plugin.
+
+The curious may be interested to take a look at the files created by our
+compilation.
+
+```
+$ tree
+.
+├── hello
+│   ├── HelloWorld$Monitor.class
+│   ├── HelloWorld$Monitor.java
+│   ├── HelloWorld$Serial.class
+│   ├── HelloWorld$Serial.java
+│   ├── HelloWorld$Task.class
+│   ├── HelloWorld$Task.java
+│   ├── HelloWorld$Thread.class
+│   ├── HelloWorld$Thread.java
+│   ├── HelloWorld.class
+│   ├── HelloWorld.java
+│   ├── HelloWorldCore.class
+│   ├── HelloWorldCore.java
+│   ├── Main.class
+│   └── Main.java
+├── org.paninij-lang-0.2.0.jar
+└── org.paninij-proc-0.2.0.jar
+
+1 directory, 16 files
+```
+
+Notice that the compiler didn't just create class files, because of the @PaniniJ
+compiler plugin, it also created new Java source files (e.g.
+`hello/HelloWorld.java`, `hello/HelloWorld$Thread.java`, etc.)
+
+As per usual with a hello world example, this is meant to give a small sense of
+@PaniniJ's syntax and tooling. Of course, the behavior of this program isn't
+terribly interesting, since our capsule system just contains a single capsule
 which runs to completion. We aren't yet seeing capsules run concurrently and
 interacting with one another. The next section demonstrates how to specify a
-graph of concurrently running capsules and to make one capsule invoke the
-procedures of another.
+graph of concurrently running capsules and to make a capsule invoke another
+capsule's procedures.
 
 
 ## Decomposing a Program into Capsules
