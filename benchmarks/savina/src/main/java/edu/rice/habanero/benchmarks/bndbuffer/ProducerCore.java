@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.bndbuffer;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class ProducerCore {
+@Capsule class ProducerCore {
 
     @Imported Manager manager;
     @Imported int id;
@@ -38,7 +38,7 @@ import org.paninij.lang.Imported;
     int itemsProduced = 0;
     boolean done = false;
 
-    public void produce() {
+    void produce() {
         if (itemsProduced == numItemsToProduce && !done) {
             manager.producerFinished();
             done = true;

@@ -5,7 +5,7 @@ import org.paninij.lang.PaniniEvent;
 import org.paninij.lang.Broadcast;
 
 @Capsule
-public class EventWrongTypeCore
+class EventWrongTypeCore
 {
-    @Broadcast public String event;
+    @Broadcast String event;
 }

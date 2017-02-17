@@ -30,11 +30,11 @@ import org.paninij.lang.Local;
 import org.paninij.lang.Root;
 
 @Root
-@Capsule public class CountCore
+@Capsule class CountCore
 {
     @Local Counter c;
 
-    public void run() {
+    void run() {
         for (int i = 0; i < CountingConfig.N; i++)
             c.increment();
 

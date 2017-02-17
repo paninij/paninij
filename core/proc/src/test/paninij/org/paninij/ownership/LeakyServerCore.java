@@ -32,27 +32,27 @@ import org.paninij.lang.Capsule;
  */
 /*
 @Capsule
-public class LeakyServerCore
+class LeakyServerCore
 {
     Secret serverSecret = new Secret();
     
-    public Integer getInteger() {
+    Integer getInteger() {
         return new Integer(9);
     }
 
-    public void giveInteger(Integer i) {
+    void giveInteger(Integer i) {
         // Nothing to do.
     }
     
-    public void giveSecret(Secret s) {
+    void giveSecret(Secret s) {
         // Nothing to do.
     }
     
-    public Secret getSecret() {
+    Secret getSecret() {
         return serverSecret;
     }
     
-    public LeakyServerCore getCoreReference() {
+    LeakyServerCore getCoreReference() {
         return this;
     }
 }

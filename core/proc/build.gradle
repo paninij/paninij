@@ -3,6 +3,7 @@ import static javax.tools.ToolProvider.getSystemToolClassLoader
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 description = '@PaniniJ Annotation Processor'
 

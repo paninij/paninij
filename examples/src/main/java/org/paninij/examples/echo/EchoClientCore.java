@@ -35,12 +35,12 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class EchoClientCore {
+class EchoClientCore {
     Socket echoSocket;
     PrintWriter out;
     BufferedReader in;
 
-    public void init() {
+    void init() {
         echoSocket = null;
         out = null;
         in = null;

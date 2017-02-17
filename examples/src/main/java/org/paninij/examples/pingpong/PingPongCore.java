@@ -32,17 +32,17 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class PingPongCore
+class PingPongCore
 {
     @Local Ping ping;
     @Local Pong pong;
 
-    public void design(PingPong self) {
+    void design(PingPong self) {
         ping.imports(pong, 100000);
         pong.imports(ping);
     }
 
-    public void run() {
+    void run() {
         ping.ping();
     }
 

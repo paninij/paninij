@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class DelegatorCore
+@Capsule class DelegatorCore
 {
     @Local Worker[] workers = new Worker[PiPrecisionConfig.NUM_WORKERS];
 
@@ -40,13 +40,13 @@ import org.paninij.lang.Local;
     int numTermsRequested = 0;
     int numTermsReceived = 0;
 
-    public void design(Delegator self) {
+    void design(Delegator self) {
         for (int i = 0; i < workers.length; i++) {
             workers[i].imports(self, i);
         }
     }
 
-    public void start() {
+    void start() {
         for (int i = 0; i < PiPrecisionConfig.NUM_WORKERS; i++) {
             generateWork(i);
         }
@@ -57,7 +57,7 @@ import org.paninij.lang.Local;
         workers[indx].work(numTermsRequested);
     }
 
-    public void resultFinished(BigDecimal result, int indx) {
+    void resultFinished(BigDecimal result, int indx) {
         numTermsReceived++;
         pi = pi.add(result);
         if (result.compareTo(tolerance) > 0) {

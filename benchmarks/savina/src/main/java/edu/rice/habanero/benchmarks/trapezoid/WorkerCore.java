@@ -31,9 +31,9 @@ import org.paninij.lang.Future;
 import edu.rice.habanero.benchmarks.trapezoid.TrapezoidalConfig;
 
 @Capsule
-public class WorkerCore {
+class WorkerCore {
 
-    @Future public double process(double left, double right, double partitions) {
+    @Future double process(double left, double right, double partitions) {
 
         // the sum of areas for this section of partitions
         double area = 0.0;

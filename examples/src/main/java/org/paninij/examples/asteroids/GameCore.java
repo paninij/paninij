@@ -37,7 +37,7 @@ import org.paninij.lang.EventConnection;
 import org.paninij.lang.RegisterType;
 
 @Capsule
-public class GameCore {
+class GameCore {
     @Local Step step;
     @Imported View view;
     @Imported Ship ship;
@@ -71,29 +71,29 @@ public class GameCore {
         stepFiring = false;
     }
     
-    @Block public int getLastFired() {
+    @Block int getLastFired() {
         return this.lastFired;
     }
 
-    @Block public short getAsteroidPosition(int index) {
+    @Block short getAsteroidPosition(int index) {
         return this.asteroidPositions[index];
     }
 
-    @Handler public void onShipMove(Integer xPos) {
+    @Handler void onShipMove(Integer xPos) {
         if (ship.isAlive()) {
             stepShipPos = xPos;
             paint();
         }
     }
 
-    @Handler public void onShipFire(Void v) {
+    @Handler void onShipFire(Void v) {
         if (ship.isAlive()) {
             stepFiring = true;
             paint();
         }
     }
 
-    @Handler public void onStep(Void v) {
+    @Handler void onStep(Void v) {
         if (ship.isAlive()) {
             int result = step();
 

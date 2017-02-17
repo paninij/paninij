@@ -34,7 +34,7 @@ import org.paninij.lang.Imported;
  * Each Bucket holds the count for an ascii character.
  * Buckets also require a Printer capsule.
  */
-@Capsule public class BucketCore
+@Capsule class BucketCore
 {
     @Imported Printer p;
 
@@ -44,12 +44,12 @@ import org.paninij.lang.Imported;
         count = 0;
     }
 
-    public void bump() {
+    void bump() {
         count++;
     }
 
     @Block
-    public void finish(int index) {
+    void finish(int index) {
         p.print("" + index + "(" + (char) index + "):" + count);
     }
 }

@@ -32,7 +32,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class WaitingRoomCore {
+@Capsule class WaitingRoomCore {
 
     @Imported
     Barber barber;
@@ -42,7 +42,7 @@ import org.paninij.lang.Imported;
     int capacity = SleepingBarberConfig.W;
 
     @Block
-    public boolean enter(Customer c) {
+    boolean enter(Customer c) {
         if (waitingCustomers.size() == capacity) return false;
         waitingCustomers.add(c);
 
@@ -54,7 +54,7 @@ import org.paninij.lang.Imported;
         return true;
     }
 
-    public void next() {
+    void next() {
         if (waitingCustomers.size() > 0) {
             Customer c = waitingCustomers.poll();
             barber.handle(c);
@@ -63,7 +63,7 @@ import org.paninij.lang.Imported;
         }
     }
 
-    public void done() {
+    void done() {
         barber.exit();
     }
 

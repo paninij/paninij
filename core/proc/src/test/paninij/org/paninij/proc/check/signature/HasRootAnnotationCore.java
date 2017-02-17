@@ -5,7 +5,7 @@ import org.paninij.lang.Signature;
 
 @Root
 @Signature
-public interface HasRootAnnotationCore
+interface HasRootAnnotationCore
 {
     // Nothing needed here
 }

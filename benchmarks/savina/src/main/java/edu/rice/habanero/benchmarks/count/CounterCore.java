@@ -28,16 +28,16 @@ package edu.rice.habanero.benchmarks.count;
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
-@Capsule public class CounterCore {
+@Capsule class CounterCore {
 
     int count = 0;
 
-    public void increment() {
+    void increment() {
         count++;
     }
 
     @Block
-    public int result() {
+    int result() {
         return count;
     }
 

@@ -27,6 +27,6 @@ package edu.rice.habanero.benchmarks.filterbank;
 
 import org.paninij.lang.Signature;
 
-@Signature public interface ProcessorCore {
-    public void process(double value);
+@Signature interface ProcessorCore {
+    void process(double value);
 }

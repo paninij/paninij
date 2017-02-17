@@ -102,10 +102,7 @@ public class CheckProcedures implements CapsuleCheck
      */
     private Result checkProcedure(TypeElement core, ExecutableElement procedure)
     {
-        if (!procedure.getModifiers().contains(PUBLIC)) {
-            String err = "A procedure must be declared `public`.";
-            return error(err, CheckProcedures.class, procedure);
-        }
+        // Nothing to check here at the moment.
         return OK;
     }
     

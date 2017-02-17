@@ -43,11 +43,14 @@ public class CheckForIllegalModifiers implements CapsuleCheck
 {
     private final static Modifier[] EMPTY = { };
     
-    public final static Modifier[] ILLEGAL_TEMPLATE_MODIFIERS = {
+    public final static Modifier[] ILLEGAL_CORE_MODIFIERS = {
+        PUBLIC,
         ABSTRACT,
     };
     
     public final static Modifier[] ILLEGAL_CONSTRUCTOR_MODIFIERS = {
+        PUBLIC,
+        PROTECTED,
         PRIVATE,
     };
 
@@ -68,33 +71,39 @@ public class CheckForIllegalModifiers implements CapsuleCheck
     };
     
     public final static Modifier[] ILLEGAL_RUN_DECL_MODIFIERS = {
+        PUBLIC,
+        PROTECTED,
+        PRIVATE,
         ABSTRACT,
         SYNCHRONIZED,
         NATIVE,
         STATIC,
-        PRIVATE,
     };
     
     public final static Modifier[] ILLEGAL_INIT_DECL_MODIFIERS = {
+        PUBLIC,
+        PROTECTED,
+        PRIVATE,
         ABSTRACT,
         SYNCHRONIZED,
         NATIVE,
         STATIC,
-        PRIVATE,
     };
 
     public final static Modifier[] ILLEGAL_DESIGN_DECL_MODIFIERS = {
+        PUBLIC,
+        PROTECTED,
+        PRIVATE,
         ABSTRACT,
         SYNCHRONIZED,
         NATIVE,
         STATIC,
-        PRIVATE,
     };
 
     @Override
     public Result checkCapsule(TypeElement core)
     {
-        Modifier illegalModifier = getIllegalModifier(core, ILLEGAL_TEMPLATE_MODIFIERS);
+        Modifier illegalModifier = getIllegalModifier(core, ILLEGAL_CORE_MODIFIERS);
         if (illegalModifier != null) {
             String err = "A capsule core has an illegal modifier: " + illegalModifier;
             return error(err, CheckForIllegalModifiers.class, core);

@@ -3,9 +3,9 @@ package org.paninij.proc.check.capsule.duckability.kind;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class PrimitiveKindCore
+class PrimitiveKindCore
 {
-    public int objectArr() {
+    int objectArr() {
         return 0;
     } 
 }

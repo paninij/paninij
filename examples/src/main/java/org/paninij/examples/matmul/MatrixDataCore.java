@@ -28,7 +28,7 @@ package org.paninij.examples.matmul;
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
-@Capsule public class MatrixDataCore {
+@Capsule class MatrixDataCore {
 
     int length = Config.DATA_LENGTH;
 
@@ -36,7 +36,7 @@ import org.paninij.lang.Capsule;
     double[][] B;
     double[][] C;
 
-    public void init() {
+    void init() {
         A = new double[length][length];
         B = new double[length][length];
         C = new double[length][length];
@@ -53,7 +53,7 @@ import org.paninij.lang.Capsule;
      * Check if `C` is equal to `A` multiplied by `B`
      */
     @Block
-    public boolean valid() {
+    boolean valid() {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 double actual = C[i][j];
@@ -67,7 +67,7 @@ import org.paninij.lang.Capsule;
     /*
      * Add and set `C[i][j]` to `v`
      */
-    public void addC(int i, int j, double v) {
+    void addC(int i, int j, double v) {
         C[i][j] += v;
     }
 
@@ -75,7 +75,7 @@ import org.paninij.lang.Capsule;
      * Get `A[i][j]`
      */
     @Block
-    public double getA(int i, int j) {
+    double getA(int i, int j) {
         return A[i][j];
     }
 
@@ -83,7 +83,7 @@ import org.paninij.lang.Capsule;
      * Get `B[i][j]`
      */
     @Block
-    public double getB(int i, int j) {
+    double getB(int i, int j) {
         return B[i][j];
     }
 
@@ -91,11 +91,11 @@ import org.paninij.lang.Capsule;
      * Get the dimenion of the matrix
      */
     @Block
-    public int dimension() {
+    int dimension() {
         return length;
     }
 
-    public void print() {
+    void print() {
         for (int i = 0; i < length; i++) {
             System.out.print("|");
             for (int j = 0; j < length; j++) {

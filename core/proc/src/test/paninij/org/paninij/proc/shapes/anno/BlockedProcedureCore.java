@@ -4,10 +4,10 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class BlockedProcedureCore
+class BlockedProcedureCore
 {
     @Block
-    public ProcReturn procA() {
+    ProcReturn procA() {
         return null;
     }
 }

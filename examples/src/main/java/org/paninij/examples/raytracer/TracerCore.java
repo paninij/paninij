@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 import org.paninij.lang.Imported;
 
-@Capsule public class TracerCore {
+@Capsule class TracerCore {
 
 	@Imported int chunk;
     @Imported int chunkHeight;
@@ -37,7 +37,7 @@ import org.paninij.lang.Imported;
     @Imported int screenHeight;
 
     @Future
-    public Pixel[] renderChunk(Scene scene) {
+    Pixel[] renderChunk(Scene scene) {
         int pixelCount = chunkHeight * screenWidth;
         int startHeight = chunk * chunkHeight;
         int endHeight = startHeight + chunkHeight;

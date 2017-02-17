@@ -33,13 +33,13 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class AsteroidsCore {
+class AsteroidsCore {
     @Local TextAreaUI ui;
     @Local Game game;
     @Local View view;
     @Local Ship ship;
 
-    public void design(Asteroids self) {
+    void design(Asteroids self) {
         view.imports(ui, game);
         ship.imports(ui);
         game.imports(view, ship);

@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.filterbank;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class DelayCore implements ProcessorCore {
+@Capsule class DelayCore implements ProcessorCore {
 
     @Imported Processor next;
     @Imported String sourceId;
@@ -37,7 +37,7 @@ import org.paninij.lang.Imported;
     int placeHolder = 0;
     double[] state;
 
-    public void init() {
+    void init() {
         this.state = new double[delayLength];
     }
 

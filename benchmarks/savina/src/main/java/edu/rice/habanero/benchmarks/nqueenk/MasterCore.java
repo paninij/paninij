@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.nqueenk;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterCore {
+@Capsule class MasterCore {
 
     long solutionsLimit = NQueensConfig.SOLUTIONS_LIMIT;
     int numWorkers = NQueensConfig.NUM_WORKERS;
@@ -42,36 +42,36 @@ import org.paninij.lang.Local;
     long resultCounter = 0;
 
 
-    public void design(Master self) {
+    void design(Master self) {
         for (Worker w : workers) w.imports(self);
     }
 
-    public void start() {
+    void start() {
         int[] inArray = new int[0];
         sendWork(inArray, 0);
     }
 
-    public void workerDone() {
+    void workerDone() {
         numWorkRecieved++;
         if (numWorkRecieved == numWorkSent) {
             goalReached();
         }
     }
 
-    public void sendWork(int[] arr, int depth) {
+    void sendWork(int[] arr, int depth) {
         numWorkSent++;
         workers[messageCounter].nqueensKernalPar(arr, depth);
         messageCounter = (messageCounter + 1) % numWorkers;
     }
 
-    public void result() {
+    void result() {
         resultCounter++;
         if (resultCounter == solutionsLimit) {
             goalReached();
         }
     }
 
-    public void terminate() {
+    void terminate() {
         numWorkersTerminated++;
     }
 

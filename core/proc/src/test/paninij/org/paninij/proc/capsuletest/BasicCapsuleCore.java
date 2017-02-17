@@ -31,7 +31,7 @@ import org.paninij.lang.Test;
 
 /*
 @CapsuleTest
-public class BasicCapsuleCore
+class BasicCapsuleCore
 {
     @Local Foo foo;
     @Local Bar bar;
@@ -41,35 +41,35 @@ public class BasicCapsuleCore
     }
     
     @Test
-    public void testFooCount()
+    void testFooCount()
     {
         Integer count = foo.fooCount();
         assert count.intValue() == 1;
     }
     
     @Test
-    public void testFooCountAgain()
+    void testFooCountAgain()
     {
         Integer count = foo.fooCount();
         assert count.intValue() == 1;
     }
 
     @Test
-    public void testBarCount()
+    void testBarCount()
     {
         Integer count = bar.barCount();
         assert count.intValue() == 1;
     }
 
     @Test
-    public void testImportedBarCount()
+    void testImportedBarCount()
     {
         Integer count = foo.importedBarCount();
         assert count.intValue() == 1;
     }
     
     @Test
-    public void testMultipleCounts()
+    void testMultipleCounts()
     {
         final int ITERATIONS = 10;
         final int EXPECTED  = ITERATIONS;

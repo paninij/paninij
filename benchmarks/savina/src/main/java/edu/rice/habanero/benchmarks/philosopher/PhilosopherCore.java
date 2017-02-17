@@ -28,16 +28,16 @@ package edu.rice.habanero.benchmarks.philosopher;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class PhilosopherCore {
+@Capsule class PhilosopherCore {
     @Imported Arbiter arbiter;
 
     int roundsSoFar = 0;
 
-    public void start(int id) {
+    void start(int id) {
         arbiter.notifyHungry(id);
     }
 
-    public void eat(int id) {
+    void eat(int id) {
         roundsSoFar++;
         arbiter.notifyDone(id);
         if (roundsSoFar < PhilosopherConfig.M) {
@@ -47,7 +47,7 @@ import org.paninij.lang.Imported;
         }
     }
 
-    public void deny(int id) {
+    void deny(int id) {
         arbiter.notifyHungry(id);
     }
 

@@ -6,64 +6,64 @@ import org.paninij.lang.Future;
 
 
 @Capsule
-public class AnnotationsCore {
+class AnnotationsCore {
 
-    public void unannotatedVoid() {
+    void unannotatedVoid() {
 
     }
 
     @Block
-    public void atBlockVoid() {
+    void atBlockVoid() {
 
     }
 
     @Future
-    public void atFutureVoid() {
+    void atFutureVoid() {
 
     }
 
     @Block
-    public String atBlockFinal() {
+    String atBlockFinal() {
         return "I'm blocked";
     }
 
     @Future
-    public String atFutureFinal() {
+    String atFutureFinal() {
         return "I'm a future";
     }
 
     @Future
-    public String atFutureFinalArgs(int some, boolean other) {
+    String atFutureFinalArgs(int some, boolean other) {
         return "Hello World!";
     }
 
     @Future
-    public String atBlockFinalArgs(int some, boolean other) {
+    String atBlockFinalArgs(int some, boolean other) {
         return "Hello World!";
     }
 
     @Future
-    public boolean atFuturePrimitive() {
+    boolean atFuturePrimitive() {
         return true;
     }
 
     @Block
-    public boolean atBlockPrimitive() {
+    boolean atBlockPrimitive() {
         return true;
     }
 
 
-    public Object unannotatedObject() {
+    Object unannotatedObject() {
         return new Object();
     }
 
     @Block
-    public Object atBlockObject() {
+    Object atBlockObject() {
         return new Object();
     }
 
     @Future
-    public Object atFutureObject() {
+    Object atFutureObject() {
         return new Object();
     }
 }

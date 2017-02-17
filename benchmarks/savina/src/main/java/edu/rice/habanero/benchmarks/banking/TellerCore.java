@@ -30,22 +30,22 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class TellerCore {
+@Capsule class TellerCore {
     @Local Account[] accounts = new Account[BankingConfig.A];
 
     int numCompletedBankings = 0;
     Random randomGen = new Random(123456);
     int numBankings = BankingConfig.N;
 
-    public void design(Teller self) {
+    void design(Teller self) {
         for (Account a : accounts) a.imports(self, accounts);
     }
 
-    public void start() {
+    void start() {
         for (int i = 0; i < numBankings; i++) generateWork();
     }
 
-    public void transactionComplete() {
+    void transactionComplete() {
         numCompletedBankings++;
         if (numCompletedBankings == numBankings) {
             for (Account a : accounts) {

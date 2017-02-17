@@ -4,6 +4,6 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
 @Capsule
-public class BadCore {
+class BadCore {
     @Local Bad bad;
 }

@@ -3,9 +3,9 @@ package org.paninij.proc.check.capsule;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class HasBadMethodNameCore
+class HasBadMethodNameCore
 {
-    public void imports() {
+    void imports() {
         // Nothing needed here.
     }
 }

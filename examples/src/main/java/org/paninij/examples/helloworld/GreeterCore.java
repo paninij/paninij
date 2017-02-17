@@ -42,7 +42,7 @@ class GreeterCore
     }
 
     @Future
-    public long greet(boolean draw) {
+    long greet(boolean draw) {
         s.write(new String("Panini: " + message));
         long time = System.currentTimeMillis();
         s.write(new String("Time is now: " + time));
@@ -50,7 +50,7 @@ class GreeterCore
     }
 
     @Block
-    public int greetBlock() {
+    int greetBlock() {
         s.write(new String("Panini: " + message));
         long time = System.currentTimeMillis();
         s.write(new String("Time is now: " + time));

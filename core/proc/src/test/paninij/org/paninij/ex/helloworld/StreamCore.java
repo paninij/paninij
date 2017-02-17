@@ -4,6 +4,6 @@ import org.paninij.lang.Signature;
 import org.paninij.lang.String;
 
 @Signature
-public interface StreamCore {
+interface StreamCore {
     void write(String s);
 }

@@ -5,9 +5,9 @@ import org.paninij.lang.Handler;
 import org.paninij.lang.Future;
 
 @Capsule
-public class HandlerWithFutureCore
+class HandlerWithFutureCore
 {
-    @Handler @Future public void handler(String msg) {
+    @Handler @Future void handler(String msg) {
         // Nothing to do here.        
     }
 }

@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class BarberCore {
+@Capsule class BarberCore {
 
     @Imported
     WaitingRoom waitingRoom;
@@ -39,7 +39,7 @@ import org.paninij.lang.Imported;
 
     Random random = new Random();
 
-    public void handle(Customer c) {
+    void handle(Customer c) {
         SleepingBarberConfig.busyWait(random.nextInt(SleepingBarberConfig.AHR) + 10);
         factory.done();
         waitingRoom.next();

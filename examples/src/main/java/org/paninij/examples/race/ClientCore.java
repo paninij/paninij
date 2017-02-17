@@ -32,7 +32,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ClientCore
+class ClientCore
 {
     @Local Server server;
     @Local Relay relay;

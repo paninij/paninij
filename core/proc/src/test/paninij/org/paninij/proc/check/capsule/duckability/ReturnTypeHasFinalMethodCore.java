@@ -3,9 +3,9 @@ package org.paninij.proc.check.capsule.duckability;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class ReturnTypeHasFinalMethodCore
+class ReturnTypeHasFinalMethodCore
 {
-    public ClassWithFinalMethod proc()
+    ClassWithFinalMethod proc()
     {
         // Nothing else needed.
         return null;

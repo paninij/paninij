@@ -31,11 +31,11 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class PiPrecisionCore
+class PiPrecisionCore
 {
     @Local Delegator d;
 
-    public void run() {
+    void run() {
         d.start();
     }
 }

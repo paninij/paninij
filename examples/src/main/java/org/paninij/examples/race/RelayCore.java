@@ -28,10 +28,10 @@ package org.paninij.examples.race;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class RelayCore {
+@Capsule class RelayCore {
     @Imported Server server;
 
-    public void sayHello() {
+    void sayHello() {
         server.sayHello("Relay");
     }
 

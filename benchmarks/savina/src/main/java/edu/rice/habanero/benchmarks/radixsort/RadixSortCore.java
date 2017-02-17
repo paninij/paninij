@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class RadixSortCore
+class RadixSortCore
 {
     int sortCount = (int) (Math.log(RadixSortConfig.M) / Math.log(2));
 
@@ -39,7 +39,7 @@ public class RadixSortCore
     @Local IntSource source;
     @Local Sort[] sorters = new Sort[sortCount];
 
-    public void design(RadixSort self) {
+    void design(RadixSort self) {
         long radix = RadixSortConfig.M /2;
         Adder next = validator;
 
@@ -52,7 +52,7 @@ public class RadixSortCore
         source.imports(next);
     }
 
-    public void run() {
+    void run() {
         source.start();
     }
 }

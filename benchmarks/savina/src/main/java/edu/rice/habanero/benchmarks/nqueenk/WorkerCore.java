@@ -28,17 +28,17 @@ package edu.rice.habanero.benchmarks.nqueenk;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class WorkerCore {
+@Capsule class WorkerCore {
     @Imported Master master;
 
     int threshold = NQueensConfig.THRESHOLD;
     int size = NQueensConfig.SIZE;
 
-    public void terminate() {
+    void terminate() {
         master.terminate();
     }
 
-    public void nqueensKernalPar(int[] a, int depth) {
+    void nqueensKernalPar(int[] a, int depth) {
         if (size == depth) {
             master.result();
         } else if (depth >= threshold) {

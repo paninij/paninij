@@ -28,20 +28,20 @@ package org.paninij.examples.raytracer;
 
 import org.paninij.lang.Capsule;
 
-@Capsule public class UserInterfaceCore {
+@Capsule class UserInterfaceCore {
 
     int screenWidth;
     int screenHeight;
 
     MainFrame frame;
 
-    public void init() {
+    void init() {
         screenWidth = RayTracerUtil.screenWidth();
         screenHeight = RayTracerUtil.screenHeight();
         frame = new MainFrame("Raytracer", screenWidth, screenHeight);
     }
 
-    public void draw(Image img) {
+    void draw(Image img) {
         frame.setImage(img.bufferedImage());
     }
 

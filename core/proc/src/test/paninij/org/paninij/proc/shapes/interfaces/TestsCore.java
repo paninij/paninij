@@ -5,19 +5,19 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 
 @Capsule
-public class TestsCore
+class TestsCore
 {
-    public MyInterface getThing() {
+    MyInterface getThing() {
         return new MyImplementation();
     }
 
     @Block
-    public MyInterface blockGetThing() {
+    MyInterface blockGetThing() {
         return new MyImplementation();
     }
 
     @Future
-    public MyInterface futureGetThing() {
+    MyInterface futureGetThing() {
         return new MyImplementation();
     }
 }

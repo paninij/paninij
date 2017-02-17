@@ -6,7 +6,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class HasImportedFieldsOnRootCore
+class HasImportedFieldsOnRootCore
 {
     @Imported Integer i;
 }

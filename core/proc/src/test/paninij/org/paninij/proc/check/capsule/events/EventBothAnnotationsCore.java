@@ -6,7 +6,7 @@ import org.paninij.lang.Chain;
 import org.paninij.lang.Broadcast;
 
 @Capsule
-public class EventBothAnnotationsCore
+class EventBothAnnotationsCore
 {
-    @Chain @Broadcast public PaniniEvent<String> event;
+    @Chain @Broadcast PaniniEvent<String> event;
 }

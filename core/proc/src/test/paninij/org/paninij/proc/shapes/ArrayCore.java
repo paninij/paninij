@@ -5,25 +5,25 @@ import org.paninij.lang.Future;
 
 
 @Capsule
-public class ArrayCore
+class ArrayCore
 {
     @Future
-    public int[] primitiveArr() {
+    int[] primitiveArr() {
         return null;
     }
 
     @Future
-    public int[][] twoDemPrimitiveArray() {
+    int[][] twoDemPrimitiveArray() {
         return null;
     }
 
     @Future
-    public Object[] objectArr() {
+    Object[] objectArr() {
         return null;
     }
 
     @Future
-    public Object[][] twoDemNormalArr() {
+    Object[][] twoDemNormalArr() {
         return null;
     }
 }

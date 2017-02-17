@@ -31,11 +31,11 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ProdConsCore
+class ProdConsCore
 {
     @Local Manager manager;
 
-    public void run() {
+    void run() {
         manager.start();
     }
 }

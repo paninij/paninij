@@ -33,13 +33,13 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ActiveClientCore
+class ActiveClientCore
 {
     @Local LeakyServer server;
     Secret secret = new Secret();
     Integer integer = new Integer(42);
     
-    public void run()
+    void run()
     {
         System.out.println("Starting `ActiveClient`.");
         

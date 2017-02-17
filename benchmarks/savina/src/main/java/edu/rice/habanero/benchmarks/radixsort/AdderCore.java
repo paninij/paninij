@@ -27,6 +27,6 @@ package edu.rice.habanero.benchmarks.radixsort;
 
 import org.paninij.lang.Signature;
 
-@Signature public interface AdderCore {
-    public void add(long value);
+@Signature interface AdderCore {
+    void add(long value);
 }

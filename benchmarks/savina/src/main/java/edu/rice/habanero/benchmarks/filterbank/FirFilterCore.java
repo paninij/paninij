@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.filterbank;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class FirFilterCore implements ProcessorCore {
+@Capsule class FirFilterCore implements ProcessorCore {
 
     @Imported Processor next;
     @Imported String sourceId;
@@ -39,7 +39,7 @@ import org.paninij.lang.Imported;
     int dataIndex = 0;
     boolean dataFull = false;
 
-    public void init() {
+    void init() {
         this.data = new double[peekLength];
     }
 

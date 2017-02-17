@@ -37,7 +37,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class HistogramCore
+class HistogramCore
 {
     @Local Printer printer;
     @Local Reader reader;
@@ -45,17 +45,17 @@ public class HistogramCore
 
     String[] filenames;
 
-    public void init() {
+    void init() {
         filenames = new String[1];
         filenames[0] = "shaks12.txt";
     }
 
-    public void design(Histogram self) {
+    void design(Histogram self) {
         reader.imports(buckets);
         for (Bucket bucket : buckets) bucket.imports(printer);
     }
 
-    public void run() {
+    void run() {
         reader.read(filenames);
     }
     

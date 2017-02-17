@@ -31,7 +31,7 @@ import java.util.List;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class MasterCore {
+@Capsule class MasterCore {
     long[][] graphData = ApspUtils.graphData();
     int numNodes = ApspConfig.N;
     int blockSize = ApspConfig.B;
@@ -43,7 +43,7 @@ import org.paninij.lang.Local;
     // NOTE we do not have 2d arrays of child/wired capsules yet, so cram into one
     @Local Worker[] workers = new Worker[numWorkers];
 
-    public void design(Master self) {
+    void design(Master self) {
         for (int bi = 0; bi < numBlocksInSingleDim; bi++) {
             for (int bj = 0; bj < numBlocksInSingleDim; bj++) {
 
@@ -71,12 +71,12 @@ import org.paninij.lang.Local;
         }
     }
 
-    public void start() {
+    void start() {
         for (Worker w : workers) w.initialize(graphData);
         for (Worker w : workers) w.start();
     }
 
-    public void workerFinished() {
+    void workerFinished() {
         numWorkersFinished++;
         if (numWorkersFinished == numWorkers) {
             for (Worker w : workers) w.exit();

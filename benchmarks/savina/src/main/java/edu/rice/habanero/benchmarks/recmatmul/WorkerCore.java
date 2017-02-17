@@ -29,13 +29,13 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
 
-@Capsule public class WorkerCore {
+@Capsule class WorkerCore {
 
     @Imported Master master;
 
     final int threshhold = MatMulConfig.BLOCK_THRESHOLD;
 
-    public void doWork(Work work) {
+    void doWork(Work work) {
 
         int srA = work.srA;
         int scA = work.scA;

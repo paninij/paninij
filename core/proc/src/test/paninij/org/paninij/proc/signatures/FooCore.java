@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 
 @Capsule
-public class FooCore implements FooSignatureCore
+class FooCore implements FooSignatureCore
 {
     String greeting;
 
@@ -15,7 +15,7 @@ public class FooCore implements FooSignatureCore
         this.greeting = greeting;
     }
 
-    public Object getObject()
+    Object getObject()
     {
         return new Object();
     }

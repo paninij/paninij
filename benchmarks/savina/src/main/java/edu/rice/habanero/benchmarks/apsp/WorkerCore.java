@@ -32,7 +32,7 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class WorkerCore {
+@Capsule class WorkerCore {
     int blockSize = ApspConfig.B;
     int graphSize = ApspConfig.N;
     int numBlocksInSingleDim = graphSize / blockSize;
@@ -53,17 +53,17 @@ import org.paninij.lang.Imported;
     long[][] currentIterData;
 
 
-    public void initialize(long[][] initGraphData) {
+    void initialize(long[][] initGraphData) {
         this.rowOffset = (myBlockId / numBlocksInSingleDim) * blockSize;
         this.colOffset = (myBlockId % numBlocksInSingleDim) * blockSize;
         this.currentIterData = ApspUtils.getBlock(initGraphData, myBlockId);
     }
 
-    public void start() {
+    void start() {
         notifyNeighbors();
     }
 
-    public void iteration(int otherK, int otherId, long[][] initData) {
+    void iteration(int otherK, int otherId, long[][] initData) {
         boolean haveAllData = storeIterationData(otherK, otherId, initData);
         if (haveAllData) {
             k++;

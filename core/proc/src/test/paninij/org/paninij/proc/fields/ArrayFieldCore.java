@@ -4,7 +4,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
 @Capsule
-public class ArrayFieldCore
+class ArrayFieldCore
 {
     Object[] objects;
 

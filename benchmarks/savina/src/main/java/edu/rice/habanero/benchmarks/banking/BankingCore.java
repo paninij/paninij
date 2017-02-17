@@ -31,11 +31,11 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class BankingCore
+class BankingCore
 {
     @Local Teller teller;
 
-    public void run() {
+    void run() {
         teller.start();
     }
 }

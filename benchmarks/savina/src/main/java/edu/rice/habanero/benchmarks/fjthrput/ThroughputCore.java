@@ -31,11 +31,11 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class ThroughputCore
+class ThroughputCore
 {
     @Local Worker[] workers = new Worker[ThroughputConfig.A];
 
-    public void run() {
+    void run() {
         for (int i = 0; i < ThroughputConfig.N; i++)
             for (Worker w : workers) w.process();
     }

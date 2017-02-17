@@ -33,7 +33,7 @@ import org.paninij.lang.Broadcast;
 import org.paninij.lang.Event;
 
 @Capsule
-public class TextAreaUICore {
+class TextAreaUICore {
     @Broadcast Event<String> keyPressed;
     Window window;
 
@@ -45,13 +45,13 @@ public class TextAreaUICore {
         window.show();
     }
     
-    public void keyPressed(KeyEvent e) {
+    void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         String key = KeyEvent.getKeyText(keyCode);
         keyPressed.announce(key);
     }
 
-    public void setText(String str) {
+    void setText(String str) {
         window.setText(str);
     }
 

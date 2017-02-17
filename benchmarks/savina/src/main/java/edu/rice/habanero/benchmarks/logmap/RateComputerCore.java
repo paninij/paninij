@@ -29,18 +29,18 @@ import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class RateComputerCore {
+@Capsule class RateComputerCore {
 
     @Imported
     int id;
     double rate;
 
-    public void init() {
+    void init() {
         this.rate = LogisticMapConfig.startRate + (id * LogisticMapConfig.increment);
     }
 
     @Block
-    public double compute(double term) {
+    double compute(double term) {
         return LogisticMapConfig.computeNextTerm(term, rate);
     }
 

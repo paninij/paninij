@@ -5,7 +5,7 @@ import org.paninij.lang.Signature;
 
 @Block
 @Signature
-public interface HasBlockAnnotationCore
+interface HasBlockAnnotationCore
 {
     // Nothing needed here
 }

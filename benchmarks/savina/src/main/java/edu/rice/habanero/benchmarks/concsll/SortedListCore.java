@@ -30,26 +30,26 @@ import org.paninij.lang.Imported;
 
 import edu.rice.habanero.benchmarks.BenchmarkRunner;
 
-@Capsule public class SortedListCore {
+@Capsule class SortedListCore {
     @Imported Worker[] workers;
     SortedLinkedList<Integer> dataList = new SortedLinkedList<Integer>();
 
-    public void write(int value, int id) {
+    void write(int value, int id) {
         dataList.add(value);
         workers[id].doWork();
     }
 
-    public void size(int id) {
+    void size(int id) {
         int size = dataList.size();
         workers[id].doWork();
     }
 
-    public void contains(int value, int id) {
+    void contains(int value, int id) {
         boolean contains = dataList.contains(value);
         workers[id].doWork();
     }
 
-    public void printResult() {
+    void printResult() {
         System.out.printf(BenchmarkRunner.argOutputFormat, "List Size", dataList.size());
         for (Worker w : workers) w.exit();
     }

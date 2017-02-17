@@ -34,15 +34,15 @@ import org.paninij.lang.Capsule;
  * Each Worker capsule computes a fraction of the total number of samples.
  */
 @Capsule
-public class WorkerCore
+class WorkerCore
 {
     Random prng;
 
-    public void init() {
+    void init() {
         this.prng = new Random();
     }
 
-    public Number compute(double num) {
+    Number compute(double num) {
         Number _circleCount = new Number();
         for (double j = 0; j < num; j++) {
             double x = this.prng.nextDouble();

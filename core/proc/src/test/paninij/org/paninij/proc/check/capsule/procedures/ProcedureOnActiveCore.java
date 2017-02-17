@@ -3,13 +3,13 @@ package org.paninij.proc.check.capsule.procedures;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class ProcedureOnActiveCore
+class ProcedureOnActiveCore
 {
-    public void procA() {
+    void procA() {
         // Nothing needed here.
     }
     
-    public void run() {
+    void run() {
         // Nothing needed here.
     }
 }

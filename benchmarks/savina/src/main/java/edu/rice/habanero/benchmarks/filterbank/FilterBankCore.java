@@ -29,8 +29,8 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Root;
 
-@Root
-@Capsule public class FilterBankCore
+@Root @Capsule
+class FilterBankCore
 {
     @Local Producer producer;
     @Local Source source;
@@ -39,14 +39,14 @@ import org.paninij.lang.Root;
     @Local Combine combine;
     @Local Sink sink;
 
-    public void design(FilterBank self) {
+    void design(FilterBank self) {
         source.imports(producer, branches);
         branches.imports(integrator);
         integrator.imports(combine);
         combine.imports(sink);
     }
 
-    public void run() {
+    void run() {
         source.start();
     }
 }

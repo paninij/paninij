@@ -6,11 +6,11 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
 @Capsule
-public class RunTestsCore
+class RunTestsCore
 {
     @Local Tests test;
 
-    public void run() {
+    void run() {
         MyInterface t = test.getThing();
         MyInterface b = test.blockGetThing();
         Future<MyInterface> f = test.futureGetThing();

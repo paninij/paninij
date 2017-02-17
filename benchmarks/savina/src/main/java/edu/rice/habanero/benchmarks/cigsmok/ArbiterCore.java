@@ -30,20 +30,20 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class ArbiterCore {
+@Capsule class ArbiterCore {
     @Local Smoker[] smokers = new Smoker[CigaretteSmokerConfig.S];
     Random random = new Random(CigaretteSmokerConfig.R * CigaretteSmokerConfig.S);
     int roundsSoFar = 0;
 
-    public void start() {
+    void start() {
         notifyRandomSmoker();
     }
 
-    public void design(Arbiter self ) {
+    void design(Arbiter self ) {
         for (Smoker s : smokers) s.imports(self);
     }
 
-    public void notifySmoking() {
+    void notifySmoking() {
         roundsSoFar++;
         if (roundsSoFar >= CigaretteSmokerConfig.R) {
             for (Smoker s : smokers) s.exit();

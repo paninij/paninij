@@ -5,9 +5,9 @@ import org.paninij.lang.Handler;
 import org.paninij.lang.Duck;
 
 @Capsule
-public class HandlerWithDuckCore
+class HandlerWithDuckCore
 {
-    @Handler @Duck public void handler(String msg) {
+    @Handler @Duck void handler(String msg) {
         // Nothing to do here.        
     }
 }

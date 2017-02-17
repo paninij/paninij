@@ -29,13 +29,12 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Root;
 
-@Root
-@Capsule
-public class GuidedSearchCore
+@Root @Capsule
+class GuidedSearchCore
 {
     @Local Master master;
 
-    public void run() {
+    void run() {
         master.start();
     }
 }

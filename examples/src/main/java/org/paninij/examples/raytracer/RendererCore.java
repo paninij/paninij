@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class RendererCore {
+@Capsule class RendererCore {
 
     int CHUNKS = 16;
     @Local Tracer[] tracers = new Tracer[CHUNKS];
@@ -41,17 +41,17 @@ import org.paninij.lang.Local;
     int screenHeight = 480;
     int chunkHeight = screenHeight / CHUNKS;
 
-    public void init() {
+    void init() {
         chunkHeight = screenHeight / CHUNKS;
     }
 
-    public void design(Renderer self) {
+    void design(Renderer self) {
         for (int i = 0; i < tracers.length; i++) {
             tracers[i].imports(i, chunkHeight, screenWidth, screenHeight);
         }
     }
 
-    public Image render(Scene scene) {
+    Image render(Scene scene) {
         BufferedImage image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         List<Pixel[]> chunks = new ArrayList<Pixel[]>();
 

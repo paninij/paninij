@@ -37,7 +37,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class GossipyClientCore
+class GossipyClientCore
 {
     @Local LeakyServer servers[] = new LeakyServer[NUM_SERVERS];
     @Local LeakyServer importantServer;
@@ -46,7 +46,7 @@ public class GossipyClientCore
     Secret superSecret;
 
     
-    public void init()
+    void init()
     {
         for (int idx = 0; idx < NUM_SECRETS; idx++) {
             secrets[idx] = new Secret();
@@ -55,7 +55,7 @@ public class GossipyClientCore
     }
     
 
-    public void run()
+    void run()
     {
         System.out.println("Starting `GossipyClient`.");
 
@@ -72,7 +72,7 @@ public class GossipyClientCore
         System.out.println("Stopping `GossipyClient`.");
     }
     
-    public static void main(String[] args) {
+    static void main(String[] args) {
         CapsuleSystem.start(GossipyClient.class, args);
     }
 }

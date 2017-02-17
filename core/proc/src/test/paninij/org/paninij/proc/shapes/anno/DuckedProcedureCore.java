@@ -4,10 +4,10 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Duck;
 
 @Capsule
-public class DuckedProcedureCore {
+class DuckedProcedureCore {
 
     @Duck
-    public ProcReturn procA() {
+    ProcReturn procA() {
         return null;
     }
 }

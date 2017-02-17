@@ -41,12 +41,12 @@ import org.paninij.lang.Root;
  */
 @Root
 @Capsule
-public class PiCore
+class PiCore
 {
     // an array of worker capsules
     @Local Worker[] workers = new Worker[WORKER_COUNT];
 
-    public void run() {
+    void run() {
         Number[] results = new Number[WORKER_COUNT];
 
         double total = 0;

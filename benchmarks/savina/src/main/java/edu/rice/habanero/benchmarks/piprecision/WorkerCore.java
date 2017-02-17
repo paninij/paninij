@@ -28,11 +28,11 @@ package edu.rice.habanero.benchmarks.piprecision;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class WorkerCore {
+@Capsule class WorkerCore {
     @Imported Delegator delegator;
     @Imported int id;
 
-    public void work(int term) {
+    void work(int term) {
         delegator.resultFinished(PiPrecisionConfig.calculateBbpTerm(PiPrecisionConfig.PRECISION, term), id);
     }
 }

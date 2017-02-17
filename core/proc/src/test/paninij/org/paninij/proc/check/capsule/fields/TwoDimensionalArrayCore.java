@@ -6,7 +6,7 @@ import org.paninij.lang.Local;
 import org.paninij.ex.helloworld.HelloWorldShort;
 
 @Capsule
-public class TwoDimensionalArrayCore
+class TwoDimensionalArrayCore
 {
     @Local HelloWorldShort arr[][];
 }

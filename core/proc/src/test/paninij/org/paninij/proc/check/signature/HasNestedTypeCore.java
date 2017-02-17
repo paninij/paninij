@@ -3,9 +3,9 @@ package org.paninij.proc.check.signature;
 import org.paninij.lang.Signature;
 
 @Signature
-public interface HasNestedTypeCore
+interface HasNestedTypeCore
 {
-    public enum Nested {
+    enum Nested {
         // Nothing needed here.
     }
 }

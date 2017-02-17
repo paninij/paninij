@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class HelloWorldShortCore
+class HelloWorldShortCore
 {
     void run() {
         System.out.println("@PaniniJ: Hello World!");

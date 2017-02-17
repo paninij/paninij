@@ -37,12 +37,12 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class TrapezoidCore
+class TrapezoidCore
 {
     // The array of worker capsules
     @Local Worker[] workers = new Worker[TrapezoidalConfig.W];
 
-    public void run() {
+    void run() {
         // we'll populate this list with results from each worker
         List<Future<Double>> results = new ArrayList<Future<Double>>();
 

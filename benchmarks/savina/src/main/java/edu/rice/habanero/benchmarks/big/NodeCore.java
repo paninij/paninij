@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class NodeCore {
+@Capsule class NodeCore {
     @Imported
     int id;
     @Imported
@@ -43,20 +43,20 @@ import org.paninij.lang.Imported;
     int expPinger = -1;
     Random random;
 
-    public void init() {
+    void init() {
         random = new Random(this.id);
     }
 
-    public void done() {
+    void done() {
         for (Node n : nodes) n.exit();
         sink.exit();
     }
 
-    public void ping(int sender) {
+    void ping(int sender) {
         nodes[sender].pong(this.id);
     }
 
-    public void pong(int sender) {
+    void pong(int sender) {
         if (sender != expPinger) {
             System.out.println("ERROR: Expected: " + expPinger + ", but recieved ping from " + sender);
         }

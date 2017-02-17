@@ -32,15 +32,15 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class MatMulCore {
+class MatMulCore {
     @Local Master master;
     @Local MatrixData data;
 
-    public void design(MatMul self) {
+    void design(MatMul self) {
         master.imports(data);
     }
 
-    public void run() {
+    void run() {
         master.start();
     }
 

@@ -6,7 +6,7 @@ import org.paninij.lang.Imported;
 import org.paninij.lang.Broadcast;
 
 @Capsule
-public class EventWithImportedCore
+class EventWithImportedCore
 {
-    @Broadcast @Imported public PaniniEvent<String> event;
+    @Broadcast @Imported PaniniEvent<String> event;
 }

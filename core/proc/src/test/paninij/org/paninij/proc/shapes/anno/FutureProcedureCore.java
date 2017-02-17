@@ -4,10 +4,10 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Future;
 
 @Capsule
-public class FutureProcedureCore
+class FutureProcedureCore
 {
     @Future
-    public ProcReturn procA() {
+    ProcReturn procA() {
         return null;
     }
 

@@ -33,13 +33,13 @@ import org.paninij.lang.Imported;
 
 import edu.rice.habanero.benchmarks.astar.GuidedSearchConfig.GridNode;
 
-@Capsule public class WorkerCore {
+@Capsule class WorkerCore {
     @Imported
     Master master;
 
     int threshold = GuidedSearchConfig.THRESHOLD;
 
-    public void search(Work work) {
+    void search(Work work) {
 
         GridNode target = work.target();
         Queue<GridNode> workQueue = new LinkedList<GridNode>();
@@ -76,7 +76,7 @@ import edu.rice.habanero.benchmarks.astar.GuidedSearchConfig.GridNode;
         }
     }
 
-    public void done() {
+    void done() {
         master.workerDone();
     }
 }

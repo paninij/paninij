@@ -3,11 +3,11 @@ package org.paninij.proc.check.capsule;
 import org.paninij.lang.Capsule;
 
 @Capsule
-public class HasIllegalConstructorCore
+class HasIllegalConstructorCore
 {
-    public String foo;
+    String foo;
     
-    public HasIllegalConstructorCore(String foo) {
+    HasIllegalConstructorCore(String foo) {
         this.foo = foo;
     }
 }

@@ -28,14 +28,14 @@ package edu.rice.habanero.benchmarks.bndbuffer;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class ConsumerCore {
+@Capsule class ConsumerCore {
 
     @Imported Manager manager;
     @Imported int id;
 
     double consItem = 0;
 
-    public void consume(Double data) {
+    void consume(Double data) {
         consItem = ProdConsBoundedBufferConfig.processItem(consItem + data, ProdConsBoundedBufferConfig.consCost);
         manager.dataConsumed(id);
     }

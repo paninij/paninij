@@ -30,7 +30,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
 @Capsule
-public class ViewCore {
+class ViewCore {
     @Imported TextAreaUI ui;
     @Imported Game game;
 
@@ -41,7 +41,7 @@ public class ViewCore {
         builder.append('\n');
     }
 
-    public void paint(int shipPos, boolean isFiring, int points) {
+    void paint(int shipPos, boolean isFiring, int points) {
         StringBuilder builder = new StringBuilder();
         builder.append('\n');
         this.paintHorizBorder(builder);
@@ -83,7 +83,7 @@ public class ViewCore {
         ui.setText(builder.toString());
     }
 
-    public void paintGameEndMessage() {
+    void paintGameEndMessage() {
         ui.setText("Game over :(");
     }
 }

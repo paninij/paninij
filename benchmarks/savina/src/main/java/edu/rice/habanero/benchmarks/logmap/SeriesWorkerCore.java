@@ -30,7 +30,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 import org.paninij.lang.Local;
 
-@Capsule public class SeriesWorkerCore {
+@Capsule class SeriesWorkerCore {
     @Local RateComputer computer;
 
     @Imported
@@ -38,17 +38,17 @@ import org.paninij.lang.Local;
     @Imported
     double term;
 
-    public void design(SeriesWorker self) {
+    void design(SeriesWorker self) {
         computer.imports(id);
     }
 
     @Block
-    public void getTerm() {
+    void getTerm() {
         term = computer.compute(term);
     }
 
     @Block
-    public double getResult() {
+    double getResult() {
         return term;
     }
 

@@ -30,6 +30,6 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class SieveCore {
+class SieveCore {
 
 }

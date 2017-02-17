@@ -6,7 +6,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class HelloWorldCore
+class HelloWorldCore
 {
     @Local Console c;
     @Local Greeter g;

@@ -4,9 +4,9 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.String;
 
 @Capsule
-public class PaniniCustomCore
+class PaniniCustomCore
 {
-    public String proc1() {
+    String proc1() {
         return null;
     }
 }

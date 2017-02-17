@@ -31,19 +31,19 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class SleepingBarberCore
+class SleepingBarberCore
 {
     @Local CustomerFactory factory;
     @Local Barber barber;
     @Local WaitingRoom room;
 
-    public void design(SleepingBarber self) {
+    void design(SleepingBarber self) {
         barber.imports(room, factory);
         room.imports(barber);
         factory.imports(room);
     }
 
-    public void run() {
+    void run() {
         factory.start();
     }
 }

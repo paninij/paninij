@@ -35,7 +35,7 @@ import org.paninij.lang.Event;
 import org.paninij.lang.RegisterType;
 
 @Capsule
-public class ShipCore {
+class ShipCore {
     @Imported TextAreaUI ui;
     @Broadcast Event<Integer> updatePosition;
     @Broadcast Event<Void> firing;
@@ -43,16 +43,16 @@ public class ShipCore {
     short state;
     int x;
 
-    protected void init() {
+    void init() {
         this.state = 0;
         this.x = Constants.WIDTH/2;
     }
     
-    public void design(Ship self) {
+    void design(Ship self) {
         ui.keyPressed().register(self::move, RegisterType.READ);
     }
     
-    @Handler public void move(String keyCode) {
+    @Handler void move(String keyCode) {
         if (!isAlive()) 
             return;
         
@@ -65,22 +65,22 @@ public class ShipCore {
         }
     }
     
-    public void die() {
+    void die() {
         this.state = 2;
     }
 
-    public void fire() {
+    void fire() {
         this.state = 1;
         firing.announce(null);
     }
 
     @Block
-    public boolean isAlive() {
+    boolean isAlive() {
         return state != 2;
     }
 
     @Block
-    public boolean isFiring() {
+    boolean isFiring() {
         if (this.state == 1) {
             this.state = 0;
             return true;
@@ -89,16 +89,16 @@ public class ShipCore {
     }
 
     @Block
-    public int getPosition() { return this.x; }
+    int getPosition() { return this.x; }
     
-    public void moveLeft() { 
+    void moveLeft() { 
         if (this.x > 0) {
             this.x--;
             updatePosition.announce(x);
         }
     }
     
-    public void moveRight() { 
+    void moveRight() { 
         if (this.x < Constants.WIDTH - 1) {
             this.x++;
             updatePosition.announce(x);

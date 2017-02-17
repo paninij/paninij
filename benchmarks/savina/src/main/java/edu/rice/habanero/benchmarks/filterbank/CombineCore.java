@@ -30,11 +30,11 @@ import java.util.Collection;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class CombineCore {
+@Capsule class CombineCore {
 
     @Imported Sink sink;
 
-    public void process(DoubleCollection collection) {
+    void process(DoubleCollection collection) {
         double sum = 0;
         Collection<Double> values = collection.getValues();
         for (Double d : values) sum += d;

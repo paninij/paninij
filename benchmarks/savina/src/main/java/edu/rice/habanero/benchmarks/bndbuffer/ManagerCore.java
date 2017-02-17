@@ -32,7 +32,7 @@ import org.paninij.benchmarks.savina.util.FlagFuture;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class ManagerCore {
+@Capsule class ManagerCore {
 
     int numConsumers = ProdConsBoundedBufferConfig.numConsumers;
     int numProducers = ProdConsBoundedBufferConfig.numProducers;
@@ -47,7 +47,7 @@ import org.paninij.lang.Local;
 
     int adjustedBufferSize = ProdConsBoundedBufferConfig.bufferSize - numProducers;
 
-    public void design(Manager self) {
+    void design(Manager self) {
         for (int i = 0; i < consumers.length; i++) {
             consumers[i].imports(self, i);
             availableConsumers.add(consumers[i]);
@@ -57,11 +57,11 @@ import org.paninij.lang.Local;
         }
     }
 
-    public void start() {
+    void start() {
         for (Producer p : producers) p.produce();
     }
 
-    public void dataProduced(int id, double data) {
+    void dataProduced(int id, double data) {
 
         if (availableConsumers.isEmpty()) {
             availableData.add(data);
@@ -77,7 +77,7 @@ import org.paninij.lang.Local;
 
     }
 
-    public void dataConsumed(int id) {
+    void dataConsumed(int id) {
 
         if (availableData.isEmpty()) {
             availableConsumers.add(consumers[id]);
@@ -91,7 +91,7 @@ import org.paninij.lang.Local;
         }
     }
 
-    public void producerFinished() {
+    void producerFinished() {
         numTerminatedProducers++;
         tryExit();
     }

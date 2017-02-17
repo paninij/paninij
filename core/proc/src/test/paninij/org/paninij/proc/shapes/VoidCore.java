@@ -6,31 +6,31 @@ import org.paninij.lang.Future;
 
 
 @Capsule
-public class VoidCore
+class VoidCore
 {
-    public void foo(Object o) {
+    void foo(Object o) {
 
     }
 
-    public void primitiveArg(int i) {
+    void primitiveArg(int i) {
 
     }
 
-    public void arrayArg(Object[] i) {
+    void arrayArg(Object[] i) {
 
     }
 
-    public void primitiveArrayArg(short[] b) {
+    void primitiveArrayArg(short[] b) {
 
     }
 
     @Block
-    public void blockedVoid() {
+    void blockedVoid() {
 
     }
 
     @Future
-    public void futureVoid() {
+    void futureVoid() {
 
     }
 }

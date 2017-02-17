@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Imported;
 
-@Capsule public class BankCore implements ProcessorCore {
+@Capsule class BankCore implements ProcessorCore {
 
     @Imported int sourceId;
     @Imported int numColumns;
@@ -44,7 +44,7 @@ import org.paninij.lang.Imported;
     @Local FirFilter fir2;
     @Local TaggedForward tag;
 
-    public void design(Bank self) {
+    void design(Bank self) {
         delay1.imports(fir1, sourceId + ".1", numColumns - 1);
         fir1.imports(sample, sourceId + ".1", numColumns, H);
         sample.imports(delay2, numColumns);

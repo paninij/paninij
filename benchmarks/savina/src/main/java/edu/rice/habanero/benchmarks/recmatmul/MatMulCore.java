@@ -31,11 +31,11 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class MatMulCore
+class MatMulCore
 {
     @Local Master master;
 
-    public void run() {
+    void run() {
         master.start();
     }
 }

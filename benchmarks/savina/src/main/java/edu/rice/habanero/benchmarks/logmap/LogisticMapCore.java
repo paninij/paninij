@@ -31,7 +31,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class LogisticMapCore
+class LogisticMapCore
 {
     int numTerms = LogisticMapConfig.numTerms;
     int numWorkers = LogisticMapConfig.numSeries;
@@ -42,14 +42,14 @@ public class LogisticMapCore
     int numWorkRecieved = 0;
     double termsSum = 0;
 
-    public void design(LogisticMap self) {
+    void design(LogisticMap self) {
         for (int i = 0; i < numWorkers; i++) {
             double startTerm = i * LogisticMapConfig.increment;
             workers[i].imports(i, startTerm);
         }
     }
 
-    public void run() {
+    void run() {
         for (int i = 0; i < numTerms; i++) {
             for (SeriesWorker w : workers) w.getTerm();
         }

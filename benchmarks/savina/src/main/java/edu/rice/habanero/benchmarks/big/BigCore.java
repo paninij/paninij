@@ -31,19 +31,19 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class BigCore
+class BigCore
 {
     @Local Sink sink;
     @Local Node[] nodes = new Node[BigConfig.W];
 
-    public void design(Big self) {
+    void design(Big self) {
         for (int i = 0; i < BigConfig.W; i++)
             nodes[i].imports(i, nodes, sink);
 
         sink.imports(nodes);
     }
 
-    public void run() {
+    void run() {
         sink.start();
     }
 }

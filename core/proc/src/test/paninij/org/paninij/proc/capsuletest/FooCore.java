@@ -30,7 +30,7 @@ import org.paninij.lang.Imported;
 
 /*
 @Capsule
-public class FooCore
+class FooCore
 {
     @Import Bar bar;
     int count;
@@ -39,11 +39,11 @@ public class FooCore
         count = 0;
     }
     
-    public Integer importedBarCount() {
+    Integer importedBarCount() {
         return bar.barCount();
     }
     
-    public Integer fooCount() {
+    Integer fooCount() {
         return ++count;
     }
 }

@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class CustomerFactoryCore {
+@Capsule class CustomerFactoryCore {
 
     @Imported
     WaitingRoom waitingRoom;
@@ -51,19 +51,19 @@ import org.paninij.lang.Imported;
         if (!entered) returned(c);
     }
 
-    public void start() {
+    void start() {
         for (int i = 0; i < haircuts; i++) {
             sendCustomerToRoom();
             SleepingBarberConfig.busyWait(random.nextInt(SleepingBarberConfig.APR) + 10);
         }
     }
 
-    public void returned(Customer c) {
+    void returned(Customer c) {
         idGenerator.incrementAndGet();
         sendCustomerToRoom(c);
     }
 
-    public void done() {
+    void done() {
         numHaircutsSoFar++;
         if (numHaircutsSoFar == haircuts) {
             waitingRoom.done();

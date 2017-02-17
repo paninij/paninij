@@ -7,15 +7,15 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class XCore
+class XCore
 {
     @Local Y y;
 
-    public void design(X self) {
+    void design(X self) {
         y.imports(self);
     }
     
-    public static void main(String[] args) {
+    static void main(String[] args) {
         CapsuleSystem.start(X.class, args);
     }
 }

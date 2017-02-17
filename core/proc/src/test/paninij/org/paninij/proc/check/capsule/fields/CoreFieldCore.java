@@ -30,7 +30,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.ex.helloworld.HelloWorldCore;
 
 @Capsule
-public class CoreFieldCore
+class CoreFieldCore
 {
     HelloWorldCore core;
 }

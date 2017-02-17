@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 
 /*
 @Capsule
-public class BarCore
+class BarCore
 {
     int count;
     
@@ -37,7 +37,7 @@ public class BarCore
         count = 0;
     }
     
-    public Integer barCount() {
+    Integer barCount() {
         return ++count;
     }
 }

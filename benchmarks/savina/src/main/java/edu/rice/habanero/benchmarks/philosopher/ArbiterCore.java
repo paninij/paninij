@@ -28,7 +28,7 @@ package edu.rice.habanero.benchmarks.philosopher;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 
-@Capsule public class ArbiterCore {
+@Capsule class ArbiterCore {
 
     @Local Philosopher[] philosophers = new Philosopher[PhilosopherConfig.N];
 
@@ -38,15 +38,15 @@ import org.paninij.lang.Local;
     int numRetries = 0;
 
 
-    public void design(Arbiter self) {
+    void design(Arbiter self) {
         for (Philosopher p : philosophers) p.imports(self);
     }
 
-    public void start() {
+    void start() {
         for (int i = 0; i < PhilosopherConfig.N; i++) philosophers[i].start(i);
     }
 
-    public void notifyHungry(int id) {
+    void notifyHungry(int id) {
 
         int r = (id + 1) % PhilosopherConfig.N;
         boolean leftFork = forks[id];
@@ -62,12 +62,12 @@ import org.paninij.lang.Local;
         }
     }
 
-    public void notifyDone(int id) {
+    void notifyDone(int id) {
         forks[id] = false;
         forks[(id + 1) % PhilosopherConfig.N] = false;
     }
 
-    public void notifyComplete() {
+    void notifyComplete() {
         numCompletedPhilosophers++;
         if (numCompletedPhilosophers == PhilosopherConfig.N) {
             for (Philosopher p : philosophers) p.exit();

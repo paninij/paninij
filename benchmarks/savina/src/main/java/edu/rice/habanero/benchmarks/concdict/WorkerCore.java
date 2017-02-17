@@ -30,7 +30,7 @@ import java.util.Random;
 import org.paninij.lang.Capsule;
 import org.paninij.lang.Imported;
 
-@Capsule public class WorkerCore {
+@Capsule class WorkerCore {
 
     @Imported Master master;
     @Imported Dictionary dictionary;
@@ -41,11 +41,11 @@ import org.paninij.lang.Imported;
     int messageCount = 0;
     Random random;
 
-    public void init() {
+    void init() {
         random = new Random(id + numMessagesPerWorker + writePercent);
     }
 
-    public void doWork() {
+    void doWork() {
         messageCount++;
         if (messageCount <= numMessagesPerWorker) {
             int anInt = random.nextInt(100);

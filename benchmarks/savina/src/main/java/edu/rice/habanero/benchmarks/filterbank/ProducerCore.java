@@ -28,12 +28,12 @@ package edu.rice.habanero.benchmarks.filterbank;
 import org.paninij.lang.Block;
 import org.paninij.lang.Capsule;
 
-@Capsule public class ProducerCore {
+@Capsule class ProducerCore {
 
     int numMessagesSent = 0;
     int numSimulations = FilterBankConfig.NUM_SIMULATIONS;
 
-    @Block public boolean produce() {
+    @Block boolean produce() {
         if (numMessagesSent >= numSimulations) {
             return false;
         } else {

@@ -4,18 +4,18 @@ import org.paninij.lang.Capsule;
 
 
 @Capsule
-public class NormalCore
+class NormalCore
 {
-    public Object foo(Object o, Object i) {
+    Object foo(Object o, Object i) {
         return new Object();
     }
 
-    public Object primitiveArg(int i)
+    Object primitiveArg(int i)
     {
         return new Object();
     }
 
-    public Object tooManyArgs(boolean a, boolean b, boolean c, boolean d, boolean e, boolean f,
+    Object tooManyArgs(boolean a, boolean b, boolean c, boolean d, boolean e, boolean f,
                               boolean g, boolean h, boolean i, boolean j, boolean k, boolean l,
                               boolean m, boolean n, boolean o, boolean p, boolean q, boolean r,
                               boolean s, boolean t, boolean u, boolean v, boolean w, boolean x,
@@ -24,11 +24,11 @@ public class NormalCore
         return new Object();
     }
 
-    public Object arrayArg(Object[] arr) {
+    Object arrayArg(Object[] arr) {
         return new Object();
     }
 
-    public Object primitiveArrayArg(int[] arr) {
+    Object primitiveArrayArg(int[] arr) {
         return new Object();
     }
 }

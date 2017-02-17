@@ -35,15 +35,15 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class RayTracerCore {
+class RayTracerCore {
     @Local Renderer renderer;
     @Local UserInterface ui;
 
-    public void init() {
+    void init() {
         RayTracerUtil.initialize(640, 480);
     }
 
-    public void run() {
+    void run() {
     	Camera camera = new Camera(new Vector(3, 2, 4), new Vector(-1, 0.5, 0));
         List<SceneObject> things = new ArrayList<SceneObject>();
         List<Light> lights = new ArrayList<Light>();

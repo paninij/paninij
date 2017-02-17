@@ -37,7 +37,7 @@ import org.paninij.lang.Root;
 
 @Root
 @Capsule
-public class EchoServerCore
+class EchoServerCore
 {
     // An EchoServer will have 10 Worker capsules
     // The @Child annotation will automatically
@@ -55,7 +55,7 @@ public class EchoServerCore
      * The init() method is a special declaration, similar to a
      * constructor.
      */
-    public void init() {
+    void init() {
         try {
             ss = new ServerSocket(8080);
         } catch (IOException e) {
@@ -73,13 +73,13 @@ public class EchoServerCore
      * an instance of a capsule described by this
      * EchoServerCore.
      */
-    public void design(EchoServer self) {
+    void design(EchoServer self) {
         for (Worker w : this.workers)
             w.imports(self);
     }
 
     @Block
-    public Socket getConnection() {
+    Socket getConnection() {
         Socket s = null;
         try {
             // a blocking call which waits for a client to

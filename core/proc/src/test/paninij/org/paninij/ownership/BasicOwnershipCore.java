@@ -35,14 +35,14 @@
 //import org.paninij.runtime.Panini$Capsule;
 //
 //@CapsuleTest
-//public class BasicOwnershipCore
+//class BasicOwnershipCore
 //{
 //    @Local LeakyServer leakyServer;
 //    Integer testerSecret = 42;
 //    
 //
 //    @Test
-//    public void checkAssertionsEnabled()
+//    void checkAssertionsEnabled()
 //    {
 //        boolean assert_enabled = false;
 //
@@ -62,14 +62,14 @@
 //     * Attempts to perform a completely safe procedure invocation.
 //     */
 //    @Test
-//    public void safeInvocation()
+//    void safeInvocation()
 //    {
 //        leakyServer.giveInteger(new Integer(10));
 //    }
 //    
 //    
 //    @Test
-//    public void safeReturn()
+//    void safeReturn()
 //    {
 //        leakyServer.getInteger();
 //        assertNoError(leakyServer);
@@ -81,7 +81,7 @@
 //     * state to the `leakyServer`.
 //     */
 //    @Test
-//    public void unsafeInvocation()
+//    void unsafeInvocation()
 //    {
 //        Throwable thrown = null;
 //
@@ -101,7 +101,7 @@
 //     * Attempts to get the client to leak a reference to its core instance (i.e. its `this` ref).
 //     */
 //    @Test
-//    public void unsafeInstanceReturn()
+//    void unsafeInstanceReturn()
 //    {
 //        leakyServer.getCoreReference();
 //        assertError(leakyServer);
@@ -112,7 +112,7 @@
 //     * Attempts to make the client leak a reference to its secret.
 //     */
 //    @Test
-//    public void unsafeStateReturn()
+//    void unsafeStateReturn()
 //    {
 //        leakyServer.getSecret();
 //        assertError(leakyServer);

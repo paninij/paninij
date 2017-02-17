@@ -29,7 +29,7 @@ import org.paninij.lang.Capsule;
 import org.paninij.lang.Local;
 import org.paninij.lang.Imported;
 
-@Capsule public class MasterCore {
+@Capsule class MasterCore {
     int numWorkers = Config.NUM_WORKERS;
 
     @Imported MatrixData data;
@@ -38,18 +38,18 @@ import org.paninij.lang.Imported;
     int numWorkSent = 0;
     int numWorkCompleted = 0;
 
-    public void design(Master self) {
+    void design(Master self) {
         for (Worker w : workers) w.imports(self, data);
     }
 
-    public void start() {
+    void start() {
         int len = data.dimension();
         int numBlocks = len * len;
         Work work = new Work(0, 0, 0, 0, 0, 0, 0, numBlocks, len);
         generateWork(work);
     }
 
-    public void workFinished() {
+    void workFinished() {
         numWorkCompleted++;
         System.out.println(numWorkCompleted + " / " + numWorkSent);
         if (numWorkCompleted == numWorkSent) {
@@ -58,7 +58,7 @@ import org.paninij.lang.Imported;
         }
     }
 
-    public void generateWork(Work work) {
+    void generateWork(Work work) {
         numWorkSent++;
         int indx = (work.srC + work.scC) % numWorkers;
         workers[indx].doWork(work);

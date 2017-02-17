@@ -33,7 +33,7 @@ import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.types.TypeName;
 
-public class CapsuleCore
+class CapsuleCore
 {
     protected TypeName typeName;
     protected String qualifiedName;
