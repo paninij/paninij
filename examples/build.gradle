@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'org.paninij'
-version = '0.0.2-SNAPSHOT'
+version = '0.2.0'
 
 description = '''@PaniniJ Examples'''
 
@@ -14,8 +14,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-  compile 'org.paninij:lang:0.1.1-SNAPSHOT'
-  apt 'org.paninij:proc:0.1.1-SNAPSHOT'
+  compile 'org.paninij:lang:0.2.0'
+  apt 'org.paninij:proc:0.2.0'
 }
 
 repositories {
