@@ -1,0 +1,22 @@
+---
+---
+
+.manual-main-content {
+  .lead {
+    background-color: lightgrey;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    font-size: 95%;
+    border-radius: 5px;
+
+    code {
+      background-color: transparent;
+      padding: 0rem 0rem;
+      color: black;
+    }
+  }
+}
