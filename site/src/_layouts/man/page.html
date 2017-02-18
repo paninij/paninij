@@ -4,5 +4,16 @@ layout: base
 
 <main class="manual-main-content">
 <h1>Chapter {{ page.chapter }}. {{ page.title }}</h1>
+
+{% if page.quote != nil %}
+  <blockquote class="blockquote blockquote-reverse">
+    <p class="mb-0">{{ page.quote }}</p>
+    {% if page.quote_source != nil %}
+      <div class="blockquote-footer">{{ page.quote_source }}</div>
+    {% endif %}
+  </blockquote>
+{% endif %}
+
 {{ content }}
+
 </main>
