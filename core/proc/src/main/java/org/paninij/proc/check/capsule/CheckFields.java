@@ -99,13 +99,13 @@ public class CheckFields implements CapsuleCheck
         if (seemsToBeCapsuleField(field))
         {
             if (!hasImports && !hasLocal) {
-                String err = "Found a field whose type seems to be a capsule, but it is not "
-                           + "annotated with either `@Local` or `@Imported`.";
+                String err = "Found a field of capsule type, but it is not annotated with either"
+                           + "`@Local` or `@Imported`.";
                 return error(err, CheckFields.class, field);
             }
             
             if (isMultiDimensionalArrayField(field)) {
-                String err = "Found a field whose type seems to be a multi-dimensional array of "
+                String err = "Found a field whose whose type is multi-dimensional array of "
                            + "capsules or signatures. This is not yet supported.";
                 return error(err, CheckFields.class, field);
             }
@@ -115,8 +115,7 @@ public class CheckFields implements CapsuleCheck
         else
         {
             if (hasLocal) {
-                String err = "Found a field annotated with `@Local`, but its type seems to not be "
-                           + "a capsule.";
+                String err = "Found an `@Local` field, but its type is not a capsule type.";
                 err = format(err, field.asType(), field, core.getQualifiedName());
                 return error(err, CheckFields.class, field);
             }
