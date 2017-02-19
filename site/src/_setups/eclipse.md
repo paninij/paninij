@@ -104,5 +104,5 @@ Eclipse project explorer:
 </div>
 
 Now you're ready to start programming in @PaniniJ. See
-[this page]({{ site.baseurl }}/docs/examples/hello_world.html)
+[this page](/docs/ex/hello_world.html)
 for an example @PaniniJ Hello World program.

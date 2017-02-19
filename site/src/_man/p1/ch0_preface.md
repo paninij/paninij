@@ -59,5 +59,5 @@ the capsule oriented style, and finally building, installing, and running
 @PaniniJ programs.
 
 If you are completely new to @PaniniJ, you may want to read our getting started
-guide in [Chapter 3](/man/p1/ch3_getting_started.html) or to look at one of our
+guide in [Chapter 3](/man/p1/ch2_getting_started.html) or to look at one of our
 examples in [Part 3](/man/p3/).

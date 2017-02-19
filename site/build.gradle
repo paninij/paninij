@@ -14,16 +14,16 @@ task javadoc(type: Copy) {
   from publicJavadocTask.destinationDir
   into "$siteDir/javadoc"
 }
-//assemble.dependsOn javadoc
+assemble.dependsOn javadoc
 
 task jekyll(type: Exec, dependsOn: javadoc) {
   description = "Use Jekyll CLI tool to build the site."
   commandLine 'jekyll', 'build',
   		'--source', jekyllSrcDir,
-		'--destination', siteDir,
-  standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT.
+		'--destination', siteDir
+  //standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT.
 }
-//assemble.dependsOn jekyll
+assemble.dependsOn jekyll
 
 task jekyllServe(type: Exec, dependsOn: javadoc) {
   description = "Use Jekyll CLI tool to build the site and serve it locally."
@@ -36,10 +36,10 @@ task htmlProofer(type: Exec, dependsOn: assemble) {
   description = "Use `htmlproofer` CLI tool to check the site."
   commandLine 'htmlproofer', siteDir,
   		'--allow-hash-href',
-		'--file-ignore', $//\/docs\/javadoc\///$
+		'--file-ignore', $//\/javadoc\///$
   standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT
 }
-//check.dependsOn htmlProofer
+check.dependsOn htmlProofer
 
 project.ext['org.ajoberstar.grgit.auth.force'] = 'sshagent'
 // GitHub Pages authentication is done with SSH via `ssh-agent`.

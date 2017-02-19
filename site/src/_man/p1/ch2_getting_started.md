@@ -98,7 +98,7 @@ declaration.
 There are various ways set up your Java development environment to compile and
 run this program. You can use your favorite Java IDE (e.g. Eclipse, IntelliJ
 IDEA) and/or your favorite build tool (e.g. Maven, Gradle). We describe these
-various configurations in [Chapter 3](/man/p4/ch3_development_environment.html),
+various configurations in [Chapter 3](/man/p1/ch3_development_environment.html),
 but at a minimum, all you need is a standard Java 8 compiler, two @PaniniJ JARs,
 and the JVM. The latest @PaniniJ JARs can be downloaded from the
 [@PaniniJ GitHub releases page](https://github.com/paninij/paninij/releases).
