@@ -36,7 +36,7 @@ task jekyllServe(type: Exec, dependsOn: javadoc) {
 
 task htmlProofer(type: Exec, dependsOn: assemble) {
   description = "Use `htmlproofer` CLI tool to check the site."
-  commandLine 'htmlproofer', siteDir,
+  commandLine 'bundle', 'exec', 'htmlproofer', siteDir,
   		'--allow-hash-href',
 		'--file-ignore', $//\/javadoc\///$
   workingDir jekyllSrcDir
