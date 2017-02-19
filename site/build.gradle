@@ -18,18 +18,20 @@ assemble.dependsOn javadoc
 
 task jekyll(type: Exec, dependsOn: javadoc) {
   description = "Use Jekyll CLI tool to build the site."
-  commandLine 'jekyll', 'build',
+  commandLine 'bundle', 'exec', 'jekyll', 'build',
   		'--source', jekyllSrcDir,
 		'--destination', siteDir
-  //standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT.
+  workingDir jekyllSrcDir
+  standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT.
 }
 assemble.dependsOn jekyll
 
 task jekyllServe(type: Exec, dependsOn: javadoc) {
   description = "Use Jekyll CLI tool to build the site and serve it locally."
-  commandLine 'jekyll', 'serve',
+  commandLine 'bundle', 'exec', 'jekyll', 'serve',
   		'--source', jekyllSrcDir,
 		'--destination', siteDir
+  workingDir jekyllSrcDir
 }
 
 task htmlProofer(type: Exec, dependsOn: assemble) {
@@ -37,6 +39,7 @@ task htmlProofer(type: Exec, dependsOn: assemble) {
   commandLine 'htmlproofer', siteDir,
   		'--allow-hash-href',
 		'--file-ignore', $//\/javadoc\///$
+  workingDir jekyllSrcDir
   standardOutput = new ByteArrayOutputStream()  // Ignore STDOUT
 }
 check.dependsOn htmlProofer
