@@ -311,8 +311,8 @@ any ordinary Java code. Capsules can both call methods and invoke procedures.
 
 Some capsule core fields are interpreted as capsule references.
 
-If a field of a capsule core field has a type which is capsule, then that field
-is interpreted as a capsule reference declaration.
+If a field of a capsule core has a type which is capsule, then that field is
+interpreted as a capsule reference declaration.
 {: .lead}
 
 There are three capsule reference declarations in this program:
