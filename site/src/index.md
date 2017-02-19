@@ -92,8 +92,8 @@ wait for the `pathAB` result before making a request to get `pathYZ`. It is only
 later, where the `Path#length()` methods are called that the client will need to
 wait. Subsequent calls to the `Path` futures won't block.
 
-The use of futures, let's the do some more work while waiting for the results
-from the graphs.
+The use of futures lets a capsule keep working while waiting for results from
+other capsules until it can no longer wait.
 
 
 ### Developed with Standard Java Tools
