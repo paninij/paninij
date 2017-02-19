@@ -1,6 +1,7 @@
 ---
 title: Some Frequently Asked Questions about PaniniJ
-short_title: "FAQ"
+short_title: FAQ
+permalink: /docs/faq.html
 ---
 
 * TOC

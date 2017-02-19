@@ -1,6 +1,8 @@
 ---
 layout: page
 title: Hello World Example
+short_title: "Example: Hello World"
+permalink: /docs/ex/hello_world.html
 ---
 
 In this example, we write the specifications for three capsules which can

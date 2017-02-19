@@ -1,5 +1,7 @@
 ---
-layout: page
+title: Jargon
+short_title: Jargon
+permalink: /docs/jargon.html
 ---
 
 * TOC

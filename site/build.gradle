@@ -12,7 +12,7 @@ task javadoc(type: Copy) {
   def publicJavadocTask = tasks.getByPath(':core:lang:javadoc')
   dependsOn publicJavadocTask
   from publicJavadocTask.destinationDir
-  into "$siteDir/docs/javadoc"
+  into "$siteDir/javadoc"
 }
 //assemble.dependsOn javadoc
 

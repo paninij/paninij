@@ -35,11 +35,11 @@ exclude:
   - Gemfile.lock
 
 keep_files:
-  - docs/javadoc
+  - javadoc
 
 # Declare collections, and make sure that files are output:
 collections:
-  intros:
+  docs:
     output: true
   setups:
     output: true
@@ -51,7 +51,7 @@ collections:
 # Set default layout for each collection.
 defaults:
   - scope:
-      type: intros
+      type: docs
       path: ""
     values:
       layout: page

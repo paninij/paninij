@@ -1,6 +1,7 @@
 ---
-title: A Tour of @PaniniJ
+title: A Tour of @PaniniJ Features
 short_title: Tour
+permalink: /docs/tour.html
 ---
 
 Panini is a mathematical model for describing modular concurrent computation
@@ -16,12 +17,14 @@ An @PaniniJ capsule is specified by writing a Java class. By just adding the
 capsule.
 
 ``` java
-@Capsule class HelloWorldCore {
+@Capsule
+class HelloWorldCore {
     void run() {
         System.out.println("Hello, World.");
     }
 }
 ```
+{: .code-with-line-numbers}
 
 We call this class *the capsule's core*. It is how one can specify
 
@@ -30,7 +33,7 @@ We call this class *the capsule's core*. It is how one can specify
 - code for handling requests from other capsules
 
 You can think of a capsule core as the stateful and behavioral center of a
-capsule. The @PaniniJ runtime is responsible for wraping and executing a graph
+capsule. The @PaniniJ runtime is responsible for wrapping and executing a graph
 of these capsule cores, all running in parallel.
 
 In @PaniniJ, these capsules communicate with one another by what looks like a
@@ -42,7 +45,8 @@ Here is an example where a `HelloWorld` capsule invokes the `work()` procedure
 on a `Worker` instance:
 
 ``` java
-@Capsule class HelloWorldCore {
+@Capsule
+class HelloWorldCore {
     // Declare the existence of another capsule.
     @Local Worker w;
 
@@ -67,6 +71,7 @@ on a `Worker` instance:
     }
 }
 ```
+{: .code-with-line-numbers}
 
 Additionally, what appears to be an inter-capsule return values is
 actually an implicit future to the request's result. The requesting capsule may
@@ -82,3 +87,10 @@ just another Java project dependency (e.g. a JAR or a Maven dependency).
 Specifically, you need to depend on the @PaniniJ annotation processor. An
 annotation processor extends any standards-compliant java compiler (e.g.
 Oracle's `javac`, Eclipse, IntelliJ IDEA, etc).
+
+
+### Want to Learn More?
+
+Want to start compiling and running @PaniniJ programs?
+[Chapter 2. Getting Started](/man/p1/ch2_getting_started.html) of
+[The @PaniniJ Manual](/man/).

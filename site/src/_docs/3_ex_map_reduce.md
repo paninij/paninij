@@ -1,6 +1,8 @@
 ---
 layout: page
-title: "Example: Map Reduce"
+title: Map-Reduce Example
+short_title: "Example: Map-Reduce"
+permalink: /docs/ex/map_reduce.html
 ---
 
 ``` java

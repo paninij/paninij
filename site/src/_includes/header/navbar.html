@@ -5,41 +5,41 @@
   <a class="navbar-brand hidden-sm-up" href="/">@PaniniJ</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" id="intro-menu-toggler" data-toggle="dropdown" href="#">Intro</a>
-        <div class="dropdown-menu">
-          {% for intro in site.intros %}
-          <a class="dropdown-item" href="{{ intro.url }}">{{ intro.short_title }}</a>
-          {% endfor %}
-        </div>
-      </li>
+
+    <li class="nav-item dropdown">
+      <a class="dropdown-toggle nav-link" id="docs-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
+      <div class="dropdown-menu">
+        {% for doc in site.docs %}
+        <a class="dropdown-item" href="{{ doc.url }}">{{ doc.short_title }}</a>
+        {% endfor %}
+      </div>
+    </li>
+
       <li class="nav-item dropdown">
         <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Setup</a>
         <div class="dropdown-menu">
           {% for setup in site.setups %}
           <a class="dropdown-item" href="{{ setup.url }}">{{ setup.short_title }}</a>
-          {% endfor %}</div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="/man/">Manual</a>
-          <a class="dropdown-item" href="/docs/glossary.html">Glossary</a>
-          <a class="dropdown-item" href="/docs/javadoc/">Javadoc</a>
-          <a class="dropdown-item" href="/docs/examples/hello_world.html">Example: Hello World</a>
-          <a class="dropdown-item" href="/docs/examples/map_reduce.html">Example: Map-Reduce</a>
-          <a class="dropdown-item" href="/docs/history.html">History</a>
+          {% endfor %}
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/javadoc/">Javadoc</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/man/">Manual</a>
+      </li>
+
       <li class="nav-item">
         <a class="nav-link" href="/posts/">Posts</a>
       </li>
+
       <li class="nav-item">
-        <a class="nav-link" href="/papers/">Papers</a>
+        <a class="nav-link" href="/about/">About</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/people/">People</a>
-      </li>
+
     </ul>
   </div>
 </nav>
