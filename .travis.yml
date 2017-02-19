@@ -2,6 +2,12 @@ language: java
 
 jdk: oraclejdk8
 
+install:
+  - rvm install 2.4.0
+  - gem install bundler
+  - bundle install --gemfile=site/src/Gemfile
+
+
 # Boilerplate to prevent uploading the dependency cache.
 # Copied from `https://docs.travis-ci.com/user/languages/java/`
 before_cache:
