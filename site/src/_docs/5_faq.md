@@ -24,8 +24,9 @@ Capsule-oriented programming is a suitable approach for programmers who don't
 want to be distracted by concurrency concerns so that they can focus on their
 software's logic. If you want your programming language to take care of your
 concurrency concerns just like Java and C# handles your memory management
-concerns then capsules-oriented programming is for you. Who may NOT benefit from
-capsule-oriented programming?
+concerns then capsules-oriented programming is for you.
+
+##### Who may NOT benefit from capsule-oriented programming?
 
 Capsule-oriented programming may not be a suitable approach for a software
 project if it is preferred in that project to manage every aspect of concurrency

@@ -44,7 +44,7 @@ import org.paninij.lang.*;
 @Capsule
 public class GreeterCore {
 
-  @Imports Console c;
+  @Imported Console c;
   String message;
 
   void init() {
@@ -59,9 +59,9 @@ public class GreeterCore {
 ```
 
 The capsule Greeter has a field of type Console that is annotated with the
-`@Imports`. This means that the Greeter wants to call procedures of a Console
+`@Imported`. This means that the Greeter wants to call procedures of a Console
 capsule, but does not want to create the instance of the capsule. By using
-`@Imports`, it specifies that the parent capsule of the Greeter must supply the
+`@Imported`, it specifies that the parent capsule of the Greeter must supply the
 reference to the Console capsule. This is shown in the `HelloWorldCore` in the
 design method where g.imports is called and the reference to the Console capsule
 is passed as a parameter.
