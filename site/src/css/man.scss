@@ -2,6 +2,27 @@
 ---
 
 .manual-main-content {
+  position: absolute;
+  left: 250px;
+  right: 0;
+  padding-bottom: 2rem;
+
+  .base-content {
+    margin: 0 auto 0 auto;
+  }
+
+  h1 {
+    margin-top: 1.5rem;
+  }
+
+  .pull-right {
+    float: right;
+  }
+
+  .pull-left {
+    float: left;
+  }
+
   .lead {
     background-color: lightgrey;
     padding-left: 1rem;
@@ -18,5 +39,29 @@
       padding: 0rem 0rem;
       color: black;
     }
+  }
+}
+
+.manual-toc {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  width: 250px;
+  border-right: 1px solid lightgrey;
+  font-size: 12px;
+
+  ol {
+    padding: 0;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    list-style-position: inside;
+  }
+
+  li {
+    list-style-type: none;
+    margin-bottom: 1rem;
   }
 }

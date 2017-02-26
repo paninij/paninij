@@ -1,0 +1,32 @@
+---
+layout: base
+---
+
+{% assign manual = (site.man | group_by: "part") %}
+
+<div class="manual-toc">
+  <ol>
+  {% for part in manual %}
+      {% if part.size == 1 %} {% continue %} {% endif %}
+      {% assign part_sorted = (part.items | sort: "chapter", "first") %}
+
+      <li><a href="{{ part_sorted[0].url }}">Part {{part.name }}. {{ part_sorted[0].title }}</a>
+        <ol>
+          {% for ch in part_sorted %}
+	  {% if ch == part_sorted[0] %} {% continue %} {% endif %}
+	  <li><a href="{{ ch.url }}">Ch {{ ch.chapter }}. {{ ch.title }}</a></li>
+          {% endfor %}
+        </ol>
+      </li>
+  {% endfor %}
+  </ol>
+</div>
+
+<div class="manual-main-content">
+  <div class="base-content container">
+    <main>
+      {{ content }}
+    </main>
+  </div>
+</div>
+

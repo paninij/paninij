@@ -1,7 +1,7 @@
 ---
 layout: man/part
 part: 1
-title: Part I. Introduction
+title: Introduction
 ---
 
 - [Chapter 0: Preface](/man/p1/ch0_preface.html)

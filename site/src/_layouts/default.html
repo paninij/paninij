@@ -2,9 +2,13 @@
 layout: base
 ---
 
-{% include header/header.html %}
-<br />
-<main>
-{{ content }}
-</main>
-{% include footer.html %}
+<div class="base-content container">
+  {% include header/header.html %}
+  <br />
+  <main>
+    {{ content }}
+  </main>
+  {% include footer.html %}
+</div>
+
+{% include header/github_corner.html %}
