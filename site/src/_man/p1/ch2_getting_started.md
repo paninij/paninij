@@ -333,9 +333,12 @@ can directly use another capsule. For example, we can see `Greeter` use the
 `Console` capsule on lines 12 and 14 when it invokes the `write` procedure of
 a `Console` capsule instance.
 
+
+### Initializing Capsule Reference Declarations
+
 Notice that nowhere in this program have we initialized these fields. This is
 because the @PaniniJ runtime does this for us. (These fields should be
-considered `final`.) The @PaniniJ runtime performs this initializatio in one of
+considered `final`.) The @PaniniJ runtime performs this initialization in one of
 two different ways:
 
 - If the field is annotated with `@Local`, then a new capsule will need to be
