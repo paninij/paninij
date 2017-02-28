@@ -4,6 +4,7 @@ chapter: 4
 title: Capsule-Oriented Design
 quote: Simplicity is the ultimate sophistication.
 quote_source: Leonardo da Vinci
+hidden: true
 ---
 
 ## Asteroids in Panini

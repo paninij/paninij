@@ -2,6 +2,7 @@
 layout: man/part
 part: 3
 title: Implicit Parallelism
+hidden: true
 ---
 
 In coarse-grained concurrent applications, such as the simplified Asteroids game

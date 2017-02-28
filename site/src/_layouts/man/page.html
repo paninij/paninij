@@ -28,10 +28,10 @@ layout: man/default
 {% assign next = (site.man | where: "chapter", next_ch | first) %}
 {% assign prev = (site.man | where: "chapter", prev_ch | first) %}
 
-{% if next != nil %}
+{% if next != nil and next.hidden != true %}
   <a class="pull-right" href="{{ next.url }}">Ch {{ next.chapter }}. {{ next.title }}</a>
 {% endif %}
 
-{% if prev != nil %}
+{% if prev != nil and prev.hidden != true %}
   <a class="pull-left" href="{{ prev.url }}">Ch {{ prev.chapter }}. {{ prev.title }}</a>
 {% endif %}

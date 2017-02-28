@@ -2,6 +2,7 @@
 layout: man/part
 part: 2
 title: Panini Language and its Features
+hidden: true
 ---
 
 To recall from previous chapters, capsule-oriented programming and the Panini
