@@ -1,7 +1,7 @@
 ---
 layout: man/part
 part: 3
-title: Part III. Implicit Parallelism
+title: Implicit Parallelism
 ---
 
 In coarse-grained concurrent applications, such as the simplified Asteroids game

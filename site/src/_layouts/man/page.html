@@ -1,8 +1,7 @@
 ---
-layout: base
+layout: man/default
 ---
 
-<main class="manual-main-content">
 <h1>Chapter {{ page.chapter }}. {{ page.title }}</h1>
 
 {% if page.quote != nil %}
@@ -16,4 +15,23 @@ layout: base
 
 {{ content }}
 
-</main>
+{% comment %}
+  This appears to be the only way to increment/decrement the chapters.
+{% endcomment %}
+
+{% assign next_ch = page.chapter %}
+{% capture next_ch %}{{ next_ch | plus: 1 }}{% endcapture %}
+
+{% assign prev_ch = page.chapter %}
+{% capture prev_ch %}{{ prev_ch | minus: 1 }}{% endcapture %}
+
+{% assign next = (site.man | where: "chapter", next_ch | first) %}
+{% assign prev = (site.man | where: "chapter", prev_ch | first) %}
+
+{% if next != nil %}
+  <a class="pull-right" href="{{ next.url }}">Ch {{ next.chapter }}. {{ next.title }}</a>
+{% endif %}
+
+{% if prev != nil %}
+  <a class="pull-left" href="{{ prev.url }}">Ch {{ prev.chapter }}. {{ prev.title }}</a>
+{% endif %}

@@ -1,7 +1,7 @@
 ---
 layout: man/part
 part: 4
-title: Part IV. Appendix
+title: Appendix
 ---
 
 **TODO:** Installing, running, debugging, and profiling @PaniniJ programs.

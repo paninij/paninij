@@ -341,8 +341,8 @@ because the @PaniniJ runtime does this for us. (These fields should be
 considered `final`.) The @PaniniJ runtime performs this initialization in one of
 two different ways:
 
-- If the field is annotated with `@Local`, then a new capsule will need to be
-  created.
+- If the field is annotated with `@Local`, then a new capsule will automatically
+  be created.
 - If the field is annotated with `@Imported`, then an existing capsule will need
   to be provided from elsewhere.
 
@@ -404,7 +404,7 @@ occur, but inside of which execution is sequential. The Panini runtime will
 automatically enable concurrency in between the boundaries of capsules when it
 safe to do so.
 
-When a procedure is invoked on a capsule, the this expression is completed
+When a procedure is invoked on a capsule, the procedure invocation is completed
 immediately, even if the invoked procedure hasn't even started executing our
 procedure invocation. This allows the invoking capsule and the invoked capsule
 to work independently and simultaneously.

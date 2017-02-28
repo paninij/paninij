@@ -1,7 +1,7 @@
 ---
 layout: man/part
 part: 2
-title: Part II. Panini Language and its Features
+title: Panini Language and its Features
 ---
 
 To recall from previous chapters, capsule-oriented programming and the Panini
