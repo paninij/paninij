@@ -404,10 +404,11 @@ occur, but inside of which execution is sequential. The Panini runtime will
 automatically enable concurrency in between the boundaries of capsules when it
 safe to do so.
 
-When a procedure is invoked on a capsule, the procedure invocation is completed
-immediately, even if the invoked procedure hasn't even started executing our
-procedure invocation. This allows the invoking capsule and the invoked capsule
-to work independently and simultaneously.
+When a procedure is invoked by one capsule on another capsule, the procedure
+invocation expression is completed immediately in the invoking capsule. This is
+true even if the invoked capsule hasn't even started executing the body of
+this procedure on the invoking capsule's behalf. This allows the invoking
+capsule and the invoked capsule to work independently and simultaneously.
 
 This program includes a very simple example of this: the Greeter capsule can
 invoke `write()`, but then immediately immediately continue to obtain the
