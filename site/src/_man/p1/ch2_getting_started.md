@@ -225,7 +225,7 @@ class GreeterCore {
 class HelloWorldCore {
   @Local Console c;
   @Local Greeter g;
-  void design() {
+  void design(HelloWorld self) {
     g.imports(c);
   }
   void run() {
@@ -361,6 +361,37 @@ line 10). So, it is the responsibility of the `HelloWorld` capsule to provide
 an import. How this is provided is specified on line 23, which says that the
 capsule instance denoted by `c` should also be available to the capsule instance
 denoted by `g`.
+
+Notice that the `design()` method has a single parameter. This is provided so
+that a design declaration can connect the capsule doing the design with any
+`@Local` capsule instances.
+
+A capsule declaration's design declaration takes a single parameter. This
+parameter's type is the capsule type being declared, and it is conventionally
+named `self`.
+{: .lead}
+
+`self` is simply a handle with which we can indicate that some `@Local` capsule
+should import the parent capsule instance. This is how a capsule can "pass
+itself" to one of the `@Local` capsules instances which it has declared. Doing
+so might look like this:
+
+``` java
+@Capsule
+class FooCore {
+    @Import Bar bar;
+    // ...
+}
+
+@Capsule
+class BarCore {
+    @Local Foo foo;
+    void design(Bar self) {
+        foo.imports(self);
+    }
+    // ...
+}
+```
 
 
 
