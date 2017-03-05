@@ -13,7 +13,7 @@ if (file(RELEASING_SCRIPT).exists()) {
 
 allprojects  {
   group = 'org.paninij'
-  version = '0.2.1-SNAPSHOT'
+  version = '0.2.1'
 }
 
 subprojects { subproj ->
