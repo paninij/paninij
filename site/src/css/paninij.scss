@@ -7,44 +7,4 @@
 @import url("code_blocks.css");
 @import url("man.css");
 @import url("home.css");
-
-div.base-content {
-  max-width: 800px;
-}
-
-main {
-  font-size: 15px;
-}
-
-#markdown-toc {
-  // list-style-type: none;
-  // color:white;
-  font-size: 90%;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  li {
-    padding-bottom: 0.1rem;
-  }
-  margin: 1rem;
-}
-
-figure.screenshot {
-  img {
-    border-style: solid;
-    border-color: lightgrey;
-    border-width: thin;
-  }
-  figcaption {
-    text-align: center;
-    font-style: italic;
-    font-size: 90%;
-  }
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-}
-
-h2, h3, h4 {
-  margin-top: 2.5rem !important;
-}
+@import url("main.css");
