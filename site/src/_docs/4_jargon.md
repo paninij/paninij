@@ -300,8 +300,9 @@ For example, below the `Foo` capsule declares three procedures: `getPair()`,
 
 ``` java
 public class Pair {
-    int fst;
-    int snd;
+    private int fst;
+    private int snd;
+    // ...
 }
 
 @Capsule
