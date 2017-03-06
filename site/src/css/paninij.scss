@@ -30,10 +30,17 @@ main {
   margin: 1rem;
 }
 
-.setup-screenshot {
-  border-style: solid;
-  border-color: lightgrey;
-  border-width: thin;
+figure.screenshot {
+  img {
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: thin;
+  }
+  figcaption {
+    text-align: center;
+    font-style: italic;
+    font-size: 90%;
+  }
   margin-top: 1rem;
   margin-bottom: 2rem;
 }

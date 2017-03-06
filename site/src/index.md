@@ -106,16 +106,10 @@ Additionally, there are a number of rules that statically restrict how a capsule
 can be defined. Many of these rules are checked by our compiler plugin. If a
 check fails, the error is reported just like an ordinary Java compiler error.
 
-<div class="row">
-<div class="col-md-12">
-<img src="/img/eclipse_error_message.png"
-     class="img-fluid"
-     alt="An @PaniniJ-specific contextual error message seen in Eclipse">
-</div>
-</div>
-*An @PaniniJ-specific contextual error message as seen in Eclipse.*
-{: .pull-right}
-
+{% include screenshot.html
+    img-src="/img/eclipse_error_message.png"
+    img-alt="An @PaniniJ-specific compiler error message in Eclipse."
+    img-caption="An @PaniniJ-specific compiler error message in Eclipse." %}
 
 Our standards-compliant compiler plugin is well-supported by many standard Java
 tools: `javac`, Maven, Gradle, Eclipse, Netbeans, and IntelliJ IDEA. Often,
