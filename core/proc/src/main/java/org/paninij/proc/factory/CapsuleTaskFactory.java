@@ -258,7 +258,7 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                     "        panini$capsuleInit();",
                     "        panini$encapsulated.run();",
                     "    } catch (Throwable thrown) {",
-                    "        thrown.printStackTrace(System.out);",
+                    "        thrown.printStackTrace();",
                     "        panini$errors.add(thrown);",
                     "    } finally {",
                     "        panini$onTerminate();",
@@ -271,23 +271,24 @@ public class CapsuleTaskFactory extends CapsuleProfileFactory
                     "    return true;",
                     "}",
                     "");
+        } else {
+            List<String> src = Source.lines(
+                    "@Override",
+                    "@SuppressWarnings(\"unchecked\")",
+                    "public final boolean run() {",
+                    "    try {",
+                    "        Panini$Message msg = panini$nextMessage();",
+                    "        ##",
+                    "    } catch (Throwable thrown) {",
+                    "        thrown.printStackTrace();",
+                    "        panini$errors.add(thrown);",
+                    "    }",
+                    "    return false;",
+                    "}",
+                    "");
+            return Source.formatAlignedFirst(src, generateRunSwitch());
         }
 
-        List<String> src = Source.lines(
-                "@Override",
-                "@SuppressWarnings(\"unchecked\")",
-                "public final boolean run() {",
-                "    try {",
-                "        Panini$Message msg = panini$nextMessage();",
-                "        ##",
-                "    } catch (Throwable thrown) {",
-                "        panini$errors.add(thrown);",
-                "    }",
-                "    return false;",
-                "}",
-                "");
-
-        return Source.formatAlignedFirst(src, generateRunSwitch());
     }
 
     private List<String> generateRunSwitch()
