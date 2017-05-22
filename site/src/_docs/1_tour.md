@@ -4,9 +4,13 @@ short_title: Tour
 permalink: /docs/tour.html
 ---
 
-Panini is a mathematical model for describing modular concurrent computation
-using the concept of a *capsule*. A capsule is a concurrent entity similar to an
+Panini is a programming model for describing modular concurrent computation
+using the concept of a [*capsule*](http://dl.acm.org/citation.cfm?id=2819117). 
+A capsule is a concurrent entity similar to an
 [actor](https://en.wikipedia.org/wiki/Actor_model).
+Main difference between a capsule and an actor is manifest typing. 
+A capsule explicitly identifies the type of other capsules that it interacts with,
+and the type of messages that it can receive.
 
 @PaniniJ takes the idea of a capsule and brings it to any programmer familiar
 with Java and working on the JVM. Code created with @PaniniJ is safer and
