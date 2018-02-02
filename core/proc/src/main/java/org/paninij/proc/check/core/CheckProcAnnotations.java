@@ -66,27 +66,34 @@ public class CheckProcAnnotations implements CoreCheck
         this.checker = new DuckabilityChecks(procEnv);
     }
 
-    @Override
-    public Result checkCore(TypeElement core, CoreKind coreKind)
-    {
-        for (Element member : core.getEnclosedElements()) {
-            if (isUnannotatedVoidProcedure(member)) {
-                continue;  // This kind of procedure is ok, so skip the duckability check on it.
-            }
-            // Check the duckability of a procedure's return type if that procedure is either
-            // explicitly or implicitly an `@Duck` procedure:
-            if (isDuckProcedure(member)) {
-                Result result = checker.checkDuckability(((ExecutableElement) member).getReturnType());
-                if (! result.ok()) {
-                    String err = "A {0} core has a procedure whose return type cannot be "
-                               + "ducked. {1}";
-                    err = format(err, coreKind, result.errMsg());
-                    return error(err, CheckProcAnnotations.class, member);
-                }
-            }
-        }
-        return OK;
-    }
+	@Override
+	public Result checkCore(TypeElement core, CoreKind coreKind) {
+		for (Element member : core.getEnclosedElements()) {
+			if (isUnannotatedVoidProcedure(member)) {
+				continue; // This kind of procedure is ok, so skip the duckability check on it.
+			}
+			// Check the duckability of a procedure's return type if that procedure is
+			// either
+			// explicitly or implicitly an `@Duck` procedure:
+			if (isDuckProcedure(member)) {
+				Result result = checker.checkDuckability(((ExecutableElement) member).getReturnType());
+				if (!result.ok()) {
+					String err = "A {0} core has a procedure whose return type cannot be " + "ducked. {1}";
+					err = format(err, coreKind, result.errMsg());
+					return error(err, CheckProcAnnotations.class, member);
+				}
+			}
+
+			// check if '@Duck' procedure is also annotated as a '@Future' procedure
+			if (hasAnnotation(member, Future.class) && hasAnnotation(member, Duck.class)) {
+				String err = "A procedure cannot be annotated with both '@Duck' and '@Future'.";
+				Result result = error(err, CheckProcAnnotations.class, member);
+				return result;
+
+			}
+		}
+		return OK;
+	}
 
     /**
      * Indicates whether a member has none of the PaniniJ procedure annotations and it returns
