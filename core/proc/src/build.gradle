@@ -1,0 +1,29 @@
+import static javax.tools.ToolProvider.getSystemToolClassLoader
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+description '''
+An Java annotation processor to check and compile @PaniniJ programs.
+'''
+
+modifyPom {
+  project {
+    artifactId 'proc'
+    description project.description
+    name '@PaniniJ Annotation Processor'
+  }
+}
+
+dependencies {
+  compile project(':core:lang')
+  compile files(((URLClassLoader) getSystemToolClassLoader()).getURLs())
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.testing.compile:compile-testing:0.9'
+  testCompile 'me.dwtj:java-compiler-utils:0.1.7'
+}
+
+check.dependsOn javadoc
