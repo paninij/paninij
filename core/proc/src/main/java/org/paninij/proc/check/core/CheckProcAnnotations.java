@@ -136,8 +136,7 @@ public class CheckProcAnnotations implements CoreCheck
         }
         ExecutableElement method = (ExecutableElement) member;
         Set<Modifier> modifiers = method.getModifiers();
-        if (method.getReturnType().getKind() == VOID && modifiers.contains(Modifier.STATIC)
-                && modifiers.contains(Modifier.PRIVATE)) {
+        if (modifiers.contains(Modifier.STATIC) || modifiers.contains(Modifier.PRIVATE)) {
             return true;
         }
         return method.getReturnType().getKind() == VOID && !isDecl(method) && !hasAnnotation(method, Duck.class)
