@@ -139,8 +139,11 @@ public class CheckProcAnnotations implements CoreCheck
         if (modifiers.contains(Modifier.STATIC) || modifiers.contains(Modifier.PRIVATE)) {
             return true;
         }
-        return method.getReturnType().getKind() == VOID && !isDecl(method) && !hasAnnotation(method, Duck.class)
-                && !hasAnnotation(method, Future.class) && !hasAnnotation(method, Block.class);
+        return method.getReturnType().getKind() == VOID
+                && !isDecl(method)
+                && !hasAnnotation(method, Duck.class)
+                && !hasAnnotation(method, Future.class)
+                && !hasAnnotation(method, Block.class);
     }
 
     /**
@@ -153,7 +156,9 @@ public class CheckProcAnnotations implements CoreCheck
         }
         Set<Modifier> modifiers = ((ExecutableElement) member).getModifiers();
 
-        return !isDecl(member) && !modifiers.contains(Modifier.STATIC) && !modifiers.contains(Modifier.PRIVATE);
+        return !isDecl(member)
+                && !modifiers.contains(Modifier.STATIC)
+                && !modifiers.contains(Modifier.PRIVATE);
     }
 
     private static boolean isMethod(Element member) {
@@ -165,7 +170,9 @@ public class CheckProcAnnotations implements CoreCheck
     }
 
     private static boolean isDeclName(String memberName) {
-        return memberName.equals("init") || memberName.equals("design") || memberName.equals("run");
+        return memberName.equals("init")
+                || memberName.equals("design")
+                || memberName.equals("run");
     }
 
     private static <A extends Annotation> boolean hasAnnotation(Element elem, Class<A> anno) {
