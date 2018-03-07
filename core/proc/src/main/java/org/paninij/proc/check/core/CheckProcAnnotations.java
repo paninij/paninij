@@ -160,12 +160,12 @@ public class CheckProcAnnotations implements CoreCheck
                 && !hasAnnotation(member, Block.class);
     }
 
-    private static boolean isMethod(Element member) {
-        return (member.getKind() == METHOD);
-    }
-
     private static boolean isDecl(Element member) {
         return isDeclName(member.getSimpleName().toString());
+    }
+    
+    private static boolean isMethod(Element member) {
+        return (member.getKind() == METHOD);
     }
 
     private static boolean isDeclName(String memberName) {
